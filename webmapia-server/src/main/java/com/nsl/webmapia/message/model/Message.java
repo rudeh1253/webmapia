@@ -4,6 +4,10 @@ import lombok.*;
 
 import java.util.Date;
 
+/**
+ * A Message model class. This class defines a message data
+ * sent between each endpoint.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
