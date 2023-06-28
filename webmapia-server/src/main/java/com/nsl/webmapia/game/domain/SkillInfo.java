@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.model;
+package com.nsl.webmapia.game.domain;
 
 import lombok.Getter;
 import lombok.Setter;

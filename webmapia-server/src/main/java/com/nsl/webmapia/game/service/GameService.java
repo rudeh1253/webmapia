@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.management.service;
+package com.nsl.webmapia.game.service;
 
 public interface GameService {
 

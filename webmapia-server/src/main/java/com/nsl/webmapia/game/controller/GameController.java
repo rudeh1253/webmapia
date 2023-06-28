@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.management.controller;
+package com.nsl.webmapia.game.controller;
 
 import org.springframework.stereotype.Controller;
 
