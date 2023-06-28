@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.domain;
+package com.nsl.webmapia.game.domain.notification;
 
 public enum NotificationType {
     STEP_FORWARD,

@@ -1,4 +1,7 @@
-package com.nsl.webmapia.game.domain;
+package com.nsl.webmapia.game.domain.character;
+
+import com.nsl.webmapia.game.domain.skill.SkillInfo;
+import com.nsl.webmapia.game.domain.skill.SkillType;
 
 public interface Character {
 

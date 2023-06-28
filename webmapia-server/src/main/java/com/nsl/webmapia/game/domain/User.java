@@ -1,5 +1,8 @@
 package com.nsl.webmapia.game.domain;
 
+import com.nsl.webmapia.game.domain.character.Character;
+import com.nsl.webmapia.game.domain.skill.SkillInfo;
+import com.nsl.webmapia.game.domain.skill.SkillType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

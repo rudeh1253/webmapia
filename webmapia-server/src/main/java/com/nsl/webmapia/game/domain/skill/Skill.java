@@ -1,7 +1,5 @@
 package com.nsl.webmapia.game.domain.skill;
 
-import com.nsl.webmapia.game.domain.SkillInfo;
-
 /**
  * Classes which implements this interface defines the behavior of skill.
  */

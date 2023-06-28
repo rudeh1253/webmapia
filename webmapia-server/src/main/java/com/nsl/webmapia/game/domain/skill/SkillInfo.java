@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.domain;
+package com.nsl.webmapia.game.domain.skill;
 
 import lombok.Getter;
 import lombok.Setter;
