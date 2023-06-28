@@ -33,12 +33,4 @@ public class User {
      * This method is called when this user die.
      */
     public void die() {}
-
-    /**
-     * Check if this user has been dead.
-     * @return true if the user has been dead, otherwise false.
-     */
-    public boolean dead() {
-        return this.isDead;
-    }
 }
