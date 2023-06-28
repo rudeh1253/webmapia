@@ -1,4 +1,4 @@
-package com.nsl.webmapia.chat.model;
+package com.nsl.webmapia.message.model;
 
 public enum Status {
     JOIN,
