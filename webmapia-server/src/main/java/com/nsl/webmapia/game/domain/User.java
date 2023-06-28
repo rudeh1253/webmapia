@@ -2,7 +2,6 @@ package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.skill.SkillInfo;
-import com.nsl.webmapia.game.domain.skill.SkillType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,12 +22,11 @@ public class User {
     /**
      * Use skill. The effect of skill is based on the character.
      * @param targetUserId user id of the target of the skill.
-     * @param skillType type of skill. targetUserId should be included
-     *                  into the set of the participants.
+     * @return information of expected result of the skill. The result may vary by the other skill used by
+     *         other user.
      */
-    public void useSkill(Long targetUserId, SkillType skillType) {
-        SkillInfo result = character.skill(targetUserId, skillType);
-        // TODO: logic after using skill
+    public SkillInfo useSkill(Long targetUserId) {
+        return character.useSkill(targetUserId);
     }
 
     /**
