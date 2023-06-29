@@ -11,4 +11,6 @@ public interface GameService {
      * The phase of game steps forward.
      */
     void stepForward();
+
+
 }

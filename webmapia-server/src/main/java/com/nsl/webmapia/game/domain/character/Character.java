@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.game.domain.User;
-import com.nsl.webmapia.game.domain.skill.SkillInfo;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 
 public interface Character {
@@ -13,5 +13,5 @@ public interface Character {
      * @return information of expected result of the skill. The result may vary by the other skill used by
      *         other user.
      */
-    SkillInfo activateSkill(User targetUser, SkillType skillType);
+    SkillEffect activateSkill(User targetUser, SkillType skillType);
 }
