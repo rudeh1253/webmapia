@@ -2,21 +2,21 @@ package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.skill.SkillInfo;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a user
  */
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 public class User {
-    private Long id;
+    private final Long id;
     private Character character;
+    private List<SkillInfo> appliedSkills;
     private boolean isDead;
 
     /**
@@ -30,7 +30,11 @@ public class User {
     }
 
     /**
-     * This method is called when this user die.
+     * Apply skill which other user used for this user.
+     * Several skills can be applied to this user.
+     * @param skillInfo information of skill to apply.
      */
-    public void die() {}
+    public synchronized void applySkill(SkillInfo skillInfo) {
+        appliedSkills.add(skillInfo);
+    }
 }
