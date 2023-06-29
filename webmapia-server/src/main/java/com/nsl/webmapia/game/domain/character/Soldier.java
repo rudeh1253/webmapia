@@ -11,9 +11,9 @@ public class Soldier implements Character {
     private int life = 2;
 
     @Override
-    public SkillEffect activateSkill(User activator, User targetUser, SkillType skillType) {
+    public SkillEffect activateSkill(SkillType skillType) {
         if (skillType != SkillType.DEFENSE) {
-            throw new CharacterNotSupportSkillTypeException("Solder doesn't support given skill type: SkillType code " + skillType);
+            throw new CharacterNotSupportSkillTypeException("Soldier doesn't support given skill type: SkillType code " + skillType);
         }
         // TODO: set skill condition
         SkillEffect skillEffect = new SkillEffect();

@@ -28,8 +28,9 @@ public class User {
      *         other user.
      */
     public SkillEffect activateSkill(User targetUser, SkillType skillType) {
-        SkillEffect result = character.activateSkill(this, targetUser, skillType);
+        SkillEffect result = character.activateSkill(skillType);
         result.setActivator(this);
+        result.setTarget(targetUser);
         return result;
     }
 

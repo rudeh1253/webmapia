@@ -15,16 +15,20 @@ public class Wolf implements Character {
     }
 
     @Override
-    public SkillEffect activateSkill(User activator, User targetUser, SkillType skillType) {
+    public SkillEffect activateSkill(SkillType skillType) {
         SkillEffect result = new SkillEffect();
+        result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
         switch (skillType) {
             case EXTERMINATE:
-                result.setSkillType(SkillType.EXTERMINATE);
-                result.setSkillCondition((a, t, s) -> true);
+                if (leftExtermination == 1) {
+                    result.setSkillType(SkillType.EXTERMINATE);
+                    leftExtermination--;
+                } else {
+                    result.setSkillType(SkillType.NONE);
+                }
                 return result;
             case KILL:
                 result.setSkillType(SkillType.KILL);
-                // TODO: set skill condition
                 return result;
             default:
                 throw new CharacterNotSupportSkillTypeException("Wolf doesn't support given skill type: SkillType code " + skillType);

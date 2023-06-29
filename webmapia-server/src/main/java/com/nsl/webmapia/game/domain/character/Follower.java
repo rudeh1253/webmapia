@@ -10,7 +10,7 @@ public class Follower implements Character {
     private static final Faction FACTION = Faction.WOLF;
 
     @Override
-    public SkillEffect activateSkill(User activator, User targetUser, SkillType skillType) {
+    public SkillEffect activateSkill(SkillType skillType) {
         if (skillType != SkillType.INVESTIGATE_ALIVE_CHARACTER) {
             throw new CharacterNotSupportSkillTypeException("Follower doesn't support given skill type: SkillType code "
                     + skillType);

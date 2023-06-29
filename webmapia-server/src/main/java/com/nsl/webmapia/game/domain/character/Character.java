@@ -8,13 +8,11 @@ public interface Character {
 
     /**
      * Use skill based on the character.
-     * @param activator user who invoked this method.
-     * @param targetUser user instance of target of the skill. targetUser should be included
-     *                   into the set of the participants.
+     * @param skillType type of skill
      * @return information of expected result of the skill. The result may vary by the other skill used by
      *         other user.
      */
-    SkillEffect activateSkill(User activator, User targetUser, SkillType skillType);
+    SkillEffect activateSkill(SkillType skillType);
 
     /**
      * Return code of the character.
@@ -27,5 +25,4 @@ public interface Character {
      * @return Faction code from enum.
      */
     Faction getFaction();
-
 }
