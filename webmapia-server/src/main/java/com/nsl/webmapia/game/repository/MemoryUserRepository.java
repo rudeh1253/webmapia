@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class MemoryUserRepository implements UserRepository {
-    private static final Map<Long, User> storage = new ConcurrentHashMap<>();
+    private final Map<Long, User> storage = new ConcurrentHashMap<>();
 
     @Override
     public void save(User user) {
@@ -34,5 +34,9 @@ public class MemoryUserRepository implements UserRepository {
     @Override
     public List<User> findAll() {
         return new ArrayList<>(storage.values());
+    }
+
+    public void clear() {
+        storage.clear();
     }
 }
