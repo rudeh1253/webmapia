@@ -8,5 +8,6 @@ import lombok.Setter;
 @Setter
 public class SkillEffect {
     private User activator;
+    private User target;
     private SkillType skillType;
 }
