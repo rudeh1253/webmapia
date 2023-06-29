@@ -24,6 +24,7 @@ public class Wolf implements Character {
                 return result;
             case KILL:
                 result.setSkillType(SkillType.KILL);
+                // TODO: set skill condition
                 return result;
             default:
                 throw new CharacterNotSupportSkillTypeException("Wolf doesn't support given skill type: SkillType code " + skillType);

@@ -15,6 +15,7 @@ public class Betrayer implements Character {
             throw new CharacterNotSupportSkillTypeException("Betrayer doesn't support given skill type: SkillType code "
                     + skillType);
         }
+        // TODO: set skill condition
         SkillEffect effect = new SkillEffect();
         effect.setSkillType(SkillType.INVESTIGATE_ALIVE_CHARACTER);
         effect.setTarget(targetUser);

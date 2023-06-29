@@ -15,6 +15,7 @@ public class Follower implements Character {
             throw new CharacterNotSupportSkillTypeException("Follower doesn't support given skill type: SkillType code "
                     + skillType);
         }
+        // TODO: set skill condition
         return null;
     }
 

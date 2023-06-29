@@ -15,6 +15,7 @@ public class Soldier implements Character {
         if (skillType != SkillType.DEFENSE) {
             throw new CharacterNotSupportSkillTypeException("Solder doesn't support given skill type: SkillType code " + skillType);
         }
+        // TODO: set skill condition
         SkillEffect skillEffect = new SkillEffect();
         skillEffect.setSkillType(SkillType.DEFENSE);
         return skillEffect;
