@@ -28,7 +28,7 @@ public class User {
      *         other user.
      */
     public SkillEffect activateSkill(User targetUser, SkillType skillType) {
-        SkillEffect result = character.activateSkill(targetUser, skillType);
+        SkillEffect result = character.activateSkill(this, targetUser, skillType);
         result.setActivator(this);
         return result;
     }
@@ -64,19 +64,27 @@ public class User {
      */
     public List<CharacterEffectAfterNight> resultOfNight() {
         List<CharacterEffectAfterNight> result = new ArrayList<>();
+        processInvestigation(result);
+        processKilling(result);
+        return result;
+    }
+
+    private void processInvestigation(List<CharacterEffectAfterNight> result) {
         List<SkillEffect> investigations = appliedSkills.stream()
                 .filter(se ->
                         se.getSkillType() == SkillType.INVESTIGATE_ALIVE_CHARACTER
                         || se.getSkillType() == SkillType.INVESTIGATE_DEAD_CHARACTER)
                 .toList();
         investigations.forEach(inv -> {
-                    boolean isSuccess = character.applySkill(inv);
-                    if (isSuccess) {
+                    if (inv.getSkillCondition().isSuccess(inv.getActivator(), inv.getTarget(), inv.getSkillType())) {
                         result.add(new CharacterEffectAfterNight(
                                 CharacterEffectAfterNightType.INVESTIGATE, inv.getActivator(), this
                         ));
                     }
                 });
+    }
+
+    private void processKilling(List<CharacterEffectAfterNight> result) {
         CharacterEffectAfterNight killed = new CharacterEffectAfterNight();
         killed.setSkillTarget(this);
         killed.setType(CharacterEffectAfterNightType.NONE);
@@ -88,12 +96,14 @@ public class User {
                 .filter(skillEffect -> skillEffect.getSkillType() == SkillType.DEFENSE)
                 .findAny();
         kill.ifPresent(e -> {
-            killed.setType(CharacterEffectAfterNightType.KILL);
-            killed.setSkillActivator(e.getActivator());
-            guard.ifPresent(f -> {
-                killed.setType(CharacterEffectAfterNightType.FAIL_TO_KILL);
-                killed.setSkillActivator(f.getActivator());
-            });
+            if (e.getSkillCondition().isSuccess(e.getActivator(), e.getTarget(), e.getSkillType())) {
+                killed.setType(CharacterEffectAfterNightType.KILL);
+                killed.setSkillActivator(e.getActivator());
+                guard.ifPresent(f -> {
+                    killed.setType(CharacterEffectAfterNightType.FAIL_TO_KILL);
+                    killed.setSkillActivator(f.getActivator());
+                });
+            }
         });
 
         Optional<SkillEffect> extermination = appliedSkills.stream()
@@ -104,6 +114,5 @@ public class User {
             killed.setSkillActivator(e.getActivator());
         });
         result.add(killed);
-        return result;
     }
 }

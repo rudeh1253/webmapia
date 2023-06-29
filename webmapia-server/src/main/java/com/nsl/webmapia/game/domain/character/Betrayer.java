@@ -10,13 +10,13 @@ public class Betrayer implements Character {
     private static final Faction FACTION = Faction.WOLF;
 
     @Override
-    public SkillEffect activateSkill(User targetUser, SkillType skillType) {
+    public SkillEffect activateSkill(User activator, User targetUser, SkillType skillType) {
         if (skillType != SkillType.INVESTIGATE_ALIVE_CHARACTER) {
             throw new CharacterNotSupportSkillTypeException("Betrayer doesn't support given skill type: SkillType code "
                     + skillType);
         }
         SkillEffect effect = new SkillEffect();
-        effect.setSkillType(SkillType.ENTER_WOLF_CHAT);
+        effect.setSkillType(SkillType.INVESTIGATE_ALIVE_CHARACTER);
         effect.setTarget(targetUser);
         return effect;
     }

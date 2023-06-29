@@ -10,4 +10,5 @@ public class SkillEffect {
     private User activator;
     private User target;
     private SkillType skillType;
+    private SkillCondition skillCondition;
 }
