@@ -1,5 +1,6 @@
 package com.nsl.webmapia.game.domain.character;
 
+import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -11,8 +12,11 @@ public class Soldier implements Character {
 
     @Override
     public SkillEffect activateSkill(User targetUser, SkillType skillType) {
+        if (skillType != SkillType.DEFENSE) {
+            throw new CharacterNotSupportSkillTypeException("Solder doesn't support given skill type: SkillType code " + skillType);
+        }
         SkillEffect skillEffect = new SkillEffect();
-        skillEffect.setSkillType(SkillType.NONE);
+        skillEffect.setSkillType(SkillType.DEFENSE);
         return skillEffect;
     }
 

@@ -20,7 +20,7 @@ public class Wolf implements Character {
                 result.setSkillType(SkillType.KILL);
                 return result;
             default:
-                throw new CharacterNotSupportSkillTypeException("Wolf doesn't support given skill type: " + skillType);
+                throw new CharacterNotSupportSkillTypeException("Wolf doesn't support given skill type: SkillType code " + skillType);
         }
     }
 
