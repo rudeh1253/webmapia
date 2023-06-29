@@ -14,4 +14,16 @@ public interface Character {
      *         other user.
      */
     SkillEffect activateSkill(User targetUser, SkillType skillType);
+
+    /**
+     * Return code of the character.
+     * @return CharacterCode
+     */
+    CharacterCode getCharacterCode();
+
+    /**
+     * Return faction the character belongs to.
+     * @return Faction code from enum.
+     */
+    Faction getFaction();
 }

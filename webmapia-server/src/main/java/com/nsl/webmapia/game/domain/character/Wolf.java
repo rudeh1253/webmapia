@@ -23,4 +23,14 @@ public class Wolf implements Character {
                 throw new CharacterNotSupportSkillTypeException("Wolf doesn't support given skill type: " + skillType);
         }
     }
+
+    @Override
+    public CharacterCode getCharacterCode() {
+        return CHARACTER_CODE;
+    }
+
+    @Override
+    public Faction getFaction() {
+        return FACTION;
+    }
 }
