@@ -4,7 +4,6 @@ import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.skill.SkillInfo;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +24,8 @@ public class User {
      * @return information of expected result of the skill. The result may vary by the other skill used by
      *         other user.
      */
-    public SkillInfo useSkill(User targetUser) {
-        return character.useSkill(targetUser);
+    public SkillInfo activateSkill(User targetUser) {
+        return character.activateSkill(targetUser);
     }
 
     /**

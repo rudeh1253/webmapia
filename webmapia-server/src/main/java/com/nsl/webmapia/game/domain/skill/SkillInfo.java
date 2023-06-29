@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SkillInfo {
-    private User targetUser;
+    private User activator;
     private SkillType skillType;
 }

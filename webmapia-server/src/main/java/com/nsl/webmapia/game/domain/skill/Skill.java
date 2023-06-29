@@ -12,5 +12,5 @@ public interface Skill {
      * @return information of expected result of the skill. The result may vary by the other skill used by
      *         other user.
      */
-    SkillInfo useSkill(Long targetUserId);
+    SkillInfo activateSkill(Long targetUserId);
 }

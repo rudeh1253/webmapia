@@ -21,8 +21,7 @@ class MemoryUserRepositoryTest {
     @Test
     void findByIdSuccess() {
         Long id = 1L;
-        User user = new User();
-        user.setId(id);
+        User user = new User(id);
 
         repository.save(user);
 
@@ -34,8 +33,7 @@ class MemoryUserRepositoryTest {
 
     @Test
     void findByIdFail() {
-        User user = new User();
-        user.setId(1L);
+        User user = new User(1L);
 
         repository.save(user);
 
@@ -46,23 +44,19 @@ class MemoryUserRepositoryTest {
 
     @Test
     void findByIsDead_findDead() {
-        User user1 = new User();
-        user1.setId(1L);
+        User user1 = new User(1L);
         user1.setDead(true);
         repository.save(user1);
 
-        User user2 = new User();
-        user2.setId(2L);
+        User user2 = new User(2L);
         user2.setDead(false);
         repository.save(user2);
 
-        User user3 = new User();
-        user3.setId(3L);
+        User user3 = new User(3L);
         user3.setDead(true);
         repository.save(user3);
 
-        User user4 = new User();
-        user4.setId(4L);
+        User user4 = new User(4L);
         user4.setDead(false);
         repository.save(user4);
 
@@ -77,23 +71,19 @@ class MemoryUserRepositoryTest {
 
     @Test
     void findByIsDead_findAlive() {
-        User user1 = new User();
-        user1.setId(1L);
+        User user1 = new User(1L);
         user1.setDead(true);
         repository.save(user1);
 
-        User user2 = new User();
-        user2.setId(2L);
+        User user2 = new User(2L);
         user2.setDead(false);
         repository.save(user2);
 
-        User user3 = new User();
-        user3.setId(3L);
+        User user3 = new User(3L);
         user3.setDead(true);
         repository.save(user3);
 
-        User user4 = new User();
-        user4.setId(4L);
+        User user4 = new User(4L);
         user4.setDead(false);
         repository.save(user4);
 
@@ -108,20 +98,16 @@ class MemoryUserRepositoryTest {
 
     @Test
     void findAll() {
-        User user1 = new User();
-        user1.setId(1L);
+        User user1 = new User(1L);
         repository.save(user1);
 
-        User user2 = new User();
-        user2.setId(2L);
+        User user2 = new User(2L);
         repository.save(user2);
 
-        User user3 = new User();
-        user3.setId(3L);
+        User user3 = new User(3L);
         repository.save(user3);
 
-        User user4 = new User();
-        user4.setId(4L);
+        User user4 = new User(4L);
         repository.save(user4);
 
         List<User> result = repository.findAll();
