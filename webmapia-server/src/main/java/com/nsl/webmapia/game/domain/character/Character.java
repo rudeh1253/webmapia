@@ -8,7 +8,7 @@ public interface Character {
 
     /**
      * Use skill based on the character.
-     * @Param activator user who invoked this method.
+     * @param activator user who invoked this method.
      * @param targetUser user instance of target of the skill. targetUser should be included
      *                   into the set of the participants.
      * @return information of expected result of the skill. The result may vary by the other skill used by
@@ -28,10 +28,4 @@ public interface Character {
      */
     Faction getFaction();
 
-    /**
-     * After the end of the night, apply skill effects to the character.
-     * @param skillEffect effect of the skill to apply.
-     * @return true if the effect was successful, otherwise false.
-     */
-    boolean applySkill(SkillEffect skillEffect);
 }

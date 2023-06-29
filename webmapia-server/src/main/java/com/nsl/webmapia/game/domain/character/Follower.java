@@ -28,8 +28,4 @@ public class Follower implements Character {
         return null;
     }
 
-    @Override
-    public boolean applySkill(SkillEffect skillEffect) {
-        return false;
-    }
 }

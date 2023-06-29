@@ -31,13 +31,4 @@ public class Betrayer implements Character {
         return FACTION;
     }
 
-    @Override
-    public boolean applySkill(SkillEffect skillEffect) {
-        Character activator = skillEffect.getActivator().getCharacter();
-        return switch (skillEffect.getSkillType()) {
-            case KILL -> true;
-            case INVESTIGATE_ALIVE_CHARACTER, INVESTIGATE_DEAD_CHARACTER -> activator.getCharacterCode() == CharacterCode.DETECTIVE;
-            default -> false;
-        };
-    }
 }
