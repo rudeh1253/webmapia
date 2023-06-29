@@ -14,7 +14,7 @@ public class Soldier implements Character {
     private static final Faction FACTION = Faction.HUMAN;
     private int life = 2;
 
-    @Value(value = "guardgettingattacked")
+    @Value(value = "guard_getting_attacked")
     private String attackedMsg;
 
     @Override

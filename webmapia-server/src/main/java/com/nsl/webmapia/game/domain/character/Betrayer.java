@@ -12,13 +12,13 @@ public class Betrayer implements Character {
 
     @Override
     public SkillEffect activateSkill(SkillType skillType) {
-        if (skillType != SkillType.INVESTIGATE_ALIVE_CHARACTER) {
+        if (skillType != SkillType.ENTER_WOLF_CHAT) {
             throw new CharacterNotSupportSkillTypeException("Betrayer doesn't support given skill type: SkillType code "
                     + skillType);
         }
         // TODO: set skill condition
         SkillEffect effect = new SkillEffect();
-        effect.setSkillType(SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        effect.setSkillType(SkillType.ENTER_WOLF_CHAT);
         return effect;
     }
 
