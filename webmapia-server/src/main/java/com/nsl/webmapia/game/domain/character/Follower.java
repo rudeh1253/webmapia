@@ -4,7 +4,9 @@ import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Follower implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.FOLLOWER;
     private static final Faction FACTION = Faction.WOLF;
