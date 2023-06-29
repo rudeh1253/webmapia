@@ -26,11 +26,14 @@ public class Soldier implements Character {
         return FACTION;
     }
 
-    public void setLife(int life) {
-        this.life = life;
-    }
-
-    public int getLife() {
-        return this.life;
+    @Override
+    public boolean applySkill(SkillEffect skillEffect) {
+        switch (skillEffect.getSkillType()) {
+            case KILL:
+                life--;
+                return life <= 0;
+            default:
+                return false;
+        }
     }
 }

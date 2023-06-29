@@ -26,4 +26,12 @@ public interface Character {
      * @return Faction code from enum.
      */
     Faction getFaction();
+
+    /**
+     * After the end of the night, apply skill effects to the character.
+     * @param skillEffect effect of the skill to apply.
+     * @param sourceUser the user to have effect on.
+     * @return true if the effect was successful, otherwise false.
+     */
+    boolean applySkill(SkillEffect skillEffect);
 }

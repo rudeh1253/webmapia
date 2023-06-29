@@ -33,4 +33,10 @@ public class Wolf implements Character {
     public Faction getFaction() {
         return FACTION;
     }
+
+    @Override
+    public boolean applySkill(SkillEffect skillEffect) {
+        // TODO
+        return false;
+    }
 }
