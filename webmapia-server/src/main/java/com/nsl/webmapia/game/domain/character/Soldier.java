@@ -32,11 +32,10 @@ public class Soldier implements Character {
 
     @Override
     public boolean applySkill(SkillEffect skillEffect) {
-        switch (skillEffect.getSkillType()) {
-            case KILL:
-                return --life <= 0;
-            default:
-                return false;
-        }
+        return switch (skillEffect.getSkillType()) {
+            case KILL -> --life <= 0;
+            case INVESTIGATE_ALIVE_CHARACTER, INVESTIGATE_DEAD_CHARACTER -> true;
+            default -> false;
+        };
     }
 }
