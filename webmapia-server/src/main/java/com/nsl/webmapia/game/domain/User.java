@@ -21,12 +21,12 @@ public class User {
 
     /**
      * Use skill. The effect of skill is based on the character.
-     * @param targetUserId user id of the target of the skill.
+     * @param targetUser user instance of the target to apply skill.
      * @return information of expected result of the skill. The result may vary by the other skill used by
      *         other user.
      */
-    public SkillInfo useSkill(Long targetUserId) {
-        return character.useSkill(targetUserId);
+    public SkillInfo useSkill(User targetUser) {
+        return character.useSkill(targetUser);
     }
 
     /**
