@@ -6,7 +6,7 @@ import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 
 public class Wolf implements Character {
-    private static final int CHARACTER_CODE = 1;
+    private static final CharacterCode CHARACTER_CODE = CharacterCode.WOLF;
     private static final Faction FACTION = Faction.WOLF;
 
     @Override
