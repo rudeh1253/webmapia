@@ -34,10 +34,25 @@ public class User {
     /**
      * Apply skill which other user used for this user.
      * Several skills can be applied to this user.
+     * If being dead, INVESTIGATE_ALIVE_CHARACTER won't be applied,
+     * likewise, if being alive, INVESTIGATE_DEAD_CHARACTER won't be applied.
      * @param skillEffect information of skill to apply.
      */
     public synchronized void applySkill(SkillEffect skillEffect) {
-        appliedSkills.add(skillEffect);
+        switch (skillEffect.getSkillType()) {
+            case INVESTIGATE_ALIVE_CHARACTER:
+                if (!isDead) {
+                    appliedSkills.add(skillEffect);
+                }
+                break;
+            case INVESTIGATE_DEAD_CHARACTER:
+                if (isDead) {
+                    appliedSkills.add(skillEffect);
+                }
+                break;
+            default:
+                appliedSkills.add(skillEffect);
+        }
     }
 
     /**

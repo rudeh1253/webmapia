@@ -30,8 +30,7 @@ public class Soldier implements Character {
     public boolean applySkill(SkillEffect skillEffect) {
         switch (skillEffect.getSkillType()) {
             case KILL:
-                life--;
-                return life <= 0;
+                return --life <= 0;
             default:
                 return false;
         }
