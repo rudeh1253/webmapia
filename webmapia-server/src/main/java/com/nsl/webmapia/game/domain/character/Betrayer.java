@@ -1,6 +1,8 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
+import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
+import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.service.PublicNotificationService;
@@ -30,17 +32,55 @@ public class Betrayer implements Character {
 
     @Override
     public SkillEffect activateSkill(SkillType skillType) {
-        if (skillType != SkillType.ENTER_WOLF_CHAT) {
-            throw new CharacterNotSupportSkillTypeException("Betrayer doesn't support given skill type: SkillType code "
-                    + skillType);
+        switch (skillType) {
+            case ENTER_WOLF_CHAT:
+                return enterWolfChat(skillType);
+            case INVESTIGATE_DEAD_CHARACTER:
+                return getCharacterInfoFromDeadCharacter(skillType);
+            default:
+                throw new CharacterNotSupportSkillTypeException("Betrayer doesn't support given skill type: SkillType code "
+                        + skillType);
         }
+    }
+
+    private SkillEffect enterWolfChat(SkillType skillType) {
         SkillEffect effect = new SkillEffect();
         effect.setSkillType(skillType);
         effect.setOnSkillSucceed((src, tar, type) -> {
-            src.addMessageAfterNight(msgToBetrayer);
-            tar.addMessageAfterNight(msgToWolf);
+            SkillNotificationBody srcBody = SkillNotificationBody.builder()
+                    .receiverUserId(src.getID())
+                    .skillTargetUserId(tar.getID())
+                    .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
+                    .characterEffectAfterNightType(CharacterEffectAfterNightType.ENTER_WOLF_CHAT)
+                    .build();
+
+            SkillNotificationBody tarBody = SkillNotificationBody.builder()
+                    .receiverUserId(tar.getID())
+                    .skillTargetUserId(null)
+                    .skillTargetCharacterCode(null)
+                    .characterEffectAfterNightType(CharacterEffectAfterNightType.NOTIFY)
+                    .message("Betrayer entered the wolf chat")
+                    .build();
+
+            src.addMessageAfterNight(srcBody);
+            tar.addMessageAfterNight(tarBody);
+        });
+        effect.setOnSkillFail((src, tar, type) -> {
+            src.addMessageAfterNight(SkillNotificationBody.builder()
+                    .receiverUserId(src.getID())
+                    .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
+                    .build());
         });
         effect.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.WOLF);
+        return effect;
+    }
+
+    private SkillEffect getCharacterInfoFromDeadCharacter(SkillType skillType) {
+        SkillEffect effect = new SkillEffect();
+        effect.setSkillType(skillType);
+        effect.setOnSkillSucceed((src, tar, type) -> {
+            
+        });
         return effect;
     }
 

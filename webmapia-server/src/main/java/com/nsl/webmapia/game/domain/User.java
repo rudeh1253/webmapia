@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.character.Character;
+import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import lombok.*;
@@ -19,14 +20,14 @@ public class User {
     private Character character;
     private List<SkillEffect> appliedSkills;
     private boolean isDead;
-    private List<String> messagesAfterNight;
+    private List<SkillNotificationBody> notificationAfterNight;
 
     public User(Long id) {
         this.ID = id;
         this.character = null;
         this.appliedSkills = new ArrayList<>();
         this.isDead = false;
-        this.messagesAfterNight = new ArrayList<>();
+        this.notificationAfterNight = new ArrayList<>();
     }
 
     /**
@@ -126,7 +127,7 @@ public class User {
         result.add(killed);
     }
 
-    public void addMessageAfterNight(String message) {
-        this.messagesAfterNight.add(message);
+    public void addMessageAfterNight(SkillNotificationBody message) {
+        this.notificationAfterNight.add(message);
     }
 }
