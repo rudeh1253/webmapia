@@ -104,7 +104,7 @@ public class User {
                 .filter(skillEffect -> skillEffect.getSkillType() == SkillType.KILL)
                 .findAny();
         Optional<SkillEffect> guard = appliedSkills.stream()
-                .filter(skillEffect -> skillEffect.getSkillType() == SkillType.DEFENSE)
+                .filter(skillEffect -> skillEffect.getSkillType() == SkillType.GUARD)
                 .findAny();
         kill.ifPresent(e -> {
             if (e.getSkillCondition().isSuccess(e.getActivator(), e.getTarget(), e.getSkillType())) {

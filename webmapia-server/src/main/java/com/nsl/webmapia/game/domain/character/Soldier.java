@@ -1,16 +1,14 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
-import com.nsl.webmapia.game.domain.notification.PublicNotificationBody;
-import com.nsl.webmapia.game.domain.notification.PublicNotificationType;
+import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
+import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.service.PublicNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class Soldier implements Character {
@@ -25,24 +23,26 @@ public class Soldier implements Character {
     @Autowired
     public Soldier(PublicNotificationService publicNotificationService) {
         this.publicNotificationService = publicNotificationService;
-        this.life = 2;
+        this.life = 1;
     }
 
     @Override
     public SkillEffect activateSkill(SkillType skillType) {
-        if (skillType != SkillType.DEFENSE) {
+        if (skillType != SkillType.GUARD) {
             throw new CharacterNotSupportSkillTypeException("Soldier doesn't support given skill type: SkillType code " + skillType);
         }
         SkillEffect skillEffect = new SkillEffect();
-        skillEffect.setSkillCondition((src, tar, type) -> --life > 0);
+        skillEffect.setSkillCondition((src, tar, type) -> life > 0);
         skillEffect.setOnSkillSucceed((src, tar, type) -> {
-            publicNotificationService.addNotification(PublicNotificationBody.builder()
-                    .publicNotificationType(PublicNotificationType.GUARD)
-                    .targetUserId(null)
-                    .targetUserCharacterCode(null)
+            life--;
+            tar.addMessageAfterNight(SkillNotificationBody.builder()
+                    .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
+                    .skillTargetUserId(tar.getID())
+                    .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
+                    .receiverUserId(tar.getID())
                     .build());
         });
-        skillEffect.setSkillType(SkillType.DEFENSE);
+        skillEffect.setSkillType(SkillType.GUARD);
         return skillEffect;
     }
 
