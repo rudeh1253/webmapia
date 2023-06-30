@@ -78,8 +78,14 @@ public class Betrayer implements Character {
     private SkillEffect getCharacterInfoFromDeadCharacter(SkillType skillType) {
         SkillEffect effect = new SkillEffect();
         effect.setSkillType(skillType);
+        effect.setSkillCondition((src, tar, type) -> tar.isDead());
         effect.setOnSkillSucceed((src, tar, type) -> {
-            
+            src.addMessageAfterNight(SkillNotificationBody.builder()
+                    .receiverUserId(src.getID())
+                    .skillTargetUserId(tar.getID())
+                    .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
+                    .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
+                    .build());
         });
         return effect;
     }

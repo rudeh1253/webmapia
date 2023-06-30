@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
+import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.service.PublicNotificationService;
@@ -31,7 +32,13 @@ public class Wolf implements Character {
     public SkillEffect activateSkill(SkillType skillType) {
         SkillEffect result = new SkillEffect();
         result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
-        result.setOnSkillSucceed((a, t, s) -> t.addMessageAfterNight(msgWhenKill));
+        result.setOnSkillSucceed((a, t, s) -> {
+            t.addMessageAfterNight(SkillNotificationBody.builder()
+                    .receiverUserId(t.getID())
+                    .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
+                    .skillTargetUserId(t.getID())
+                    .build());
+        });
         switch (skillType) {
             case EXTERMINATE:
                 if (leftExtermination == 1) {
