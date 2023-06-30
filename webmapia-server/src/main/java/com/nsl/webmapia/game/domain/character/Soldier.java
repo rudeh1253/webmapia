@@ -14,17 +14,10 @@ import org.springframework.stereotype.Component;
 public class Soldier implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.SOLDIER;
     private static final Faction FACTION = Faction.HUMAN;
-    private PublicNotificationService publicNotificationService;
-    private int life;
+    private int life = 1;
 
     @Value(value = "guard_getting_attacked")
     private String attackedMsg;
-
-    @Autowired
-    public Soldier(PublicNotificationService publicNotificationService) {
-        this.publicNotificationService = publicNotificationService;
-        this.life = 1;
-    }
 
     @Override
     public SkillEffect activateSkill(SkillType skillType) {
