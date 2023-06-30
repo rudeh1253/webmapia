@@ -12,14 +12,22 @@ import java.util.Optional;
 /**
  * Represents a user
  */
-@RequiredArgsConstructor
 @Getter
 @Setter
 public class User {
-    private final Long id;
+    private final Long ID;
     private Character character;
     private List<SkillEffect> appliedSkills;
     private boolean isDead;
+    private List<String> messagesAfterNight;
+
+    public User(Long id) {
+        this.ID = id;
+        this.character = null;
+        this.appliedSkills = new ArrayList<>();
+        this.isDead = false;
+        this.messagesAfterNight = new ArrayList<>();
+    }
 
     /**
      * Use skill. The effect of skill is based on the character.
@@ -78,6 +86,7 @@ public class User {
                 .toList();
         investigations.forEach(inv -> {
                     if (inv.getSkillCondition().isSuccess(inv.getActivator(), inv.getTarget(), inv.getSkillType())) {
+                        inv.getOnSkillSucceed().onSkillSucceed(inv.getActivator(), inv.getTarget(), inv.getSkillType());
                         result.add(new CharacterEffectAfterNight(
                                 CharacterEffectAfterNightType.INVESTIGATE, inv.getActivator(), this
                         ));
@@ -115,5 +124,9 @@ public class User {
             killed.setSkillActivator(e.getActivator());
         });
         result.add(killed);
+    }
+
+    public void addMessageAfterNight(String message) {
+        this.messagesAfterNight.add(message);
     }
 }

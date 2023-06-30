@@ -13,6 +13,5 @@ public class SkillEffect {
     private User target;
     private SkillType skillType;
     private SkillCondition skillCondition;
-    private Optional<String> resultMessageForSource = Optional.empty();
-    private Optional<String> resultMessageForTarget = Optional.empty();
+    private OnSkillSucceed onSkillSucceed;
 }

@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class MemoryUserRepositoryTest {
     MemoryUserRepository repository = new MemoryUserRepository();
 
@@ -28,7 +26,7 @@ class MemoryUserRepositoryTest {
         Optional<User> result = repository.findById(id);
 
         Assertions.assertThat(result.get()).isEqualTo(user);
-        Assertions.assertThat(result.get().getId()).isEqualTo(user.getId());
+        Assertions.assertThat(result.get().getID()).isEqualTo(user.getID());
     }
 
     @Test
@@ -64,9 +62,9 @@ class MemoryUserRepositoryTest {
         result.stream()
                 .forEach((elem) -> Assertions.assertThat(elem.isDead()).isEqualTo(true));
         result.stream()
-                .forEach((elem) -> Assertions.assertThat(elem.getId()).isNotEqualTo(2L));
+                .forEach((elem) -> Assertions.assertThat(elem.getID()).isNotEqualTo(2L));
         result.stream()
-                .forEach((elem) -> Assertions.assertThat(elem.getId()).isNotEqualTo(4L));
+                .forEach((elem) -> Assertions.assertThat(elem.getID()).isNotEqualTo(4L));
     }
 
     @Test
@@ -91,9 +89,9 @@ class MemoryUserRepositoryTest {
         result.stream()
                 .forEach((elem) -> Assertions.assertThat(elem.isDead()).isEqualTo(false));
         result.stream()
-                .forEach((elem) -> Assertions.assertThat(elem.getId()).isNotEqualTo(1L));
+                .forEach((elem) -> Assertions.assertThat(elem.getID()).isNotEqualTo(1L));
         result.stream()
-                .forEach((elem) -> Assertions.assertThat(elem.getId()).isNotEqualTo(3L));
+                .forEach((elem) -> Assertions.assertThat(elem.getID()).isNotEqualTo(3L));
     }
 
     @Test

@@ -3,6 +3,8 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
+import com.nsl.webmapia.game.service.PublicNotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +14,17 @@ import java.util.Optional;
 public class Soldier implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.SOLDIER;
     private static final Faction FACTION = Faction.HUMAN;
-    private int life = 2;
+    private PublicNotificationService publicNotificationService;
+    private int life;
 
     @Value(value = "guard_getting_attacked")
     private String attackedMsg;
+
+    @Autowired
+    public Soldier(PublicNotificationService publicNotificationService) {
+        this.publicNotificationService = publicNotificationService;
+        this.life = 2;
+    }
 
     @Override
     public SkillEffect activateSkill(SkillType skillType) {
@@ -24,8 +33,10 @@ public class Soldier implements Character {
         }
         SkillEffect skillEffect = new SkillEffect();
         skillEffect.setSkillCondition((src, tar, type) -> --life > 0);
+        skillEffect.setOnSkillSucceed((src, tar, type) -> {
+            publicNotificationService.addNotification(attackedMsg);
+        });
         skillEffect.setSkillType(SkillType.DEFENSE);
-        skillEffect.setResultMessageForTarget(Optional.of(attackedMsg));
         return skillEffect;
     }
 

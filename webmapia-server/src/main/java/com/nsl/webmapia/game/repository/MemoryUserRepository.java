@@ -15,7 +15,7 @@ public class MemoryUserRepository implements UserRepository {
 
     @Override
     public void save(User user) {
-        storage.put(user.getId(), user);
+        storage.put(user.getID(), user);
     }
 
     @Override

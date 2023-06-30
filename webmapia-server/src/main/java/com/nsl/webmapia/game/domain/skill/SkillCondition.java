@@ -2,6 +2,7 @@ package com.nsl.webmapia.game.domain.skill;
 
 import com.nsl.webmapia.game.domain.User;
 
+@FunctionalInterface
 public interface SkillCondition {
 
     /**
