@@ -16,5 +16,7 @@ public enum CharacterCode {
     TEMPLAR,
     CITIZEN,
     MURDERER,
-    HUMAN_MOUSE
+    HUMAN_MOUSE,
+
+    GOOD_MAN
 }
