@@ -1,6 +1,8 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
+import com.nsl.webmapia.game.domain.notification.PublicNotificationBody;
+import com.nsl.webmapia.game.domain.notification.PublicNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.service.PublicNotificationService;
@@ -34,7 +36,11 @@ public class Soldier implements Character {
         SkillEffect skillEffect = new SkillEffect();
         skillEffect.setSkillCondition((src, tar, type) -> --life > 0);
         skillEffect.setOnSkillSucceed((src, tar, type) -> {
-            publicNotificationService.addNotification(attackedMsg);
+            publicNotificationService.addNotification(PublicNotificationBody.builder()
+                    .publicNotificationType(PublicNotificationType.GUARD)
+                    .targetUserId(null)
+                    .targetUserCharacterCode(null)
+                    .build());
         });
         skillEffect.setSkillType(SkillType.DEFENSE);
         return skillEffect;
