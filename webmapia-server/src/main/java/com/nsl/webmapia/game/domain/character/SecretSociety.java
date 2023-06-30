@@ -5,8 +5,8 @@ import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Successor implements Character {
-    private static final CharacterCode CHARACTER_CODE = CharacterCode.SUCCESSOR;
+public class SecretSociety implements Character {
+    private static final CharacterCode CHARACTER_CODE = CharacterCode.SECRET_SOCIETY;
     private static final Faction FACTION = Faction.HUMAN;
 
     @Override
