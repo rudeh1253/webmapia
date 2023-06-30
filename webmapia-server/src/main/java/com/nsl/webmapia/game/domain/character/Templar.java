@@ -5,8 +5,8 @@ import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Nobility implements Character {
-    private static final CharacterCode CHARACTER_CODE = CharacterCode.NOBILITY;
+public class Templar implements Character {
+    private static final CharacterCode CHARACTER_CODE = CharacterCode.TEMPLAR;
     private static final Faction FACTION = Faction.HUMAN;
 
     @Override
