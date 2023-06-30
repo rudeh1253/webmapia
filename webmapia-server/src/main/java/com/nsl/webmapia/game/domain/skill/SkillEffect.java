@@ -14,4 +14,5 @@ public class SkillEffect {
     private SkillType skillType;
     private SkillCondition skillCondition;
     private OnSkillSucceed onSkillSucceed;
+    private OnSkillFail onSkillFail;
 }
