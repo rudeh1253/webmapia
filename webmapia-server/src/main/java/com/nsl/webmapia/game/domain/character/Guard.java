@@ -6,7 +6,9 @@ import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.service.PublicNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Guard implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.GUARD;
     private static final Faction FACTION = Faction.HUMAN;

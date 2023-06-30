@@ -4,7 +4,9 @@ import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Predictor implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.PREDICTOR;
     private static final Faction FACTION = Faction.HUMAN;
