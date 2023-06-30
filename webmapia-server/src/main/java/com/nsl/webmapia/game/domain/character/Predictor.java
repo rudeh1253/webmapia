@@ -23,12 +23,15 @@ public class Predictor implements Character {
                     .receiverUserId(src.getID())
                     .build();
             CharacterCode targetCharacterCode = tar.getCharacter().getCharacterCode();
-            if (targetCharacterCode == CharacterCode.MEDIUMSHIP
-            || targetCharacterCode == CharacterCode.GUARD
-            || targetCharacterCode == CharacterCode.HUMAN_MOUSE) {
-                notificationBody.setSkillTargetCharacterCode(targetCharacterCode);
-            } else {
-                notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
+            switch (targetCharacterCode) {
+                case MEDIUMSHIP:
+                case GUARD:
+                    notificationBody.setSkillTargetCharacterCode(targetCharacterCode);
+                case HUMAN_MOUSE:
+                    notificationBody.setCharacterEffectAfterNightType(CharacterEffectAfterNightType.KILL);
+                    break;
+                default:
+                    notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
             src.addMessageAfterNight(notificationBody);
         });
