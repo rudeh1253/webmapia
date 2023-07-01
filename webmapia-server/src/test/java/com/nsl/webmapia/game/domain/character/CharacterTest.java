@@ -184,4 +184,21 @@ public class CharacterTest {
                     assertEquals(note.getSkillTargetCharacterCode(), null);
                 });
     }
+
+    @Test
+    public void wolfExterminateOnce() {
+        SkillEffect result = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        assertTrue(result.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
+        assertEquals(1, citizenUser.getNotificationAfterNight().size());
+    }
+
+    @Test
+    public void wolfExterminateMoreThanOnce() {
+        SkillEffect result1 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        assertEquals(SkillType.EXTERMINATE, result1.getSkillType());
+        SkillEffect result2 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        assertEquals(SkillType.NONE, result2.getSkillType());
+        SkillEffect result3 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        assertEquals(SkillType.NONE, result3.getSkillType());
+    }
 }
