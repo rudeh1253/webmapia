@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
+import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -43,26 +44,28 @@ public class CharacterTest {
     User murdererUser;
     User humanMouseUser;
 
+    GameManager gameManager;
 
     UserRepository userRepository;
 
     @BeforeEach
     public void initialize() {
-        wolf = new Wolf();
-        betrayer = new Betrayer();
-        follower = new Follower();
-        predictor = new Predictor();
-        guard = new Guard();
-        mediumship = new Mediumship();
-        detective = new Detective();
-        successor = new Successor();
-        nobility = new Nobility();
-        soldier = new Soldier();
-        secretSociety = new SecretSociety();
-        templar = new Templar();
-        citizen = new Citizen();
-        murderer = new Murderer();
-        humanMouse = new HumanMouse();
+        gameManager = new GameManager();
+        wolf = new Wolf(gameManager);
+        betrayer = new Betrayer(gameManager);
+        follower = new Follower(gameManager);
+        predictor = new Predictor(gameManager);
+        guard = new Guard(gameManager);
+        mediumship = new Mediumship(gameManager);
+        detective = new Detective(gameManager);
+        successor = new Successor(gameManager);
+        nobility = new Nobility(gameManager);
+        soldier = new Soldier(gameManager);
+        secretSociety = new SecretSociety(gameManager);
+        templar = new Templar(gameManager);
+        citizen = new Citizen(gameManager);
+        murderer = new Murderer(gameManager);
+        humanMouse = new HumanMouse(gameManager);
         userRepository = new MemoryUserRepository();
         wolfUser = new User(1L);
         wolfUser.setCharacter(wolf);

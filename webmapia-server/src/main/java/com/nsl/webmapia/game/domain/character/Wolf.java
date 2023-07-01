@@ -1,9 +1,11 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
+import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,12 +14,12 @@ public class Wolf implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.WOLF;
     private static final Faction FACTION = Faction.WOLF;
     private int leftExtermination;
+    private GameManager gameManager;
 
-    @Value(value = "msg_wolf_succeeded_to_kill")
-    private String msgWhenKill;
-
-    public Wolf() {
+    @Autowired
+    public Wolf(GameManager gameManager) {
         leftExtermination = 1;
+        this.gameManager = gameManager;
     }
 
     /**

@@ -2,15 +2,23 @@ package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
+import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Detective implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.DETECTIVE;
     private static final Faction FACTION = Faction.HUMAN;
+    private GameManager gameManager;
+
+    @Autowired
+    public Detective(GameManager gameManager) {
+        this.gameManager = gameManager;
+    }
 
     @Override
     public SkillEffect activateSkill(SkillType skillType) {
