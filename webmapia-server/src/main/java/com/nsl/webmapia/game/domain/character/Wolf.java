@@ -20,6 +20,15 @@ public class Wolf implements Character {
         leftExtermination = 1;
     }
 
+    /**
+     * Wolf use a skill. Wolf can use either EXTERMINATE or KILL of skill types. If using other types of skill,
+     * it will throw CharacterNotSupportSkillTypeException as a RuntimeException.
+     * Wolf can EXTERMINATE only once. If wolf tries using EXTERMINATE more than once, the skill type of SkillEffect
+     * object returned would be set to NONE.
+     * @param skillType type of skill
+     * @return information of expected result of the skill. The result may vary by the other skill used by
+     *         other user.
+     */
     @Override
     public SkillEffect activateSkill(SkillType skillType) {
         SkillEffect result = new SkillEffect();
@@ -57,5 +66,4 @@ public class Wolf implements Character {
     public Faction getFaction() {
         return FACTION;
     }
-
 }
