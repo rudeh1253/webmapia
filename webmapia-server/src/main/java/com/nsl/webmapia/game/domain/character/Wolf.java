@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
+import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
@@ -35,17 +36,17 @@ public class Wolf implements Character {
     public SkillEffect activateSkill(SkillType skillType) {
         SkillEffect result = new SkillEffect();
         result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
-        result.setOnSkillSucceed((a, t, s) -> {
-            t.addNotificationAfterNight(SkillNotificationBody.builder()
-                    .receiverUserId(t.getID())
-                    .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
-                    .skillTargetUserId(t.getID())
-                    .build());
-        });
         switch (skillType) {
             case EXTERMINATE:
                 if (leftExtermination == 1) {
                     result.setSkillType(SkillType.EXTERMINATE);
+                    result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillNotification(SkillNotificationBody.builder()
+                            .receiverUserId(t.getID())
+                            .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
+                            .skillTargetUserId(t.getID())
+                            .skillActivatorUserId(t.getID())
+                            .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
+                            .build()));
                     leftExtermination--;
                 } else {
                     result.setSkillType(SkillType.NONE);
@@ -53,6 +54,13 @@ public class Wolf implements Character {
                 return result;
             case KILL:
                 result.setSkillType(SkillType.KILL);
+                result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillNotification(SkillNotificationBody.builder()
+                        .receiverUserId(t.getID())
+                        .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
+                        .skillTargetUserId(t.getID())
+                        .skillActivatorUserId(t.getID())
+                        .characterEffectAfterNightType(CharacterEffectAfterNightType.KILL)
+                        .build()));
                 return result;
             default:
                 throw new CharacterNotSupportSkillTypeException("Wolf doesn't support given skill type: SkillType code " + skillType);

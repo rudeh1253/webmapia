@@ -39,8 +39,4 @@ public class User {
         result.setTarget(targetUser);
         return result;
     }
-
-    public void addNotificationAfterNight(SkillNotificationBody message) {
-        this.notificationAfterNight.add(message);
-    }
 }

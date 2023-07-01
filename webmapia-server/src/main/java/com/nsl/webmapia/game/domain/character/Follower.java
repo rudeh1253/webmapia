@@ -40,13 +40,17 @@ public class Follower implements Character {
     }
 
     private void insight(SkillEffect result) {
-        result.setSkillCondition((src, tar, type) -> true);
-        result.setOnSkillSucceed((src, tar, type) -> src.addNotificationAfterNight(SkillNotificationBody.builder()
-                .receiverUserId(src.getID())
-                .skillTargetUserId(tar.getID())
-                .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
-                .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
-                .build()));
+        result.setSkillCondition((src, tar, type) -> isAvailableInsight);
+        result.setOnSkillSucceed((src, tar, type) -> {
+            gameManager.addSkillNotification(SkillNotificationBody.builder()
+                    .receiverUserId(src.getID())
+                    .skillTargetUserId(tar.getID())
+                    .skillActivatorUserId(src.getID())
+                    .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
+                    .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
+                    .build());
+            isAvailableInsight = false;
+        });
     }
 
     private void enterChat(SkillEffect result) {
@@ -55,6 +59,7 @@ public class Follower implements Character {
             SkillNotificationBody srcBody = SkillNotificationBody.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
+                    .skillActivatorUserId(tar.getID())
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.ENTER_WOLF_CHAT)
                     .build();
@@ -67,14 +72,16 @@ public class Follower implements Character {
                     .message("Betrayer entered the wolf chat")
                     .build();
 
-            src.addNotificationAfterNight(srcBody);
-            tar.addNotificationAfterNight(tarBody);
+            gameManager.addSkillNotification(srcBody);
+            gameManager.addSkillNotification(tarBody);
         });
         result.setOnSkillFail((src, tar, type) -> {
-            src.addNotificationAfterNight(SkillNotificationBody.builder()
+            gameManager.addSkillNotification(SkillNotificationBody.builder()
                     .receiverUserId(src.getID())
+                    .skillActivatorUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .skillTargetUserId(tar.getID())
+                    .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build());
         });
     }

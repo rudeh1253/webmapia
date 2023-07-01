@@ -34,6 +34,7 @@ public class Mediumship implements Character {
                     .skillTargetUserId(tar.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .receiverUserId(src.getID())
+                    .skillActivatorUserId(tar.getID())
                     .build();
             CharacterCode targetCharacterCode = tar.getCharacter().getCharacterCode();
             if (targetCharacterCode == CharacterCode.WOLF
@@ -43,7 +44,7 @@ public class Mediumship implements Character {
             } else {
                 notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
-            src.addNotificationAfterNight(notificationBody);
+            gameManager.addSkillNotification(notificationBody);
         });
         return result;
     }

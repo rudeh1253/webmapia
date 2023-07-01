@@ -1,7 +1,9 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
+import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,16 @@ public class Murderer implements Character {
         SkillEffect result = new SkillEffect();
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> canKill);
-        result.setOnSkillSucceed((src, tar, type) -> canKill = false);
+        result.setOnSkillSucceed((src, tar, type) -> {
+            gameManager.addSkillNotification(SkillNotificationBody.builder()
+                    .receiverUserId(null)
+                    .skillActivatorUserId(src.getID())
+                    .skillTargetUserId(tar.getID())
+                    .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
+                    .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
+                    .build());
+            canKill = false;
+        });
         return result;
     }
 

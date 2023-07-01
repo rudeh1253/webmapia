@@ -22,9 +22,6 @@ public class Soldier implements Character {
         this.gameManager = gameManager;
     }
 
-    @Value(value = "guard_getting_attacked")
-    private String attackedMsg;
-
     @Override
     public SkillEffect activateSkill(SkillType skillType) {
         if (skillType != SkillType.GUARD) {
@@ -34,7 +31,7 @@ public class Soldier implements Character {
         skillEffect.setSkillCondition((src, tar, type) -> life > 0);
         skillEffect.setOnSkillSucceed((src, tar, type) -> {
             life--;
-            tar.addNotificationAfterNight(SkillNotificationBody.builder()
+            gameManager.addSkillNotification(SkillNotificationBody.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                     .skillTargetUserId(tar.getID())
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())

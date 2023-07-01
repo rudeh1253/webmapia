@@ -34,19 +34,21 @@ public class Detective implements Character {
             SkillNotificationBody skillNotificationBody = SkillNotificationBody.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
+                    .skillActivatorUserId(src.getID())
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build();
-            src.addNotificationAfterNight(skillNotificationBody);
+            gameManager.addSkillNotification(skillNotificationBody);
         });
         result.setOnSkillFail((src, tar, type) -> {
             SkillNotificationBody skillNotificationBody = SkillNotificationBody.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
+                    .skillActivatorUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .build();
-            src.addNotificationAfterNight(skillNotificationBody);
+            gameManager.addSkillNotification(skillNotificationBody);
         });
         return result;
     }

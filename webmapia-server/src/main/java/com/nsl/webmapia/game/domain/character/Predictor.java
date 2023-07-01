@@ -28,6 +28,7 @@ public class Predictor implements Character {
             SkillNotificationBody notificationBody = SkillNotificationBody.builder()
                     .skillTargetUserId(tar.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
+                    .skillActivatorUserId(src.getID())
                     .receiverUserId(src.getID())
                     .build();
             CharacterCode targetCharacterCode = tar.getCharacter().getCharacterCode();
@@ -41,7 +42,7 @@ public class Predictor implements Character {
                 default:
                     notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
-            src.addNotificationAfterNight(notificationBody);
+            gameManager.addSkillNotification(notificationBody);
         });
         return result;
     }
