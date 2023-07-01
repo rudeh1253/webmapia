@@ -45,8 +45,8 @@ public class Betrayer implements Character {
 
             SkillNotificationBody tarBody = SkillNotificationBody.builder()
                     .receiverUserId(tar.getID())
-                    .skillTargetUserId(null)
-                    .skillTargetCharacterCode(null)
+                    .skillTargetUserId(tar.getID())
+                    .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.NOTIFY)
                     .message("Betrayer entered the wolf chat")
                     .build();
