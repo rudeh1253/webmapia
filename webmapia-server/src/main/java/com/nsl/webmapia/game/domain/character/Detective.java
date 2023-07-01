@@ -30,7 +30,7 @@ public class Detective implements Character {
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build();
-            src.addMessageAfterNight(skillNotificationBody);
+            src.addNotificationAfterNight(skillNotificationBody);
         });
         result.setOnSkillFail((src, tar, type) -> {
             SkillNotificationBody skillNotificationBody = SkillNotificationBody.builder()
@@ -38,7 +38,7 @@ public class Detective implements Character {
                     .skillTargetUserId(tar.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .build();
-            src.addMessageAfterNight(skillNotificationBody);
+            src.addNotificationAfterNight(skillNotificationBody);
         });
         return result;
     }

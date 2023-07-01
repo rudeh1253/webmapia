@@ -33,7 +33,7 @@ public class Predictor implements Character {
                 default:
                     notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
-            src.addMessageAfterNight(notificationBody);
+            src.addNotificationAfterNight(notificationBody);
         });
         return result;
     }

@@ -20,7 +20,7 @@ public class Mediumship implements Character {
         }
         SkillEffect result = new SkillEffect();
         result.setSkillType(skillType);
-        result.setSkillCondition((src, tar, type) -> true);
+        result.setSkillCondition((src, tar, type) -> tar.isDead());
         result.setOnSkillSucceed((src, tar, type) -> {
             SkillNotificationBody notificationBody = SkillNotificationBody.builder()
                     .skillTargetUserId(tar.getID())
@@ -35,7 +35,7 @@ public class Mediumship implements Character {
             } else {
                 notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
-            src.addMessageAfterNight(notificationBody);
+            src.addNotificationAfterNight(notificationBody);
         });
         return result;
     }

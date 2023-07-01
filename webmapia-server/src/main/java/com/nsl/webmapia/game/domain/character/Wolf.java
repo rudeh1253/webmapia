@@ -34,7 +34,7 @@ public class Wolf implements Character {
         SkillEffect result = new SkillEffect();
         result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
         result.setOnSkillSucceed((a, t, s) -> {
-            t.addMessageAfterNight(SkillNotificationBody.builder()
+            t.addNotificationAfterNight(SkillNotificationBody.builder()
                     .receiverUserId(t.getID())
                     .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
                     .skillTargetUserId(t.getID())

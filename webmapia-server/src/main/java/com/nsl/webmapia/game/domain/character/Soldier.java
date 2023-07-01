@@ -26,7 +26,7 @@ public class Soldier implements Character {
         skillEffect.setSkillCondition((src, tar, type) -> life > 0);
         skillEffect.setOnSkillSucceed((src, tar, type) -> {
             life--;
-            tar.addMessageAfterNight(SkillNotificationBody.builder()
+            tar.addNotificationAfterNight(SkillNotificationBody.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                     .skillTargetUserId(tar.getID())
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())

@@ -8,7 +8,6 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Represents a user
@@ -18,14 +17,12 @@ import java.util.Optional;
 public class User {
     private final Long ID;
     private Character character;
-    private List<SkillEffect> appliedSkills;
     private boolean isDead;
     private List<SkillNotificationBody> notificationAfterNight;
 
     public User(Long id) {
         this.ID = id;
         this.character = null;
-        this.appliedSkills = new ArrayList<>();
         this.isDead = false;
         this.notificationAfterNight = new ArrayList<>();
     }
@@ -43,7 +40,7 @@ public class User {
         return result;
     }
 
-    public void addMessageAfterNight(SkillNotificationBody message) {
+    public void addNotificationAfterNight(SkillNotificationBody message) {
         this.notificationAfterNight.add(message);
     }
 }

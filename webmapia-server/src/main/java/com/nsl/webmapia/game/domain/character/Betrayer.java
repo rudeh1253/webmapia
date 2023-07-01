@@ -51,11 +51,11 @@ public class Betrayer implements Character {
                     .message("Betrayer entered the wolf chat")
                     .build();
 
-            src.addMessageAfterNight(srcBody);
-            tar.addMessageAfterNight(tarBody);
+            src.addNotificationAfterNight(srcBody);
+            tar.addNotificationAfterNight(tarBody);
         });
         effect.setOnSkillFail((src, tar, type) -> {
-            src.addMessageAfterNight(SkillNotificationBody.builder()
+            src.addNotificationAfterNight(SkillNotificationBody.builder()
                     .receiverUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .skillTargetUserId(tar.getID())
@@ -70,7 +70,7 @@ public class Betrayer implements Character {
         effect.setSkillType(skillType);
         effect.setSkillCondition((src, tar, type) -> tar.isDead());
         effect.setOnSkillSucceed((src, tar, type) -> {
-            src.addMessageAfterNight(SkillNotificationBody.builder()
+            src.addNotificationAfterNight(SkillNotificationBody.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
