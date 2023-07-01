@@ -58,6 +58,7 @@ public class Betrayer implements Character {
             src.addMessageAfterNight(SkillNotificationBody.builder()
                     .receiverUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
+                    .skillTargetUserId(tar.getID())
                     .build());
         });
         effect.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.WOLF);

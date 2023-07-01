@@ -112,7 +112,7 @@ public class CharacterTest {
     }
 
     @Test
-    public void betrayerAndFollowerFoundWolf() { // TODO make test strategy
+    public void betrayerAndFollowerFoundWolf() {
         SkillEffect betrayerFoundWolf = betrayerUser.activateSkill(wolfUser, SkillType.ENTER_WOLF_CHAT);
         SkillEffect followerFoundWolf = followerUser.activateSkill(wolfUser, SkillType.ENTER_WOLF_CHAT);
 
@@ -151,6 +151,37 @@ public class CharacterTest {
                     assertEquals(note.getSkillTargetUserId(), wolfUser.getID());
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.ENTER_WOLF_CHAT);
                     assertEquals(note.getSkillTargetCharacterCode(), CharacterCode.WOLF);
+                });
+    }
+
+    @Test
+    public void betrayerAndFollowerFailedToFindWolf() {
+        SkillEffect betrayerFoundWolf = betrayerUser.activateSkill(predictorUser, SkillType.ENTER_WOLF_CHAT);
+        SkillEffect followerFoundWolf = followerUser.activateSkill(humanMouseUser, SkillType.ENTER_WOLF_CHAT);
+
+        assertFalse(betrayerFoundWolf.getSkillCondition().isSuccess(betrayerUser, predictorUser, SkillType.ENTER_WOLF_CHAT));
+        assertFalse(followerFoundWolf.getSkillCondition().isSuccess(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT));
+        assertEquals(betrayerFoundWolf.getTarget(), predictorUser);
+        assertEquals(followerFoundWolf.getTarget(), humanMouseUser);
+        betrayerFoundWolf.getOnSkillFail().onSkillFail(betrayerUser, predictorUser, SkillType.ENTER_WOLF_CHAT);
+        followerFoundWolf.getOnSkillFail().onSkillFail(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT);
+        assertEquals(betrayerUser.getNotificationAfterNight().size(), 1);
+        assertEquals(followerUser.getNotificationAfterNight().size(), 1);
+        betrayerUser.getNotificationAfterNight()
+                .forEach((note) -> {
+                    assertEquals(note.getReceiverUserId(), betrayerUser.getID());
+                    assertTrue(note.getMessage() == null);
+                    assertEquals(note.getSkillTargetUserId(), predictorUser.getID());
+                    assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE);
+                    assertEquals(note.getSkillTargetCharacterCode(), null);
+                });
+        followerUser.getNotificationAfterNight()
+                .forEach((note) -> {
+                    assertEquals(note.getReceiverUserId(), followerUser.getID());
+                    assertTrue(note.getMessage() == null);
+                    assertEquals(note.getSkillTargetUserId(), humanMouseUser.getID());
+                    assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE);
+                    assertEquals(note.getSkillTargetCharacterCode(), null);
                 });
     }
 }

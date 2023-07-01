@@ -62,6 +62,13 @@ public class Follower implements Character {
             src.addMessageAfterNight(srcBody);
             tar.addMessageAfterNight(tarBody);
         });
+        result.setOnSkillFail((src, tar, type) -> {
+            src.addMessageAfterNight(SkillNotificationBody.builder()
+                    .receiverUserId(src.getID())
+                    .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
+                    .skillTargetUserId(tar.getID())
+                    .build());
+        });
     }
 
     @Override
