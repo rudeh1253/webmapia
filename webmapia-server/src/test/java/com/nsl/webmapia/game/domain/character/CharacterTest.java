@@ -3,7 +3,7 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
-import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.repository.MemoryUserRepository;
@@ -132,13 +132,13 @@ public class CharacterTest {
         betrayerFoundWolf.getOnSkillSucceed().onSkillSucceed(betrayerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
         followerFoundWolf.getOnSkillSucceed().onSkillSucceed(followerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
         assertEquals(4, gameManager.getSkillNotifications().size());
-        List<SkillNotificationBody> forWolf = gameManager.getSkillNotifications().stream()
+        List<SkillEffect> forWolf = gameManager.getSkillNotifications().stream()
                 .filter(e -> Objects.equals(e.getReceiverUserId(), wolfUser.getID()))
                 .toList();
-        List<SkillNotificationBody> forBetrayer = gameManager.getSkillNotifications().stream()
+        List<SkillEffect> forBetrayer = gameManager.getSkillNotifications().stream()
                 .filter(e -> Objects.equals(e.getReceiverUserId(), betrayerUser.getID()))
                 .toList();
-        List<SkillNotificationBody> forFollower = gameManager.getSkillNotifications().stream()
+        List<SkillEffect> forFollower = gameManager.getSkillNotifications().stream()
                 .filter(e -> e.getReceiverUserId() == followerUser.getID())
                 .toList();
         assertEquals(2, forWolf.size());
@@ -179,10 +179,10 @@ public class CharacterTest {
         assertEquals(followerFoundWolf.getTarget(), humanMouseUser);
         betrayerFoundWolf.getOnSkillFail().onSkillFail(betrayerUser, predictorUser, SkillType.ENTER_WOLF_CHAT);
         followerFoundWolf.getOnSkillFail().onSkillFail(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT);
-        List<SkillNotificationBody> skillNotifications = gameManager.getSkillNotifications();
-        List<SkillNotificationBody> forBetrayer = skillNotifications.stream()
+        List<SkillEffect> skillNotifications = gameManager.getSkillNotifications();
+        List<SkillEffect> forBetrayer = skillNotifications.stream()
                 .filter(e -> e.getReceiverUserId() == betrayerUser.getID()).toList();
-        List<SkillNotificationBody> forFollower = skillNotifications.stream()
+        List<SkillEffect> forFollower = skillNotifications.stream()
                 .filter(e -> e.getReceiverUserId() == followerUser.getID()).toList();
         assertEquals(forBetrayer.size(), 1);
         assertEquals(forFollower.size(), 1);

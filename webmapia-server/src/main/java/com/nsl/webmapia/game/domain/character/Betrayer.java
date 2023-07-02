@@ -3,7 +3,7 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class Betrayer implements Character {
         ActivatedSkillInfo effect = new ActivatedSkillInfo();
         effect.setSkillType(skillType);
         effect.setOnSkillSucceed((src, tar, type) -> {
-            SkillNotificationBody srcBody = SkillNotificationBody.builder()
+            SkillEffect srcBody = SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .skillActivatorUserId(src.getID())
@@ -45,7 +45,7 @@ public class Betrayer implements Character {
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.ENTER_WOLF_CHAT)
                     .build();
 
-            SkillNotificationBody tarBody = SkillNotificationBody.builder()
+            SkillEffect tarBody = SkillEffect.builder()
                     .receiverUserId(tar.getID())
                     .skillTargetUserId(tar.getID())
                     .skillActivatorUserId(src.getID())
@@ -58,7 +58,7 @@ public class Betrayer implements Character {
             gameManager.addSkillNotification(tarBody);
         });
         effect.setOnSkillFail((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillNotificationBody.builder()
+            gameManager.addSkillNotification(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillActivatorUserId(src.getID())
                     .skillTargetUserId(tar.getID())
@@ -75,7 +75,7 @@ public class Betrayer implements Character {
         effect.setSkillType(skillType);
         effect.setSkillCondition((src, tar, type) -> tar.isDead());
         effect.setOnSkillSucceed((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillNotificationBody.builder()
+            gameManager.addSkillNotification(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)

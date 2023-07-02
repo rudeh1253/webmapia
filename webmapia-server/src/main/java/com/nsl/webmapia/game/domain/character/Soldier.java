@@ -3,7 +3,7 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class Soldier implements Character {
         activatedSkillInfo.setSkillCondition((src, tar, type) -> life > 0);
         activatedSkillInfo.setOnSkillSucceed((src, tar, type) -> {
             life--;
-            gameManager.addSkillNotification(SkillNotificationBody.builder()
+            gameManager.addSkillNotification(SkillEffect.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                     .skillTargetUserId(tar.getID())
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())

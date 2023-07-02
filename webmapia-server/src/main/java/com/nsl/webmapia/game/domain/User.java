@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.character.Character;
-import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import lombok.*;
@@ -18,7 +18,7 @@ public class User {
     private final Long ID;
     private Character character;
     private boolean isDead;
-    private List<SkillNotificationBody> notificationAfterNight;
+    private List<SkillEffect> notificationAfterNight;
 
     public User(Long id) {
         this.ID = id;

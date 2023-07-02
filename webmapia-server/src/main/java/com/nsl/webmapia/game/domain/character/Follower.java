@@ -3,7 +3,7 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class Follower implements Character {
     private void insight(ActivatedSkillInfo result) {
         result.setSkillCondition((src, tar, type) -> isAvailableInsight);
         result.setOnSkillSucceed((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillNotificationBody.builder()
+            gameManager.addSkillNotification(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .skillActivatorUserId(src.getID())
@@ -56,7 +56,7 @@ public class Follower implements Character {
     private void enterChat(ActivatedSkillInfo result) {
         result.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.WOLF);
         result.setOnSkillSucceed((src, tar, type) -> {
-            SkillNotificationBody srcBody = SkillNotificationBody.builder()
+            SkillEffect srcBody = SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .skillActivatorUserId(tar.getID())
@@ -64,7 +64,7 @@ public class Follower implements Character {
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.ENTER_WOLF_CHAT)
                     .build();
 
-            SkillNotificationBody tarBody = SkillNotificationBody.builder()
+            SkillEffect tarBody = SkillEffect.builder()
                     .receiverUserId(tar.getID())
                     .skillTargetUserId(tar.getID())
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
@@ -76,7 +76,7 @@ public class Follower implements Character {
             gameManager.addSkillNotification(tarBody);
         });
         result.setOnSkillFail((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillNotificationBody.builder()
+            gameManager.addSkillNotification(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillActivatorUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)

@@ -3,7 +3,7 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class Wolf implements Character {
             case EXTERMINATE:
                 if (leftExtermination == 1) {
                     result.setSkillType(SkillType.EXTERMINATE);
-                    result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillNotification(SkillNotificationBody.builder()
+                    result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillNotification(SkillEffect.builder()
                             .receiverUserId(t.getID())
                             .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
                             .skillTargetUserId(t.getID())
@@ -53,7 +53,7 @@ public class Wolf implements Character {
                 return result;
             case KILL:
                 result.setSkillType(SkillType.KILL);
-                result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillNotification(SkillNotificationBody.builder()
+                result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillNotification(SkillEffect.builder()
                         .receiverUserId(t.getID())
                         .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
                         .skillTargetUserId(t.getID())

@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.domain;
 
-import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -8,17 +8,17 @@ import java.util.List;
 
 @Component
 public class GameManager {
-    private final List<SkillNotificationBody> skillNotifications;
+    private final List<SkillEffect> skillNotifications;
 
     public GameManager() {
         this.skillNotifications = new ArrayList<>();
     }
 
-    public void addSkillNotification(SkillNotificationBody skillNotification) {
+    public void addSkillNotification(SkillEffect skillNotification) {
         skillNotifications.add(skillNotification);
     }
 
-    public List<SkillNotificationBody> getSkillNotifications() {
+    public List<SkillEffect> getSkillNotifications() {
         return skillNotifications;
     }
 }

@@ -3,7 +3,7 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class Detective implements Character {
         result.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.BETRAYER
                 || tar.getCharacter().getCharacterCode() == CharacterCode.FOLLOWER);
         result.setOnSkillSucceed((src, tar, type) -> {
-            SkillNotificationBody skillNotificationBody = SkillNotificationBody.builder()
+            SkillEffect skillEffect = SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .skillActivatorUserId(src.getID())
@@ -39,16 +39,16 @@ public class Detective implements Character {
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build();
-            gameManager.addSkillNotification(skillNotificationBody);
+            gameManager.addSkillNotification(skillEffect);
         });
         result.setOnSkillFail((src, tar, type) -> {
-            SkillNotificationBody skillNotificationBody = SkillNotificationBody.builder()
+            SkillEffect skillEffect = SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .skillActivatorUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .build();
-            gameManager.addSkillNotification(skillNotificationBody);
+            gameManager.addSkillNotification(skillEffect);
         });
         return result;
     }
