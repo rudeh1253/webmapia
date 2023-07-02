@@ -42,7 +42,7 @@ public class Follower implements Character {
     private void insight(ActivatedSkillInfo result) {
         result.setSkillCondition((src, tar, type) -> isAvailableInsight);
         result.setOnSkillSucceed((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillEffect.builder()
+            gameManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .skillActivatorUserId(src.getID())
@@ -72,11 +72,11 @@ public class Follower implements Character {
                     .message("Betrayer entered the wolf chat")
                     .build();
 
-            gameManager.addSkillNotification(srcBody);
-            gameManager.addSkillNotification(tarBody);
+            gameManager.addSkillEffect(srcBody);
+            gameManager.addSkillEffect(tarBody);
         });
         result.setOnSkillFail((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillEffect.builder()
+            gameManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillActivatorUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)

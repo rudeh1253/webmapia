@@ -39,7 +39,7 @@ public class Wolf implements Character {
             case EXTERMINATE:
                 if (leftExtermination == 1) {
                     result.setSkillType(SkillType.EXTERMINATE);
-                    result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillNotification(SkillEffect.builder()
+                    result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillEffect(SkillEffect.builder()
                             .receiverUserId(t.getID())
                             .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
                             .skillTargetUserId(t.getID())
@@ -53,7 +53,7 @@ public class Wolf implements Character {
                 return result;
             case KILL:
                 result.setSkillType(SkillType.KILL);
-                result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillNotification(SkillEffect.builder()
+                result.setOnSkillSucceed((a, t, s) -> gameManager.addSkillEffect(SkillEffect.builder()
                         .receiverUserId(t.getID())
                         .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
                         .skillTargetUserId(t.getID())

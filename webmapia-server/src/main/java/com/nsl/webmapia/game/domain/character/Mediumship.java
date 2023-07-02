@@ -44,7 +44,7 @@ public class Mediumship implements Character {
             } else {
                 notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
-            gameManager.addSkillNotification(notificationBody);
+            gameManager.addSkillEffect(notificationBody);
         });
         return result;
     }

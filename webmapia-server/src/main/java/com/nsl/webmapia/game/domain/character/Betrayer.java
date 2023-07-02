@@ -54,11 +54,11 @@ public class Betrayer implements Character {
                     .message("Betrayer entered the wolf chat")
                     .build();
 
-            gameManager.addSkillNotification(srcBody);
-            gameManager.addSkillNotification(tarBody);
+            gameManager.addSkillEffect(srcBody);
+            gameManager.addSkillEffect(tarBody);
         });
         effect.setOnSkillFail((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillEffect.builder()
+            gameManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillActivatorUserId(src.getID())
                     .skillTargetUserId(tar.getID())
@@ -75,7 +75,7 @@ public class Betrayer implements Character {
         effect.setSkillType(skillType);
         effect.setSkillCondition((src, tar, type) -> tar.isDead());
         effect.setOnSkillSucceed((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillEffect.builder()
+            gameManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)

@@ -39,7 +39,7 @@ public class Detective implements Character {
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build();
-            gameManager.addSkillNotification(skillEffect);
+            gameManager.addSkillEffect(skillEffect);
         });
         result.setOnSkillFail((src, tar, type) -> {
             SkillEffect skillEffect = SkillEffect.builder()
@@ -48,7 +48,7 @@ public class Detective implements Character {
                     .skillActivatorUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .build();
-            gameManager.addSkillNotification(skillEffect);
+            gameManager.addSkillEffect(skillEffect);
         });
         return result;
     }

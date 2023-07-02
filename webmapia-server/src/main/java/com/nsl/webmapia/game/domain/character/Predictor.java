@@ -42,7 +42,7 @@ public class Predictor implements Character {
                 default:
                     notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
-            gameManager.addSkillNotification(notificationBody);
+            gameManager.addSkillEffect(notificationBody);
         });
         return result;
     }

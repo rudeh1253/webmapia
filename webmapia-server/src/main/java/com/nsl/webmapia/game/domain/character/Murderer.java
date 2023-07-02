@@ -31,7 +31,7 @@ public class Murderer implements Character {
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> canKill);
         result.setOnSkillSucceed((src, tar, type) -> {
-            gameManager.addSkillNotification(SkillEffect.builder()
+            gameManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(null)
                     .skillActivatorUserId(src.getID())
                     .skillTargetUserId(tar.getID())

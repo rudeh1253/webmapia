@@ -131,14 +131,14 @@ public class CharacterTest {
         assertEquals(followerFoundWolf.getActivator(), followerUser);
         betrayerFoundWolf.getOnSkillSucceed().onSkillSucceed(betrayerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
         followerFoundWolf.getOnSkillSucceed().onSkillSucceed(followerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
-        assertEquals(4, gameManager.getSkillNotifications().size());
-        List<SkillEffect> forWolf = gameManager.getSkillNotifications().stream()
+        assertEquals(4, gameManager.getSkillEffects().size());
+        List<SkillEffect> forWolf = gameManager.getSkillEffects().stream()
                 .filter(e -> Objects.equals(e.getReceiverUserId(), wolfUser.getID()))
                 .toList();
-        List<SkillEffect> forBetrayer = gameManager.getSkillNotifications().stream()
+        List<SkillEffect> forBetrayer = gameManager.getSkillEffects().stream()
                 .filter(e -> Objects.equals(e.getReceiverUserId(), betrayerUser.getID()))
                 .toList();
-        List<SkillEffect> forFollower = gameManager.getSkillNotifications().stream()
+        List<SkillEffect> forFollower = gameManager.getSkillEffects().stream()
                 .filter(e -> e.getReceiverUserId() == followerUser.getID())
                 .toList();
         assertEquals(2, forWolf.size());
@@ -179,7 +179,7 @@ public class CharacterTest {
         assertEquals(followerFoundWolf.getTarget(), humanMouseUser);
         betrayerFoundWolf.getOnSkillFail().onSkillFail(betrayerUser, predictorUser, SkillType.ENTER_WOLF_CHAT);
         followerFoundWolf.getOnSkillFail().onSkillFail(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT);
-        List<SkillEffect> skillNotifications = gameManager.getSkillNotifications();
+        List<SkillEffect> skillNotifications = gameManager.getSkillEffects();
         List<SkillEffect> forBetrayer = skillNotifications.stream()
                 .filter(e -> e.getReceiverUserId() == betrayerUser.getID()).toList();
         List<SkillEffect> forFollower = skillNotifications.stream()
@@ -207,8 +207,8 @@ public class CharacterTest {
         ActivatedSkillInfo result = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
         assertTrue(result.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
         result.getOnSkillSucceed().onSkillSucceed(result.getActivator(), result.getTarget(), result.getSkillType());
-        assertEquals(1, gameManager.getSkillNotifications().size());
-        assertEquals(citizenUser.getID(), gameManager.getSkillNotifications().get(0).getSkillTargetUserId());
+        assertEquals(1, gameManager.getSkillEffects().size());
+        assertEquals(citizenUser.getID(), gameManager.getSkillEffects().get(0).getSkillTargetUserId());
     }
 
     @Test

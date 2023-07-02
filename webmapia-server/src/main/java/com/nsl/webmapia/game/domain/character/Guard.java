@@ -31,14 +31,14 @@ public class Guard implements Character {
             }
             return false;
         });
-        result.setOnSkillSucceed((src, tar, type) -> gameManager.addSkillNotification(SkillEffect.builder()
+        result.setOnSkillSucceed((src, tar, type) -> gameManager.addSkillEffect(SkillEffect.builder()
                 .receiverUserId(src.getID())
                 .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                 .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                 .skillActivatorUserId(src.getID())
                 .skillTargetUserId(tar.getID())
                 .build()));
-        result.setOnSkillFail((src, tar, type) -> gameManager.addSkillNotification(SkillEffect.builder()
+        result.setOnSkillFail((src, tar, type) -> gameManager.addSkillEffect(SkillEffect.builder()
                 .receiverUserId(src.getID())
                 .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_GUARD)
                 .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())

@@ -30,7 +30,7 @@ public class Soldier implements Character {
         activatedSkillInfo.setSkillCondition((src, tar, type) -> life > 0);
         activatedSkillInfo.setOnSkillSucceed((src, tar, type) -> {
             life--;
-            gameManager.addSkillNotification(SkillEffect.builder()
+            gameManager.addSkillEffect(SkillEffect.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                     .skillTargetUserId(tar.getID())
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())

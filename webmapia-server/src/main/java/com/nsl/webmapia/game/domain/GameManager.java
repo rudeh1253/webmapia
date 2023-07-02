@@ -14,11 +14,11 @@ public class GameManager {
         this.skillNotifications = new ArrayList<>();
     }
 
-    public void addSkillNotification(SkillEffect skillNotification) {
+    public void addSkillEffect(SkillEffect skillNotification) {
         skillNotifications.add(skillNotification);
     }
 
-    public List<SkillEffect> getSkillNotifications() {
+    public List<SkillEffect> getSkillEffects() {
         return skillNotifications;
     }
 }
