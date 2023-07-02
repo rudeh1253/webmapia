@@ -302,4 +302,61 @@ public class CharacterTest {
         assertEquals(CharacterEffectAfterNightType.FAIL_TO_GUARD,
                 gameManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
     }
+
+    @Test
+    public void testMediumship() {
+        citizenUser.setDead(true);
+        wolfUser.setDead(true);
+        predictorUser.setDead(true);
+        guardUser.setDead(true);
+        ActivatedSkillInfo investigateAlive = mediumshipUser.activateSkill(humanMouseUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigateWolf = mediumshipUser.activateSkill(wolfUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigatePredictor = mediumshipUser.activateSkill(predictorUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigateGuard = mediumshipUser.activateSkill(guardUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigateOther = mediumshipUser.activateSkill(citizenUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
+
+        assertFalse(investigateAlive.getSkillCondition()
+                .isSuccess(investigateAlive.getActivator(), investigateAlive.getTarget(), investigateAlive.getSkillType()));
+        assertTrue(investigateWolf.getSkillCondition()
+                .isSuccess(investigateWolf.getActivator(), investigateWolf.getTarget(), investigateWolf.getSkillType()));
+        assertTrue(investigatePredictor.getSkillCondition()
+                .isSuccess(investigatePredictor.getActivator(), investigatePredictor.getTarget(), investigatePredictor.getSkillType()));
+        assertTrue(investigateGuard.getSkillCondition()
+                .isSuccess(investigateGuard.getActivator(), investigateGuard.getTarget(), investigateGuard.getSkillType()));
+        assertTrue(investigateOther.getSkillCondition()
+                .isSuccess(investigateOther.getActivator(), investigateOther.getTarget(), investigateOther.getSkillType()));
+
+        investigateWolf
+                .getOnSkillSucceed()
+                .onSkillSucceed(investigateWolf.getActivator(), investigateWolf.getTarget(), investigateWolf.getSkillType());
+        investigateGuard
+                .getOnSkillSucceed()
+                .onSkillSucceed(investigateGuard.getActivator(), investigateGuard.getTarget(), investigateGuard.getSkillType());
+        investigatePredictor
+                .getOnSkillSucceed()
+                .onSkillSucceed(investigatePredictor.getActivator(), investigatePredictor.getTarget(), investigatePredictor.getSkillType());
+        investigateOther
+                .getOnSkillSucceed()
+                .onSkillSucceed(investigateOther.getActivator(), investigateOther.getTarget(), investigateOther.getSkillType());
+        gameManager.getSkillEffects().forEach(e -> {
+            CharacterCode targetCharacterCode = userRepository.findById(e.getSkillTargetUserId())
+                    .get()
+                    .getCharacter()
+                    .getCharacterCode();
+            switch (targetCharacterCode) {
+                case WOLF:
+                    assertEquals(CharacterCode.WOLF, e.getSkillTargetCharacterCode());
+                    break;
+                case GUARD:
+                    assertEquals(CharacterCode.GUARD, e.getSkillTargetCharacterCode());
+                    break;
+                case PREDICTOR:
+                    assertEquals(CharacterCode.PREDICTOR, e.getSkillTargetCharacterCode());
+                    break;
+                case CITIZEN:
+                    assertEquals(CharacterCode.GOOD_MAN, e.getSkillTargetCharacterCode());
+                    break;
+            }
+        });
+    }
 }
