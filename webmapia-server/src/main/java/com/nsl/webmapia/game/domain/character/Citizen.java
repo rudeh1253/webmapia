@@ -17,11 +17,20 @@ public class Citizen implements Character {
         this.gameManager = gameManager;
     }
 
+    /**
+     * Citizen doesn't have any skill.
+     * @param skillType type of skill to use, any type of skill is allowed.
+     * @return skill activated by citizen doesn't have any effect.
+     *         ActivatedSkillInfo.skillType: SkillType.NONE
+     *         ActivatedSkillInfo.skillCondition: always false
+     *         ActivatedSkillInfo.onSkillFail: No effect
+     */
     @Override
     public ActivatedSkillInfo activateSkill(SkillType skillType) {
         ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(SkillType.NONE);
         result.setSkillCondition((src, tar, type) -> false);
+        result.setOnSkillFail((src, tar, type) -> {});
         return result;
     }
 

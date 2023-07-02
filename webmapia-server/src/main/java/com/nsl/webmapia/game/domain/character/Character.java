@@ -6,10 +6,9 @@ import com.nsl.webmapia.game.domain.skill.SkillType;
 public interface Character {
 
     /**
-     * Use skill based on the character.
-     * @param skillType type of skill
-     * @return information of expected result of the skill. The result may vary by the other skill used by
-     *         other user.
+     * Activate skill based on the character.
+     * @param skillType type of skill to use
+     * @return information of activated skill.
      */
     ActivatedSkillInfo activateSkill(SkillType skillType);
 

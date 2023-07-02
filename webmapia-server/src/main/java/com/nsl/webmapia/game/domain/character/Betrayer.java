@@ -20,6 +20,25 @@ public class Betrayer implements Character {
         this.gameManager = gameManager;
     }
 
+    /**
+     * Activate one of skill of type, either SkillType.ENTER_WOLF_CHAT or SkillType.INVESTIGATE_DEAD_CHARACTER.
+     * If skillType passed as a parameter is out of the two allowed SkillType, it will throw
+     * CharacterNotSupportSkillTypeException as a RuntimeException.
+     * @param skillType type of skill to use, either SkillType.ENTER_WOLF_CHAT or SkillType.INVESTIGATE_DEAD_CHARACTER
+     *                  SkillType.ENTER_WOLF_CHAR: Check whether the target user is the wolf and if the target is the
+     *                  wolf, enter the wolf chat.
+     *                  SkillType.INVESTIGATE_DEAD_CHARACTER: Check the character of the dead user.
+     * @return ActivatedSkillInfo
+     *         Condition to succeed: the skill target has CharacterCode.WOLF.
+     *         SkillEffect.receiverUserID: User id of Betrayer user
+     *         SkillEffect.skillTargetUserId: User id of skill target
+     *         SkillEffect.skillActivatorUserId: User id of Betrayer user
+     *         SkillEffect.characterEffectAfterNightType:
+     *             skillType == ENTER_WOLF_CHAT: If success, CharacterEffectAfterNightType.ENTER_WOLF_CHAT,
+     *                 otherwise CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE
+     *             skillType == INVESTIGATE_DEAD_CHARACTER: CharacterEffectAfterNightType.INVESTIGATE
+     *         SkillEffect.skillTargetCharacterCode: CharacterCode of target character
+     */
     @Override
     public ActivatedSkillInfo activateSkill(SkillType skillType) {
         switch (skillType) {
