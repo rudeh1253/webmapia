@@ -11,6 +11,7 @@ import com.nsl.webmapia.game.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,13 +49,13 @@ public class CharacterTest {
     User murdererUser;
     User humanMouseUser;
 
-    GameManager gameManager;
+    GameManager gameManager = new GameManager();
 
     UserRepository userRepository;
 
     @BeforeEach
     public void initialize() {
-        gameManager = new GameManager();
+        gameManager.clearSkillEffects();
         wolf = new Wolf(gameManager);
         betrayer = new Betrayer(gameManager);
         follower = new Follower(gameManager);
@@ -219,5 +220,39 @@ public class CharacterTest {
         assertEquals(SkillType.NONE, result2.getSkillType());
         ActivatedSkillInfo result3 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
         assertEquals(SkillType.NONE, result3.getSkillType());
+    }
+
+    @Test
+    public void predictorInvestigation() {
+        List<ActivatedSkillInfo> activatedSkills = new ArrayList<>();
+        activatedSkills.add(predictorUser.activateSkill(mediumshipUser, SkillType.INVESTIGATE_ALIVE_CHARACTER));
+        activatedSkills.add(predictorUser.activateSkill(guardUser, SkillType.INVESTIGATE_ALIVE_CHARACTER));
+        activatedSkills.add(predictorUser.activateSkill(templarUser, SkillType.INVESTIGATE_ALIVE_CHARACTER));
+        activatedSkills.forEach(e -> {
+            if (e.getSkillCondition().isSuccess(e.getActivator(), e.getTarget(), e.getSkillType())) {
+                e.getOnSkillSucceed().onSkillSucceed(e.getActivator(), e.getTarget(), e.getSkillType());
+            } else {
+                e.getOnSkillFail().onSkillFail(e.getActivator(), e.getTarget(), e.getSkillType());
+            }
+        });
+        List<SkillEffect> skillEffects = gameManager.getSkillEffects();
+
+        assertEquals(3, gameManager.getSkillEffects().size());
+        skillEffects.forEach(e -> assertEquals(CharacterEffectAfterNightType.INVESTIGATE, e.getCharacterEffectAfterNightType()));
+        assertEquals(CharacterCode.MEDIUMSHIP, skillEffects.get(0).getSkillTargetCharacterCode());
+        assertEquals(CharacterCode.GUARD, skillEffects.get(1).getSkillTargetCharacterCode());
+        assertEquals(CharacterCode.GOOD_MAN, skillEffects.get(2).getSkillTargetCharacterCode());
+    }
+
+    @Test
+    public void predictorKillHumanMouse() {
+        ActivatedSkillInfo activatedSkillInfo = predictorUser.activateSkill(humanMouseUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        if (activatedSkillInfo.getSkillCondition().isSuccess(predictorUser, humanMouseUser, SkillType.INVESTIGATE_ALIVE_CHARACTER)) {
+            activatedSkillInfo.getOnSkillSucceed().onSkillSucceed(predictorUser, humanMouseUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        }
+
+        SkillEffect skillEffect = gameManager.getSkillEffects().get(0);
+        assertEquals(CharacterCode.HUMAN_MOUSE, skillEffect.getSkillTargetCharacterCode());
+        assertEquals(CharacterEffectAfterNightType.KILL, skillEffect.getCharacterEffectAfterNightType());
     }
 }

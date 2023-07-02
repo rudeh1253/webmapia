@@ -29,13 +29,13 @@ public class Predictor implements Character {
                     .skillTargetUserId(tar.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillActivatorUserId(src.getID())
+                    .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .receiverUserId(src.getID())
                     .build();
-            CharacterCode targetCharacterCode = tar.getCharacter().getCharacterCode();
-            switch (targetCharacterCode) {
+            switch (tar.getCharacter().getCharacterCode()) {
                 case MEDIUMSHIP:
                 case GUARD:
-                    notificationBody.setSkillTargetCharacterCode(targetCharacterCode);
+                    break;
                 case HUMAN_MOUSE:
                     notificationBody.setCharacterEffectAfterNightType(CharacterEffectAfterNightType.KILL);
                     break;
