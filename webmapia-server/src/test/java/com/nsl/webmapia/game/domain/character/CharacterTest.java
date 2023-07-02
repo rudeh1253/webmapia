@@ -255,4 +255,34 @@ public class CharacterTest {
         assertEquals(CharacterCode.HUMAN_MOUSE, skillEffect.getSkillTargetCharacterCode());
         assertEquals(CharacterEffectAfterNightType.KILL, skillEffect.getCharacterEffectAfterNightType());
     }
+
+    @Test
+    public void guardSucceedToGuard_KillFirst() {
+        wolfUser.activateSkill(citizenUser, SkillType.KILL)
+                .getOnSkillSucceed()
+                .onSkillSucceed(wolfUser, citizenUser, SkillType.KILL);
+
+        ActivatedSkillInfo guardEffect = guardUser.activateSkill(citizenUser, SkillType.GUARD);
+
+        assertTrue(guardEffect.getSkillCondition().isSuccess(guardUser, citizenUser, SkillType.GUARD));
+        guardEffect.getOnSkillSucceed().onSkillSucceed(guardUser, citizenUser, SkillType.GUARD);
+
+        assertEquals(2, gameManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.GUARD, gameManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
+    }
+
+    @Test
+    public void guardSucceedToGuard_GuardFirst() {
+        wolfUser.activateSkill(citizenUser, SkillType.KILL)
+                .getOnSkillSucceed()
+                .onSkillSucceed(wolfUser, citizenUser, SkillType.KILL);
+
+        ActivatedSkillInfo guardEffect = guardUser.activateSkill(citizenUser, SkillType.GUARD);
+
+        assertTrue(guardEffect.getSkillCondition().isSuccess(guardUser, citizenUser, SkillType.GUARD));
+        guardEffect.getOnSkillSucceed().onSkillSucceed(guardUser, citizenUser, SkillType.GUARD);
+
+        assertEquals(2, gameManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.GUARD, gameManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
+    }
 }
