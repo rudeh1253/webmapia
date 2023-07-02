@@ -285,4 +285,21 @@ public class CharacterTest {
         assertEquals(2, gameManager.getSkillEffects().size());
         assertEquals(CharacterEffectAfterNightType.GUARD, gameManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
     }
+
+    @Test
+    public void guardFailToGuard() {
+        wolfUser.activateSkill(citizenUser, SkillType.KILL)
+                .getOnSkillSucceed()
+                .onSkillSucceed(wolfUser, citizenUser, SkillType.KILL);
+
+        ActivatedSkillInfo guardEffect = guardUser.activateSkill(mediumshipUser, SkillType.GUARD);
+
+        assertFalse(guardEffect.getSkillCondition().isSuccess(guardEffect.getActivator(), guardEffect.getTarget(), SkillType.GUARD));
+        guardEffect.getOnSkillFail()
+                .onSkillFail(guardEffect.getActivator(), guardEffect.getTarget(), SkillType.GUARD);
+
+        assertEquals(2, gameManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.FAIL_TO_GUARD,
+                gameManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
+    }
 }

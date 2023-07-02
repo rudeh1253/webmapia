@@ -25,7 +25,8 @@ public class Guard implements Character {
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> {
             for (SkillEffect e : gameManager.getSkillEffects()) {
-                if (e.getCharacterEffectAfterNightType() == CharacterEffectAfterNightType.KILL) {
+                if (e.getCharacterEffectAfterNightType() == CharacterEffectAfterNightType.KILL
+                && e.getSkillTargetUserId().equals(tar.getID())) {
                     return true;
                 }
             }
