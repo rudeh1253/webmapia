@@ -359,4 +359,61 @@ public class CharacterTest {
             }
         });
     }
+
+    @Test
+    public void detectiveFindBetrayer() {
+        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(betrayerUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+
+        assertTrue(activatedSkillInfo
+                .getSkillCondition()
+                .isSuccess(activatedSkillInfo.getActivator(),
+                        activatedSkillInfo.getTarget(),
+                        activatedSkillInfo.getSkillType()));
+
+        activatedSkillInfo.getOnSkillSucceed().onSkillSucceed(activatedSkillInfo.getActivator(),
+                activatedSkillInfo.getTarget(),
+                activatedSkillInfo.getSkillType());
+
+        assertEquals(1, gameManager.getSkillEffects().size());
+        assertEquals(detectiveUser.getID(), gameManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(CharacterCode.BETRAYER, gameManager.getSkillEffects().get(0).getSkillTargetCharacterCode());
+    }
+
+    @Test
+    public void detectiveFindFollower() {
+        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(followerUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+
+        assertTrue(activatedSkillInfo
+                .getSkillCondition()
+                .isSuccess(activatedSkillInfo.getActivator(),
+                        activatedSkillInfo.getTarget(),
+                        activatedSkillInfo.getSkillType()));
+
+        activatedSkillInfo.getOnSkillSucceed().onSkillSucceed(activatedSkillInfo.getActivator(),
+                activatedSkillInfo.getTarget(),
+                activatedSkillInfo.getSkillType());
+
+        assertEquals(1, gameManager.getSkillEffects().size());
+        assertEquals(detectiveUser.getID(), gameManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(CharacterCode.FOLLOWER, gameManager.getSkillEffects().get(0).getSkillTargetCharacterCode());
+    }
+
+    @Test
+    public void detectiveFailToFind() {
+        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(wolfUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+
+        assertFalse(activatedSkillInfo
+                .getSkillCondition()
+                .isSuccess(activatedSkillInfo.getActivator(),
+                        activatedSkillInfo.getTarget(),
+                        activatedSkillInfo.getSkillType()));
+
+        activatedSkillInfo.getOnSkillFail().onSkillFail(activatedSkillInfo.getActivator(),
+                activatedSkillInfo.getTarget(),
+                activatedSkillInfo.getSkillType());
+
+        assertEquals(1, gameManager.getSkillEffects().size());
+        assertEquals(detectiveUser.getID(), gameManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE, gameManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
+    }
 }

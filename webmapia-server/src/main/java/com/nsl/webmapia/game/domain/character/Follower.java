@@ -88,12 +88,12 @@ public class Follower implements Character {
 
     @Override
     public CharacterCode getCharacterCode() {
-        return null;
+        return CHARACTER_CODE;
     }
 
     @Override
     public Faction getFaction() {
-        return null;
+        return FACTION;
     }
 
 }
