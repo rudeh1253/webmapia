@@ -4,7 +4,7 @@ import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.repository.MemoryUserRepository;
 import com.nsl.webmapia.game.repository.UserRepository;
@@ -120,8 +120,8 @@ public class CharacterTest {
 
     @Test
     public void betrayerAndFollowerFoundWolf() {
-        SkillEffect betrayerFoundWolf = betrayerUser.activateSkill(wolfUser, SkillType.ENTER_WOLF_CHAT);
-        SkillEffect followerFoundWolf = followerUser.activateSkill(wolfUser, SkillType.ENTER_WOLF_CHAT);
+        ActivatedSkillInfo betrayerFoundWolf = betrayerUser.activateSkill(wolfUser, SkillType.ENTER_WOLF_CHAT);
+        ActivatedSkillInfo followerFoundWolf = followerUser.activateSkill(wolfUser, SkillType.ENTER_WOLF_CHAT);
 
         assertTrue(betrayerFoundWolf.getSkillCondition().isSuccess(betrayerUser, wolfUser, SkillType.ENTER_WOLF_CHAT));
         assertTrue(followerFoundWolf.getSkillCondition().isSuccess(followerUser, wolfUser, SkillType.ENTER_WOLF_CHAT));
@@ -170,8 +170,8 @@ public class CharacterTest {
 
     @Test
     public void betrayerAndFollowerFailedToFindWolf() {
-        SkillEffect betrayerFoundWolf = betrayerUser.activateSkill(predictorUser, SkillType.ENTER_WOLF_CHAT);
-        SkillEffect followerFoundWolf = followerUser.activateSkill(humanMouseUser, SkillType.ENTER_WOLF_CHAT);
+        ActivatedSkillInfo betrayerFoundWolf = betrayerUser.activateSkill(predictorUser, SkillType.ENTER_WOLF_CHAT);
+        ActivatedSkillInfo followerFoundWolf = followerUser.activateSkill(humanMouseUser, SkillType.ENTER_WOLF_CHAT);
 
         assertFalse(betrayerFoundWolf.getSkillCondition().isSuccess(betrayerUser, predictorUser, SkillType.ENTER_WOLF_CHAT));
         assertFalse(followerFoundWolf.getSkillCondition().isSuccess(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT));
@@ -204,7 +204,7 @@ public class CharacterTest {
 
     @Test
     public void wolfExterminateOnce() {
-        SkillEffect result = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo result = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
         assertTrue(result.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
         result.getOnSkillSucceed().onSkillSucceed(result.getActivator(), result.getTarget(), result.getSkillType());
         assertEquals(1, gameManager.getSkillNotifications().size());
@@ -213,11 +213,11 @@ public class CharacterTest {
 
     @Test
     public void wolfExterminateMoreThanOnce() {
-        SkillEffect result1 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo result1 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
         assertEquals(SkillType.EXTERMINATE, result1.getSkillType());
-        SkillEffect result2 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo result2 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
         assertEquals(SkillType.NONE, result2.getSkillType());
-        SkillEffect result3 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo result3 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
         assertEquals(SkillType.NONE, result3.getSkillType());
     }
 }

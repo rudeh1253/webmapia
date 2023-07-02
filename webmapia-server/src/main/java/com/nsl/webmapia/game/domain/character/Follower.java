@@ -4,7 +4,7 @@ import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,8 +22,8 @@ public class Follower implements Character {
     }
 
     @Override
-    public SkillEffect activateSkill(SkillType skillType) {
-        SkillEffect result = new SkillEffect();
+    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+        ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(skillType);
         switch (skillType) {
             case INVESTIGATE_ALIVE_CHARACTER:
@@ -39,7 +39,7 @@ public class Follower implements Character {
         return result;
     }
 
-    private void insight(SkillEffect result) {
+    private void insight(ActivatedSkillInfo result) {
         result.setSkillCondition((src, tar, type) -> isAvailableInsight);
         result.setOnSkillSucceed((src, tar, type) -> {
             gameManager.addSkillNotification(SkillNotificationBody.builder()
@@ -53,7 +53,7 @@ public class Follower implements Character {
         });
     }
 
-    private void enterChat(SkillEffect result) {
+    private void enterChat(ActivatedSkillInfo result) {
         result.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.WOLF);
         result.setOnSkillSucceed((src, tar, type) -> {
             SkillNotificationBody srcBody = SkillNotificationBody.builder()

@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,11 @@ public class HumanMouse implements Character {
     }
 
     @Override
-    public SkillEffect activateSkill(SkillType skillType) {
-        SkillEffect skillEffect = new SkillEffect();
-        skillEffect.setSkillType(SkillType.NONE);
-        skillEffect.setSkillCondition((src, tar, type) -> false);
-        return skillEffect;
+    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+        ActivatedSkillInfo activatedSkillInfo = new ActivatedSkillInfo();
+        activatedSkillInfo.setSkillType(SkillType.NONE);
+        activatedSkillInfo.setSkillCondition((src, tar, type) -> false);
+        return activatedSkillInfo;
     }
 
     @Override

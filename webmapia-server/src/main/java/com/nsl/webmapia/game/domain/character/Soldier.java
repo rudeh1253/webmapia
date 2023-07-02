@@ -4,10 +4,9 @@ import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,13 +22,13 @@ public class Soldier implements Character {
     }
 
     @Override
-    public SkillEffect activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillType skillType) {
         if (skillType != SkillType.GUARD) {
             throw new CharacterNotSupportSkillTypeException("Soldier doesn't support given skill type: SkillType code " + skillType);
         }
-        SkillEffect skillEffect = new SkillEffect();
-        skillEffect.setSkillCondition((src, tar, type) -> life > 0);
-        skillEffect.setOnSkillSucceed((src, tar, type) -> {
+        ActivatedSkillInfo activatedSkillInfo = new ActivatedSkillInfo();
+        activatedSkillInfo.setSkillCondition((src, tar, type) -> life > 0);
+        activatedSkillInfo.setOnSkillSucceed((src, tar, type) -> {
             life--;
             gameManager.addSkillNotification(SkillNotificationBody.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
@@ -38,8 +37,8 @@ public class Soldier implements Character {
                     .receiverUserId(tar.getID())
                     .build());
         });
-        skillEffect.setSkillType(SkillType.GUARD);
-        return skillEffect;
+        activatedSkillInfo.setSkillType(SkillType.GUARD);
+        return activatedSkillInfo;
     }
 
     @Override

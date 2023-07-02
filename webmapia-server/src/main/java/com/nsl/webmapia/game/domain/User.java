@@ -2,7 +2,7 @@ package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import lombok.*;
 
@@ -33,8 +33,8 @@ public class User {
      * @return information of expected result of the skill. The result may vary by the other skill used by
      *         other user.
      */
-    public SkillEffect activateSkill(User targetUser, SkillType skillType) {
-        SkillEffect result = character.activateSkill(skillType);
+    public ActivatedSkillInfo activateSkill(User targetUser, SkillType skillType) {
+        ActivatedSkillInfo result = character.activateSkill(skillType);
         result.setActivator(this);
         result.setTarget(targetUser);
         return result;

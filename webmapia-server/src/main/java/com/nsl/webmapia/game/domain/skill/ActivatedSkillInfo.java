@@ -4,11 +4,9 @@ import com.nsl.webmapia.game.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Optional;
-
 @Getter
 @Setter
-public class SkillEffect {
+public class ActivatedSkillInfo {
     private User activator;
     private User target;
     private SkillType skillType;

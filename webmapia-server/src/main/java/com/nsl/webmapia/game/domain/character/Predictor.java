@@ -3,7 +3,7 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,8 +20,8 @@ public class Predictor implements Character {
     }
 
     @Override
-    public SkillEffect activateSkill(SkillType skillType) {
-        SkillEffect result = new SkillEffect();
+    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+        ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> true);
         result.setOnSkillSucceed((src, tar, type) -> {

@@ -4,10 +4,9 @@ import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,8 +32,8 @@ public class Wolf implements Character {
      *         other user.
      */
     @Override
-    public SkillEffect activateSkill(SkillType skillType) {
-        SkillEffect result = new SkillEffect();
+    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+        ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
         switch (skillType) {
             case EXTERMINATE:

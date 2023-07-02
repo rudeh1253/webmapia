@@ -4,7 +4,7 @@ import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,12 +21,12 @@ public class Detective implements Character {
     }
 
     @Override
-    public SkillEffect activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillType skillType) {
         if (skillType != SkillType.INVESTIGATE_ALIVE_CHARACTER) {
             throw new CharacterNotSupportSkillTypeException("Detective doesn't support given skill type: SkillType code"
                     + skillType);
         }
-        SkillEffect result = new SkillEffect();
+        ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.BETRAYER
                 || tar.getCharacter().getCharacterCode() == CharacterCode.FOLLOWER);

@@ -4,7 +4,7 @@ import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
-import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class Betrayer implements Character {
     }
 
     @Override
-    public SkillEffect activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillType skillType) {
         switch (skillType) {
             case ENTER_WOLF_CHAT:
                 return enterWolfChat(skillType);
@@ -33,8 +33,8 @@ public class Betrayer implements Character {
         }
     }
 
-    private SkillEffect enterWolfChat(SkillType skillType) {
-        SkillEffect effect = new SkillEffect();
+    private ActivatedSkillInfo enterWolfChat(SkillType skillType) {
+        ActivatedSkillInfo effect = new ActivatedSkillInfo();
         effect.setSkillType(skillType);
         effect.setOnSkillSucceed((src, tar, type) -> {
             SkillNotificationBody srcBody = SkillNotificationBody.builder()
@@ -70,8 +70,8 @@ public class Betrayer implements Character {
         return effect;
     }
 
-    private SkillEffect getCharacterInfoFromDeadCharacter(SkillType skillType) {
-        SkillEffect effect = new SkillEffect();
+    private ActivatedSkillInfo getCharacterInfoFromDeadCharacter(SkillType skillType) {
+        ActivatedSkillInfo effect = new ActivatedSkillInfo();
         effect.setSkillType(skillType);
         effect.setSkillCondition((src, tar, type) -> tar.isDead());
         effect.setOnSkillSucceed((src, tar, type) -> {
