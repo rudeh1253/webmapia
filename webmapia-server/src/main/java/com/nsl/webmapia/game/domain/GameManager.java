@@ -8,17 +8,21 @@ import java.util.List;
 
 @Component
 public class GameManager {
-    private final List<SkillEffect> skillNotifications;
+    private final List<SkillEffect> skillEffects;
 
     public GameManager() {
-        this.skillNotifications = new ArrayList<>();
+        this.skillEffects = new ArrayList<>();
     }
 
     public void addSkillEffect(SkillEffect skillNotification) {
-        skillNotifications.add(skillNotification);
+        skillEffects.add(skillNotification);
     }
 
     public List<SkillEffect> getSkillEffects() {
-        return skillNotifications;
+        return skillEffects;
+    }
+
+    public void clearSkillEffects() {
+        skillEffects.clear();
     }
 }
