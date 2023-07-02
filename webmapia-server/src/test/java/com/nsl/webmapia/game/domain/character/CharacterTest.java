@@ -3,12 +3,16 @@ package com.nsl.webmapia.game.domain.character;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
+import com.nsl.webmapia.game.domain.notification.SkillNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.repository.MemoryUserRepository;
 import com.nsl.webmapia.game.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -127,11 +131,20 @@ public class CharacterTest {
         assertEquals(followerFoundWolf.getActivator(), followerUser);
         betrayerFoundWolf.getOnSkillSucceed().onSkillSucceed(betrayerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
         followerFoundWolf.getOnSkillSucceed().onSkillSucceed(followerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
-        assertEquals(wolfUser.getNotificationAfterNight().size(), 2);
-        assertEquals(betrayerUser.getNotificationAfterNight().size(), 1);
-        assertEquals(followerUser.getNotificationAfterNight().size(), 1);
-        wolfUser.getNotificationAfterNight()
-                .forEach((note) -> {
+        assertEquals(4, gameManager.getSkillNotifications().size());
+        List<SkillNotificationBody> forWolf = gameManager.getSkillNotifications().stream()
+                .filter(e -> Objects.equals(e.getReceiverUserId(), wolfUser.getID()))
+                .toList();
+        List<SkillNotificationBody> forBetrayer = gameManager.getSkillNotifications().stream()
+                .filter(e -> Objects.equals(e.getReceiverUserId(), betrayerUser.getID()))
+                .toList();
+        List<SkillNotificationBody> forFollower = gameManager.getSkillNotifications().stream()
+                .filter(e -> e.getReceiverUserId() == followerUser.getID())
+                .toList();
+        assertEquals(2, forWolf.size());
+        assertEquals(1, forBetrayer.size());
+        assertEquals(1, forFollower.size());
+        forWolf.forEach((note) -> {
                     assertEquals(note.getReceiverUserId(), wolfUser.getID());
                     assertTrue(note.getMessage().matches(".+ entered the wolf chat"));
                     System.out.println(note.getSkillTargetUserId());
@@ -139,16 +152,14 @@ public class CharacterTest {
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.NOTIFY);
                     assertEquals(note.getSkillTargetCharacterCode(), CharacterCode.WOLF);
                 });
-        betrayerUser.getNotificationAfterNight()
-                .forEach((note) -> {
+        forBetrayer.forEach((note) -> {
                     assertEquals(note.getReceiverUserId(), betrayerUser.getID());
                     assertTrue(note.getMessage() == null);
                     assertEquals(note.getSkillTargetUserId(), wolfUser.getID());
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.ENTER_WOLF_CHAT);
                     assertEquals(note.getSkillTargetCharacterCode(), CharacterCode.WOLF);
                 });
-        followerUser.getNotificationAfterNight()
-                .forEach((note) -> {
+        forFollower.forEach((note) -> {
                     assertEquals(note.getReceiverUserId(), followerUser.getID());
                     assertTrue(note.getMessage() == null);
                     assertEquals(note.getSkillTargetUserId(), wolfUser.getID());
@@ -168,23 +179,26 @@ public class CharacterTest {
         assertEquals(followerFoundWolf.getTarget(), humanMouseUser);
         betrayerFoundWolf.getOnSkillFail().onSkillFail(betrayerUser, predictorUser, SkillType.ENTER_WOLF_CHAT);
         followerFoundWolf.getOnSkillFail().onSkillFail(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT);
-        assertEquals(betrayerUser.getNotificationAfterNight().size(), 1);
-        assertEquals(followerUser.getNotificationAfterNight().size(), 1);
-        betrayerUser.getNotificationAfterNight()
-                .forEach((note) -> {
+        List<SkillNotificationBody> skillNotifications = gameManager.getSkillNotifications();
+        List<SkillNotificationBody> forBetrayer = skillNotifications.stream()
+                .filter(e -> e.getReceiverUserId() == betrayerUser.getID()).toList();
+        List<SkillNotificationBody> forFollower = skillNotifications.stream()
+                .filter(e -> e.getReceiverUserId() == followerUser.getID()).toList();
+        assertEquals(forBetrayer.size(), 1);
+        assertEquals(forFollower.size(), 1);
+        forBetrayer.forEach((note) -> {
                     assertEquals(note.getReceiverUserId(), betrayerUser.getID());
                     assertTrue(note.getMessage() == null);
                     assertEquals(note.getSkillTargetUserId(), predictorUser.getID());
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE);
-                    assertEquals(note.getSkillTargetCharacterCode(), null);
+                    assertEquals(note.getSkillTargetCharacterCode(), predictorUser.getCharacter().getCharacterCode());
                 });
-        followerUser.getNotificationAfterNight()
-                .forEach((note) -> {
+        forFollower.forEach((note) -> {
                     assertEquals(note.getReceiverUserId(), followerUser.getID());
                     assertTrue(note.getMessage() == null);
                     assertEquals(note.getSkillTargetUserId(), humanMouseUser.getID());
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE);
-                    assertEquals(note.getSkillTargetCharacterCode(), null);
+                    assertEquals(note.getSkillTargetCharacterCode(), humanMouseUser.getCharacter().getCharacterCode());
                 });
     }
 
@@ -192,7 +206,9 @@ public class CharacterTest {
     public void wolfExterminateOnce() {
         SkillEffect result = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
         assertTrue(result.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
-        assertEquals(1, citizenUser.getNotificationAfterNight().size());
+        result.getOnSkillSucceed().onSkillSucceed(result.getActivator(), result.getTarget(), result.getSkillType());
+        assertEquals(1, gameManager.getSkillNotifications().size());
+        assertEquals(citizenUser.getID(), gameManager.getSkillNotifications().get(0).getSkillTargetUserId());
     }
 
     @Test

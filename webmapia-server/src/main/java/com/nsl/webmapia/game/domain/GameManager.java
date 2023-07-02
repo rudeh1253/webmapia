@@ -17,4 +17,8 @@ public class GameManager {
     public void addSkillNotification(SkillNotificationBody skillNotification) {
         skillNotifications.add(skillNotification);
     }
+
+    public List<SkillNotificationBody> getSkillNotifications() {
+        return skillNotifications;
+    }
 }
