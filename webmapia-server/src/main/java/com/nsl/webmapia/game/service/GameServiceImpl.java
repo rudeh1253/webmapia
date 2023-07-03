@@ -97,7 +97,14 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Long addUser() {
-        return null;
+        Random random = new Random();
+        long generatedId = random.nextLong(100000L, 999999L);
+        while (userRepository.containsKey(generatedId)) {
+            generatedId = random.nextLong();
+        }
+        User user = new User(generatedId);
+        userRepository.save(user);
+        return generatedId;
     }
 
     @Override
