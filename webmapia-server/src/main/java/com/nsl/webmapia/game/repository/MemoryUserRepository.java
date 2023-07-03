@@ -36,6 +36,11 @@ public class MemoryUserRepository implements UserRepository {
         return new ArrayList<>(storage.values());
     }
 
+    @Override
+    public int countAll() {
+        return storage.size();
+    }
+
     public void clear() {
         storage.clear();
     }

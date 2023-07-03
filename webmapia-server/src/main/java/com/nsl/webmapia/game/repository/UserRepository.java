@@ -33,4 +33,10 @@ public interface UserRepository {
      * @return all the users.
      */
     List<User> findAll();
+
+    /**
+     * Count the number of user stored in the repository.
+     * @return the number of user.
+     */
+    int countAll();
 }
