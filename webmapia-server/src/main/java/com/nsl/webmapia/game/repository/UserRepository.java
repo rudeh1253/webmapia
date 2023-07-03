@@ -60,5 +60,5 @@ public interface UserRepository {
      * @param userId of the user to delete.
      * @return the user deleted.
      */
-    User deleteUserById(Long userId);
+    Optional<User> deleteUserById(Long userId);
 }

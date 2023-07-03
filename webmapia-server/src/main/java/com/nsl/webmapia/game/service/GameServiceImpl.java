@@ -18,6 +18,7 @@ public class GameServiceImpl implements GameService {
     private Map<CharacterCode, Character> characters;
     private final SkillManager skillManager;
     private final UserRepository userRepository;
+    private final List<Vote> votes;
 
     @Autowired
     public GameServiceImpl(Wolf wolf,
@@ -55,6 +56,7 @@ public class GameServiceImpl implements GameService {
         characters.put(CharacterCode.TEMPLAR, templar);
         this.skillManager = skillManager;
         this.userRepository = userRepository;
+        this.votes = new ArrayList<>();
     }
 
     @Override
@@ -93,7 +95,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void acceptVote(Vote vote) {
-
+        votes.add(vote);
     }
 
     @Override
@@ -109,8 +111,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Long removeUser(Long userId) {
-        return null;
+    public Optional<User> removeUser(Long userId) {
+        return userRepository.deleteUserById(userId);
     }
 
     @Override

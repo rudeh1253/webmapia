@@ -1,5 +1,6 @@
 package com.nsl.webmapia.game.service;
 
+import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.Vote;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.CharacterCode;
@@ -9,6 +10,7 @@ import com.nsl.webmapia.game.domain.skill.SkillType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface GameService {
 
@@ -46,9 +48,9 @@ public interface GameService {
     /**
      * Remove user from the repository.
      * @param userId of user to remove.
-     * @return user id of user removed if the user exists, otherwise -1.
+     * @return Optional object containing User object which is removed, or not.
      */
-    Long removeUser(Long userId);
+    Optional<User> removeUser(Long userId);
 
     /**
      * Process activation of a skill.
