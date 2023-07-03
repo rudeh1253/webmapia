@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.repository;
 
 import com.nsl.webmapia.game.domain.User;
+import com.nsl.webmapia.game.domain.character.CharacterCode;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,13 @@ public interface UserRepository {
      * @return list of users, each of which is dead or alive.
      */
     List<User> findByIsDead(boolean isDead);
+
+    /**
+     * Find users by characterCode and return them as a List object.
+     * @param characterCode the user to find is holding.
+     * @return list of users, each of which has character code is equal to the parameter.
+     */
+    List<User> findByCharacterCode(CharacterCode characterCode);
 
     /**
      * Find every user registered.

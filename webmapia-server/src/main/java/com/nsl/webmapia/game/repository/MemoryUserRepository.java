@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.repository;
 
 import com.nsl.webmapia.game.domain.User;
+import com.nsl.webmapia.game.domain.character.CharacterCode;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -28,6 +29,13 @@ public class MemoryUserRepository implements UserRepository {
     public List<User> findByIsDead(boolean isDead) {
         return storage.values().stream()
                 .filter((user) -> user.isDead() == isDead)
+                .toList();
+    }
+
+    @Override
+    public List<User> findByCharacterCode(CharacterCode characterCode) {
+        return storage.values().stream()
+                .filter(user -> user.getCharacter().getCharacterCode() == characterCode)
                 .toList();
     }
 
