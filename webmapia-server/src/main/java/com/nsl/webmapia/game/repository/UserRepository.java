@@ -35,6 +35,13 @@ public interface UserRepository {
     List<User> findAll();
 
     /**
+     * Determine whether the user of the id userId exists.
+     * @param userId to check
+     * @return true if the user of the id exists, otherwise false.
+     */
+    boolean containsKey(Long userId);
+
+    /**
      * Count the number of user stored in the repository.
      * @return the number of user.
      */

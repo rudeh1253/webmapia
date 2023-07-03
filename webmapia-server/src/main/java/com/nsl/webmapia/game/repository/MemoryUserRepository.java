@@ -37,6 +37,11 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public boolean containsKey(Long userId) {
+        return storage.containsKey(userId);
+    }
+
+    @Override
     public int countAll() {
         return storage.size();
     }
