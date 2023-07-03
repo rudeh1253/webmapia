@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.character.Character;
+import com.nsl.webmapia.game.domain.character.CharacterCode;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -38,5 +39,16 @@ public class User {
         result.setActivator(this);
         result.setTarget(targetUser);
         return result;
+    }
+
+    /**
+     * Vote who is supposed to be executed.
+     * @param subject who the user of this object determined to execute.
+     * @return Vote object contains subject and voter of the vote.
+     */
+    public Vote vote(User subject) {
+        return character.getCharacterCode() == CharacterCode.NOBILITY
+                ? new Vote(2, this, subject)
+                : new Vote(1, this, subject);
     }
 }
