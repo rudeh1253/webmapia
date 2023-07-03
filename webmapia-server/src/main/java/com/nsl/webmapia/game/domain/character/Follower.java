@@ -2,7 +2,7 @@ package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -14,11 +14,11 @@ public class Follower implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.FOLLOWER;
     private static final Faction FACTION = Faction.WOLF;
     private boolean isAvailableInsight = true;
-    private GameManager gameManager;
+    private SkillManager skillManager;
 
     @Autowired
-    public Follower(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public Follower(SkillManager skillManager) {
+        this.skillManager = skillManager;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Follower implements Character {
     private void insight(ActivatedSkillInfo result) {
         result.setSkillCondition((src, tar, type) -> isAvailableInsight);
         result.setOnSkillSucceed((src, tar, type) -> {
-            gameManager.addSkillEffect(SkillEffect.builder()
+            skillManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .skillActivatorUserId(src.getID())
@@ -72,11 +72,11 @@ public class Follower implements Character {
                     .message("Betrayer entered the wolf chat")
                     .build();
 
-            gameManager.addSkillEffect(srcBody);
-            gameManager.addSkillEffect(tarBody);
+            skillManager.addSkillEffect(srcBody);
+            skillManager.addSkillEffect(tarBody);
         });
         result.setOnSkillFail((src, tar, type) -> {
-            gameManager.addSkillEffect(SkillEffect.builder()
+            skillManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillActivatorUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)

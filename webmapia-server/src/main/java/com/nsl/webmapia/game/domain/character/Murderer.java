@@ -2,7 +2,7 @@ package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -14,11 +14,11 @@ public class Murderer implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.MURDERER;
     private static final Faction FACTION = Faction.HUMAN;
     private boolean canKill = true;
-    private GameManager gameManager;
+    private SkillManager skillManager;
 
     @Autowired
-    public Murderer(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public Murderer(SkillManager skillManager) {
+        this.skillManager = skillManager;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class Murderer implements Character {
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> canKill && tar.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
         result.setOnSkillSucceed((src, tar, type) -> {
-            gameManager.addSkillEffect(SkillEffect.builder()
+            skillManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(null)
                     .skillActivatorUserId(src.getID())
                     .skillTargetUserId(tar.getID())

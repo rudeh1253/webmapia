@@ -2,7 +2,7 @@ package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 public class Detective implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.DETECTIVE;
     private static final Faction FACTION = Faction.HUMAN;
-    private GameManager gameManager;
+    private SkillManager skillManager;
 
     @Autowired
-    public Detective(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public Detective(SkillManager skillManager) {
+        this.skillManager = skillManager;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Detective implements Character {
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build();
-            gameManager.addSkillEffect(skillEffect);
+            skillManager.addSkillEffect(skillEffect);
         });
         result.setOnSkillFail((src, tar, type) -> {
             SkillEffect skillEffect = SkillEffect.builder()
@@ -48,7 +48,7 @@ public class Detective implements Character {
                     .skillActivatorUserId(src.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .build();
-            gameManager.addSkillEffect(skillEffect);
+            skillManager.addSkillEffect(skillEffect);
         });
         return result;
     }

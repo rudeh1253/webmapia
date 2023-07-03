@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.domain.character;
 
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 public class SecretSociety implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.SECRET_SOCIETY;
     private static final Faction FACTION = Faction.HUMAN;
-    private GameManager gameManager;
+    private SkillManager skillManager;
 
     @Autowired
-    public SecretSociety(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public SecretSociety(SkillManager skillManager) {
+        this.skillManager = skillManager;
     }
 
     @Override

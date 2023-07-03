@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class GameManager {
+public class SkillManager {
     private final List<SkillEffect> skillEffects;
 
-    public GameManager() {
+    public SkillManager() {
         this.skillEffects = new ArrayList<>();
     }
 

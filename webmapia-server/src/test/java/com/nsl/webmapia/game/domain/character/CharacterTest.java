@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
@@ -49,28 +49,28 @@ public class CharacterTest {
     User murdererUser;
     User humanMouseUser;
 
-    GameManager gameManager = new GameManager();
+    SkillManager skillManager = new SkillManager();
 
     UserRepository userRepository;
 
     @BeforeEach
     public void initialize() {
-        gameManager.clearSkillEffects();
-        wolf = new Wolf(gameManager);
-        betrayer = new Betrayer(gameManager);
-        follower = new Follower(gameManager);
-        predictor = new Predictor(gameManager);
-        guard = new Guard(gameManager);
-        mediumship = new Mediumship(gameManager);
-        detective = new Detective(gameManager);
-        successor = new Successor(gameManager);
-        nobility = new Nobility(gameManager);
-        soldier = new Soldier(gameManager);
-        secretSociety = new SecretSociety(gameManager);
-        templar = new Templar(gameManager);
-        citizen = new Citizen(gameManager);
-        murderer = new Murderer(gameManager);
-        humanMouse = new HumanMouse(gameManager);
+        skillManager.clearSkillEffects();
+        wolf = new Wolf(skillManager);
+        betrayer = new Betrayer(skillManager);
+        follower = new Follower(skillManager);
+        predictor = new Predictor(skillManager);
+        guard = new Guard(skillManager);
+        mediumship = new Mediumship(skillManager);
+        detective = new Detective(skillManager);
+        successor = new Successor(skillManager);
+        nobility = new Nobility(skillManager);
+        soldier = new Soldier(skillManager);
+        secretSociety = new SecretSociety(skillManager);
+        templar = new Templar(skillManager);
+        citizen = new Citizen(skillManager);
+        murderer = new Murderer(skillManager);
+        humanMouse = new HumanMouse(skillManager);
         userRepository = new MemoryUserRepository();
         wolfUser = new User(1L);
         wolfUser.setCharacter(wolf);
@@ -132,14 +132,14 @@ public class CharacterTest {
         assertEquals(followerFoundWolf.getActivator(), followerUser);
         betrayerFoundWolf.getOnSkillSucceed().onSkillSucceed(betrayerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
         followerFoundWolf.getOnSkillSucceed().onSkillSucceed(followerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
-        assertEquals(4, gameManager.getSkillEffects().size());
-        List<SkillEffect> forWolf = gameManager.getSkillEffects().stream()
+        assertEquals(4, skillManager.getSkillEffects().size());
+        List<SkillEffect> forWolf = skillManager.getSkillEffects().stream()
                 .filter(e -> Objects.equals(e.getReceiverUserId(), wolfUser.getID()))
                 .toList();
-        List<SkillEffect> forBetrayer = gameManager.getSkillEffects().stream()
+        List<SkillEffect> forBetrayer = skillManager.getSkillEffects().stream()
                 .filter(e -> Objects.equals(e.getReceiverUserId(), betrayerUser.getID()))
                 .toList();
-        List<SkillEffect> forFollower = gameManager.getSkillEffects().stream()
+        List<SkillEffect> forFollower = skillManager.getSkillEffects().stream()
                 .filter(e -> e.getReceiverUserId() == followerUser.getID())
                 .toList();
         assertEquals(2, forWolf.size());
@@ -180,7 +180,7 @@ public class CharacterTest {
         assertEquals(followerFoundWolf.getTarget(), humanMouseUser);
         betrayerFoundWolf.getOnSkillFail().onSkillFail(betrayerUser, predictorUser, SkillType.ENTER_WOLF_CHAT);
         followerFoundWolf.getOnSkillFail().onSkillFail(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT);
-        List<SkillEffect> skillNotifications = gameManager.getSkillEffects();
+        List<SkillEffect> skillNotifications = skillManager.getSkillEffects();
         List<SkillEffect> forBetrayer = skillNotifications.stream()
                 .filter(e -> e.getReceiverUserId() == betrayerUser.getID()).toList();
         List<SkillEffect> forFollower = skillNotifications.stream()
@@ -208,8 +208,8 @@ public class CharacterTest {
         ActivatedSkillInfo result = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
         assertTrue(result.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
         result.getOnSkillSucceed().onSkillSucceed(result.getActivator(), result.getTarget(), result.getSkillType());
-        assertEquals(1, gameManager.getSkillEffects().size());
-        assertEquals(citizenUser.getID(), gameManager.getSkillEffects().get(0).getSkillTargetUserId());
+        assertEquals(1, skillManager.getSkillEffects().size());
+        assertEquals(citizenUser.getID(), skillManager.getSkillEffects().get(0).getSkillTargetUserId());
     }
 
     @Test
@@ -235,9 +235,9 @@ public class CharacterTest {
                 e.getOnSkillFail().onSkillFail(e.getActivator(), e.getTarget(), e.getSkillType());
             }
         });
-        List<SkillEffect> skillEffects = gameManager.getSkillEffects();
+        List<SkillEffect> skillEffects = skillManager.getSkillEffects();
 
-        assertEquals(3, gameManager.getSkillEffects().size());
+        assertEquals(3, skillManager.getSkillEffects().size());
         skillEffects.forEach(e -> assertEquals(CharacterEffectAfterNightType.INVESTIGATE, e.getCharacterEffectAfterNightType()));
         assertEquals(CharacterCode.MEDIUMSHIP, skillEffects.get(0).getSkillTargetCharacterCode());
         assertEquals(CharacterCode.GUARD, skillEffects.get(1).getSkillTargetCharacterCode());
@@ -251,7 +251,7 @@ public class CharacterTest {
             activatedSkillInfo.getOnSkillSucceed().onSkillSucceed(predictorUser, humanMouseUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
         }
 
-        SkillEffect skillEffect = gameManager.getSkillEffects().get(0);
+        SkillEffect skillEffect = skillManager.getSkillEffects().get(0);
         assertEquals(CharacterCode.HUMAN_MOUSE, skillEffect.getSkillTargetCharacterCode());
         assertEquals(CharacterEffectAfterNightType.KILL, skillEffect.getCharacterEffectAfterNightType());
     }
@@ -267,8 +267,8 @@ public class CharacterTest {
         assertTrue(guardEffect.getSkillCondition().isSuccess(guardUser, citizenUser, SkillType.GUARD));
         guardEffect.getOnSkillSucceed().onSkillSucceed(guardUser, citizenUser, SkillType.GUARD);
 
-        assertEquals(2, gameManager.getSkillEffects().size());
-        assertEquals(CharacterEffectAfterNightType.GUARD, gameManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
+        assertEquals(2, skillManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.GUARD, skillManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
     }
 
     @Test
@@ -282,8 +282,8 @@ public class CharacterTest {
         assertTrue(guardEffect.getSkillCondition().isSuccess(guardUser, citizenUser, SkillType.GUARD));
         guardEffect.getOnSkillSucceed().onSkillSucceed(guardUser, citizenUser, SkillType.GUARD);
 
-        assertEquals(2, gameManager.getSkillEffects().size());
-        assertEquals(CharacterEffectAfterNightType.GUARD, gameManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
+        assertEquals(2, skillManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.GUARD, skillManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
     }
 
     @Test
@@ -298,9 +298,9 @@ public class CharacterTest {
         guardEffect.getOnSkillFail()
                 .onSkillFail(guardEffect.getActivator(), guardEffect.getTarget(), SkillType.GUARD);
 
-        assertEquals(2, gameManager.getSkillEffects().size());
+        assertEquals(2, skillManager.getSkillEffects().size());
         assertEquals(CharacterEffectAfterNightType.FAIL_TO_GUARD,
-                gameManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
+                skillManager.getSkillEffects().get(1).getCharacterEffectAfterNightType());
     }
 
     @Test
@@ -338,7 +338,7 @@ public class CharacterTest {
         investigateOther
                 .getOnSkillSucceed()
                 .onSkillSucceed(investigateOther.getActivator(), investigateOther.getTarget(), investigateOther.getSkillType());
-        gameManager.getSkillEffects().forEach(e -> {
+        skillManager.getSkillEffects().forEach(e -> {
             CharacterCode targetCharacterCode = userRepository.findById(e.getSkillTargetUserId())
                     .get()
                     .getCharacter()
@@ -374,9 +374,9 @@ public class CharacterTest {
                 activatedSkillInfo.getTarget(),
                 activatedSkillInfo.getSkillType());
 
-        assertEquals(1, gameManager.getSkillEffects().size());
-        assertEquals(detectiveUser.getID(), gameManager.getSkillEffects().get(0).getReceiverUserId());
-        assertEquals(CharacterCode.BETRAYER, gameManager.getSkillEffects().get(0).getSkillTargetCharacterCode());
+        assertEquals(1, skillManager.getSkillEffects().size());
+        assertEquals(detectiveUser.getID(), skillManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(CharacterCode.BETRAYER, skillManager.getSkillEffects().get(0).getSkillTargetCharacterCode());
     }
 
     @Test
@@ -393,9 +393,9 @@ public class CharacterTest {
                 activatedSkillInfo.getTarget(),
                 activatedSkillInfo.getSkillType());
 
-        assertEquals(1, gameManager.getSkillEffects().size());
-        assertEquals(detectiveUser.getID(), gameManager.getSkillEffects().get(0).getReceiverUserId());
-        assertEquals(CharacterCode.FOLLOWER, gameManager.getSkillEffects().get(0).getSkillTargetCharacterCode());
+        assertEquals(1, skillManager.getSkillEffects().size());
+        assertEquals(detectiveUser.getID(), skillManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(CharacterCode.FOLLOWER, skillManager.getSkillEffects().get(0).getSkillTargetCharacterCode());
     }
 
     @Test
@@ -412,9 +412,9 @@ public class CharacterTest {
                 activatedSkillInfo.getTarget(),
                 activatedSkillInfo.getSkillType());
 
-        assertEquals(1, gameManager.getSkillEffects().size());
-        assertEquals(detectiveUser.getID(), gameManager.getSkillEffects().get(0).getReceiverUserId());
-        assertEquals(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE, gameManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
+        assertEquals(1, skillManager.getSkillEffects().size());
+        assertEquals(detectiveUser.getID(), skillManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE, skillManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
     }
 
     @Test
@@ -429,8 +429,8 @@ public class CharacterTest {
                 .getOnSkillSucceed()
                 .onSkillSucceed(soldierSelfGuard.getActivator(), soldierSelfGuard.getTarget(), soldierSelfGuard.getSkillType());
 
-        assertEquals(1, gameManager.getSkillEffects().size());
-        assertEquals(CharacterEffectAfterNightType.GUARD, gameManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
+        assertEquals(1, skillManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.GUARD, skillManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
 
         ActivatedSkillInfo soldierSelfGuard2 = soldierUser.activateSkill(soldierUser, SkillType.GUARD);
 
@@ -447,8 +447,8 @@ public class CharacterTest {
 
         murder.getOnSkillSucceed().onSkillSucceed(murder.getActivator(), murder.getTarget(), murder.getSkillType());
 
-        assertEquals(1, gameManager.getSkillEffects().size());
-        assertEquals(CharacterEffectAfterNightType.EXTERMINATE, gameManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
+        assertEquals(1, skillManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.EXTERMINATE, skillManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
 
         ActivatedSkillInfo murder2 = murdererUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
 

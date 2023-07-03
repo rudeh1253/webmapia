@@ -2,7 +2,7 @@ package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 public class Betrayer implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.BETRAYER;
     private static final Faction FACTION = Faction.WOLF;
-    private GameManager gameManager;
+    private SkillManager skillManager;
 
     @Autowired
-    public Betrayer(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public Betrayer(SkillManager skillManager) {
+        this.skillManager = skillManager;
     }
 
     /**
@@ -73,11 +73,11 @@ public class Betrayer implements Character {
                     .message("Betrayer entered the wolf chat")
                     .build();
 
-            gameManager.addSkillEffect(srcBody);
-            gameManager.addSkillEffect(tarBody);
+            skillManager.addSkillEffect(srcBody);
+            skillManager.addSkillEffect(tarBody);
         });
         effect.setOnSkillFail((src, tar, type) -> {
-            gameManager.addSkillEffect(SkillEffect.builder()
+            skillManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillActivatorUserId(src.getID())
                     .skillTargetUserId(tar.getID())
@@ -94,7 +94,7 @@ public class Betrayer implements Character {
         effect.setSkillType(skillType);
         effect.setSkillCondition((src, tar, type) -> tar.isDead());
         effect.setOnSkillSucceed((src, tar, type) -> {
-            gameManager.addSkillEffect(SkillEffect.builder()
+            skillManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(src.getID())
                     .skillTargetUserId(tar.getID())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)

@@ -2,7 +2,7 @@ package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -14,11 +14,11 @@ public class Soldier implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.SOLDIER;
     private static final Faction FACTION = Faction.HUMAN;
     private int life = 1;
-    private GameManager gameManager;
+    private SkillManager skillManager;
 
     @Autowired
-    public Soldier(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public Soldier(SkillManager skillManager) {
+        this.skillManager = skillManager;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class Soldier implements Character {
         activatedSkillInfo.setSkillCondition((src, tar, type) -> life > 0);
         activatedSkillInfo.setOnSkillSucceed((src, tar, type) -> {
             life--;
-            gameManager.addSkillEffect(SkillEffect.builder()
+            skillManager.addSkillEffect(SkillEffect.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                     .skillTargetUserId(tar.getID())
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())

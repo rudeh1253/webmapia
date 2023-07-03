@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 public class Predictor implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.PREDICTOR;
     private static final Faction FACTION = Faction.HUMAN;
-    GameManager gameManager;
+    SkillManager skillManager;
 
     @Autowired
-    public Predictor(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public Predictor(SkillManager skillManager) {
+        this.skillManager = skillManager;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Predictor implements Character {
                 default:
                     notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
-            gameManager.addSkillEffect(notificationBody);
+            skillManager.addSkillEffect(notificationBody);
         });
         return result;
     }

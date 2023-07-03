@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 public class Guard implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.GUARD;
     private static final Faction FACTION = Faction.HUMAN;
-    private GameManager gameManager;
+    private SkillManager skillManager;
 
     @Autowired
-    public Guard(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public Guard(SkillManager skillManager) {
+        this.skillManager = skillManager;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Guard implements Character {
         ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> {
-            for (SkillEffect e : gameManager.getSkillEffects()) {
+            for (SkillEffect e : skillManager.getSkillEffects()) {
                 if (e.getCharacterEffectAfterNightType() == CharacterEffectAfterNightType.KILL
                 && e.getSkillTargetUserId().equals(tar.getID())) {
                     return true;
@@ -32,14 +32,14 @@ public class Guard implements Character {
             }
             return false;
         });
-        result.setOnSkillSucceed((src, tar, type) -> gameManager.addSkillEffect(SkillEffect.builder()
+        result.setOnSkillSucceed((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
                 .receiverUserId(src.getID())
                 .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                 .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                 .skillActivatorUserId(src.getID())
                 .skillTargetUserId(tar.getID())
                 .build()));
-        result.setOnSkillFail((src, tar, type) -> gameManager.addSkillEffect(SkillEffect.builder()
+        result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
                 .receiverUserId(src.getID())
                 .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_GUARD)
                 .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
