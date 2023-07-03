@@ -37,6 +37,7 @@ public class GameServiceImpl implements GameService {
                            Templar templar,
                            SkillManager skillManager,
                            UserRepository userRepository) {
+        characters = new HashMap<>();
         characters.put(CharacterCode.WOLF, wolf);
         characters.put(CharacterCode.BETRAYER, betrayer);
         characters.put(CharacterCode.DETECTIVE, detective);

@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Getter
 public class Vote {
     private final int theNumberOfVote;
