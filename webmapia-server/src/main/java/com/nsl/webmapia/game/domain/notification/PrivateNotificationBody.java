@@ -6,12 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class PrivateNotificationBody <T> {
-    private NotificationType notificationType;
-    private User receiver;
-    private T data;
+    private final NotificationType notificationType;
+    private final User receiver;
+    private final T data;
 }
