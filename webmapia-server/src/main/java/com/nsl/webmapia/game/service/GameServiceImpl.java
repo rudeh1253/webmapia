@@ -7,6 +7,7 @@ import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.notification.NotificationType;
 import com.nsl.webmapia.game.domain.notification.PrivateNotificationBody;
+import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.repository.UserRepository;
@@ -19,6 +20,7 @@ public class GameServiceImpl implements GameService {
     private final SkillManager skillManager;
     private final UserRepository userRepository;
     private final List<Vote> votes;
+    private final List<ActivatedSkillInfo> activatedSkills;
 
     @Autowired
     public GameServiceImpl(Wolf wolf,
@@ -57,6 +59,7 @@ public class GameServiceImpl implements GameService {
         this.skillManager = skillManager;
         this.userRepository = userRepository;
         this.votes = new ArrayList<>();
+        this.activatedSkills = new ArrayList<>();
     }
 
     @Override
@@ -117,7 +120,12 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void activateSkill(Long activatorId, Long targetId, SkillType skillType) {
-
+        Optional<User> activator = userRepository.findById(activatorId);
+        Optional<User> target = userRepository.findById(targetId);
+        // TODO if activatorId doesn't exist in userRepository as a key, throw an exception.
+        activator.ifPresent(act ->
+                target.ifPresent(tar ->
+                        activatedSkills.add(act.activateSkill(tar, skillType))));
     }
 
     @Override
