@@ -2,11 +2,13 @@ package com.nsl.webmapia.game.service;
 
 import com.nsl.webmapia.game.domain.Vote;
 import com.nsl.webmapia.game.domain.character.Character;
+import com.nsl.webmapia.game.domain.character.CharacterCode;
 import com.nsl.webmapia.game.domain.notification.PrivateNotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 
 import java.util.List;
+import java.util.Map;
 
 public interface GameService {
 
@@ -17,9 +19,10 @@ public interface GameService {
 
     /**
      * Each user get to have a character. Each user instance is mutated in this method.
+     * @param characterDistribution the number of each of character to allocate.
      * @return information to be sent to each user saying that which character the user is allocated.
      */
-    List<PrivateNotificationBody<Character>> allocateCharacterToEachUser();
+    List<PrivateNotificationBody<Character>> allocateCharacterToEachUser(Map<CharacterCode, Integer> characterDistribution);
 
     /**
      * The phase of game steps forward.

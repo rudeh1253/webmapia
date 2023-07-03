@@ -1,15 +1,19 @@
 package com.nsl.webmapia.game.domain.notification;
 
 import com.nsl.webmapia.game.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@AllArgsConstructor
+@Setter
 @Getter
 public class PrivateNotificationBody <T> {
-    private final NotificationType notificationType;
-    private final User receiver;
-    private final T data;
+    private NotificationType notificationType;
+    private User receiver;
+    private T data;
+
+    @Builder
+    public PrivateNotificationBody(NotificationType notificationType, User receiver, T data) {
+        this.notificationType = notificationType;
+        this.receiver = receiver;
+        this.data = data;
+    }
 }

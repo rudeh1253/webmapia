@@ -3,10 +3,17 @@ package com.nsl.webmapia.game.domain.notification;
 import com.nsl.webmapia.game.domain.character.CharacterCode;
 import lombok.*;
 
+@Setter
 @Getter
-@AllArgsConstructor
 public class PublicNotificationBody<T> {
-    private final NotificationType notificationType;
-    private final Long targetUserId;
-    private final T data;
+    private NotificationType notificationType;
+    private Long targetUserId;
+    private T data;
+
+    @Builder
+    public PublicNotificationBody(NotificationType notificationType, Long targetUserId, T data) {
+        this.notificationType = notificationType;
+        this.targetUserId = targetUserId;
+        this.data = data;
+    }
 }
