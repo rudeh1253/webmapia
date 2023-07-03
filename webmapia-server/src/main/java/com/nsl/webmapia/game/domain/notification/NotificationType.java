@@ -4,5 +4,5 @@ public enum NotificationType {
     DIE,
     GUARD,
     FAIL_GUARD,
-    NOTIFY_WHICH_CHARACTER_DETERMINED
+    NOTIFY_WHICH_CHARACTER_ALLOCATED
 }

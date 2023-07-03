@@ -13,4 +13,13 @@ public class ActivatedSkillInfo {
     private SkillCondition skillCondition;
     private OnSkillSucceed onSkillSucceed;
     private OnSkillFail onSkillFail;
+
+    public ActivatedSkillInfo() {
+        activator = null;
+        target = null;
+        skillType = null;
+        skillCondition = (src, tar, type) -> false;
+        onSkillSucceed = (src, tar, type) -> {};
+        onSkillFail = (src, tar, type) -> {};
+    }
 }

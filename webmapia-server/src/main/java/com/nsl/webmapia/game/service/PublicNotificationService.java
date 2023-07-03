@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PublicNotificationService {
 
-    void addNotification(PublicNotificationBody publicNotification);
+    <T> void addNotification(PublicNotificationBody<T> publicNotification);
 
-    List<PublicNotificationBody> broadcast();
+    <T> List<PublicNotificationBody<T>> broadcast();
 }
