@@ -54,4 +54,11 @@ public interface UserRepository {
      * @return the number of user.
      */
     int countAll();
+
+    /**
+     * Delete the user of userId from the repository.
+     * @param userId of the user to delete.
+     * @return the user deleted.
+     */
+    User deleteUserById(Long userId);
 }

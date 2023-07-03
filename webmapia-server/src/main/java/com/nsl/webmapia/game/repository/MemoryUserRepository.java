@@ -54,6 +54,11 @@ public class MemoryUserRepository implements UserRepository {
         return storage.size();
     }
 
+    @Override
+    public User deleteUserById(Long userId) {
+        return storage.remove(userId);
+    }
+
     public void clear() {
         storage.clear();
     }
