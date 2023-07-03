@@ -416,4 +416,26 @@ public class CharacterTest {
         assertEquals(detectiveUser.getID(), gameManager.getSkillEffects().get(0).getReceiverUserId());
         assertEquals(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE, gameManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
     }
+
+    @Test
+    public void soldier() {
+        ActivatedSkillInfo soldierSelfGuard = soldierUser.activateSkill(soldierUser, SkillType.GUARD);
+
+        assertTrue(soldierSelfGuard
+                .getSkillCondition()
+                .isSuccess(soldierSelfGuard.getActivator(), soldierSelfGuard.getTarget(), soldierSelfGuard.getSkillType()));
+
+        soldierSelfGuard
+                .getOnSkillSucceed()
+                .onSkillSucceed(soldierSelfGuard.getActivator(), soldierSelfGuard.getTarget(), soldierSelfGuard.getSkillType());
+
+        assertEquals(1, gameManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.GUARD, gameManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
+
+        ActivatedSkillInfo soldierSelfGuard2 = soldierUser.activateSkill(soldierUser, SkillType.GUARD);
+
+        assertFalse(soldierSelfGuard2
+                .getSkillCondition()
+                .isSuccess(soldierSelfGuard2.getActivator(), soldierSelfGuard2.getTarget(), soldierSelfGuard2.getSkillType()));
+    }
 }
