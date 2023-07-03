@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 public class GameServiceImpl implements GameService {
-    private Map<CharacterCode, Character> characters;
+    private final Map<CharacterCode, Character> characters;
     private final SkillManager skillManager;
     private final UserRepository userRepository;
     private final List<Vote> votes;
@@ -63,9 +63,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void onStart() {
-
-    }
+    public void onStart() {}
 
     @Override
     public List<PrivateNotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {
@@ -130,6 +128,29 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<SkillEffect> processSkills() {
-        return null;
+        activatedSkills.sort((left, right) -> {
+            if (left.getSkillType() == SkillType.EXTERMINATE) {
+                return -1;
+            } else if (right.getSkillType() == SkillType.EXTERMINATE) {
+                return 1;
+            } else if (left.getSkillType() == SkillType.KILL && right.getSkillType() == SkillType.GUARD) {
+                return -1;
+            } else if (left.getSkillType() == SkillType.GUARD && right.getSkillType() == SkillType.KILL) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        for (ActivatedSkillInfo activatedSkill : activatedSkills) {
+            User src = activatedSkill.getActivator();
+            User tar = activatedSkill.getTarget();
+            SkillType type = activatedSkill.getSkillType();
+            if (activatedSkill.getSkillCondition().isSuccess(src, tar, type)) {
+                activatedSkill.getOnSkillSucceed().onSkillSucceed(src, tar, type);
+            } else {
+                activatedSkill.getOnSkillFail().onSkillFail(src, tar, type);
+            }
+        }
+        return skillManager.getSkillEffects();
     }
 }
