@@ -31,10 +31,10 @@ public class Mediumship implements Character {
         result.setSkillCondition((src, tar, type) -> tar.isDead());
         result.setOnSkillSucceed((src, tar, type) -> {
             SkillEffect notificationBody = SkillEffect.builder()
-                    .skillTargetUserId(tar.getID())
+                    .skillTargetUser(tar)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
-                    .receiverUserId(src.getID())
-                    .skillActivatorUserId(tar.getID())
+                    .receiverUser(src)
+                    .skillActivatorUser(tar)
                     .build();
             CharacterCode targetCharacterCode = tar.getCharacter().getCharacterCode();
             if (targetCharacterCode == CharacterCode.WOLF

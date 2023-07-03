@@ -134,36 +134,36 @@ public class CharacterTest {
         followerFoundWolf.getOnSkillSucceed().onSkillSucceed(followerUser, wolfUser, SkillType.ENTER_WOLF_CHAT);
         assertEquals(4, skillManager.getSkillEffects().size());
         List<SkillEffect> forWolf = skillManager.getSkillEffects().stream()
-                .filter(e -> Objects.equals(e.getReceiverUserId(), wolfUser.getID()))
+                .filter(e -> Objects.equals(e.getReceiverUser(), wolfUser))
                 .toList();
         List<SkillEffect> forBetrayer = skillManager.getSkillEffects().stream()
-                .filter(e -> Objects.equals(e.getReceiverUserId(), betrayerUser.getID()))
+                .filter(e -> Objects.equals(e.getReceiverUser(), betrayerUser))
                 .toList();
         List<SkillEffect> forFollower = skillManager.getSkillEffects().stream()
-                .filter(e -> e.getReceiverUserId() == followerUser.getID())
+                .filter(e -> e.getReceiverUser() == followerUser)
                 .toList();
         assertEquals(2, forWolf.size());
         assertEquals(1, forBetrayer.size());
         assertEquals(1, forFollower.size());
         forWolf.forEach((note) -> {
-                    assertEquals(note.getReceiverUserId(), wolfUser.getID());
+                    assertEquals(note.getReceiverUser(), wolfUser);
                     assertTrue(note.getMessage().matches(".+ entered the wolf chat"));
-                    System.out.println(note.getSkillTargetUserId());
-                    assertEquals(note.getSkillTargetUserId(), wolfUser.getID());
+                    System.out.println(note.getSkillTargetUser());
+                    assertEquals(note.getSkillTargetUser(), wolfUser);
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.NOTIFY);
                     assertEquals(note.getSkillTargetCharacterCode(), CharacterCode.WOLF);
                 });
         forBetrayer.forEach((note) -> {
-                    assertEquals(note.getReceiverUserId(), betrayerUser.getID());
-                    assertTrue(note.getMessage() == null);
-                    assertEquals(note.getSkillTargetUserId(), wolfUser.getID());
+                    assertEquals(note.getReceiverUser(), betrayerUser);
+                    assertNull(note.getMessage());
+                    assertEquals(note.getSkillTargetUser(), wolfUser);
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.ENTER_WOLF_CHAT);
                     assertEquals(note.getSkillTargetCharacterCode(), CharacterCode.WOLF);
                 });
         forFollower.forEach((note) -> {
-                    assertEquals(note.getReceiverUserId(), followerUser.getID());
-                    assertTrue(note.getMessage() == null);
-                    assertEquals(note.getSkillTargetUserId(), wolfUser.getID());
+                    assertEquals(note.getReceiverUser(), followerUser);
+                    assertNull(note.getMessage());
+                    assertEquals(note.getSkillTargetUser(), wolfUser);
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.ENTER_WOLF_CHAT);
                     assertEquals(note.getSkillTargetCharacterCode(), CharacterCode.WOLF);
                 });
@@ -182,22 +182,22 @@ public class CharacterTest {
         followerFoundWolf.getOnSkillFail().onSkillFail(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT);
         List<SkillEffect> skillNotifications = skillManager.getSkillEffects();
         List<SkillEffect> forBetrayer = skillNotifications.stream()
-                .filter(e -> e.getReceiverUserId() == betrayerUser.getID()).toList();
+                .filter(e -> e.getReceiverUser() == betrayerUser).toList();
         List<SkillEffect> forFollower = skillNotifications.stream()
-                .filter(e -> e.getReceiverUserId() == followerUser.getID()).toList();
+                .filter(e -> e.getReceiverUser() == followerUser).toList();
         assertEquals(forBetrayer.size(), 1);
         assertEquals(forFollower.size(), 1);
         forBetrayer.forEach((note) -> {
-                    assertEquals(note.getReceiverUserId(), betrayerUser.getID());
-                    assertTrue(note.getMessage() == null);
-                    assertEquals(note.getSkillTargetUserId(), predictorUser.getID());
+                    assertEquals(note.getReceiverUser(), betrayerUser);
+                    assertNull(note.getMessage());
+                    assertEquals(note.getSkillTargetUser(), predictorUser);
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE);
                     assertEquals(note.getSkillTargetCharacterCode(), predictorUser.getCharacter().getCharacterCode());
                 });
         forFollower.forEach((note) -> {
-                    assertEquals(note.getReceiverUserId(), followerUser.getID());
-                    assertTrue(note.getMessage() == null);
-                    assertEquals(note.getSkillTargetUserId(), humanMouseUser.getID());
+                    assertEquals(note.getReceiverUser(), followerUser);
+                    assertNull(note.getMessage());
+                    assertEquals(note.getSkillTargetUser(), humanMouseUser);
                     assertEquals(note.getCharacterEffectAfterNightType(), CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE);
                     assertEquals(note.getSkillTargetCharacterCode(), humanMouseUser.getCharacter().getCharacterCode());
                 });
@@ -209,7 +209,7 @@ public class CharacterTest {
         assertTrue(result.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
         result.getOnSkillSucceed().onSkillSucceed(result.getActivator(), result.getTarget(), result.getSkillType());
         assertEquals(1, skillManager.getSkillEffects().size());
-        assertEquals(citizenUser.getID(), skillManager.getSkillEffects().get(0).getSkillTargetUserId());
+        assertEquals(citizenUser, skillManager.getSkillEffects().get(0).getSkillTargetUser());
     }
 
     @Test
@@ -339,7 +339,7 @@ public class CharacterTest {
                 .getOnSkillSucceed()
                 .onSkillSucceed(investigateOther.getActivator(), investigateOther.getTarget(), investigateOther.getSkillType());
         skillManager.getSkillEffects().forEach(e -> {
-            CharacterCode targetCharacterCode = userRepository.findById(e.getSkillTargetUserId())
+            CharacterCode targetCharacterCode = userRepository.findById(e.getSkillTargetUser().getID())
                     .get()
                     .getCharacter()
                     .getCharacterCode();
@@ -375,7 +375,7 @@ public class CharacterTest {
                 activatedSkillInfo.getSkillType());
 
         assertEquals(1, skillManager.getSkillEffects().size());
-        assertEquals(detectiveUser.getID(), skillManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(detectiveUser, skillManager.getSkillEffects().get(0).getReceiverUser());
         assertEquals(CharacterCode.BETRAYER, skillManager.getSkillEffects().get(0).getSkillTargetCharacterCode());
     }
 
@@ -394,7 +394,7 @@ public class CharacterTest {
                 activatedSkillInfo.getSkillType());
 
         assertEquals(1, skillManager.getSkillEffects().size());
-        assertEquals(detectiveUser.getID(), skillManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(detectiveUser, skillManager.getSkillEffects().get(0).getReceiverUser());
         assertEquals(CharacterCode.FOLLOWER, skillManager.getSkillEffects().get(0).getSkillTargetCharacterCode());
     }
 
@@ -413,7 +413,7 @@ public class CharacterTest {
                 activatedSkillInfo.getSkillType());
 
         assertEquals(1, skillManager.getSkillEffects().size());
-        assertEquals(detectiveUser.getID(), skillManager.getSkillEffects().get(0).getReceiverUserId());
+        assertEquals(detectiveUser, skillManager.getSkillEffects().get(0).getReceiverUser());
         assertEquals(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE, skillManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
     }
 

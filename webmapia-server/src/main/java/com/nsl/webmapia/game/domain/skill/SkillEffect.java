@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.domain.skill;
 
 import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
+import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.CharacterCode;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,20 +13,20 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SkillEffect {
     private CharacterEffectAfterNightType characterEffectAfterNightType = null;
-    private Long receiverUserId = null;
-    private Long skillTargetUserId = null;
-    private Long skillActivatorUserId = null;
+    private User receiverUser = null;
+    private User skillTargetUser = null;
+    private User skillActivatorUser = null;
     private CharacterCode skillTargetCharacterCode = null;
     private String message = null;
 
     @Builder
-    public SkillEffect(CharacterEffectAfterNightType characterEffectAfterNightType, Long receiverUserId,
-                       Long skillTargetUserId, Long skillActivatorUserId,
+    public SkillEffect(CharacterEffectAfterNightType characterEffectAfterNightType, User receiverUser,
+                       User skillTargetUser, User skillActivatorUser,
                        CharacterCode skillTargetCharacterCode, String message) {
         this.characterEffectAfterNightType = characterEffectAfterNightType;
-        this.receiverUserId = receiverUserId;
-        this.skillTargetUserId = skillTargetUserId;
-        this.skillActivatorUserId = skillActivatorUserId;
+        this.receiverUser = receiverUser;
+        this.skillTargetUser = skillTargetUser;
+        this.skillActivatorUser = skillActivatorUser;
         this.skillTargetCharacterCode = skillTargetCharacterCode;
         this.message = message;
     }

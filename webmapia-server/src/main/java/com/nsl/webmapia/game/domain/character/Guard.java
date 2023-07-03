@@ -26,25 +26,25 @@ public class Guard implements Character {
         result.setSkillCondition((src, tar, type) -> {
             for (SkillEffect e : skillManager.getSkillEffects()) {
                 if (e.getCharacterEffectAfterNightType() == CharacterEffectAfterNightType.KILL
-                && e.getSkillTargetUserId().equals(tar.getID())) {
+                && e.getSkillTargetUser().equals(tar)) {
                     return true;
                 }
             }
             return false;
         });
         result.setOnSkillSucceed((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
-                .receiverUserId(src.getID())
+                .receiverUser(src)
                 .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                 .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
-                .skillActivatorUserId(src.getID())
-                .skillTargetUserId(tar.getID())
+                .skillActivatorUser(src)
+                .skillTargetUser(tar)
                 .build()));
         result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
-                .receiverUserId(src.getID())
+                .receiverUser(src)
                 .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_GUARD)
                 .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
-                .skillActivatorUserId(src.getID())
-                .skillTargetUserId(tar.getID())
+                .skillActivatorUser(src)
+                .skillTargetUser(tar)
                 .build()));
         return result;
     }

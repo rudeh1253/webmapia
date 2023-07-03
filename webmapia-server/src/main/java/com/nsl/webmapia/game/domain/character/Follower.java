@@ -43,9 +43,9 @@ public class Follower implements Character {
         result.setSkillCondition((src, tar, type) -> isAvailableInsight);
         result.setOnSkillSucceed((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
-                    .receiverUserId(src.getID())
-                    .skillTargetUserId(tar.getID())
-                    .skillActivatorUserId(src.getID())
+                    .receiverUser(src)
+                    .skillTargetUser(tar)
+                    .skillActivatorUser(src)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .build());
@@ -57,16 +57,16 @@ public class Follower implements Character {
         result.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.WOLF);
         result.setOnSkillSucceed((src, tar, type) -> {
             SkillEffect srcBody = SkillEffect.builder()
-                    .receiverUserId(src.getID())
-                    .skillTargetUserId(tar.getID())
-                    .skillActivatorUserId(tar.getID())
+                    .receiverUser(src)
+                    .skillTargetUser(tar)
+                    .skillActivatorUser(tar)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.ENTER_WOLF_CHAT)
                     .build();
 
             SkillEffect tarBody = SkillEffect.builder()
-                    .receiverUserId(tar.getID())
-                    .skillTargetUserId(tar.getID())
+                    .receiverUser(tar)
+                    .skillTargetUser(tar)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.NOTIFY)
                     .message("Betrayer entered the wolf chat")
@@ -77,10 +77,10 @@ public class Follower implements Character {
         });
         result.setOnSkillFail((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
-                    .receiverUserId(src.getID())
-                    .skillActivatorUserId(src.getID())
+                    .receiverUser(src)
+                    .skillActivatorUser(src)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
-                    .skillTargetUserId(tar.getID())
+                    .skillTargetUser(tar)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build());
         });

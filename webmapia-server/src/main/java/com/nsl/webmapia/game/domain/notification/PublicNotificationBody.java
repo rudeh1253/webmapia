@@ -10,13 +10,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PublicNotificationBody {
-    private PublicNotificationType publicNotificationType;
+    private NotificationType notificationType;
     private Long targetUserId;
     private CharacterCode targetUserCharacterCode;
 
     @Builder
-    public PublicNotificationBody(PublicNotificationType publicNotificationType, Long targetUserId, CharacterCode targetUserCharacterCode) {
-        this.publicNotificationType = publicNotificationType;
+    public PublicNotificationBody(NotificationType notificationType, Long targetUserId, CharacterCode targetUserCharacterCode) {
+        this.notificationType = notificationType;
         this.targetUserId = targetUserId;
         this.targetUserCharacterCode = targetUserCharacterCode;
     }

@@ -26,11 +26,11 @@ public class Predictor implements Character {
         result.setSkillCondition((src, tar, type) -> true);
         result.setOnSkillSucceed((src, tar, type) -> {
             SkillEffect notificationBody = SkillEffect.builder()
-                    .skillTargetUserId(tar.getID())
+                    .skillTargetUser(tar)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
-                    .skillActivatorUserId(src.getID())
+                    .skillActivatorUser(src)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
-                    .receiverUserId(src.getID())
+                    .receiverUser(src)
                     .build();
             switch (tar.getCharacter().getCharacterCode()) {
                 case MEDIUMSHIP:

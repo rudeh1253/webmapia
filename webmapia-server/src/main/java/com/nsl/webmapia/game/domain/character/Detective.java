@@ -32,9 +32,9 @@ public class Detective implements Character {
                 || tar.getCharacter().getCharacterCode() == CharacterCode.FOLLOWER);
         result.setOnSkillSucceed((src, tar, type) -> {
             SkillEffect skillEffect = SkillEffect.builder()
-                    .receiverUserId(src.getID())
-                    .skillTargetUserId(tar.getID())
-                    .skillActivatorUserId(src.getID())
+                    .receiverUser(src)
+                    .skillTargetUser(tar)
+                    .skillActivatorUser(src)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
@@ -43,9 +43,9 @@ public class Detective implements Character {
         });
         result.setOnSkillFail((src, tar, type) -> {
             SkillEffect skillEffect = SkillEffect.builder()
-                    .receiverUserId(src.getID())
-                    .skillTargetUserId(tar.getID())
-                    .skillActivatorUserId(src.getID())
+                    .receiverUser(src)
+                    .skillTargetUser(tar)
+                    .skillActivatorUser(src)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .build();
             skillManager.addSkillEffect(skillEffect);

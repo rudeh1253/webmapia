@@ -40,10 +40,10 @@ public class Wolf implements Character {
                 if (leftExtermination == 1) {
                     result.setSkillType(SkillType.EXTERMINATE);
                     result.setOnSkillSucceed((a, t, s) -> skillManager.addSkillEffect(SkillEffect.builder()
-                            .receiverUserId(t.getID())
+                            .receiverUser(t)
                             .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
-                            .skillTargetUserId(t.getID())
-                            .skillActivatorUserId(t.getID())
+                            .skillTargetUser(t)
+                            .skillActivatorUser(t)
                             .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
                             .build()));
                     leftExtermination--;
@@ -54,10 +54,10 @@ public class Wolf implements Character {
             case KILL:
                 result.setSkillType(SkillType.KILL);
                 result.setOnSkillSucceed((a, t, s) -> skillManager.addSkillEffect(SkillEffect.builder()
-                        .receiverUserId(t.getID())
+                        .receiverUser(t)
                         .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
-                        .skillTargetUserId(t.getID())
-                        .skillActivatorUserId(t.getID())
+                        .skillTargetUser(t)
+                        .skillActivatorUser(t)
                         .characterEffectAfterNightType(CharacterEffectAfterNightType.KILL)
                         .build()));
                 return result;

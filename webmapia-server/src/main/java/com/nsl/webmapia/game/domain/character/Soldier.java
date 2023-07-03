@@ -32,9 +32,9 @@ public class Soldier implements Character {
             life--;
             skillManager.addSkillEffect(SkillEffect.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
-                    .skillTargetUserId(tar.getID())
+                    .skillTargetUser(tar)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
-                    .receiverUserId(tar.getID())
+                    .receiverUser(tar)
                     .build());
         });
         activatedSkillInfo.setSkillType(SkillType.GUARD);

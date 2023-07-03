@@ -57,17 +57,17 @@ public class Betrayer implements Character {
         effect.setSkillType(skillType);
         effect.setOnSkillSucceed((src, tar, type) -> {
             SkillEffect srcBody = SkillEffect.builder()
-                    .receiverUserId(src.getID())
-                    .skillTargetUserId(tar.getID())
-                    .skillActivatorUserId(src.getID())
+                    .receiverUser(src)
+                    .skillTargetUser(tar)
+                    .skillActivatorUser(src)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.ENTER_WOLF_CHAT)
                     .build();
 
             SkillEffect tarBody = SkillEffect.builder()
-                    .receiverUserId(tar.getID())
-                    .skillTargetUserId(tar.getID())
-                    .skillActivatorUserId(src.getID())
+                    .receiverUser(tar)
+                    .skillTargetUser(tar)
+                    .skillActivatorUser(src)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.NOTIFY)
                     .message("Betrayer entered the wolf chat")
@@ -78,9 +78,9 @@ public class Betrayer implements Character {
         });
         effect.setOnSkillFail((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
-                    .receiverUserId(src.getID())
-                    .skillActivatorUserId(src.getID())
-                    .skillTargetUserId(tar.getID())
+                    .receiverUser(src)
+                    .skillActivatorUser(src)
+                    .skillTargetUser(tar)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build());
@@ -95,8 +95,8 @@ public class Betrayer implements Character {
         effect.setSkillCondition((src, tar, type) -> tar.isDead());
         effect.setOnSkillSucceed((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
-                    .receiverUserId(src.getID())
-                    .skillTargetUserId(tar.getID())
+                    .receiverUser(src)
+                    .skillTargetUser(tar)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build());

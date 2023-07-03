@@ -32,9 +32,9 @@ public class Murderer implements Character {
         result.setSkillCondition((src, tar, type) -> canKill && tar.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
         result.setOnSkillSucceed((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
-                    .receiverUserId(null)
-                    .skillActivatorUserId(src.getID())
-                    .skillTargetUserId(tar.getID())
+                    .receiverUser(null)
+                    .skillActivatorUser(src)
+                    .skillTargetUser(tar)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
                     .build());
