@@ -63,7 +63,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<PrivateNotificationBody<Character>> allocateCharacterToEachUser(Map<CharacterCode, Integer> characterDistribution) {
+    public List<PrivateNotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {
         List<User> users = userRepository.findAll();
         List<PrivateNotificationBody<Character>> characterNotifications = new ArrayList<>();
         Collections.shuffle(users);

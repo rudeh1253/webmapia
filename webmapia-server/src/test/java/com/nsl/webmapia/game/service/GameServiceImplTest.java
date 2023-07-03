@@ -63,7 +63,7 @@ class GameServiceImplTest {
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
         List<PrivateNotificationBody<Character>> privateNotificationBodies =
-                gameService.allocateCharacterToEachUser(characterDistribution);
+                gameService.generateCharacters(characterDistribution);
         assertEquals(7, privateNotificationBodies.size());
         assertEquals(1, privateNotificationBodies.stream()
                 .filter(n -> n.getData().getCharacterCode() == CharacterCode.WOLF)
@@ -100,7 +100,7 @@ class GameServiceImplTest {
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
         List<PrivateNotificationBody<Character>> privateNotificationBodies1 =
-                gameService.allocateCharacterToEachUser(characterDistribution);
+                gameService.generateCharacters(characterDistribution);
 
 //        GameService gameService2 = new GameServiceImpl(
 //                new Wolf(skillManager),
@@ -125,7 +125,7 @@ class GameServiceImplTest {
 //            gameService2.addUser();
 //        }
         List<PrivateNotificationBody<Character>> privateNotificationBodies2 =
-                gameService.allocateCharacterToEachUser(characterDistribution);
+                gameService.generateCharacters(characterDistribution);
         assertEquals(7, privateNotificationBodies1.size());
         assertEquals(7, privateNotificationBodies2.size());
 

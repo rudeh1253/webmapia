@@ -18,11 +18,12 @@ public interface GameService {
     void onStart();
 
     /**
-     * Each user get to have a character. Each user instance is mutated in this method.
-     * @param characterDistribution the number of each of character to allocate.
+     * Generate characters and allocate each of the characters to each user.
+     * Each user instance stored in repository is mutated in this method.
+     * @param characterDistribution the number of each of character to generate.
      * @return information to be sent to each user saying that which character the user is allocated.
      */
-    List<PrivateNotificationBody<Character>> allocateCharacterToEachUser(Map<CharacterCode, Integer> characterDistribution);
+    List<PrivateNotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution);
 
     /**
      * The phase of game steps forward.
