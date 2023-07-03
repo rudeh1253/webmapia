@@ -438,4 +438,27 @@ public class CharacterTest {
                 .getSkillCondition()
                 .isSuccess(soldierSelfGuard2.getActivator(), soldierSelfGuard2.getTarget(), soldierSelfGuard2.getSkillType()));
     }
+
+    @Test
+    public void murderer() {
+        ActivatedSkillInfo murder = murdererUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+
+        assertTrue(murder.getSkillCondition().isSuccess(murder.getActivator(), murder.getTarget(), murder.getSkillType()));
+
+        murder.getOnSkillSucceed().onSkillSucceed(murder.getActivator(), murder.getTarget(), murder.getSkillType());
+
+        assertEquals(1, gameManager.getSkillEffects().size());
+        assertEquals(CharacterEffectAfterNightType.EXTERMINATE, gameManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
+
+        ActivatedSkillInfo murder2 = murdererUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+
+        assertFalse(murder2.getSkillCondition().isSuccess(murder2.getActivator(), murder2.getTarget(), murder2.getSkillType()));
+    }
+
+    @Test
+    public void murdererKillHumanMouse() {
+        ActivatedSkillInfo murder = murdererUser.activateSkill(humanMouseUser, SkillType.EXTERMINATE);
+
+        assertFalse(murder.getSkillCondition().isSuccess(murder.getActivator(), murder.getTarget(), murder.getSkillType()));
+    }
 }

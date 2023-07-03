@@ -29,7 +29,7 @@ public class Murderer implements Character {
         }
         ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(skillType);
-        result.setSkillCondition((src, tar, type) -> canKill);
+        result.setSkillCondition((src, tar, type) -> canKill && tar.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
         result.setOnSkillSucceed((src, tar, type) -> {
             gameManager.addSkillEffect(SkillEffect.builder()
                     .receiverUserId(null)
