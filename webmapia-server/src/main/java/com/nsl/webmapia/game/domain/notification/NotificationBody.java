@@ -5,13 +5,13 @@ import lombok.*;
 
 @Setter
 @Getter
-public class PrivateNotificationBody <T> {
+public class NotificationBody<T> {
     private NotificationType notificationType;
     private User receiver;
     private T data;
 
     @Builder
-    public PrivateNotificationBody(NotificationType notificationType, User receiver, T data) {
+    public NotificationBody(NotificationType notificationType, User receiver, T data) {
         this.notificationType = notificationType;
         this.receiver = receiver;
         this.data = data;

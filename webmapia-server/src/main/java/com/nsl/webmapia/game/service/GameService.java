@@ -4,7 +4,7 @@ import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.Vote;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.CharacterCode;
-import com.nsl.webmapia.game.domain.notification.PrivateNotificationBody;
+import com.nsl.webmapia.game.domain.notification.NotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 
@@ -25,7 +25,7 @@ public interface GameService {
      * @param characterDistribution the number of each of character to generate.
      * @return information to be sent to each user saying that which character the user is allocated.
      */
-    List<PrivateNotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution);
+    List<NotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution);
 
     /**
      * The phase of game steps forward.
@@ -62,7 +62,7 @@ public interface GameService {
 
     /**
      * After the night, process activated skills.
-     * @return a list of skill effects.
+     * @return a list of notification body.
      */
-    List<SkillEffect> processSkills();
+    List<NotificationBody<SkillEffect>> processSkills();
 }

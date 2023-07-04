@@ -6,7 +6,7 @@ import com.nsl.webmapia.game.domain.Vote;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.notification.NotificationType;
-import com.nsl.webmapia.game.domain.notification.PrivateNotificationBody;
+import com.nsl.webmapia.game.domain.notification.NotificationBody;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -66,9 +66,9 @@ public class GameServiceImpl implements GameService {
     public void onStart() {}
 
     @Override
-    public List<PrivateNotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {
+    public List<NotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {
         List<User> users = userRepository.findAll();
-        List<PrivateNotificationBody<Character>> characterNotifications = new ArrayList<>();
+        List<NotificationBody<Character>> characterNotifications = new ArrayList<>();
         Collections.shuffle(users);
         int count = 0;
         Set<CharacterCode> codes = characterDistribution.keySet();
@@ -78,7 +78,7 @@ public class GameServiceImpl implements GameService {
                 User user = users.get(count);
                 Character character = characters.get(code);
                 user.setCharacter(character);
-                characterNotifications.add(PrivateNotificationBody.<Character>builder()
+                characterNotifications.add(NotificationBody.<Character>builder()
                         .notificationType(NotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED)
                         .receiver(user)
                         .data(character)
@@ -127,7 +127,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<SkillEffect> processSkills() {
+    public List<NotificationBody<SkillEffect>> processSkills() {
         activatedSkills.sort((left, right) -> {
             if (left.getSkillType() == SkillType.EXTERMINATE) {
                 return -1;
@@ -145,6 +145,7 @@ public class GameServiceImpl implements GameService {
                 return 0;
             }
         });
+
         for (ActivatedSkillInfo activatedSkill : activatedSkills) {
             User src = activatedSkill.getActivator();
             User tar = activatedSkill.getTarget();
@@ -155,7 +156,23 @@ public class GameServiceImpl implements GameService {
                 activatedSkill.getOnSkillFail().onSkillFail(src, tar, type);
             }
         }
-        return skillManager.getSkillEffects();
+        List<NotificationBody<SkillEffect>> notificationBodies = new ArrayList<>();
+        skillManager.getSkillEffects().forEach(se -> {
+            if (se.getReceiverUser() == null) {
+                notificationBodies.add(NotificationBody.<SkillEffect>builder()
+                        .receiver(null)
+                        .notificationType(NotificationType.SKILL_PUBLIC)
+                        .data(se)
+                        .build());
+            } else {
+                notificationBodies.add(NotificationBody.<SkillEffect>builder()
+                        .receiver(se.getReceiverUser())
+                        .notificationType(NotificationType.SKILL_PRIVATE)
+                        .data(se)
+                        .build());
+            }
+        });
+        return notificationBodies;
     }
 
     public List<ActivatedSkillInfo> getActivatedSkills() {

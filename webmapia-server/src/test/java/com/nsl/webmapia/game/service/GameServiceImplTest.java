@@ -4,7 +4,7 @@ import com.nsl.webmapia.game.domain.SkillManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
-import com.nsl.webmapia.game.domain.notification.PrivateNotificationBody;
+import com.nsl.webmapia.game.domain.notification.NotificationBody;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -13,6 +13,7 @@ import com.nsl.webmapia.game.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ class GameServiceImplTest {
         characterDistribution.put(CharacterCode.SECRET_SOCIETY, 2);
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
-        List<PrivateNotificationBody<Character>> privateNotificationBodies =
+        List<NotificationBody<Character>> privateNotificationBodies =
                 gameService.generateCharacters(characterDistribution);
         assertEquals(7, privateNotificationBodies.size());
         assertEquals(1, privateNotificationBodies.stream()
@@ -86,7 +87,7 @@ class GameServiceImplTest {
         assertEquals(1, privateNotificationBodies.stream()
                 .filter(n -> n.getData().getCharacterCode() == CharacterCode.CITIZEN)
                 .toList().size());
-        for (PrivateNotificationBody<Character> body : privateNotificationBodies) {
+        for (NotificationBody<Character> body : privateNotificationBodies) {
             User user = userRepository.findById(body.getReceiver().getID()).get();
             assertEquals(user.getCharacter().getCharacterCode(), body.getData().getCharacterCode());
         }
@@ -102,18 +103,18 @@ class GameServiceImplTest {
         characterDistribution.put(CharacterCode.SECRET_SOCIETY, 2);
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
-        List<PrivateNotificationBody<Character>> privateNotificationBodies1 =
+        List<NotificationBody<Character>> privateNotificationBodies1 =
                 gameService.generateCharacters(characterDistribution);
-        List<PrivateNotificationBody<Character>> privateNotificationBodies2 =
+        List<NotificationBody<Character>> privateNotificationBodies2 =
                 gameService.generateCharacters(characterDistribution);
         assertEquals(7, privateNotificationBodies1.size());
         assertEquals(7, privateNotificationBodies2.size());
 
         boolean existsDifference = false;
         for (int i = 0; i < privateNotificationBodies1.size(); i++) {
-            PrivateNotificationBody<Character> p1 = privateNotificationBodies1.get(i);
+            NotificationBody<Character> p1 = privateNotificationBodies1.get(i);
             for (int j = 0; j < privateNotificationBodies2.size(); j++) {
-                PrivateNotificationBody<Character> p2 = privateNotificationBodies2.get(j);
+                NotificationBody<Character> p2 = privateNotificationBodies2.get(j);
                 if (p1.getReceiver().getID().equals(p2.getReceiver().getID())
                 && p1.getData().getCharacterCode() != p2.getData().getCharacterCode()) {
                     existsDifference = true;
@@ -173,7 +174,9 @@ class GameServiceImplTest {
     @Test
     public void testProcessSkills() {
         setting();
-        List<SkillEffect> skillEffects = gameService.processSkills();
+        List<NotificationBody<SkillEffect>> notificationBodies = gameService.processSkills();
+        List<SkillEffect> skillEffects = new ArrayList<>();
+        notificationBodies.forEach(e -> skillEffects.add(e.getData()));
         User predictor = userRepository.findByCharacterCode(CharacterCode.PREDICTOR).get(0);
         User murderer = userRepository.findByCharacterCode(CharacterCode.MURDERER).get(0);
         User wolf = userRepository.findByCharacterCode(CharacterCode.WOLF).get(0);
