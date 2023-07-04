@@ -42,7 +42,7 @@ public interface GameManager {
     /**
      * @return id of this game.
      */
-    Long getGAME_ID();
+    Long getGameId();
 
     /**
      * Generate characters and allocate each of the characters to each user.

@@ -62,7 +62,7 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public Long getGAME_ID() {
+    public Long getGameId() {
         return GAME_ID;
     }
 
