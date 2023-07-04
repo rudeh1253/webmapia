@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.domain.character;
 
-import com.nsl.webmapia.game.domain.SkillManager;
+import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;

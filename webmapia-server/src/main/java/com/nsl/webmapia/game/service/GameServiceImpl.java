@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.service;
 
-import com.nsl.webmapia.game.domain.SkillManager;
+import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.Vote;
 import com.nsl.webmapia.game.domain.character.*;
@@ -61,9 +61,6 @@ public class GameServiceImpl implements GameService {
         this.votes = new ArrayList<>();
         this.activatedSkills = new ArrayList<>();
     }
-
-    @Override
-    public void onStart() {}
 
     @Override
     public List<NotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {

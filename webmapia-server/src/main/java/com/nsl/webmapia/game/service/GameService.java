@@ -15,11 +15,6 @@ import java.util.Optional;
 public interface GameService {
 
     /**
-     * This method is called when a game is start.
-     */
-    void onStart();
-
-    /**
      * Generate characters and allocate each of the characters to each user.
      * Each user instance stored in repository is mutated in this method.
      * @param characterDistribution the number of each of character to generate.

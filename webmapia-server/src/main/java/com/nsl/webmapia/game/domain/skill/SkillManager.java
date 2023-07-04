@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.domain;
+package com.nsl.webmapia.game.domain.skill;
 
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import org.springframework.stereotype.Component;
