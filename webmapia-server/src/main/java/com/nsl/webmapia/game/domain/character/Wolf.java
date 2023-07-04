@@ -46,6 +46,13 @@ public class Wolf implements Character {
                             .skillActivatorUser(t)
                             .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
                             .build()));
+                    result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
+                            .receiverUser(src)
+                            .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
+                            .skillTargetUser(tar)
+                            .skillActivatorUser(src)
+                            .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_EXTERMINATE)
+                            .build()));
                     leftExtermination--;
                 } else {
                     result.setSkillType(SkillType.NONE);
@@ -59,6 +66,13 @@ public class Wolf implements Character {
                         .skillTargetUser(t)
                         .skillActivatorUser(a)
                         .characterEffectAfterNightType(CharacterEffectAfterNightType.KILL)
+                        .build()));
+                result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
+                        .receiverUser(src)
+                        .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
+                        .skillTargetUser(tar)
+                        .skillActivatorUser(src)
+                        .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_KILL)
                         .build()));
                 return result;
             default:

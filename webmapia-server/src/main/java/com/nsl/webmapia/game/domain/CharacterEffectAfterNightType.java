@@ -8,6 +8,7 @@ public enum CharacterEffectAfterNightType {
     FAIL_TO_KILL,
     FAIL_TO_INVESTIGATE,
     FAIL_TO_GUARD,
+    FAIL_TO_EXTERMINATE,
     ENTER_WOLF_CHAT,
     NOTIFY,
     NONE
