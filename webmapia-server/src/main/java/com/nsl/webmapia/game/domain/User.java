@@ -50,4 +50,14 @@ public class User {
                 ? new Vote(2, this, subject)
                 : new Vote(1, this, subject);
     }
+
+    @Override
+    public int hashCode() {
+        return this.getID().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User && ((User)obj).getID().equals(this.getID());
+    }
 }
