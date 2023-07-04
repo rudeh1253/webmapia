@@ -21,40 +21,11 @@ public class GameManagerImpl implements GameManager {
     private final List<ActivatedSkillInfo> activatedSkills;
 
     public GameManagerImpl(Long gameId,
-                           Wolf wolf,
-                           Betrayer betrayer,
-                           Citizen citizen,
-                           Detective detective,
-                           Follower follower,
-                           Guard guard,
-                           HumanMouse humanMouse,
-                           Mediumship mediumship,
-                           Murderer murderer,
-                           Nobility nobility,
-                           Predictor predictor,
-                           SecretSociety secretSociety,
-                           Soldier soldier,
-                           Successor successor,
-                           Templar templar,
+                           Map<CharacterCode, Character> characters,
                            SkillManager skillManager,
                            UserRepository userRepository) {
         this.GAME_ID = gameId;
-        characters = new HashMap<>();
-        characters.put(CharacterCode.WOLF, wolf);
-        characters.put(CharacterCode.BETRAYER, betrayer);
-        characters.put(CharacterCode.DETECTIVE, detective);
-        characters.put(CharacterCode.FOLLOWER, follower);
-        characters.put(CharacterCode.CITIZEN, citizen);
-        characters.put(CharacterCode.GUARD, guard);
-        characters.put(CharacterCode.HUMAN_MOUSE, humanMouse);
-        characters.put(CharacterCode.MEDIUMSHIP, mediumship);
-        characters.put(CharacterCode.MURDERER, murderer);
-        characters.put(CharacterCode.NOBILITY, nobility);
-        characters.put(CharacterCode.PREDICTOR, predictor);
-        characters.put(CharacterCode.SECRET_SOCIETY, secretSociety);
-        characters.put(CharacterCode.SOLDIER, soldier);
-        characters.put(CharacterCode.SUCCESSOR, successor);
-        characters.put(CharacterCode.TEMPLAR, templar);
+        this.characters = characters;
         this.skillManager = skillManager;
         this.userRepository = userRepository;
         this.votes = new ArrayList<>();

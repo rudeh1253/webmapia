@@ -15,27 +15,12 @@ import java.util.Random;
 
 public interface GameManager {
 
-    static GameManager newInstance(Wolf wolf,
-                                   Betrayer betrayer,
-                                   Citizen citizen,
-                                   Detective detective,
-                                   Follower follower,
-                                   Guard guard,
-                                   HumanMouse humanMouse,
-                                   Mediumship mediumship,
-                                   Murderer murderer,
-                                   Nobility nobility,
-                                   Predictor predictor,
-                                   SecretSociety secretSociety,
-                                   Soldier soldier,
-                                   Successor successor,
-                                   Templar templar,
+    static GameManager newInstance(Map<CharacterCode, Character> characters,
                                    SkillManager skillManager,
                                    UserRepository userRepository) {
         Random random = new Random();
         Long gameId = random.nextLong(10000L, 99999L);
-        return new GameManagerImpl(gameId, wolf, betrayer, citizen, detective, follower, guard, humanMouse,
-                mediumship, murderer, nobility, predictor, secretSociety, soldier, successor, templar, skillManager,
+        return new GameManagerImpl(gameId, characters, skillManager,
                 userRepository);
     }
 

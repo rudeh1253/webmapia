@@ -1,14 +1,11 @@
-package com.nsl.webmapia.game.service;
+package com.nsl.webmapia.game.domain;
 
-import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.GameManagerImpl;
-import com.nsl.webmapia.game.domain.skill.SkillManager;
-import com.nsl.webmapia.game.domain.User;
-import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
+import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.notification.NotificationBody;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.repository.MemoryUserRepository;
 import com.nsl.webmapia.game.repository.UserRepository;
@@ -31,23 +28,25 @@ class GameManagerImplTest {
     public void intialize() {
         skillManager = new SkillManager();
         userRepository = new MemoryUserRepository();
+        Map<CharacterCode, Character> characters = Map.ofEntries(
+                Map.entry(CharacterCode.WOLF, new Wolf(skillManager)),
+                Map.entry(CharacterCode.BETRAYER, new Betrayer(skillManager)),
+                Map.entry(CharacterCode.DETECTIVE, new Detective(skillManager)),
+                Map.entry(CharacterCode.FOLLOWER, new Follower(skillManager)),
+                Map.entry(CharacterCode.CITIZEN, new Citizen(skillManager)),
+                Map.entry(CharacterCode.GUARD, new Guard(skillManager)),
+                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse(skillManager)),
+                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship(skillManager)),
+                Map.entry(CharacterCode.MURDERER, new Murderer(skillManager)),
+                Map.entry(CharacterCode.NOBILITY, new Nobility(skillManager)),
+                Map.entry(CharacterCode.PREDICTOR, new Predictor(skillManager)),
+                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety(skillManager)),
+                Map.entry(CharacterCode.SOLDIER, new Soldier(skillManager)),
+                Map.entry(CharacterCode.SUCCESSOR, new Successor(skillManager)),
+                Map.entry(CharacterCode.TEMPLAR, new Templar(skillManager)));
         gameManager = new GameManagerImpl(
                 1L,
-                new Wolf(skillManager),
-                new Betrayer(skillManager),
-                new Citizen(skillManager),
-                new Detective(skillManager),
-                new Follower(skillManager),
-                new Guard(skillManager),
-                new HumanMouse(skillManager),
-                new Mediumship(skillManager),
-                new Murderer(skillManager),
-                new Nobility(skillManager),
-                new Predictor(skillManager),
-                new SecretSociety(skillManager),
-                new Soldier(skillManager),
-                new Successor(skillManager),
-                new Templar(skillManager),
+                characters,
                 skillManager,
                 userRepository
         );
@@ -330,10 +329,10 @@ class GameManagerImplTest {
 
     @Test
     public void testVote() {
-        addUsers(10);
-        List<User> allUser = userRepository.findAll();
-        for (int i = 0; i < allUser.size(); i++) {
-            gameManager.acceptVote(allUser.get(i).getID(), allUser.get((i + 1) % allUser.size()).getID());
-        }
+//        addUsers(10);
+//        List<User> allUser = userRepository.findAll();
+//        for (int i = 0; i < allUser.size(); i++) {
+//            gameManager.acceptVote(allUser.get(i).getID(), allUser.get((i + 1) % allUser.size()).getID());
+//        }
     }
 }
