@@ -34,6 +34,12 @@ public interface GameService {
     void acceptVote(Vote vote);
 
     /**
+     * Given votes, determine which user has gotten the most votes such that he will be executed.
+     * @return NotificationBody object containing the result of the vote.
+     */
+    NotificationBody<User> processVotes();
+
+    /**
      * Add user in repository. The id is generated randomly.
      * The value of id is greater than 0.
      * @return id generated.

@@ -97,6 +97,38 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public NotificationBody<User> processVotes() {
+        Map<User, Integer> total = new HashMap<>();
+        for (Vote vote : votes) {
+            if (total.containsKey(vote.getSubject())) {
+                total.replace(vote.getSubject(), total.get(vote.getSubject()) + vote.getTheNumberOfVote());
+            } else {
+                total.put(vote.getSubject(), vote.getTheNumberOfVote());
+            }
+        }
+        List<Integer> values = ((List<Integer>)total.values());
+        values.sort(Comparator.comparingInt(s -> s));
+        User mostUser = null;
+        for (User u : total.keySet()) {
+            if (total.get(u).equals(values.get(0))) {
+                mostUser = u;
+                break;
+            }
+        }
+        return values.get(0).equals(values.get(1))
+                ? NotificationBody.<User>builder()
+                .data(null)
+                .notificationType(NotificationType.INVALID_VOTE)
+                .receiver(null)
+                .build()
+                : NotificationBody.<User>builder()
+                .data(mostUser)
+                .notificationType(NotificationType.EXECUTE_BY_VOTE)
+                .receiver(null)
+                .build();
+    }
+
+    @Override
     public Long addUser() {
         Random random = new Random();
         long generatedId = random.nextLong(100000L, 999999L);
