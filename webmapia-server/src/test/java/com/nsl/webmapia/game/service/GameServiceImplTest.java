@@ -1,5 +1,6 @@
 package com.nsl.webmapia.game.service;
 
+import com.nsl.webmapia.game.domain.Vote;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
@@ -323,5 +324,14 @@ class GameServiceImplTest {
         gameService.activateSkill(murdererUser.getID(), predictorUser.getID(), SkillType.EXTERMINATE);
         gameService.activateSkill(predictorUser.getID(), humanMouseUser.getID(), SkillType.INVESTIGATE_ALIVE_CHARACTER);
         gameService.activateSkill(detectiveUser.getID(), wolfUser.getID(), SkillType.INVESTIGATE_ALIVE_CHARACTER);
+    }
+
+    @Test
+    public void testVote() {
+        addUsers(10);
+        List<User> allUser = userRepository.findAll();
+        for (int i = 0; i < allUser.size(); i++) {
+            gameService.acceptVote(allUser.get(i).getID(), allUser.get((i + 1) % allUser.size()).getID());
+        }
     }
 }
