@@ -92,8 +92,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void acceptVote(Vote vote) {
-        votes.add(vote);
+    public void acceptVote(Long voterId, Long subjectId) {
+        User voter = userRepository.findById(voterId).orElseThrow();
+        User subject = userRepository.findById(subjectId).orElseThrow();
+        votes.add(new Vote(
+                voter.getCharacter().getCharacterCode() == CharacterCode.NOBILITY
+                ? 2
+                : 1, voter, subject));
     }
 
     @Override

@@ -29,9 +29,10 @@ public interface GameService {
 
     /**
      * Accept vote.
-     * @param vote Vote object
+     * @param voterId id of voter
+     * @param subjectId id of subject
      */
-    void acceptVote(Vote vote);
+    void acceptVote(Long voterId, Long subjectId);
 
     /**
      * Given votes, determine which user has gotten the most votes such that he will be executed.
