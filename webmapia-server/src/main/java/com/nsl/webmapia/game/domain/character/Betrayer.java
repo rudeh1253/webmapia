@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.domain.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
-import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
+import com.nsl.webmapia.game.domain.skill.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;

@@ -1,6 +1,5 @@
 package com.nsl.webmapia.game.domain.skill;
 
-import com.nsl.webmapia.game.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.CharacterCode;
 import lombok.Builder;
