@@ -15,17 +15,16 @@ import java.util.List;
  */
 @Getter
 @Setter
+@ToString
 public class User {
     private final Long ID;
     private Character character;
     private boolean isDead;
-    private List<SkillEffect> notificationAfterNight;
 
     public User(Long id) {
         this.ID = id;
         this.character = null;
         this.isDead = false;
-        this.notificationAfterNight = new ArrayList<>();
     }
 
     /**

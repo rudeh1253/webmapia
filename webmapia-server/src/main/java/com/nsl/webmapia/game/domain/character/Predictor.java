@@ -25,7 +25,7 @@ public class Predictor implements Character {
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> true);
         result.setOnSkillSucceed((src, tar, type) -> {
-            SkillEffect notificationBody = SkillEffect.builder()
+            SkillEffect skillEffect = SkillEffect.builder()
                     .skillTargetUser(tar)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillActivatorUser(src)
@@ -37,12 +37,13 @@ public class Predictor implements Character {
                 case GUARD:
                     break;
                 case HUMAN_MOUSE:
-                    notificationBody.setCharacterEffectAfterNightType(CharacterEffectAfterNightType.KILL);
+                    skillEffect.setReceiverUser(null);
+                    skillEffect.setCharacterEffectAfterNightType(CharacterEffectAfterNightType.KILL);
                     break;
                 default:
-                    notificationBody.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
+                    skillEffect.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);
             }
-            skillManager.addSkillEffect(notificationBody);
+            skillManager.addSkillEffect(skillEffect);
         });
         return result;
     }

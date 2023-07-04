@@ -32,6 +32,7 @@ public class Soldier implements Character {
             life--;
             skillManager.addSkillEffect(SkillEffect.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
+                    .skillActivatorUser(src)
                     .skillTargetUser(tar)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .receiverUser(tar)

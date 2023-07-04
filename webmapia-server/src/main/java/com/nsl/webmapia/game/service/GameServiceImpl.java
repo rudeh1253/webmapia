@@ -133,10 +133,14 @@ public class GameServiceImpl implements GameService {
                 return -1;
             } else if (right.getSkillType() == SkillType.EXTERMINATE) {
                 return 1;
-            } else if (left.getSkillType() == SkillType.KILL && right.getSkillType() == SkillType.GUARD) {
+            } else if (left.getSkillType() == SkillType.KILL) {
                 return -1;
-            } else if (left.getSkillType() == SkillType.GUARD && right.getSkillType() == SkillType.KILL) {
+            } else if (right.getSkillType() == SkillType.KILL) {
                 return 1;
+            } else if (left.getSkillType() == SkillType.GUARD) {
+                return -1;
+            } else if (right.getSkillType() == SkillType.GUARD) {
+                return -1;
             } else {
                 return 0;
             }
@@ -152,5 +156,9 @@ public class GameServiceImpl implements GameService {
             }
         }
         return skillManager.getSkillEffects();
+    }
+
+    public List<ActivatedSkillInfo> getActivatedSkills() {
+        return activatedSkills;
     }
 }
