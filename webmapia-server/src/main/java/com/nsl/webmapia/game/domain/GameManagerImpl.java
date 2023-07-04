@@ -1,8 +1,6 @@
-package com.nsl.webmapia.game.service;
+package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.skill.SkillManager;
-import com.nsl.webmapia.game.domain.User;
-import com.nsl.webmapia.game.domain.Vote;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.notification.NotificationType;
@@ -11,19 +9,19 @@ import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-public class GameServiceImpl implements GameService {
+public class GameManagerImpl implements GameManager {
+    private final Long GAME_ID;
     private final Map<CharacterCode, Character> characters;
     private final SkillManager skillManager;
     private final UserRepository userRepository;
     private final List<Vote> votes;
     private final List<ActivatedSkillInfo> activatedSkills;
 
-    @Autowired
-    public GameServiceImpl(Wolf wolf,
+    public GameManagerImpl(Long gameId,
+                           Wolf wolf,
                            Betrayer betrayer,
                            Citizen citizen,
                            Detective detective,
@@ -40,6 +38,7 @@ public class GameServiceImpl implements GameService {
                            Templar templar,
                            SkillManager skillManager,
                            UserRepository userRepository) {
+        this.GAME_ID = gameId;
         characters = new HashMap<>();
         characters.put(CharacterCode.WOLF, wolf);
         characters.put(CharacterCode.BETRAYER, betrayer);
@@ -60,6 +59,11 @@ public class GameServiceImpl implements GameService {
         this.userRepository = userRepository;
         this.votes = new ArrayList<>();
         this.activatedSkills = new ArrayList<>();
+    }
+
+    @Override
+    public Long getGAME_ID() {
+        return GAME_ID;
     }
 
     @Override

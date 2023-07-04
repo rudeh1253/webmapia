@@ -1,18 +1,48 @@
-package com.nsl.webmapia.game.service;
+package com.nsl.webmapia.game.domain;
 
-import com.nsl.webmapia.game.domain.User;
-import com.nsl.webmapia.game.domain.Vote;
+import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
-import com.nsl.webmapia.game.domain.character.CharacterCode;
 import com.nsl.webmapia.game.domain.notification.NotificationBody;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillType;
+import com.nsl.webmapia.game.repository.UserRepository;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
-public interface GameService {
+public interface GameManager {
+
+    static GameManager newInstance(Wolf wolf,
+                                   Betrayer betrayer,
+                                   Citizen citizen,
+                                   Detective detective,
+                                   Follower follower,
+                                   Guard guard,
+                                   HumanMouse humanMouse,
+                                   Mediumship mediumship,
+                                   Murderer murderer,
+                                   Nobility nobility,
+                                   Predictor predictor,
+                                   SecretSociety secretSociety,
+                                   Soldier soldier,
+                                   Successor successor,
+                                   Templar templar,
+                                   SkillManager skillManager,
+                                   UserRepository userRepository) {
+        Random random = new Random();
+        Long gameId = random.nextLong(10000L, 99999L);
+        return new GameManagerImpl(gameId, wolf, betrayer, citizen, detective, follower, guard, humanMouse,
+                mediumship, murderer, nobility, predictor, secretSociety, soldier, successor, templar, skillManager,
+                userRepository);
+    }
+
+    /**
+     * @return id of this game.
+     */
+    Long getGAME_ID();
 
     /**
      * Generate characters and allocate each of the characters to each user.

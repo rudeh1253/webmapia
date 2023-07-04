@@ -1,6 +1,7 @@
 package com.nsl.webmapia.game.service;
 
-import com.nsl.webmapia.game.domain.Vote;
+import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.GameManagerImpl;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
@@ -21,16 +22,17 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameServiceImplTest {
+class GameManagerImplTest {
     private SkillManager skillManager;
-    private GameService gameService;
+    private GameManager gameManager;
     private UserRepository userRepository;
 
     @BeforeEach
     public void intialize() {
         skillManager = new SkillManager();
         userRepository = new MemoryUserRepository();
-        gameService = new GameServiceImpl(
+        gameManager = new GameManagerImpl(
+                1L,
                 new Wolf(skillManager),
                 new Betrayer(skillManager),
                 new Citizen(skillManager),
@@ -68,7 +70,7 @@ class GameServiceImplTest {
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
         List<NotificationBody<Character>> privateNotificationBodies =
-                gameService.generateCharacters(characterDistribution);
+                gameManager.generateCharacters(characterDistribution);
         assertEquals(7, privateNotificationBodies.size());
         assertEquals(1, privateNotificationBodies.stream()
                 .filter(n -> n.getData().getCharacterCode() == CharacterCode.WOLF)
@@ -105,9 +107,9 @@ class GameServiceImplTest {
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
         List<NotificationBody<Character>> privateNotificationBodies1 =
-                gameService.generateCharacters(characterDistribution);
+                gameManager.generateCharacters(characterDistribution);
         List<NotificationBody<Character>> privateNotificationBodies2 =
-                gameService.generateCharacters(characterDistribution);
+                gameManager.generateCharacters(characterDistribution);
         assertEquals(7, privateNotificationBodies1.size());
         assertEquals(7, privateNotificationBodies2.size());
 
@@ -127,7 +129,7 @@ class GameServiceImplTest {
 
     private void addUsers(int num) {
         for (int i = 0; i < num; i++) {
-            gameService.addUser();
+            gameManager.addUser();
         }
     }
 
@@ -135,7 +137,7 @@ class GameServiceImplTest {
     public void testActivateSkill() {
         setting();
 
-        List<ActivatedSkillInfo> activatedSkillInfoList = ((GameServiceImpl)gameService).getActivatedSkills();
+        List<ActivatedSkillInfo> activatedSkillInfoList = ((GameManagerImpl) gameManager).getActivatedSkills();
         assertEquals(16, activatedSkillInfoList.size());
     }
 
@@ -143,7 +145,7 @@ class GameServiceImplTest {
     public void testSort() {
         setting();
 
-        List<ActivatedSkillInfo> activatedSkillInfoList = ((GameServiceImpl)gameService).getActivatedSkills();
+        List<ActivatedSkillInfo> activatedSkillInfoList = ((GameManagerImpl) gameManager).getActivatedSkills();
         activatedSkillInfoList.sort((left, right) -> {
             if (left.getSkillType() == SkillType.EXTERMINATE) {
                 return -1;
@@ -175,7 +177,7 @@ class GameServiceImplTest {
     @Test
     public void testProcessSkills() {
         setting();
-        List<NotificationBody<SkillEffect>> notificationBodies = gameService.processSkills();
+        List<NotificationBody<SkillEffect>> notificationBodies = gameManager.processSkills();
         List<SkillEffect> skillEffects = new ArrayList<>();
         notificationBodies.forEach(e -> skillEffects.add(e.getData()));
         User predictor = userRepository.findByCharacterCode(CharacterCode.PREDICTOR).get(0);
@@ -269,7 +271,7 @@ class GameServiceImplTest {
         characterDistribution.put(CharacterCode.MURDERER, 1);
         characterDistribution.put(CharacterCode.PREDICTOR, 1);
         characterDistribution.put(CharacterCode.DETECTIVE, 1);
-        gameService.generateCharacters(characterDistribution);
+        gameManager.generateCharacters(characterDistribution);
         List<User> allUsers = userRepository.findAll();
         for (User user : allUsers) {
             assertNotNull(user.getCharacter());
@@ -308,22 +310,22 @@ class GameServiceImplTest {
         // murderer -> predictor: exterminate
         // predictor -> human_mouse: investigate_alive_character
         // detective -> wolf: investigate_alive_character
-        gameService.activateSkill(wolfUser.getID(), detectiveUser.getID(), SkillType.KILL);
-        gameService.activateSkill(betrayerUser.getID(), wolfUser.getID(), SkillType.ENTER_WOLF_CHAT);
-        gameService.activateSkill(followerUser.getID(), predictorUser.getID(), SkillType.ENTER_WOLF_CHAT);
-        gameService.activateSkill(citizenUser.getID(), predictorUser.getID(), SkillType.NONE);
-        gameService.activateSkill(guardUser.getID(), wolfUser.getID(), SkillType.GUARD);
-        gameService.activateSkill(soldierUser.getID(), soldierUser.getID(), SkillType.GUARD);
-        gameService.activateSkill(successorUser.getID(), predictorUser.getID(), SkillType.NONE);
-        gameService.activateSkill(templarUser.getID(), predictorUser.getID(), SkillType.NONE);
-        gameService.activateSkill(secretSocietyUser1.getID(), predictorUser.getID(), SkillType.NONE);
-        gameService.activateSkill(secretSocietyUser2.getID(), predictorUser.getID(), SkillType.NONE);
-        gameService.activateSkill(humanMouseUser.getID(), predictorUser.getID(), SkillType.NONE);
-        gameService.activateSkill(nobilityUser.getID(), predictorUser.getID(), SkillType.NONE);
-        gameService.activateSkill(mediumshipUser.getID(), templarUser.getID(), SkillType.INVESTIGATE_DEAD_CHARACTER);
-        gameService.activateSkill(murdererUser.getID(), predictorUser.getID(), SkillType.EXTERMINATE);
-        gameService.activateSkill(predictorUser.getID(), humanMouseUser.getID(), SkillType.INVESTIGATE_ALIVE_CHARACTER);
-        gameService.activateSkill(detectiveUser.getID(), wolfUser.getID(), SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        gameManager.activateSkill(wolfUser.getID(), detectiveUser.getID(), SkillType.KILL);
+        gameManager.activateSkill(betrayerUser.getID(), wolfUser.getID(), SkillType.ENTER_WOLF_CHAT);
+        gameManager.activateSkill(followerUser.getID(), predictorUser.getID(), SkillType.ENTER_WOLF_CHAT);
+        gameManager.activateSkill(citizenUser.getID(), predictorUser.getID(), SkillType.NONE);
+        gameManager.activateSkill(guardUser.getID(), wolfUser.getID(), SkillType.GUARD);
+        gameManager.activateSkill(soldierUser.getID(), soldierUser.getID(), SkillType.GUARD);
+        gameManager.activateSkill(successorUser.getID(), predictorUser.getID(), SkillType.NONE);
+        gameManager.activateSkill(templarUser.getID(), predictorUser.getID(), SkillType.NONE);
+        gameManager.activateSkill(secretSocietyUser1.getID(), predictorUser.getID(), SkillType.NONE);
+        gameManager.activateSkill(secretSocietyUser2.getID(), predictorUser.getID(), SkillType.NONE);
+        gameManager.activateSkill(humanMouseUser.getID(), predictorUser.getID(), SkillType.NONE);
+        gameManager.activateSkill(nobilityUser.getID(), predictorUser.getID(), SkillType.NONE);
+        gameManager.activateSkill(mediumshipUser.getID(), templarUser.getID(), SkillType.INVESTIGATE_DEAD_CHARACTER);
+        gameManager.activateSkill(murdererUser.getID(), predictorUser.getID(), SkillType.EXTERMINATE);
+        gameManager.activateSkill(predictorUser.getID(), humanMouseUser.getID(), SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        gameManager.activateSkill(detectiveUser.getID(), wolfUser.getID(), SkillType.INVESTIGATE_ALIVE_CHARACTER);
     }
 
     @Test
@@ -331,7 +333,7 @@ class GameServiceImplTest {
         addUsers(10);
         List<User> allUser = userRepository.findAll();
         for (int i = 0; i < allUser.size(); i++) {
-            gameService.acceptVote(allUser.get(i).getID(), allUser.get((i + 1) % allUser.size()).getID());
+            gameManager.acceptVote(allUser.get(i).getID(), allUser.get((i + 1) % allUser.size()).getID());
         }
     }
 }
