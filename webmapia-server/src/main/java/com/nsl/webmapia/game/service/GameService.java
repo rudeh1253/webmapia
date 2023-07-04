@@ -1,8 +1,75 @@
 package com.nsl.webmapia.game.service;
 
 import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.User;
+import com.nsl.webmapia.game.domain.character.Character;
+import com.nsl.webmapia.game.domain.character.CharacterCode;
+import com.nsl.webmapia.game.domain.notification.NotificationBody;
+import com.nsl.webmapia.game.domain.skill.SkillEffect;
+import com.nsl.webmapia.game.domain.skill.SkillType;
 
-public interface GameService extends GameManager {
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public interface GameService {
+
+    /**
+     * Generate characters and allocate each of the characters to each user.
+     * Each user instance stored in repository is mutated in this method.
+     * @param characterDistribution the number of each of character to generate.
+     * @return information to be sent to each user saying that which character the user is allocated.
+     */
+    List<NotificationBody<Character>> generateCharacters(Long gameId,
+                                                         Map<CharacterCode, Integer> characterDistribution);
+
+    /**
+     * The phase of game steps forward.
+     */
+    void stepForward(Long gameId);
+
+    /**
+     * Accept vote.
+     * @param voterId id of voter
+     * @param subjectId id of subject
+     */
+    void acceptVote(Long gameId,
+                    Long voterId, Long subjectId);
+
+    /**
+     * Given votes, determine which user has gotten the most votes such that he will be executed.
+     * @return NotificationBody object containing the result of the vote.
+     */
+    NotificationBody<User> processVotes(Long gameId);
+
+    /**
+     * Add user in repository. The id is generated randomly.
+     * The value of id is greater than 0.
+     * @return id generated.
+     */
+    Long addUser(Long gameId);
+
+    /**
+     * Remove user from the repository.
+     * @param userId of user to remove.
+     * @return Optional object containing User object which is removed, or not.
+     */
+    Optional<User> removeUser(Long gameId,
+                              Long userId);
+
+    /**
+     * Process activation of a skill.
+     * @param activatorId of user which activated skill.
+     * @param targetId of user which is the target of the skill.
+     * @param skillType of skill activated.
+     */
+    void activateSkill(Long gameId, Long activatorId, Long targetId, SkillType skillType);
+
+    /**
+     * After the night, process activated skills.
+     * @return a list of notification body.
+     */
+    List<NotificationBody<SkillEffect>> processSkills(Long gameId);
 
     /**
      * Create a new game.

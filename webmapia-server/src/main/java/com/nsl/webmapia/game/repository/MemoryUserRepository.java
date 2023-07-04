@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Repository
 public class MemoryUserRepository implements UserRepository {
     private final Map<Long, User> storage = new ConcurrentHashMap<>();
 

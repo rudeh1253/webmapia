@@ -60,47 +60,43 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public Long getGameId() {
+    public List<NotificationBody<Character>> generateCharacters(Long gameId,
+                                                                Map<CharacterCode, Integer> characterDistribution) {
         return null;
     }
 
     @Override
-    public List<NotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {
+    public void stepForward(Long gameId) {
+
+    }
+
+    @Override
+    public void acceptVote(Long gameId, Long voterId, Long subjectId) {
+
+    }
+
+    @Override
+    public NotificationBody<User> processVotes(Long gameId) {
         return null;
     }
 
     @Override
-    public void stepForward() {
-
-    }
-
-    @Override
-    public void acceptVote(Long voterId, Long subjectId) {
-
-    }
-
-    @Override
-    public NotificationBody<User> processVotes() {
+    public Long addUser(Long gameId) {
         return null;
     }
 
     @Override
-    public Long addUser() {
-        return null;
-    }
-
-    @Override
-    public Optional<User> removeUser(Long userId) {
+    public Optional<User> removeUser(Long gameId, Long userId) {
         return Optional.empty();
     }
 
     @Override
-    public void activateSkill(Long activatorId, Long targetId, SkillType skillType) {
+    public void activateSkill(Long gameId, Long activatorId, Long targetId, SkillType skillType) {
 
     }
 
     @Override
-    public List<NotificationBody<SkillEffect>> processSkills() {
+    public List<NotificationBody<SkillEffect>> processSkills(Long gameId) {
         return null;
     }
 
