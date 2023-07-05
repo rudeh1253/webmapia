@@ -52,10 +52,9 @@ public interface GameService {
     /**
      * Remove user from the repository.
      * @param userId of user to remove.
-     * @return Optional object containing User object which is removed, or not.
+     * @return User object which is removed, if it doesn't exist, return null.
      */
-    Optional<User> removeUser(Long gameId,
-                              Long userId);
+    NotificationBody<User> removeUser(Long gameId, Long userId);
 
     /**
      * Process activation of a skill.

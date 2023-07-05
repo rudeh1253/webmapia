@@ -5,5 +5,6 @@ public enum NotificationType {
     SKILL_PRIVATE,
     NOTIFY_WHICH_CHARACTER_ALLOCATED,
     EXECUTE_BY_VOTE,
-    INVALID_VOTE
+    INVALID_VOTE,
+    USER_REMOVED
 }

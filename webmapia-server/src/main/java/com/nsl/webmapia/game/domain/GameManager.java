@@ -79,5 +79,5 @@ public interface GameManager {
      * After the night, process activated skills.
      * @return a list of notification body.
      */
-    List<NotificationBody<SkillEffect>> processSkills();
+    List<SkillEffect> processSkills();
 }

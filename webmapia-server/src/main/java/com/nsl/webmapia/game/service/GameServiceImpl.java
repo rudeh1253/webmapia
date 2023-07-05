@@ -64,7 +64,7 @@ public class GameServiceImpl implements  GameService {
     @Override
     public List<NotificationBody<Character>> generateCharacters(Long gameId,
                                                                 Map<CharacterCode, Integer> characterDistribution) {
-        GameManager gameManager = gameRepository.findById(gameId).orElseThrow();
+        GameManager gameManager = findGameManager(gameId);
         List<User> users = gameManager.generateCharacters(characterDistribution);
         List<NotificationBody<Character>> notificationBodies = new ArrayList<>();
         for (User user : users) {
@@ -85,13 +85,13 @@ public class GameServiceImpl implements  GameService {
 
     @Override
     public void acceptVote(Long gameId, Long voterId, Long subjectId) {
-        GameManager game = gameRepository.findById(gameId).orElseThrow();
+        GameManager game = findGameManager(gameId);
         game.acceptVote(voterId, subjectId);
     }
 
     @Override
     public NotificationBody<User> processVotes(Long gameId) {
-        GameManager game = gameRepository.findById(gameId).orElseThrow();
+        GameManager game = findGameManager(gameId);
         User mostUser = game.processVotes();
         return mostUser == null
                 ? NotificationBody.<User>builder()
@@ -110,23 +110,52 @@ public class GameServiceImpl implements  GameService {
 
     @Override
     public void addUser(Long gameId, Long userId) {
-        GameManager gameManager = gameRepository.findById(gameId).orElseThrow();
+        GameManager gameManager = findGameManager(gameId);
         gameManager.addUser(userId);
     }
 
     @Override
-    public Optional<User> removeUser(Long gameId, Long userId) {
-        return Optional.empty();
+    public NotificationBody<User> removeUser(Long gameId, Long userId) {
+        GameManager game = findGameManager(gameId);
+        return NotificationBody.<User>builder()
+                .gameId(gameId)
+                .receiver(null)
+                .notificationType(NotificationType.USER_REMOVED)
+                .data(game.removeUser(userId).orElse(null))
+                .build();
     }
 
     @Override
     public void activateSkill(Long gameId, Long activatorId, Long targetId, SkillType skillType) {
-
+        GameManager game = findGameManager(gameId);
+        game.activateSkill(activatorId, targetId, skillType);
     }
 
     @Override
     public List<NotificationBody<SkillEffect>> processSkills(Long gameId) {
-        return null;
+        GameManager game = findGameManager(gameId);
+        List<SkillEffect> skillEffects = game.processSkills();
+        List<NotificationBody<SkillEffect>> notificationBodies = new ArrayList<>();
+        skillEffects.forEach(se -> {
+            if (se.getReceiverUser() == null) {
+                notificationBodies.add(NotificationBody.<SkillEffect>builder()
+                        .receiver(null)
+                        .notificationType(NotificationType.SKILL_PUBLIC)
+                        .data(se)
+                        .build());
+            } else {
+                notificationBodies.add(NotificationBody.<SkillEffect>builder()
+                        .receiver(se.getReceiverUser())
+                        .notificationType(NotificationType.SKILL_PRIVATE)
+                        .data(se)
+                        .build());
+            }
+        });
+        return notificationBodies;
+    }
+
+    private GameManager findGameManager(Long gameId) {
+        return gameRepository.findById(gameId).orElseThrow();
     }
 
     @Override

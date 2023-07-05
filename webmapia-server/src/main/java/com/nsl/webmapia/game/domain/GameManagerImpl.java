@@ -116,7 +116,7 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public List<NotificationBody<SkillEffect>> processSkills() {
+    public List<SkillEffect> processSkills() {
         activatedSkills.sort((left, right) -> {
             if (left.getSkillType() == SkillType.EXTERMINATE) {
                 return -1;
@@ -145,23 +145,7 @@ public class GameManagerImpl implements GameManager {
                 activatedSkill.getOnSkillFail().onSkillFail(src, tar, type);
             }
         }
-        List<NotificationBody<SkillEffect>> notificationBodies = new ArrayList<>();
-        skillManager.getSkillEffects().forEach(se -> {
-            if (se.getReceiverUser() == null) {
-                notificationBodies.add(NotificationBody.<SkillEffect>builder()
-                        .receiver(null)
-                        .notificationType(NotificationType.SKILL_PUBLIC)
-                        .data(se)
-                        .build());
-            } else {
-                notificationBodies.add(NotificationBody.<SkillEffect>builder()
-                        .receiver(se.getReceiverUser())
-                        .notificationType(NotificationType.SKILL_PRIVATE)
-                        .data(se)
-                        .build());
-            }
-        });
-        return notificationBodies;
+        return skillManager.getSkillEffects();
     }
 
     public List<ActivatedSkillInfo> getActivatedSkills() {
