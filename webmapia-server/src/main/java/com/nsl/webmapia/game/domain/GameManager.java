@@ -35,7 +35,7 @@ public interface GameManager {
      * @param characterDistribution the number of each of character to generate.
      * @return information to be sent to each user saying that which character the user is allocated.
      */
-    List<NotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution);
+    List<User> generateCharacters(Map<CharacterCode, Integer> characterDistribution);
 
     /**
      * The phase of game steps forward.
@@ -51,16 +51,14 @@ public interface GameManager {
 
     /**
      * Given votes, determine which user has gotten the most votes such that he will be executed.
-     * @return NotificationBody object containing the result of the vote.
+     * @return user who got the most votes. If two of users got the same amount of votes, then returns null.
      */
-    NotificationBody<User> processVotes();
+    User processVotes();
 
     /**
-     * Add user in repository. The id is generated randomly.
-     * The value of id is greater than 0.
-     * @return id generated.
+     * Add user in repository
      */
-    Long addUser();
+    void addUser(Long userId);
 
     /**
      * Remove user from the repository.

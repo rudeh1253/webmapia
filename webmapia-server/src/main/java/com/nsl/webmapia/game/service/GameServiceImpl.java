@@ -5,6 +5,7 @@ import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.notification.NotificationBody;
+import com.nsl.webmapia.game.domain.notification.NotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -13,6 +14,7 @@ import com.nsl.webmapia.game.repository.MemoryUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,7 +64,18 @@ public class GameServiceImpl implements  GameService {
     @Override
     public List<NotificationBody<Character>> generateCharacters(Long gameId,
                                                                 Map<CharacterCode, Integer> characterDistribution) {
-        return null;
+        GameManager gameManager = gameRepository.findById(gameId).orElseThrow();
+        List<User> users = gameManager.generateCharacters(characterDistribution);
+        List<NotificationBody<Character>> notificationBodies = new ArrayList<>();
+        for (User user : users) {
+            notificationBodies.add(NotificationBody.<Character>builder()
+                    .notificationType(NotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED)
+                    .receiver(user)
+                    .data(user.getCharacter())
+                    .gameId(gameManager.getGameId())
+                    .build());
+        }
+        return notificationBodies;
     }
 
     @Override
@@ -72,17 +85,33 @@ public class GameServiceImpl implements  GameService {
 
     @Override
     public void acceptVote(Long gameId, Long voterId, Long subjectId) {
-
+        GameManager game = gameRepository.findById(gameId).orElseThrow();
+        game.acceptVote(voterId, subjectId);
     }
 
     @Override
     public NotificationBody<User> processVotes(Long gameId) {
-        return null;
+        GameManager game = gameRepository.findById(gameId).orElseThrow();
+        User mostUser = game.processVotes();
+        return mostUser == null
+                ? NotificationBody.<User>builder()
+                        .gameId(gameId)
+                        .notificationType(NotificationType.INVALID_VOTE)
+                        .receiver(null)
+                        .data(null)
+                        .build()
+                : NotificationBody.<User>builder()
+                        .gameId(gameId)
+                        .notificationType(NotificationType.EXECUTE_BY_VOTE)
+                        .receiver(null)
+                        .data(mostUser)
+                        .build();
     }
 
     @Override
-    public Long addUser(Long gameId) {
-        return null;
+    public void addUser(Long gameId, Long userId) {
+        GameManager gameManager = gameRepository.findById(gameId).orElseThrow();
+        gameManager.addUser(userId);
     }
 
     @Override

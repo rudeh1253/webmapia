@@ -38,9 +38,8 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public List<NotificationBody<Character>> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {
+    public List<User> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {
         List<User> users = userRepository.findAll();
-        List<NotificationBody<Character>> characterNotifications = new ArrayList<>();
         Collections.shuffle(users);
         int count = 0;
         Set<CharacterCode> codes = characterDistribution.keySet();
@@ -50,15 +49,10 @@ public class GameManagerImpl implements GameManager {
                 User user = users.get(count);
                 Character character = characters.get(code);
                 user.setCharacter(character);
-                characterNotifications.add(NotificationBody.<Character>builder()
-                        .notificationType(NotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED)
-                        .receiver(user)
-                        .data(character)
-                        .build());
                 count++;
             }
         }
-        return characterNotifications;
+        return users;
     }
 
     @Override
@@ -77,7 +71,7 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public NotificationBody<User> processVotes() {
+    public User processVotes() {
         Map<User, Integer> total = new HashMap<>();
         for (Vote vote : votes) {
             if (total.containsKey(vote.getSubject())) {
@@ -96,28 +90,14 @@ public class GameManagerImpl implements GameManager {
             }
         }
         return values.get(0).equals(values.get(1))
-                ? NotificationBody.<User>builder()
-                .data(null)
-                .notificationType(NotificationType.INVALID_VOTE)
-                .receiver(null)
-                .build()
-                : NotificationBody.<User>builder()
-                .data(mostUser)
-                .notificationType(NotificationType.EXECUTE_BY_VOTE)
-                .receiver(null)
-                .build();
+                ? null
+                : mostUser;
     }
 
     @Override
-    public Long addUser() {
-        Random random = new Random();
-        long generatedId = random.nextLong(100000L, 999999L);
-        while (userRepository.containsKey(generatedId)) {
-            generatedId = random.nextLong();
-        }
-        User user = new User(generatedId);
+    public void addUser(Long userId) {
+        User user = new User(userId);
         userRepository.save(user);
-        return generatedId;
     }
 
     @Override

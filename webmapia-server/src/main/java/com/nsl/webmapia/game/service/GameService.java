@@ -47,7 +47,7 @@ public interface GameService {
      * The value of id is greater than 0.
      * @return id generated.
      */
-    Long addUser(Long gameId);
+    void addUser(Long gameId, Long userId);
 
     /**
      * Remove user from the repository.

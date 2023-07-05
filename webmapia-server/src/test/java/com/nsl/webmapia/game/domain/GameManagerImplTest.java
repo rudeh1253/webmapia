@@ -54,7 +54,7 @@ class GameManagerImplTest {
 
     @Test
     void allocateCharacterToEachUser() {
-        addUsers(7);
+        addUsers(7, gameManager);
         // Wolf: 1
         // Betrayer: 1
         // Guard: 1
@@ -68,36 +68,52 @@ class GameManagerImplTest {
         characterDistribution.put(CharacterCode.SECRET_SOCIETY, 2);
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
-        List<NotificationBody<Character>> privateNotificationBodies =
+        List<User> privateNotificationBodies =
                 gameManager.generateCharacters(characterDistribution);
         assertEquals(7, privateNotificationBodies.size());
         assertEquals(1, privateNotificationBodies.stream()
-                .filter(n -> n.getData().getCharacterCode() == CharacterCode.WOLF)
+                .filter(n -> n.getCharacter().getCharacterCode() == CharacterCode.WOLF)
                 .toList().size());
         assertEquals(1, privateNotificationBodies.stream()
-                .filter(n -> n.getData().getCharacterCode() == CharacterCode.BETRAYER)
+                .filter(n -> n.getCharacter().getCharacterCode() == CharacterCode.BETRAYER)
                 .toList().size());
         assertEquals(1, privateNotificationBodies.stream()
-                .filter(n -> n.getData().getCharacterCode() == CharacterCode.GUARD)
+                .filter(n -> n.getCharacter().getCharacterCode() == CharacterCode.GUARD)
                 .toList().size());
         assertEquals(2, privateNotificationBodies.stream()
-                .filter(n -> n.getData().getCharacterCode() == CharacterCode.SECRET_SOCIETY)
+                .filter(n -> n.getCharacter().getCharacterCode() == CharacterCode.SECRET_SOCIETY)
                 .toList().size());
         assertEquals(1, privateNotificationBodies.stream()
-                .filter(n -> n.getData().getCharacterCode() == CharacterCode.HUMAN_MOUSE)
+                .filter(n -> n.getCharacter().getCharacterCode() == CharacterCode.HUMAN_MOUSE)
                 .toList().size());
         assertEquals(1, privateNotificationBodies.stream()
-                .filter(n -> n.getData().getCharacterCode() == CharacterCode.CITIZEN)
+                .filter(n -> n.getCharacter().getCharacterCode() == CharacterCode.CITIZEN)
                 .toList().size());
-        for (NotificationBody<Character> body : privateNotificationBodies) {
-            User user = userRepository.findById(body.getReceiver().getID()).get();
-            assertEquals(user.getCharacter().getCharacterCode(), body.getData().getCharacterCode());
+        for (User body : privateNotificationBodies) {
+            User user = userRepository.findById(body.getID()).get();
+            assertEquals(user.getCharacter().getCharacterCode(), body.getCharacter().getCharacterCode());
         }
     }
 
     @Test
     public void randomnessOfAllocateCharacterToEachUser() {
-        addUsers(7);
+        Map<CharacterCode, Character> characters = Map.ofEntries(
+                Map.entry(CharacterCode.WOLF, new Wolf(skillManager)),
+                Map.entry(CharacterCode.BETRAYER, new Betrayer(skillManager)),
+                Map.entry(CharacterCode.DETECTIVE, new Detective(skillManager)),
+                Map.entry(CharacterCode.FOLLOWER, new Follower(skillManager)),
+                Map.entry(CharacterCode.CITIZEN, new Citizen(skillManager)),
+                Map.entry(CharacterCode.GUARD, new Guard(skillManager)),
+                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse(skillManager)),
+                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship(skillManager)),
+                Map.entry(CharacterCode.MURDERER, new Murderer(skillManager)),
+                Map.entry(CharacterCode.NOBILITY, new Nobility(skillManager)),
+                Map.entry(CharacterCode.PREDICTOR, new Predictor(skillManager)),
+                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety(skillManager)),
+                Map.entry(CharacterCode.SOLDIER, new Soldier(skillManager)),
+                Map.entry(CharacterCode.SUCCESSOR, new Successor(skillManager)),
+                Map.entry(CharacterCode.TEMPLAR, new Templar(skillManager)));
+
         Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
         characterDistribution.put(CharacterCode.WOLF, 1);
         characterDistribution.put(CharacterCode.BETRAYER, 1);
@@ -105,20 +121,25 @@ class GameManagerImplTest {
         characterDistribution.put(CharacterCode.SECRET_SOCIETY, 2);
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
-        List<NotificationBody<Character>> privateNotificationBodies1 =
-                gameManager.generateCharacters(characterDistribution);
-        List<NotificationBody<Character>> privateNotificationBodies2 =
-                gameManager.generateCharacters(characterDistribution);
+
+        GameManager game1 = new GameManagerImpl(1L, characters, null, new MemoryUserRepository());
+        GameManager game2 = new GameManagerImpl(2L, characters, null, new MemoryUserRepository());
+        addUsers(7, game1);
+        addUsers(7, game2);
+        List<User> privateNotificationBodies1 =
+                game1.generateCharacters(characterDistribution);
+        List<User> privateNotificationBodies2 =
+                game2.generateCharacters(characterDistribution);
         assertEquals(7, privateNotificationBodies1.size());
         assertEquals(7, privateNotificationBodies2.size());
 
         boolean existsDifference = false;
         for (int i = 0; i < privateNotificationBodies1.size(); i++) {
-            NotificationBody<Character> p1 = privateNotificationBodies1.get(i);
+            User p1 = privateNotificationBodies1.get(i);
             for (int j = 0; j < privateNotificationBodies2.size(); j++) {
-                NotificationBody<Character> p2 = privateNotificationBodies2.get(j);
-                if (p1.getReceiver().getID().equals(p2.getReceiver().getID())
-                && p1.getData().getCharacterCode() != p2.getData().getCharacterCode()) {
+                User p2 = privateNotificationBodies2.get(j);
+                if (p1.getID().equals(p2.getID())
+                && p1.getCharacter().getCharacterCode() != p2.getCharacter().getCharacterCode()) {
                     existsDifference = true;
                 }
             }
@@ -126,9 +147,9 @@ class GameManagerImplTest {
         assertTrue(existsDifference);
     }
 
-    private void addUsers(int num) {
+    private void addUsers(int num, GameManager game) {
         for (int i = 0; i < num; i++) {
-            gameManager.addUser();
+            game.addUser(Long.valueOf(i));
         }
     }
 
@@ -253,7 +274,7 @@ class GameManagerImplTest {
     }
 
     private void setting() {
-        addUsers(16);
+        addUsers(16, gameManager);
         Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
         characterDistribution.put(CharacterCode.WOLF, 1);
         characterDistribution.put(CharacterCode.BETRAYER, 1);
