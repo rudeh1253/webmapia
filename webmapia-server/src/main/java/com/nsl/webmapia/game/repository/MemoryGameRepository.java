@@ -44,4 +44,8 @@ public class MemoryGameRepository implements GameRepository {
     public Optional<GameManager> deleteGameById(Long gameId) {
         return Optional.ofNullable(store.remove(gameId));
     }
+
+    public void clear() {
+        store.clear();
+    }
 }

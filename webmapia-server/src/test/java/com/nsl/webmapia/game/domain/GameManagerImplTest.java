@@ -2,7 +2,6 @@ package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.*;
-import com.nsl.webmapia.game.domain.notification.NotificationBody;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
@@ -12,7 +11,6 @@ import com.nsl.webmapia.game.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,9 +195,7 @@ class GameManagerImplTest {
     @Test
     public void testProcessSkills() {
         setting();
-        List<NotificationBody<SkillEffect>> notificationBodies = gameManager.processSkills();
-        List<SkillEffect> skillEffects = new ArrayList<>();
-        notificationBodies.forEach(e -> skillEffects.add(e.getData()));
+        List<SkillEffect> skillEffects = gameManager.processSkills();
         User predictor = userRepository.findByCharacterCode(CharacterCode.PREDICTOR).get(0);
         User murderer = userRepository.findByCharacterCode(CharacterCode.MURDERER).get(0);
         User wolf = userRepository.findByCharacterCode(CharacterCode.WOLF).get(0);
