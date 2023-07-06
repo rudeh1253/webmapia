@@ -55,7 +55,7 @@ public class MemoryUserRepository implements UserRepository {
 
     @Override
     public Optional<User> deleteUserById(Long userId) {
-        return Optional.ofNullable(storage.get(userId));
+        return Optional.ofNullable(storage.remove(userId));
     }
 
     public void clear() {

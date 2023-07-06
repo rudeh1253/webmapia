@@ -61,6 +61,12 @@ public interface GameManager {
     void addUser(Long userId);
 
     /**
+     * Return all users belongs to the game.
+     * @return list of users belonging to the game.
+     */
+    List<User> getAllUsers();
+
+    /**
      * Remove user from the repository.
      * @param userId of user to remove.
      * @return Optional object containing User object which is removed, or not.

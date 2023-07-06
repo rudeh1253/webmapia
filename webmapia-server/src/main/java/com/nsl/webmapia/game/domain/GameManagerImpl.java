@@ -80,24 +80,30 @@ public class GameManagerImpl implements GameManager {
                 total.put(vote.getSubject(), vote.getTheNumberOfVote());
             }
         }
-        List<Integer> values = ((List<Integer>)total.values());
-        values.sort(Comparator.comparingInt(s -> s));
+
         User mostUser = null;
+        boolean tie = false;
         for (User u : total.keySet()) {
-            if (total.get(u).equals(values.get(0))) {
+            if (mostUser == null || total.get(u) > total.get(mostUser)) {
                 mostUser = u;
-                break;
+                tie = false;
+            } else if (total.get(u).equals(total.get(mostUser))) {
+                tie = true;
             }
         }
-        return values.get(0).equals(values.get(1))
-                ? null
-                : mostUser;
+
+        return tie ? null : mostUser;
     }
 
     @Override
     public void addUser(Long userId) {
         User user = new User(userId);
         userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override

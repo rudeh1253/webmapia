@@ -115,6 +115,11 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
+    public List<User> getAllUsers(Long gameId) {
+        return gameRepository.findById(gameId).orElseThrow().getAllUsers();
+    }
+
+    @Override
     public NotificationBody<User> removeUser(Long gameId, Long userId) {
         GameManager game = findGameManager(gameId);
         return NotificationBody.<User>builder()

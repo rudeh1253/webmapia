@@ -57,6 +57,12 @@ public interface GameService {
     NotificationBody<User> removeUser(Long gameId, Long userId);
 
     /**
+     * Return all users belongs to the game of gameId.
+     * @return list of users belonging to the given game.
+     */
+    List<User> getAllUsers(Long gameId);
+
+    /**
      * Process activation of a skill.
      * @param activatorId of user which activated skill.
      * @param targetId of user which is the target of the skill.
