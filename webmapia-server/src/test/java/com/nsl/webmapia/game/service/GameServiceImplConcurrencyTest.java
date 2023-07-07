@@ -12,6 +12,7 @@ import com.nsl.webmapia.game.repository.MemoryGameRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -149,95 +150,170 @@ public class GameServiceImplConcurrencyTest {
             }
         }
     }
-//
-//    @Test
-//    void stepForward() {
-//    }
-//
-//    @Test
-//    void processVotes() {
-//        addUsers(gameId, 5);
-//        List<User> users = gameService.getAllUsers(gameId);
-//        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
-//        characterDistribution.put(CharacterCode.WOLF, 1);
-//        characterDistribution.put(CharacterCode.BETRAYER, 1);
-//        characterDistribution.put(CharacterCode.CITIZEN, 1);
-//        characterDistribution.put(CharacterCode.DETECTIVE, 1);
-//        characterDistribution.put(CharacterCode.FOLLOWER, 1);
-//        gameService.generateCharacters(gameId, characterDistribution);
-//        gameService.acceptVote(gameId, users.get(0).getID(), users.get(1).getID());
-//        gameService.acceptVote(gameId, users.get(1).getID(), users.get(2).getID());
-//        gameService.acceptVote(gameId, users.get(2).getID(), users.get(1).getID());
-//        gameService.acceptVote(gameId, users.get(3).getID(), users.get(1).getID());
-//        gameService.acceptVote(gameId, users.get(4).getID(), users.get(1).getID());
-//        NotificationBody<User> voteResult = gameService.processVotes(gameId);
-//        assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
-//        assertEquals(users.get(1), voteResult.getData());
-//    }
-//
-//    @Test
-//    void processVotes_tie() {
-//        addUsers(gameId, 6);
-//        List<User> users = gameService.getAllUsers(gameId);
-//        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
-//        characterDistribution.put(CharacterCode.WOLF, 1);
-//        characterDistribution.put(CharacterCode.BETRAYER, 1);
-//        characterDistribution.put(CharacterCode.CITIZEN, 1);
-//        characterDistribution.put(CharacterCode.DETECTIVE, 1);
-//        characterDistribution.put(CharacterCode.FOLLOWER, 1);
-//        characterDistribution.put(CharacterCode.GUARD, 1);
-//        gameService.generateCharacters(gameId, characterDistribution);
-//        gameService.acceptVote(gameId, users.get(0).getID(), users.get(1).getID());
-//        gameService.acceptVote(gameId, users.get(1).getID(), users.get(2).getID());
-//        gameService.acceptVote(gameId, users.get(2).getID(), users.get(2).getID());
-//        gameService.acceptVote(gameId, users.get(3).getID(), users.get(2).getID());
-//        gameService.acceptVote(gameId, users.get(4).getID(), users.get(1).getID());
-//        gameService.acceptVote(gameId, users.get(5).getID(), users.get(1).getID());
-//        NotificationBody<User> voteResult = gameService.processVotes(gameId);
-//        assertEquals(NotificationType.INVALID_VOTE, voteResult.getNotificationType());
-//        assertNull(voteResult.getData());
-//    }
-//
-//    @Test
-//    void processVote_includeNobility() {
-//        addUsers(gameId, 6);
-//        List<User> users = gameService.getAllUsers(gameId);
-//        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
-//        characterDistribution.put(CharacterCode.WOLF, 1);
-//        characterDistribution.put(CharacterCode.BETRAYER, 1);
-//        characterDistribution.put(CharacterCode.CITIZEN, 1);
-//        characterDistribution.put(CharacterCode.DETECTIVE, 1);
-//        characterDistribution.put(CharacterCode.FOLLOWER, 1);
-//        characterDistribution.put(CharacterCode.NOBILITY, 1);
-//        gameService.generateCharacters(gameId, characterDistribution);
-//        gameService.acceptVote(gameId, users.get(0).getID(), users.get(1).getID());
-//        gameService.acceptVote(gameId, users.get(1).getID(), users.get(2).getID());
-//        gameService.acceptVote(gameId, users.get(2).getID(), users.get(2).getID());
-//        gameService.acceptVote(gameId, users.get(3).getID(), users.get(2).getID());
-//        gameService.acceptVote(gameId, users.get(4).getID(), users.get(1).getID());
-//        gameService.acceptVote(gameId, users.get(5).getID(), users.get(1).getID());
-//        NotificationBody<User> voteResult = gameService.processVotes(gameId);
-//        assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
-//        assertEquals(users.get(1), voteResult.getData());
-//    }
-//
-//    @Test
-//    void addUser() {
-//        gameService.addUser(gameId, 1L);
-//        assertEquals(1, gameService.getAllUsers(gameId).size());
-//    }
-//
-//    @Test
-//    void removeUser() {
-//        gameService.addUser(gameId, 1L);
-//        gameService.addUser(gameId, 2L);
-//        assertEquals(2, gameService.getAllUsers(gameId).size());
-//        NotificationBody<User> removeNotification = gameService.removeUser(gameId, 1L);
-//        assertEquals(1, gameService.getAllUsers(gameId).size());
-//        assertEquals(2L, gameService.getAllUsers(gameId).get(0).getID());
-//        assertEquals(gameId, removeNotification.getGameId());
-//        assertNull(removeNotification.getReceiver());
-//        assertEquals(NotificationType.USER_REMOVED, removeNotification.getNotificationType());
-//        assertEquals(1L, removeNotification.getData().getID());
-//    }
+
+    @Test
+    void stepForward() {
+    }
+
+    @Test
+    void processVotes() {
+        List<Long> gameIds = new LinkedList<>();
+        for (int i = 0; i < 1000; i++) {
+            gameIds.add(gameService.createNewGame());
+        }
+        gameIds.forEach(id -> addUsers(id, 5));
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.BETRAYER, 1);
+        characterDistribution.put(CharacterCode.CITIZEN, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        characterDistribution.put(CharacterCode.FOLLOWER, 1);
+        gameIds.forEach(id -> gameService.generateCharacters(id, characterDistribution));
+
+        ExecutorService executor1 = Executors.newCachedThreadPool();
+        gameIds.forEach(id -> executor1.submit(() -> {
+            List<User> users = gameService.getAllUsers(id);
+            gameService.acceptVote(id, users.get(0).getID(), users.get(1).getID());
+            gameService.acceptVote(id, users.get(1).getID(), users.get(2).getID());
+            gameService.acceptVote(id, users.get(2).getID(), users.get(1).getID());
+            gameService.acceptVote(id, users.get(3).getID(), users.get(1).getID());
+            gameService.acceptVote(id, users.get(4).getID(), users.get(1).getID());
+        }));
+        executor1.shutdown();
+        try {
+            executor1.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ExecutorService executor2 = Executors.newCachedThreadPool();
+        gameIds.forEach(id -> executor2.submit(() -> {
+            List<User> users = gameService.getAllUsers(id);
+            NotificationBody<User> voteResult = gameService.processVotes(id);
+            assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
+            assertEquals(users.get(1), voteResult.getData());
+        }));
+        executor2.shutdown();
+    }
+
+    @Test
+    void processVotes_tie() {
+        List<Long> gameIds = new LinkedList<>();
+        for (int i = 0; i < 1000; i++) {
+            gameIds.add(gameService.createNewGame());
+        }
+        gameIds.forEach(id -> addUsers(id, 6));
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.BETRAYER, 1);
+        characterDistribution.put(CharacterCode.CITIZEN, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        characterDistribution.put(CharacterCode.FOLLOWER, 1);
+        characterDistribution.put(CharacterCode.GUARD, 1);
+        gameIds.forEach(id -> gameService.generateCharacters(id, characterDistribution));
+
+        ExecutorService executor1 = Executors.newCachedThreadPool();
+        gameIds.forEach(id -> executor1.submit(() -> {
+            List<User> users = gameService.getAllUsers(id);
+            gameService.acceptVote(id, users.get(0).getID(), users.get(1).getID());
+            gameService.acceptVote(id, users.get(1).getID(), users.get(2).getID());
+            gameService.acceptVote(id, users.get(2).getID(), users.get(2).getID());
+            gameService.acceptVote(id, users.get(3).getID(), users.get(2).getID());
+            gameService.acceptVote(id, users.get(4).getID(), users.get(1).getID());
+            gameService.acceptVote(id, users.get(5).getID(), users.get(1).getID());
+        }));
+        executor1.shutdown();
+        try {
+            executor1.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ExecutorService executor2 = Executors.newCachedThreadPool();
+        gameIds.forEach(id -> executor2.submit(() -> {
+            List<User> users = gameService.getAllUsers(id);
+            NotificationBody<User> voteResult = gameService.processVotes(id);
+            assertEquals(users.get(1), voteResult.getData());
+            assertNull(voteResult.getData());
+        }));
+        executor2.shutdown();
+    }
+
+    @Test
+    void processVote_includeNobility() {
+        List<Long> gameIds = new LinkedList<>();
+        for (int i = 0; i < 1000; i++) {
+            gameIds.add(gameService.createNewGame());
+        }
+        gameIds.forEach(id -> addUsers(id, 6));
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.BETRAYER, 1);
+        characterDistribution.put(CharacterCode.CITIZEN, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        characterDistribution.put(CharacterCode.FOLLOWER, 1);
+        characterDistribution.put(CharacterCode.NOBILITY, 1);
+        gameIds.forEach(id -> gameService.generateCharacters(id, characterDistribution));
+
+        ExecutorService executor1 = Executors.newCachedThreadPool();
+        Map<Long, User> executed = new ConcurrentHashMap<>();
+        gameIds.forEach(id -> executor1.submit(() -> {
+            List<User> users = gameService.getAllUsers(id);
+            gameService.acceptVote(id, users.get(0).getID(), users.get(1).getID());
+            gameService.acceptVote(id, users.get(1).getID(), users.get(2).getID());
+            gameService.acceptVote(id, users.get(2).getID(), users.get(1).getID());
+            gameService.acceptVote(id, users.get(3).getID(), users.get(2).getID());
+            gameService.acceptVote(id, users.get(4).getID(), users.get(1).getID());
+            gameService.acceptVote(id, users.get(5).getID(), users.get(2).getID());
+            for (User u : users) {
+                if (u.getCharacter().getCharacterCode() == CharacterCode.NOBILITY) {
+                    executed.put(id, u);
+                    break;
+                }
+            }
+        }));
+        executor1.shutdown();
+        try {
+            executor1.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ExecutorService executor2 = Executors.newCachedThreadPool();
+        gameIds.forEach(id -> executor2.submit(() -> {
+            List<User> users = gameService.getAllUsers(id);
+            NotificationBody<User> voteResult = gameService.processVotes(id);
+            assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
+            assertEquals(users.get(1), voteResult.getData());
+        }));
+        executor2.shutdown();
+    }
+
+    @Test
+    void removeUser() {
+        List<Long> gameIds = new LinkedList<>();
+        for (int i = 0; i < 1000; i++) {
+            gameIds.add(gameService.createNewGame());
+        }
+        gameIds.forEach(id -> {
+            gameService.addUser(id, 1L);
+            gameService.addUser(id, 2L);
+            assertEquals(2, gameService.getAllUsers(id).size());
+        });
+
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Map<Long, NotificationBody<User>> notifications = new ConcurrentHashMap<>();
+        gameIds.forEach(id -> executor.submit(() -> notifications.put(id, gameService.removeUser(id, 1L))));
+        executor.shutdown();
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        assertEquals(1000, notifications.size());
+        for (Long key : notifications.keySet()) {
+            assertEquals(1, gameService.getAllUsers(key).size());
+            assertEquals(2L, gameService.getAllUsers(key).get(0).getID());
+            assertNull(notifications.get(key).getReceiver());
+            assertEquals(NotificationType.USER_REMOVED, notifications.get(key).getNotificationType());
+            assertEquals(1L, notifications.get(key).getData().getID());
+        }
+    }
 }
