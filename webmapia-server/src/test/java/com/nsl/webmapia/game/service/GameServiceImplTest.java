@@ -1,5 +1,6 @@
 package com.nsl.webmapia.game.service;
 
+import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
@@ -184,5 +185,16 @@ class GameServiceImplTest {
         assertNull(removeNotification.getReceiver());
         assertEquals(NotificationType.USER_REMOVED, removeNotification.getNotificationType());
         assertEquals(1L, removeNotification.getData().getID());
+    }
+
+    @Test
+    void createGames() {
+        List<Long> gameIds = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            gameIds.add(gameService.createNewGame());
+        }
+        gameIds.add(gameId);
+        List<GameManager> allGames = gameService.getAllGames();
+        allGames.forEach(g -> assertTrue(gameIds.contains(g.getGameId())));
     }
 }

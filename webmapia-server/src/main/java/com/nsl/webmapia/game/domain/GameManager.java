@@ -19,7 +19,7 @@ public interface GameManager {
                                    SkillManager skillManager,
                                    UserRepository userRepository) {
         Random random = new Random();
-        Long gameId = random.nextLong(10000L, 99999L);
+        Long gameId = random.nextLong(100000L, 999999L);
         return new GameManagerImpl(gameId, characters, skillManager,
                 userRepository);
     }
