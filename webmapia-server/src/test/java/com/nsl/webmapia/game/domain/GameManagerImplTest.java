@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -267,6 +270,22 @@ class GameManagerImplTest {
                 case NONE:
             }
         });
+    }
+
+    @Test
+    void addUsersConcurrent() {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        for (int i = 0; i < 16; i++) {
+            final int userId = i + 1;
+            executor.submit(() -> gameManager.addUser((long)userId));
+        }
+        executor.shutdown();
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        assertEquals(16, gameManager.getAllUsers().size());
     }
 
     private void setting() {

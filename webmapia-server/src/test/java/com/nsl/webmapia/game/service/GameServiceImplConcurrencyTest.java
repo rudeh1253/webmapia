@@ -12,10 +12,7 @@ import com.nsl.webmapia.game.repository.MemoryGameRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -98,43 +95,60 @@ public class GameServiceImplConcurrencyTest {
         }
     }
 
-//    @Test
-//    void generateCharacters() {
-//        addUsers(gameId, 16);
-//        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
-//        characterDistribution.put(CharacterCode.WOLF, 1);
-//        characterDistribution.put(CharacterCode.BETRAYER, 1);
-//        characterDistribution.put(CharacterCode.CITIZEN, 1);
-//        characterDistribution.put(CharacterCode.DETECTIVE, 1);
-//        characterDistribution.put(CharacterCode.FOLLOWER, 1);
-//        characterDistribution.put(CharacterCode.GUARD, 1);
-//        characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
-//        characterDistribution.put(CharacterCode.MEDIUMSHIP, 1);
-//        characterDistribution.put(CharacterCode.MURDERER, 1);
-//        characterDistribution.put(CharacterCode.NOBILITY, 1);
-//        characterDistribution.put(CharacterCode.PREDICTOR, 1);
-//        characterDistribution.put(CharacterCode.SECRET_SOCIETY, 2);
-//        characterDistribution.put(CharacterCode.SOLDIER, 1);
-//        characterDistribution.put(CharacterCode.SUCCESSOR, 1);
-//        characterDistribution.put(CharacterCode.TEMPLAR, 1);
-//        List<NotificationBody<Character>> charNotifications = gameService.generateCharacters(gameId, characterDistribution);
-//        List<Long> userIds = new ArrayList<>(16);
-//        for (User u : gameService.getAllUsers(gameId)) {
-//            userIds.add(u.getID());
-//        }
-//
-//        charNotifications.forEach(e -> {
-//            assertEquals(NotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED, e.getNotificationType());
-//            assertEquals(gameId, e.getGameId());
-//            assertTrue(userIds.contains(e.getReceiver().getID()));
-//        });
-//
-//        characterDistribution.keySet().forEach(k -> {
-//            assertEquals(characterDistribution.get(k),
-//                    charNotifications.stream().filter(e -> e.getData().getCharacterCode() == k)
-//                            .toList().size());
-//        });
-//    }
+    @Test
+    void generateCharacters() {
+        List<Long> gameIds = new LinkedList<>();
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.BETRAYER, 1);
+        characterDistribution.put(CharacterCode.CITIZEN, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        characterDistribution.put(CharacterCode.FOLLOWER, 1);
+        characterDistribution.put(CharacterCode.GUARD, 1);
+        characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
+        characterDistribution.put(CharacterCode.MEDIUMSHIP, 1);
+        characterDistribution.put(CharacterCode.MURDERER, 1);
+        characterDistribution.put(CharacterCode.NOBILITY, 1);
+        characterDistribution.put(CharacterCode.PREDICTOR, 1);
+        characterDistribution.put(CharacterCode.SECRET_SOCIETY, 2);
+        characterDistribution.put(CharacterCode.SOLDIER, 1);
+        characterDistribution.put(CharacterCode.SUCCESSOR, 1);
+        characterDistribution.put(CharacterCode.TEMPLAR, 1);
+        for (int i = 0; i < 100; i++) {
+            Long gameId = gameService.createNewGame();
+            gameIds.add(gameId);
+            addUsers(gameId, 16);
+        }
+
+        ExecutorService executor = Executors.newCachedThreadPool();
+        List<List<NotificationBody<Character>>> characterNotifications = Collections.synchronizedList(new LinkedList<>());
+        gameIds.forEach(id -> executor.submit(() -> characterNotifications.add(gameService.generateCharacters(id, characterDistribution))));
+        executor.shutdown();
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        List<Long> userIds = new ArrayList<>();
+        for (int i = 1; i <= 16; i++) {
+            userIds.add((long)i);
+        }
+        assertEquals(100, characterNotifications.size());
+
+        for (List<NotificationBody<Character>> notificationList : characterNotifications) {
+            assertEquals(16, notificationList.size());
+            for (NotificationBody<Character> notification : notificationList) {
+                assertEquals(NotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED, notification.getNotificationType());
+                assertTrue(userIds.contains(notification.getReceiver().getID()));
+                characterDistribution.keySet().forEach(e -> {
+                    List<NotificationBody<Character>> filtered = notificationList.stream()
+                            .filter(t -> t.getData().getCharacterCode() == e)
+                            .toList();
+                    assertEquals(characterDistribution.get(e), filtered.size());
+                });
+            }
+        }
+    }
 //
 //    @Test
 //    void stepForward() {

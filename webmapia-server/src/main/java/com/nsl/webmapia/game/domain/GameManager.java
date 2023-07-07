@@ -8,20 +8,23 @@ import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 import com.nsl.webmapia.game.repository.UserRepository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 public interface GameManager {
+    Set<Long> gameIdSet = Collections.synchronizedSet(new HashSet<>());
 
     static GameManager newInstance(Map<CharacterCode, Character> characters,
                                    SkillManager skillManager,
                                    UserRepository userRepository) {
         Random random = new Random();
         Long gameId = random.nextLong(100000L, 999999L);
-        return new GameManagerImpl(gameId, characters, skillManager,
-                userRepository);
+        if (gameIdSet.contains(gameId)) {
+            return newInstance(characters, skillManager, userRepository);
+        } else {
+            gameIdSet.add(gameId);
+            return new GameManagerImpl(gameId, characters, skillManager,
+                    userRepository);
+        }
     }
 
     /**
