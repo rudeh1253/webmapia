@@ -1,5 +1,6 @@
 package com.nsl.webmapia.game.service;
 
+import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
@@ -17,10 +18,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class GameServiceImplTest {
+public class GameServiceImplConcurrencyTest {
     Long gameId;
     GameService gameService;
     UserRepository userRepository;
@@ -46,9 +49,30 @@ class GameServiceImplTest {
         Soldier soldier = new Soldier(skillManager);
         Templar templar = new Templar(skillManager);
         Successor successor = new Successor(skillManager);
+
         gameService = new GameServiceImpl(wolf, betrayer, citizen, detective, follower, guard, humanMouse, mediumship,
                 murderer, nobility, predictor, secretSociety, soldier, successor, templar, gameRepository);
         gameId = gameService.createNewGame();
+    }
+
+    @Test
+    public void createNewGame() {
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        List<Future<Long>> futures = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            futures.add(executor.submit(() -> gameService.createNewGame()));
+        }
+        List<Long> gameIds = new ArrayList<>();
+        futures.forEach(e -> {
+            try {
+                gameIds.add(e.get());
+            } catch (InterruptedException | ExecutionException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        executor.shutdown();
+        while (!executor.isTerminated()) {}
+        gameIds.forEach(id -> assertNotNull(gameService.getGame(id)));
     }
 
     void addUsers(int num) {
@@ -91,7 +115,7 @@ class GameServiceImplTest {
         characterDistribution.keySet().forEach(k -> {
             assertEquals(characterDistribution.get(k),
                     charNotifications.stream().filter(e -> e.getData().getCharacterCode() == k)
-                    .toList().size());
+                            .toList().size());
         });
     }
 

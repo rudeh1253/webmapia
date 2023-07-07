@@ -169,4 +169,14 @@ public class GameServiceImpl implements  GameService {
         gameRepository.save(game);
         return game.getGameId();
     }
+
+    @Override
+    public List<GameManager> getAllGames() {
+        return gameRepository.findAll();
+    }
+
+    @Override
+    public GameManager getGame(Long gameId) {
+        return gameRepository.findById(gameId).orElse(null);
+    }
 }

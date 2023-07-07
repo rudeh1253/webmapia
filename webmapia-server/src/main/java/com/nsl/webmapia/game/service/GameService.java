@@ -10,7 +10,6 @@ import com.nsl.webmapia.game.domain.skill.SkillType;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface GameService {
 
@@ -81,4 +80,8 @@ public interface GameService {
      * @return gameId.
      */
     Long createNewGame();
+
+    List<GameManager> getAllGames();
+
+    public GameManager getGame(Long gameId);
 }
