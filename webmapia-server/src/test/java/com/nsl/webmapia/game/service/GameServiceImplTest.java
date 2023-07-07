@@ -5,7 +5,7 @@ import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.notification.GameNotificationBody;
-import com.nsl.webmapia.game.domain.notification.NotificationType;
+import com.nsl.webmapia.game.domain.notification.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.repository.GameRepository;
 import com.nsl.webmapia.game.repository.MemoryGameRepository;
@@ -84,7 +84,7 @@ class GameServiceImplTest {
         }
 
         charNotifications.forEach(e -> {
-            assertEquals(NotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED, e.getNotificationType());
+            assertEquals(GameNotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED, e.getGameNotificationType());
             assertEquals(gameId, e.getGameId());
             assertTrue(userIds.contains(e.getReceiver().getID()));
         });
@@ -117,7 +117,7 @@ class GameServiceImplTest {
         gameService.acceptVote(gameId, users.get(3).getID(), users.get(1).getID());
         gameService.acceptVote(gameId, users.get(4).getID(), users.get(1).getID());
         GameNotificationBody<User> voteResult = gameService.processVotes(gameId);
-        assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
+        assertEquals(GameNotificationType.EXECUTE_BY_VOTE, voteResult.getGameNotificationType());
         assertEquals(users.get(1), voteResult.getData());
     }
 
@@ -140,7 +140,7 @@ class GameServiceImplTest {
         gameService.acceptVote(gameId, users.get(4).getID(), users.get(1).getID());
         gameService.acceptVote(gameId, users.get(5).getID(), users.get(1).getID());
         GameNotificationBody<User> voteResult = gameService.processVotes(gameId);
-        assertEquals(NotificationType.INVALID_VOTE, voteResult.getNotificationType());
+        assertEquals(GameNotificationType.INVALID_VOTE, voteResult.getGameNotificationType());
         assertNull(voteResult.getData());
     }
 
@@ -163,7 +163,7 @@ class GameServiceImplTest {
         gameService.acceptVote(gameId, users.get(4).getID(), users.get(1).getID());
         gameService.acceptVote(gameId, users.get(5).getID(), users.get(1).getID());
         GameNotificationBody<User> voteResult = gameService.processVotes(gameId);
-        assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
+        assertEquals(GameNotificationType.EXECUTE_BY_VOTE, voteResult.getGameNotificationType());
         assertEquals(users.get(1), voteResult.getData());
     }
 
@@ -183,7 +183,7 @@ class GameServiceImplTest {
         assertEquals(2L, gameService.getAllUsers(gameId).get(0).getID());
         assertEquals(gameId, removeNotification.getGameId());
         assertNull(removeNotification.getReceiver());
-        assertEquals(NotificationType.USER_REMOVED, removeNotification.getNotificationType());
+        assertEquals(GameNotificationType.USER_REMOVED, removeNotification.getGameNotificationType());
         assertEquals(1L, removeNotification.getData().getID());
     }
 

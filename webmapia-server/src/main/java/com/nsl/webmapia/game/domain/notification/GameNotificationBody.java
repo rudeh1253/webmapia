@@ -6,14 +6,14 @@ import lombok.*;
 @Setter
 @Getter
 public class GameNotificationBody<T> {
-    private NotificationType notificationType;
+    private GameNotificationType gameNotificationType;
     private User receiver;
     private T data;
     private Long gameId;
 
     @Builder
-    public GameNotificationBody(NotificationType notificationType, User receiver, T data, Long gameId) {
-        this.notificationType = notificationType;
+    public GameNotificationBody(GameNotificationType gameNotificationType, User receiver, T data, Long gameId) {
+        this.gameNotificationType = gameNotificationType;
         this.receiver = receiver;
         this.data = data;
         this.gameId = gameId;

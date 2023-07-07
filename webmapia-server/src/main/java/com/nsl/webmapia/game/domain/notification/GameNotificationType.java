@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.domain.notification;
 
-public enum NotificationType {
+public enum GameNotificationType {
     SKILL_PUBLIC,
     SKILL_PRIVATE,
     NOTIFY_WHICH_CHARACTER_ALLOCATED,

@@ -5,7 +5,7 @@ import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.notification.GameNotificationBody;
-import com.nsl.webmapia.game.domain.notification.NotificationType;
+import com.nsl.webmapia.game.domain.notification.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.repository.MemoryGameRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -137,7 +137,7 @@ public class GameServiceImplConcurrencyTest {
         for (List<GameNotificationBody<Character>> notificationList : characterNotifications) {
             assertEquals(16, notificationList.size());
             for (GameNotificationBody<Character> notification : notificationList) {
-                assertEquals(NotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED, notification.getNotificationType());
+                assertEquals(GameNotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED, notification.getGameNotificationType());
                 assertTrue(userIds.contains(notification.getReceiver().getID()));
                 characterDistribution.keySet().forEach(e -> {
                     List<GameNotificationBody<Character>> filtered = notificationList.stream()
@@ -187,7 +187,7 @@ public class GameServiceImplConcurrencyTest {
         gameIds.forEach(id -> executor2.submit(() -> {
             List<User> users = gameService.getAllUsers(id);
             GameNotificationBody<User> voteResult = gameService.processVotes(id);
-            assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
+            assertEquals(GameNotificationType.EXECUTE_BY_VOTE, voteResult.getGameNotificationType());
             assertEquals(users.get(1), voteResult.getData());
         }));
         executor2.shutdown();
@@ -278,7 +278,7 @@ public class GameServiceImplConcurrencyTest {
         gameIds.forEach(id -> executor2.submit(() -> {
             List<User> users = gameService.getAllUsers(id);
             GameNotificationBody<User> voteResult = gameService.processVotes(id);
-            assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
+            assertEquals(GameNotificationType.EXECUTE_BY_VOTE, voteResult.getGameNotificationType());
             assertEquals(users.get(1), voteResult.getData());
         }));
         executor2.shutdown();
@@ -310,7 +310,7 @@ public class GameServiceImplConcurrencyTest {
             assertEquals(1, gameService.getAllUsers(key).size());
             assertEquals(2L, gameService.getAllUsers(key).get(0).getID());
             assertNull(notifications.get(key).getReceiver());
-            assertEquals(NotificationType.USER_REMOVED, notifications.get(key).getNotificationType());
+            assertEquals(GameNotificationType.USER_REMOVED, notifications.get(key).getGameNotificationType());
             assertEquals(1L, notifications.get(key).getData().getID());
         }
     }
