@@ -4,15 +4,13 @@ import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.character.Character;
-import com.nsl.webmapia.game.domain.notification.NotificationBody;
+import com.nsl.webmapia.game.domain.notification.GameNotificationBody;
 import com.nsl.webmapia.game.domain.notification.NotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
-import com.nsl.webmapia.game.repository.GameRepository;
 import com.nsl.webmapia.game.repository.MemoryGameRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -122,7 +120,7 @@ public class GameServiceImplConcurrencyTest {
         }
 
         ExecutorService executor = Executors.newCachedThreadPool();
-        List<List<NotificationBody<Character>>> characterNotifications = Collections.synchronizedList(new LinkedList<>());
+        List<List<GameNotificationBody<Character>>> characterNotifications = Collections.synchronizedList(new LinkedList<>());
         gameIds.forEach(id -> executor.submit(() -> characterNotifications.add(gameService.generateCharacters(id, characterDistribution))));
         executor.shutdown();
         try {
@@ -136,13 +134,13 @@ public class GameServiceImplConcurrencyTest {
         }
         assertEquals(100, characterNotifications.size());
 
-        for (List<NotificationBody<Character>> notificationList : characterNotifications) {
+        for (List<GameNotificationBody<Character>> notificationList : characterNotifications) {
             assertEquals(16, notificationList.size());
-            for (NotificationBody<Character> notification : notificationList) {
+            for (GameNotificationBody<Character> notification : notificationList) {
                 assertEquals(NotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED, notification.getNotificationType());
                 assertTrue(userIds.contains(notification.getReceiver().getID()));
                 characterDistribution.keySet().forEach(e -> {
-                    List<NotificationBody<Character>> filtered = notificationList.stream()
+                    List<GameNotificationBody<Character>> filtered = notificationList.stream()
                             .filter(t -> t.getData().getCharacterCode() == e)
                             .toList();
                     assertEquals(characterDistribution.get(e), filtered.size());
@@ -188,7 +186,7 @@ public class GameServiceImplConcurrencyTest {
         ExecutorService executor2 = Executors.newCachedThreadPool();
         gameIds.forEach(id -> executor2.submit(() -> {
             List<User> users = gameService.getAllUsers(id);
-            NotificationBody<User> voteResult = gameService.processVotes(id);
+            GameNotificationBody<User> voteResult = gameService.processVotes(id);
             assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
             assertEquals(users.get(1), voteResult.getData());
         }));
@@ -230,7 +228,7 @@ public class GameServiceImplConcurrencyTest {
         ExecutorService executor2 = Executors.newCachedThreadPool();
         gameIds.forEach(id -> executor2.submit(() -> {
             List<User> users = gameService.getAllUsers(id);
-            NotificationBody<User> voteResult = gameService.processVotes(id);
+            GameNotificationBody<User> voteResult = gameService.processVotes(id);
             assertEquals(users.get(1), voteResult.getData());
             assertNull(voteResult.getData());
         }));
@@ -279,7 +277,7 @@ public class GameServiceImplConcurrencyTest {
         ExecutorService executor2 = Executors.newCachedThreadPool();
         gameIds.forEach(id -> executor2.submit(() -> {
             List<User> users = gameService.getAllUsers(id);
-            NotificationBody<User> voteResult = gameService.processVotes(id);
+            GameNotificationBody<User> voteResult = gameService.processVotes(id);
             assertEquals(NotificationType.EXECUTE_BY_VOTE, voteResult.getNotificationType());
             assertEquals(users.get(1), voteResult.getData());
         }));
@@ -299,7 +297,7 @@ public class GameServiceImplConcurrencyTest {
         });
 
         ExecutorService executor = Executors.newCachedThreadPool();
-        Map<Long, NotificationBody<User>> notifications = new ConcurrentHashMap<>();
+        Map<Long, GameNotificationBody<User>> notifications = new ConcurrentHashMap<>();
         gameIds.forEach(id -> executor.submit(() -> notifications.put(id, gameService.removeUser(id, 1L))));
         executor.shutdown();
         try {

@@ -1,4 +1,4 @@
-package com.nsl.webmapia.message.domain;
+package com.nsl.webmapia.chat.domain;
 
 import lombok.*;
 

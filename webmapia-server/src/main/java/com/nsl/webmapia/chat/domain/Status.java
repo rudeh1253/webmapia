@@ -1,4 +1,4 @@
-package com.nsl.webmapia.message.domain;
+package com.nsl.webmapia.chat.domain;
 
 /**
  * Enum which represents the status of the message

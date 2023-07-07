@@ -1,6 +1,6 @@
-package com.nsl.webmapia.message.controller;
+package com.nsl.webmapia.chat.controller;
 
-import com.nsl.webmapia.message.domain.Message;
+import com.nsl.webmapia.chat.domain.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
