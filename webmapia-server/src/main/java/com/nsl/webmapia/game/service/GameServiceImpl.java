@@ -4,7 +4,7 @@ import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.*;
-import com.nsl.webmapia.game.domain.notification.GameNotificationBody;
+import com.nsl.webmapia.game.domain.notification.GameNotification;
 import com.nsl.webmapia.game.domain.notification.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
@@ -61,13 +61,13 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public List<GameNotificationBody<Character>> generateCharacters(Long gameId,
-                                                                    Map<CharacterCode, Integer> characterDistribution) {
+    public List<GameNotification<Character>> generateCharacters(Long gameId,
+                                                                Map<CharacterCode, Integer> characterDistribution) {
         GameManager gameManager = findGameManager(gameId);
         List<User> users = gameManager.generateCharacters(characterDistribution);
-        List<GameNotificationBody<Character>> notificationBodies = new ArrayList<>();
+        List<GameNotification<Character>> notificationBodies = new ArrayList<>();
         for (User user : users) {
-            notificationBodies.add(GameNotificationBody.<Character>builder()
+            notificationBodies.add(GameNotification.<Character>builder()
                     .notificationType(GameNotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED)
                     .receiver(user)
                     .data(user.getCharacter())
@@ -89,17 +89,17 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public GameNotificationBody<User> processVotes(Long gameId) {
+    public GameNotification<User> processVotes(Long gameId) {
         GameManager game = findGameManager(gameId);
         User mostUser = game.processVotes();
         return mostUser == null
-                ? GameNotificationBody.<User>builder()
+                ? GameNotification.<User>builder()
                         .gameId(gameId)
                         .notificationType(GameNotificationType.INVALID_VOTE)
                         .receiver(null)
                         .data(null)
                         .build()
-                : GameNotificationBody.<User>builder()
+                : GameNotification.<User>builder()
                         .gameId(gameId)
                         .notificationType(GameNotificationType.EXECUTE_BY_VOTE)
                         .receiver(null)
@@ -119,9 +119,9 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public GameNotificationBody<User> removeUser(Long gameId, Long userId) {
+    public GameNotification<User> removeUser(Long gameId, Long userId) {
         GameManager game = findGameManager(gameId);
-        return GameNotificationBody.<User>builder()
+        return GameNotification.<User>builder()
                 .gameId(gameId)
                 .receiver(null)
                 .notificationType(GameNotificationType.USER_REMOVED)
@@ -136,19 +136,19 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public List<GameNotificationBody<SkillEffect>> processSkills(Long gameId) {
+    public List<GameNotification<SkillEffect>> processSkills(Long gameId) {
         GameManager game = findGameManager(gameId);
         List<SkillEffect> skillEffects = game.processSkills();
-        List<GameNotificationBody<SkillEffect>> notificationBodies = new ArrayList<>();
+        List<GameNotification<SkillEffect>> notificationBodies = new ArrayList<>();
         skillEffects.forEach(se -> {
             if (se.getReceiverUser() == null) {
-                notificationBodies.add(GameNotificationBody.<SkillEffect>builder()
+                notificationBodies.add(GameNotification.<SkillEffect>builder()
                         .receiver(null)
                         .notificationType(GameNotificationType.SKILL_PUBLIC)
                         .data(se)
                         .build());
             } else {
-                notificationBodies.add(GameNotificationBody.<SkillEffect>builder()
+                notificationBodies.add(GameNotification.<SkillEffect>builder()
                         .receiver(se.getReceiverUser())
                         .notificationType(GameNotificationType.SKILL_PRIVATE)
                         .data(se)

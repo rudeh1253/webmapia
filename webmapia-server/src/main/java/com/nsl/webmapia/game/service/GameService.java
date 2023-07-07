@@ -4,7 +4,7 @@ import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.CharacterCode;
-import com.nsl.webmapia.game.domain.notification.GameNotificationBody;
+import com.nsl.webmapia.game.domain.notification.GameNotification;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
 
@@ -19,8 +19,8 @@ public interface GameService {
      * @param characterDistribution the number of each of character to generate.
      * @return information to be sent to each user saying that which character the user is allocated.
      */
-    List<GameNotificationBody<Character>> generateCharacters(Long gameId,
-                                                             Map<CharacterCode, Integer> characterDistribution);
+    List<GameNotification<Character>> generateCharacters(Long gameId,
+                                                         Map<CharacterCode, Integer> characterDistribution);
 
     /**
      * The phase of game steps forward.
@@ -39,7 +39,7 @@ public interface GameService {
      * Given votes, determine which user has gotten the most votes such that he will be executed.
      * @return NotificationBody object containing the result of the vote.
      */
-    GameNotificationBody<User> processVotes(Long gameId);
+    GameNotification<User> processVotes(Long gameId);
 
     /**
      * Add user in repository. The id is generated randomly.
@@ -53,7 +53,7 @@ public interface GameService {
      * @param userId of user to remove.
      * @return User object which is removed, if it doesn't exist, return null.
      */
-    GameNotificationBody<User> removeUser(Long gameId, Long userId);
+    GameNotification<User> removeUser(Long gameId, Long userId);
 
     /**
      * Return all users belongs to the game of gameId.
@@ -73,7 +73,7 @@ public interface GameService {
      * After the night, process activated skills.
      * @return a list of notification body.
      */
-    List<GameNotificationBody<SkillEffect>> processSkills(Long gameId);
+    List<GameNotification<SkillEffect>> processSkills(Long gameId);
 
     /**
      * Create a new game.

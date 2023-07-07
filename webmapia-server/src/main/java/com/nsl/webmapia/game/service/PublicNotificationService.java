@@ -1,12 +1,12 @@
 package com.nsl.webmapia.game.service;
 
-import com.nsl.webmapia.game.domain.notification.GameNotificationBody;
+import com.nsl.webmapia.game.domain.notification.GameNotification;
 
 import java.util.List;
 
 public interface PublicNotificationService {
 
-    <T> void addNotification(GameNotificationBody<T> publicNotification);
+    <T> void addNotification(GameNotification<T> publicNotification);
 
-    <T> List<GameNotificationBody<T>> broadcast();
+    <T> List<GameNotification<T>> broadcast();
 }
