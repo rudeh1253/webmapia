@@ -2,11 +2,13 @@ package com.nsl.webmapia.game.service;
 
 import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
-import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.CharacterCode;
 import com.nsl.webmapia.game.domain.notification.GameNotification;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
+import com.nsl.webmapia.game.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.game.dto.UserResponseDTO;
+import com.nsl.webmapia.game.dto.VoteResultResponseDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +21,8 @@ public interface GameService {
      * @param characterDistribution the number of each of character to generate.
      * @return information to be sent to each user saying that which character the user is allocated.
      */
-    List<GameNotification<Character>> generateCharacters(Long gameId,
-                                                         Map<CharacterCode, Integer> characterDistribution);
+    List<CharacterGenerationResponseDTO> generateCharacters(Long gameId,
+                                                            Map<CharacterCode, Integer> characterDistribution);
 
     /**
      * The phase of game steps forward.
@@ -39,7 +41,7 @@ public interface GameService {
      * Given votes, determine which user has gotten the most votes such that he will be executed.
      * @return NotificationBody object containing the result of the vote.
      */
-    GameNotification<User> processVotes(Long gameId);
+    VoteResultResponseDTO processVotes(Long gameId);
 
     /**
      * Add user in repository. The id is generated randomly.
@@ -53,13 +55,13 @@ public interface GameService {
      * @param userId of user to remove.
      * @return User object which is removed, if it doesn't exist, return null.
      */
-    GameNotification<User> removeUser(Long gameId, Long userId);
+    UserResponseDTO removeUser(Long gameId, Long userId);
 
     /**
      * Return all users belongs to the game of gameId.
      * @return list of users belonging to the given game.
      */
-    List<User> getAllUsers(Long gameId);
+    List<UserResponseDTO> getAllUsers(Long gameId);
 
     /**
      * Process activation of a skill.

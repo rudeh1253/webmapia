@@ -105,6 +105,11 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
+    public Optional<User> getOneUser(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
     public Optional<User> removeUser(Long userId) {
         return userRepository.deleteUserById(userId);
     }

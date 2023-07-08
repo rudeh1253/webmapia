@@ -18,6 +18,7 @@ import java.util.List;
 @ToString
 public class User {
     private final Long ID;
+    private String name;
     private Character character;
     private boolean isDead;
 
@@ -25,6 +26,11 @@ public class User {
         this.ID = id;
         this.character = null;
         this.isDead = false;
+    }
+
+    public User(Long id, String name) {
+        this.ID = id;
+        this.name = name;
     }
 
     /**

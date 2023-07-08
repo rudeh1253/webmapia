@@ -68,6 +68,8 @@ public interface GameManager {
      */
     List<User> getAllUsers();
 
+    Optional<User> getOneUser(Long userId);
+
     /**
      * Remove user from the repository.
      * @param userId of user to remove.

@@ -9,6 +9,9 @@ import com.nsl.webmapia.game.domain.notification.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillType;
+import com.nsl.webmapia.game.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.game.dto.UserResponseDTO;
+import com.nsl.webmapia.game.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.game.repository.GameRepository;
 import com.nsl.webmapia.game.repository.MemoryUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,20 +64,18 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public List<GameNotification<Character>> generateCharacters(Long gameId,
-                                                                Map<CharacterCode, Integer> characterDistribution) {
+    public List<CharacterGenerationResponseDTO> generateCharacters(Long gameId,
+                                                                   Map<CharacterCode, Integer> characterDistribution) {
         GameManager gameManager = findGameManager(gameId);
-        List<User> users = gameManager.generateCharacters(characterDistribution);
-        List<GameNotification<Character>> notificationBodies = new ArrayList<>();
-        for (User user : users) {
-            notificationBodies.add(GameNotification.<Character>builder()
-                    .notificationType(GameNotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED)
-                    .receiver(user)
-                    .data(user.getCharacter())
-                    .gameId(gameManager.getGameId())
-                    .build());
-        }
-        return notificationBodies;
+        final List<User> users = gameManager.generateCharacters(characterDistribution);
+        final List<CharacterGenerationResponseDTO> dtoList = new ArrayList<>();
+
+        users.forEach(user ->
+                CharacterGenerationResponseDTO.from(GameNotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED,
+                        user.getID(),
+                        user.getCharacter().getCharacterCode(),
+                        gameId));
+        return dtoList;
     }
 
     @Override
@@ -89,22 +90,12 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public GameNotification<User> processVotes(Long gameId) {
+    public VoteResultResponseDTO processVotes(Long gameId) {
         GameManager game = findGameManager(gameId);
         User mostUser = game.processVotes();
         return mostUser == null
-                ? GameNotification.<User>builder()
-                        .gameId(gameId)
-                        .notificationType(GameNotificationType.INVALID_VOTE)
-                        .receiver(null)
-                        .data(null)
-                        .build()
-                : GameNotification.<User>builder()
-                        .gameId(gameId)
-                        .notificationType(GameNotificationType.EXECUTE_BY_VOTE)
-                        .receiver(null)
-                        .data(mostUser)
-                        .build();
+                ? VoteResultResponseDTO.from(GameNotificationType.INVALID_VOTE, gameId, null)
+                : VoteResultResponseDTO.from(GameNotificationType.INVALID_VOTE, gameId, mostUser.getID());
     }
 
     @Override
@@ -114,19 +105,21 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public List<User> getAllUsers(Long gameId) {
-        return gameRepository.findById(gameId).orElseThrow().getAllUsers();
+    public List<UserResponseDTO> getAllUsers(Long gameId) {
+        return gameRepository
+                .findById(gameId)
+                .orElseThrow()
+                .getAllUsers()
+                .stream()
+                .map(user -> UserResponseDTO.from(gameId, user))
+                .toList();
     }
 
     @Override
-    public GameNotification<User> removeUser(Long gameId, Long userId) {
+    public UserResponseDTO removeUser(Long gameId, Long userId) {
         GameManager game = findGameManager(gameId);
-        return GameNotification.<User>builder()
-                .gameId(gameId)
-                .receiver(null)
-                .notificationType(GameNotificationType.USER_REMOVED)
-                .data(game.removeUser(userId).orElse(null))
-                .build();
+        User userToRemove = game.removeUser(userId).orElseThrow();
+        return UserResponseDTO.from(gameId, userToRemove);
     }
 
     @Override
@@ -139,23 +132,23 @@ public class GameServiceImpl implements  GameService {
     public List<GameNotification<SkillEffect>> processSkills(Long gameId) {
         GameManager game = findGameManager(gameId);
         List<SkillEffect> skillEffects = game.processSkills();
-        List<GameNotification<SkillEffect>> notificationBodies = new ArrayList<>();
+        final List<GameNotification<SkillEffect>> notifications = new ArrayList<>();
         skillEffects.forEach(se -> {
             if (se.getReceiverUser() == null) {
-                notificationBodies.add(GameNotification.<SkillEffect>builder()
+                notifications.add(GameNotification.<SkillEffect>builder()
                         .receiver(null)
-                        .notificationType(GameNotificationType.SKILL_PUBLIC)
+                        .gameNotificationType(GameNotificationType.SKILL_PUBLIC)
                         .data(se)
                         .build());
             } else {
-                notificationBodies.add(GameNotification.<SkillEffect>builder()
+                notifications.add(GameNotification.<SkillEffect>builder()
                         .receiver(se.getReceiverUser())
-                        .notificationType(GameNotificationType.SKILL_PRIVATE)
+                        .gameNotificationType(GameNotificationType.SKILL_PRIVATE)
                         .data(se)
                         .build());
             }
         });
-        return notificationBodies;
+        return notifications;
     }
 
     private GameManager findGameManager(Long gameId) {

@@ -3,15 +3,13 @@ package com.nsl.webmapia.game.controller;
 import com.nsl.webmapia.common.CommonResponse;
 import com.nsl.webmapia.common.exception.ErrorCode;
 import com.nsl.webmapia.common.exception.UnsupportedNotificationTypeException;
-import com.nsl.webmapia.game.domain.notification.GameNotification;
 import com.nsl.webmapia.game.domain.notification.GameNotificationType;
-import com.nsl.webmapia.game.dto.UserDTO;
+import com.nsl.webmapia.game.dto.UserResponseDTO;
 import com.nsl.webmapia.game.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -29,19 +27,19 @@ public class GameController {
     }
 
     @MessageMapping("/game/notification/enter-user")
-    public ResponseEntity<CommonResponse> addUser(@Payload UserDTO userDTO) {
-        if (userDTO.getGameNotificationType() != GameNotificationType.USER_ENTERED) {
+    public ResponseEntity<CommonResponse> addUser(@Payload UserResponseDTO userResponseDTO) {
+        if (userResponseDTO.getGameNotificationType() != GameNotificationType.USER_ENTERED) {
             throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
         }
-        final Long gameId = userDTO.getGameId();
-        gameService.addUser(gameId, userDTO.getTargetUserId());
+        final Long gameId = userResponseDTO.getGameId();
+        gameService.addUser(gameId, userResponseDTO.getTargetUserId());
         gameService.getAllUsers(gameId)
                 .forEach(user -> {
                     messagingTemplate.convertAndSendToUser(String.valueOf(user.getID()), "/private", CommonResponse.ok(
-                            new UserDTO(GameNotificationType.USER_ENTERED, gameId, -1L, userDTO.getTargetUserId()),
+                            new UserResponseDTO(GameNotificationType.USER_ENTERED, gameId, -1L, userResponseDTO.getTargetUserId()),
                             LocalDateTime.now()
                     ));
                 });
-        return CommonResponse.ok(userDTO, LocalDateTime.now());
+        return CommonResponse.ok(userResponseDTO, LocalDateTime.now());
     }
 }
