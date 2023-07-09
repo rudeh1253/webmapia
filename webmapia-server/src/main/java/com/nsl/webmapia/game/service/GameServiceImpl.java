@@ -71,10 +71,10 @@ public class GameServiceImpl implements  GameService {
         final List<CharacterGenerationResponseDTO> dtoList = new ArrayList<>();
 
         users.forEach(user ->
-                CharacterGenerationResponseDTO.from(GameNotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED,
+                dtoList.add(CharacterGenerationResponseDTO.from(GameNotificationType.NOTIFY_WHICH_CHARACTER_ALLOCATED,
                         user.getID(),
                         user.getCharacter().getCharacterCode(),
-                        gameId));
+                        gameId)));
         return dtoList;
     }
 
@@ -95,7 +95,7 @@ public class GameServiceImpl implements  GameService {
         User mostUser = game.processVotes();
         return mostUser == null
                 ? VoteResultResponseDTO.from(GameNotificationType.INVALID_VOTE, gameId, null)
-                : VoteResultResponseDTO.from(GameNotificationType.INVALID_VOTE, gameId, mostUser.getID());
+                : VoteResultResponseDTO.from(GameNotificationType.EXECUTE_BY_VOTE, gameId, mostUser.getID());
     }
 
     @Override
@@ -111,7 +111,7 @@ public class GameServiceImpl implements  GameService {
                 .orElseThrow()
                 .getAllUsers()
                 .stream()
-                .map(user -> UserResponseDTO.from(gameId, user))
+                .map(user -> UserResponseDTO.from(GameNotificationType.QUERY_USER, gameId, user))
                 .toList();
     }
 
@@ -119,7 +119,7 @@ public class GameServiceImpl implements  GameService {
     public UserResponseDTO removeUser(Long gameId, Long userId) {
         GameManager game = findGameManager(gameId);
         User userToRemove = game.removeUser(userId).orElseThrow();
-        return UserResponseDTO.from(gameId, userToRemove);
+        return UserResponseDTO.from(GameNotificationType.USER_REMOVED, gameId, userToRemove);
     }
 
     @Override

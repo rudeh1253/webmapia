@@ -7,5 +7,6 @@ public enum GameNotificationType {
     EXECUTE_BY_VOTE,
     INVALID_VOTE,
     USER_REMOVED,
-    USER_ENTERED
+    USER_ENTERED,
+    QUERY_USER
 }

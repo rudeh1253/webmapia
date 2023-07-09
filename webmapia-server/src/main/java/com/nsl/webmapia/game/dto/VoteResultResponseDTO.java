@@ -3,11 +3,13 @@ package com.nsl.webmapia.game.dto;
 import com.nsl.webmapia.game.domain.notification.GameNotificationType;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @Builder(access = PRIVATE)
+@ToString
 public class VoteResultResponseDTO {
     private final GameNotificationType notificationType;
     private final Long gameId;
