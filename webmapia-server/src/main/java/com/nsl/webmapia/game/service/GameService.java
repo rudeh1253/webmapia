@@ -6,9 +6,7 @@ import com.nsl.webmapia.game.domain.character.CharacterCode;
 import com.nsl.webmapia.game.domain.notification.GameNotification;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillType;
-import com.nsl.webmapia.game.dto.CharacterGenerationResponseDTO;
-import com.nsl.webmapia.game.dto.UserResponseDTO;
-import com.nsl.webmapia.game.dto.VoteResultResponseDTO;
+import com.nsl.webmapia.game.dto.*;
 
 import java.util.List;
 import java.util.Map;
@@ -86,9 +84,10 @@ public interface GameService {
     /**
      * After the night, process activated skills.
      * @param gameId id of game.
-     * @return a list of notification body.
+     * @return a list of DTO representing skill result. If the notification is for public broadcast,
+     *         the receiver id is set to null.
      */
-    List<GameNotification<SkillEffect>> processSkills(Long gameId);
+    List<SkillResultDTO> processSkills(Long gameId);
 
     /**
      * Create a new game. The id of the game is generated at random. No duplicate of game id is allowed.
@@ -100,12 +99,12 @@ public interface GameService {
      * Return all games registered.
      * @return list containing all games registered.
      */
-    List<GameManager> getAllGames();
+    List<GameInfoDTO> getAllGames();
 
     /**
      * Given id, find and return the game.
      * @param gameId id of game.
      * @return game instance. Given id, if there doesn't exist such game, it will return null.
      */
-    GameManager getGame(Long gameId);
+    GameInfoDTO getGame(Long gameId);
 }

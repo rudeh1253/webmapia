@@ -9,9 +9,7 @@ import com.nsl.webmapia.game.domain.notification.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillType;
-import com.nsl.webmapia.game.dto.CharacterGenerationResponseDTO;
-import com.nsl.webmapia.game.dto.UserResponseDTO;
-import com.nsl.webmapia.game.dto.VoteResultResponseDTO;
+import com.nsl.webmapia.game.dto.*;
 import com.nsl.webmapia.game.repository.GameRepository;
 import com.nsl.webmapia.game.repository.MemoryUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,26 +127,18 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public List<GameNotification<SkillEffect>> processSkills(Long gameId) {
+    public List<SkillResultDTO> processSkills(Long gameId) {
         GameManager game = findGameManager(gameId);
         List<SkillEffect> skillEffects = game.processSkills();
-        final List<GameNotification<SkillEffect>> notifications = new ArrayList<>();
+        final List<SkillResultDTO> result = new ArrayList<>();
         skillEffects.forEach(se -> {
             if (se.getReceiverUser() == null) {
-                notifications.add(GameNotification.<SkillEffect>builder()
-                        .receiver(null)
-                        .gameNotificationType(GameNotificationType.SKILL_PUBLIC)
-                        .data(se)
-                        .build());
+                result.add(SkillResultDTO.from(gameId, se, GameNotificationType.SKILL_PUBLIC));
             } else {
-                notifications.add(GameNotification.<SkillEffect>builder()
-                        .receiver(se.getReceiverUser())
-                        .gameNotificationType(GameNotificationType.SKILL_PRIVATE)
-                        .data(se)
-                        .build());
+                result.add(SkillResultDTO.from(gameId, se, GameNotificationType.SKILL_PRIVATE));
             }
         });
-        return notifications;
+        return result;
     }
 
     private GameManager findGameManager(Long gameId) {
@@ -163,12 +153,17 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public List<GameManager> getAllGames() {
-        return gameRepository.findAll();
+    public List<GameInfoDTO> getAllGames() {
+        return gameRepository.findAll().stream()
+                .map(GameInfoDTO::from)
+                .toList();
     }
 
     @Override
-    public GameManager getGame(Long gameId) {
-        return gameRepository.findById(gameId).orElse(null);
+    public GameInfoDTO getGame(Long gameId) {
+        GameManager gameManager = gameRepository.findById(gameId).orElse(null);
+        return gameManager != null
+                ? GameInfoDTO.from(gameManager)
+                : null;
     }
 }

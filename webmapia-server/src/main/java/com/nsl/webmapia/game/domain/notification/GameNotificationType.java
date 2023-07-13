@@ -8,5 +8,6 @@ public enum GameNotificationType {
     INVALID_VOTE,
     USER_REMOVED,
     USER_ENTERED,
-    QUERY_USER
+    QUERY_USER,
+    GAME_INFO
 }
