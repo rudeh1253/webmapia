@@ -1,13 +1,10 @@
 package com.nsl.webmapia.game.service;
 
-import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
-import com.nsl.webmapia.game.domain.character.Character;
-import com.nsl.webmapia.game.domain.notification.GameNotification;
 import com.nsl.webmapia.game.domain.notification.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.game.dto.GameInfoDTO;
 import com.nsl.webmapia.game.dto.UserResponseDTO;
 import com.nsl.webmapia.game.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.game.repository.MemoryGameRepository;
@@ -18,7 +15,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameServiceImplConcurrencyTest {
     GameService gameService;
@@ -87,12 +83,12 @@ public class GameServiceImplConcurrencyTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        List<GameManager> games = gameService.getAllGames();
-        for (GameManager game : games) {
+        List<GameInfoDTO> games = gameService.getAllGames();
+        for (GameInfoDTO game : games) {
             assertTrue(gameIds.contains(game.getGameId()));
         }
-        for (GameManager game : games) {
-            List<User> users = game.getAllUsers();
+        for (GameInfoDTO game : games) {
+            List<UserResponseDTO> users = game.getUsers();
             assertEquals(16, users.size());
         }
     }

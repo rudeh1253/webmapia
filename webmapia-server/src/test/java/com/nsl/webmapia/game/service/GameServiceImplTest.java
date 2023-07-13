@@ -1,13 +1,10 @@
 package com.nsl.webmapia.game.service;
 
-import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.*;
-import com.nsl.webmapia.game.domain.character.Character;
-import com.nsl.webmapia.game.domain.notification.GameNotification;
 import com.nsl.webmapia.game.domain.notification.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.game.dto.GameInfoDTO;
 import com.nsl.webmapia.game.dto.UserResponseDTO;
 import com.nsl.webmapia.game.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.game.repository.GameRepository;
@@ -197,7 +194,7 @@ class GameServiceImplTest {
             gameIds.add(gameService.createNewGame());
         }
         gameIds.add(gameId);
-        List<GameManager> allGames = gameService.getAllGames();
+        List<GameInfoDTO> allGames = gameService.getAllGames();
         allGames.forEach(g -> assertTrue(gameIds.contains(g.getGameId())));
     }
 }
