@@ -90,6 +90,8 @@ public class GameManagerImpl implements GameManager {
             }
         }
 
+        votes.clear();
+
         return tie ? null : mostUser;
     }
 
