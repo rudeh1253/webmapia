@@ -3,7 +3,8 @@ package com.nsl.webmapia.game.controller;
 import com.nsl.webmapia.common.CommonResponse;
 import com.nsl.webmapia.common.exception.ErrorCode;
 import com.nsl.webmapia.common.exception.UnsupportedNotificationTypeException;
-import com.nsl.webmapia.game.domain.notification.GameNotificationType;
+import com.nsl.webmapia.game.domain.GameNotificationType;
+import com.nsl.webmapia.game.dto.UserRequestDTO;
 import com.nsl.webmapia.game.dto.UserResponseDTO;
 import com.nsl.webmapia.game.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +28,19 @@ public class GameController {
     }
 
     @MessageMapping("/game/notification/enter-user")
-    public ResponseEntity<CommonResponse> addUser(@Payload UserResponseDTO userResponseDTO) {
-        if (userResponseDTO.getNotificationType() != GameNotificationType.USER_ENTERED) {
+    public ResponseEntity<CommonResponse> addUser(@Payload UserRequestDTO request) {
+        if (request.getNotificationType() != GameNotificationType.USER_ENTERED) {
             throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
         }
-        final Long gameId = userResponseDTO.getGameId();
-        gameService.addUser(gameId, userResponseDTO.getUserId());
+        final Long gameId = request.getGameId();
+        gameService.addUser(gameId, request.getUserId());
         gameService.getAllUsers(gameId)
                 .forEach(user -> {
                     messagingTemplate.convertAndSendToUser(String.valueOf(user.getUserId()), "/private", CommonResponse.ok(
-                            userResponseDTO,
+                            request,
                             LocalDateTime.now()
                     ));
                 });
-        return CommonResponse.ok(userResponseDTO, LocalDateTime.now());
+        return CommonResponse.ok(request, LocalDateTime.now());
     }
 }

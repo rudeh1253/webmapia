@@ -63,6 +63,11 @@ public interface GameManager {
     void addUser(Long userId);
 
     /**
+     * Add user in repository
+     */
+    void addUser(Long userId, String userName);
+
+    /**
      * Return all users belongs to the game.
      * @return list of users belonging to the game.
      */

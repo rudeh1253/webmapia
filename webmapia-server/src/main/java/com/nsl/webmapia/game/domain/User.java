@@ -29,7 +29,7 @@ public class User {
     }
 
     public User(Long id, String name) {
-        this.ID = id;
+        this(id);
         this.name = name;
     }
 

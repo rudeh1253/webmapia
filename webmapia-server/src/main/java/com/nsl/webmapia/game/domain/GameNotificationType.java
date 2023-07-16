@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.domain.notification;
+package com.nsl.webmapia.game.domain;
 
 public enum GameNotificationType {
     SKILL_PUBLIC,

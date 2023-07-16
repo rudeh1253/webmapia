@@ -62,10 +62,7 @@ public class GameManagerImpl implements GameManager {
     public void acceptVote(Long voterId, Long subjectId) {
         User voter = userRepository.findById(voterId).orElseThrow();
         User subject = userRepository.findById(subjectId).orElseThrow();
-        votes.add(new Vote(
-                voter.getCharacter().getCharacterCode() == CharacterCode.NOBILITY
-                ? 2
-                : 1, voter, subject));
+        votes.add(voter.vote(subject));
     }
 
     @Override
@@ -98,6 +95,12 @@ public class GameManagerImpl implements GameManager {
     @Override
     public void addUser(Long userId) {
         User user = new User(userId);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void addUser(Long userId, String userName) {
+        User user = new User(userId, userName);
         userRepository.save(user);
     }
 

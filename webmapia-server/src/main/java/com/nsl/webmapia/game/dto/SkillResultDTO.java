@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.dto;
 
-import com.nsl.webmapia.game.domain.notification.GameNotificationType;
+import com.nsl.webmapia.game.domain.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.CharacterEffectAfterNightType;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import lombok.Builder;

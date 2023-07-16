@@ -51,6 +51,11 @@ public interface GameService {
     void addUser(Long gameId, Long userId);
 
     /**
+     * Add user in the game.
+     */
+    void addUser(Long gameId, Long userId, String userName);
+
+    /**
      * Remove user from the game. If the user which is supposed to be removed doesn't exist in the game,
      * this will throw an exception.
      * @param gameId id of the game.

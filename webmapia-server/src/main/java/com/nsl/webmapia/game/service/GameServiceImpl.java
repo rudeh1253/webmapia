@@ -4,7 +4,7 @@ import com.nsl.webmapia.game.domain.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.*;
-import com.nsl.webmapia.game.domain.notification.GameNotificationType;
+import com.nsl.webmapia.game.domain.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillType;
@@ -99,6 +99,12 @@ public class GameServiceImpl implements  GameService {
     public void addUser(Long gameId, Long userId) {
         GameManager gameManager = findGameManager(gameId);
         gameManager.addUser(userId);
+    }
+
+    @Override
+    public void addUser(Long gameId, Long userId, String userName) {
+        GameManager gameManager = findGameManager(gameId);
+        gameManager.addUser(userId, userName);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.service;
 
 import com.nsl.webmapia.game.domain.character.*;
-import com.nsl.webmapia.game.domain.notification.GameNotificationType;
+import com.nsl.webmapia.game.domain.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.dto.CharacterGenerationResponseDTO;
 import com.nsl.webmapia.game.dto.GameInfoDTO;
