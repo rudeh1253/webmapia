@@ -1,8 +1,11 @@
 package com.nsl.webmapia.game.domain.skill;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class SkillManager {
     private final List<SkillEffect> skillEffects;
 

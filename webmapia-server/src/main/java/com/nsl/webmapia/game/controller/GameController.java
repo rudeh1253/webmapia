@@ -30,13 +30,13 @@ public class GameController {
     }
 
     @MessageMapping("/game/enter-user")
-    @SendTo("/notification/private")
+    @SendTo("/notification/public")
     public ResponseEntity<CommonResponse> addUser(@Payload UserRequestDTO request) {
         if (request.getNotificationType() != GameNotificationType.USER_ENTERED) {
             throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
         }
         final Long gameId = request.getGameId();
-        gameService.addUser(gameId, request.getUserId());
+        gameService.addUser(gameId, request.getUserId(), request.getUsername());
         List<UserResponseDTO> users = gameService.getAllUsers(gameId);
         return CommonResponse.ok(users, LocalDateTime.now());
     }

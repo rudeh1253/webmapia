@@ -1,16 +1,18 @@
 package com.nsl.webmapia.game.dto;
 
 import com.nsl.webmapia.game.domain.GameNotificationType;
-import lombok.Builder;
 import lombok.Getter;
-
-import static lombok.AccessLevel.PRIVATE;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-@Builder(access = PRIVATE)
+@Setter
+@NoArgsConstructor
+@ToString
 public class UserRequestDTO {
-    private final GameNotificationType notificationType;
-    private final Long gameId;
-    private final Long userId;
-    private final String userName;
+    private GameNotificationType notificationType;
+    private Long gameId;
+    private Long userId;
+    private String username;
 }
