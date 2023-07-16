@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class GameController {
@@ -27,20 +29,15 @@ public class GameController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping("/game/notification/enter-user")
+    @MessageMapping("/game/enter-user")
+    @SendTo("/notification/private")
     public ResponseEntity<CommonResponse> addUser(@Payload UserRequestDTO request) {
         if (request.getNotificationType() != GameNotificationType.USER_ENTERED) {
             throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
         }
         final Long gameId = request.getGameId();
         gameService.addUser(gameId, request.getUserId());
-        gameService.getAllUsers(gameId)
-                .forEach(user -> {
-                    messagingTemplate.convertAndSendToUser(String.valueOf(user.getUserId()), "/private", CommonResponse.ok(
-                            request,
-                            LocalDateTime.now()
-                    ));
-                });
-        return CommonResponse.ok(request, LocalDateTime.now());
+        List<UserResponseDTO> users = gameService.getAllUsers(gameId);
+        return CommonResponse.ok(users, LocalDateTime.now());
     }
 }
