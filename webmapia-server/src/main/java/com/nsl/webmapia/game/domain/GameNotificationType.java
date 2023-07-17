@@ -9,5 +9,6 @@ public enum GameNotificationType {
     USER_REMOVED,
     USER_ENTERED,
     QUERY_USER,
-    GAME_INFO
+    GAME_INFO,
+    ONE_SECOND_ELAPSED
 }

@@ -13,6 +13,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
@@ -39,5 +40,11 @@ public class GameController {
         gameService.addUser(gameId, request.getUserId(), request.getUsername());
         List<UserResponseDTO> users = gameService.getAllUsers(gameId);
         return CommonResponse.ok(users, LocalDateTime.now());
+    }
+
+    @Scheduled(fixedRate = 1000)
+    public void notifyOneSecondElapsed() {
+        System.out.println("Hello, World!");
+        messagingTemplate.convertAndSend("/notification/public", CommonResponse.ok(GameNotificationType.ONE_SECOND_ELAPSED, LocalDateTime.now()));
     }
 }
