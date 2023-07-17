@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@RequestMapping("/app")
 @CrossOrigin(originPatterns = "*")
 public class GameRestController {
     private GameService gameService;
