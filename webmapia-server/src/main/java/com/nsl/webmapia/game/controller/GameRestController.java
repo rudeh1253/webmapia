@@ -22,7 +22,7 @@ public class GameRestController {
         this.gameService = gameService;
     }
 
-    @PostMapping("/game/create-room")
+    @PostMapping("/game/room")
     public ResponseEntity<CommonResponse> createRoom(@RequestBody GameCreationRequestDTO request) {
         Long newGameId = gameService.createNewGame();
         GameInfoDTO gameInfo = gameService.getGame(newGameId);
