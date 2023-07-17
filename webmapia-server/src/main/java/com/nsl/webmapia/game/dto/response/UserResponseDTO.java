@@ -3,24 +3,22 @@ package com.nsl.webmapia.game.dto.response;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.CharacterCode;
 import com.nsl.webmapia.game.domain.GameNotificationType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
+@Setter
 @RequiredArgsConstructor
 @Builder(access = PRIVATE)
 @ToString
 public class UserResponseDTO {
-    private final GameNotificationType notificationType;
-    private final Long gameId;
-    private final Long userId;
-    private final String username;
-    private final CharacterCode characterCode;
-    private final boolean isDead;
+    private GameNotificationType notificationType;
+    private Long gameId;
+    private Long userId;
+    private String username;
+    private CharacterCode characterCode;
+    private boolean isDead;
 
     public static UserResponseDTO from(GameNotificationType notificationType, Long gameId, User user) {
         CharacterCode characterCode = user.getCharacter() == null ? null : user.getCharacter().getCharacterCode();

@@ -31,19 +31,24 @@ public class GameController {
     }
 
     @MessageMapping("/game/enter-user")
-    @SendTo("/notification/public")
-    public ResponseEntity<CommonResponse> addUser(@Payload UserRequestDTO request) {
+    public void addUser(@Payload UserRequestDTO request) {
         if (request.getNotificationType() != GameNotificationType.USER_ENTERED) {
             throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
         }
         final Long gameId = request.getGameId();
         gameService.addUser(gameId, request.getUserId(), request.getUsername());
-        List<UserResponseDTO> users = gameService.getAllUsers(gameId);
-        return CommonResponse.ok(users, LocalDateTime.now());
+        UserResponseDTO dto = gameService.getUser(gameId, request.getUserId());
+        dto.setNotificationType(GameNotificationType.USER_ENTERED);
+        messagingTemplate.convertAndSend("/notification/public/" + gameId, CommonResponse.ok(dto, LocalDateTime.now()));
     }
 
     @MessageMapping("/game/user-exit")
-    @SendTo
+    public void removeUser(@Payload UserRequestDTO request) {
+        Long gameId = request.getGameId();
+        Long userId = request.getUserId();
+        UserResponseDTO dto = gameService.removeUser(gameId, userId);
+        messagingTemplate.convertAndSend("/notification/public/" + gameId, CommonResponse.ok(dto, LocalDateTime.now()));
+    }
 
     @Scheduled(fixedRate = 1000)
     public void notifyOneSecondElapsed() {
