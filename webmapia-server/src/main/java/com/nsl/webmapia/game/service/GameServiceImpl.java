@@ -119,6 +119,15 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
+    public UserResponseDTO getUser(Long gameId, Long userId) {
+        User user = gameRepository.findById(gameId)
+                .orElseThrow()
+                .getOneUser(userId)
+                .orElseThrow();
+        return UserResponseDTO.from(GameNotificationType.QUERY_USER, gameId, user);
+    }
+
+    @Override
     public UserResponseDTO removeUser(Long gameId, Long userId) {
         GameManager game = findGameManager(gameId);
         User userToRemove = game.removeUser(userId).orElseThrow();

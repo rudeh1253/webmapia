@@ -71,6 +71,8 @@ public interface GameService {
      */
     List<UserResponseDTO> getAllUsers(Long gameId);
 
+    UserResponseDTO getUser(Long gameId, Long userId);
+
     /**
      * Apply skill. The process of the skill follows the logic of the skill of the character the user
      * who was allocated the character activated. The effect of the skill is going to be processed by calling
