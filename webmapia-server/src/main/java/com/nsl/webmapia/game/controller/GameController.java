@@ -42,6 +42,9 @@ public class GameController {
         return CommonResponse.ok(users, LocalDateTime.now());
     }
 
+    @MessageMapping("/game/user-exit")
+    @SendTo
+
     @Scheduled(fixedRate = 1000)
     public void notifyOneSecondElapsed() {
         messagingTemplate.convertAndSend("/notification/public", CommonResponse.ok(GameNotificationType.ONE_SECOND_ELAPSED, LocalDateTime.now()));

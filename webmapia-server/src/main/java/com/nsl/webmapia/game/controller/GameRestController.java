@@ -30,6 +30,19 @@ public class GameRestController {
         return CommonResponse.ok(gameInfo, LocalDateTime.now());
     }
 
+    @GetMapping("/game/room")
+    public ResponseEntity<CommonResponse> getAllRooms() {
+        List<GameInfoResponseDTO> allGames = gameService.getAllGames();
+        return CommonResponse.ok(allGames, LocalDateTime.now());
+    }
+
+    @GetMapping("/game/room/{gameId}")
+    public ResponseEntity<CommonResponse> getRoomInfo(@PathVariable("gameId") Long gameId) {
+        // TODO: Error handling in case of absence of game of such gameId
+        GameInfoResponseDTO gameInfo = gameService.getGame(gameId);
+        return CommonResponse.ok(gameInfo, LocalDateTime.now());
+    }
+
     @GetMapping("/game/{gameId}/user")
     public ResponseEntity<CommonResponse> getUsers(@PathVariable("gameId") Long gameId) {
         List<UserResponseDTO> users = gameService.getAllUsers(gameId);
