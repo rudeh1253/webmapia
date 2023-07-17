@@ -96,16 +96,18 @@ public interface GameService {
      */
     Long createNewGame();
 
+    Long createNewGame(String gameName, Long hostId);
+
     /**
      * Return all games registered.
      * @return list containing all games registered.
      */
-    List<GameInfoDTO> getAllGames();
+    List<GameInfoResponseDTO> getAllGames();
 
     /**
      * Given id, find and return the game.
      * @param gameId id of game.
      * @return game instance. Given id, if there doesn't exist such game, it will return null.
      */
-    GameInfoDTO getGame(Long gameId);
+    GameInfoResponseDTO getGame(Long gameId);
 }

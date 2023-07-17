@@ -2,7 +2,7 @@ package com.nsl.webmapia.game.controller;
 
 import com.nsl.webmapia.common.CommonResponse;
 import com.nsl.webmapia.game.dto.request.GameCreationRequestDTO;
-import com.nsl.webmapia.game.dto.response.GameInfoDTO;
+import com.nsl.webmapia.game.dto.response.GameInfoResponseDTO;
 import com.nsl.webmapia.game.dto.response.UserResponseDTO;
 import com.nsl.webmapia.game.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,8 @@ public class GameRestController {
 
     @PostMapping("/game/room")
     public ResponseEntity<CommonResponse> createRoom(@RequestBody GameCreationRequestDTO request) {
-        Long newGameId = gameService.createNewGame();
-        GameInfoDTO gameInfo = gameService.getGame(newGameId);
+        Long newGameId = gameService.createNewGame(request.getGameName(), request.getHostId());
+        GameInfoResponseDTO gameInfo = gameService.getGame(newGameId);
         return CommonResponse.ok(gameInfo, LocalDateTime.now());
     }
 

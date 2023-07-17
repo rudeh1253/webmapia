@@ -18,6 +18,9 @@ public class GameManagerImpl implements GameManager {
     private final List<Vote> votes;
     private final List<ActivatedSkillInfo> activatedSkills;
 
+    private String gameName;
+    private Long hostId;
+
     public GameManagerImpl(Long gameId,
                            Map<CharacterCode, Character> characters,
                            SkillManager skillManager,
@@ -33,6 +36,26 @@ public class GameManagerImpl implements GameManager {
     @Override
     public Long getGameId() {
         return GAME_ID;
+    }
+
+    @Override
+    public void setGameName(String name) {
+        this.gameName = name;
+    }
+
+    @Override
+    public String getGameName() {
+        return this.gameName;
+    }
+
+    @Override
+    public void setHost(Long hostId) {
+        this.hostId = hostId;
+    }
+
+    @Override
+    public User getHost() {
+        return userRepository.findById(hostId).orElseThrow();
     }
 
     @Override

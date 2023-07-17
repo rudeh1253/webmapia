@@ -4,7 +4,7 @@ import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.dto.response.CharacterGenerationResponseDTO;
-import com.nsl.webmapia.game.dto.response.GameInfoDTO;
+import com.nsl.webmapia.game.dto.response.GameInfoResponseDTO;
 import com.nsl.webmapia.game.dto.response.UserResponseDTO;
 import com.nsl.webmapia.game.dto.response.VoteResultResponseDTO;
 import com.nsl.webmapia.game.repository.GameRepository;
@@ -194,7 +194,7 @@ class GameServiceImplTest {
             gameIds.add(gameService.createNewGame());
         }
         gameIds.add(gameId);
-        List<GameInfoDTO> allGames = gameService.getAllGames();
+        List<GameInfoResponseDTO> allGames = gameService.getAllGames();
         allGames.forEach(g -> assertTrue(gameIds.contains(g.getGameId())));
     }
 }

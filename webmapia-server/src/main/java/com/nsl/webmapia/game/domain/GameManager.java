@@ -26,6 +26,14 @@ public interface GameManager {
         }
     }
 
+    void setGameName(String name);
+
+    String getGameName();
+
+    void setHost(Long hostId);
+
+    User getHost();
+
     /**
      * @return id of this game.
      */

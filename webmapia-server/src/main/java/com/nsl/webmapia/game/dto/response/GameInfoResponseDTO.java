@@ -11,16 +11,16 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @Builder(access = PRIVATE)
-public class GameInfoDTO {
+public class GameInfoResponseDTO {
     private final GameNotificationType notificationType;
     private final Long gameId;
     private final List<UserResponseDTO> users;
 
-    public static GameInfoDTO from(GameManager gameManager) {
+    public static GameInfoResponseDTO from(GameManager gameManager) {
         List<UserResponseDTO> userResponseDTOs = gameManager.getAllUsers().stream()
                 .map(user -> UserResponseDTO.from(GameNotificationType.GAME_INFO, gameManager.getGameId(), user))
                 .toList();
-        return GameInfoDTO.builder()
+        return GameInfoResponseDTO.builder()
                 .gameId(gameManager.getGameId())
                 .notificationType(GameNotificationType.GAME_INFO)
                 .users(userResponseDTOs)

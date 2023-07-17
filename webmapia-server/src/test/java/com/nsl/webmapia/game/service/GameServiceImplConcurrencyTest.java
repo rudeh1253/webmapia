@@ -4,7 +4,7 @@ import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.dto.response.CharacterGenerationResponseDTO;
-import com.nsl.webmapia.game.dto.response.GameInfoDTO;
+import com.nsl.webmapia.game.dto.response.GameInfoResponseDTO;
 import com.nsl.webmapia.game.dto.response.UserResponseDTO;
 import com.nsl.webmapia.game.dto.response.VoteResultResponseDTO;
 import com.nsl.webmapia.game.repository.MemoryGameRepository;
@@ -83,11 +83,11 @@ public class GameServiceImplConcurrencyTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        List<GameInfoDTO> games = gameService.getAllGames();
-        for (GameInfoDTO game : games) {
+        List<GameInfoResponseDTO> games = gameService.getAllGames();
+        for (GameInfoResponseDTO game : games) {
             assertTrue(gameIds.contains(game.getGameId()));
         }
-        for (GameInfoDTO game : games) {
+        for (GameInfoResponseDTO game : games) {
             List<UserResponseDTO> users = game.getUsers();
             assertEquals(16, users.size());
         }

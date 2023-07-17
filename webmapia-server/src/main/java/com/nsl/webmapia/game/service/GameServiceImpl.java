@@ -158,17 +158,26 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public List<GameInfoDTO> getAllGames() {
+    public Long createNewGame(String gameName, Long hostId) {
+        GameManager game = GameManager.newInstance(characters, new SkillManager(), new MemoryUserRepository());
+        game.setGameName(gameName);
+        game.setHost(hostId);
+        gameRepository.save(game);
+        return game.getGameId();
+    }
+
+    @Override
+    public List<GameInfoResponseDTO> getAllGames() {
         return gameRepository.findAll().stream()
-                .map(GameInfoDTO::from)
+                .map(GameInfoResponseDTO::from)
                 .toList();
     }
 
     @Override
-    public GameInfoDTO getGame(Long gameId) {
+    public GameInfoResponseDTO getGame(Long gameId) {
         GameManager gameManager = gameRepository.findById(gameId).orElse(null);
         return gameManager != null
-                ? GameInfoDTO.from(gameManager)
+                ? GameInfoResponseDTO.from(gameManager)
                 : null;
     }
 }

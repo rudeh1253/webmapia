@@ -12,4 +12,5 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 public class GameCreationRequestDTO {
     private String gameName;
+    private Long hostId;
 }
