@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.dto;
+package com.nsl.webmapia.game.dto.response;
 
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.CharacterCode;

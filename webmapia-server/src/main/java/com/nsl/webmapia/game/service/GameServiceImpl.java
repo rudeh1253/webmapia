@@ -8,7 +8,7 @@ import com.nsl.webmapia.game.domain.GameNotificationType;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
 import com.nsl.webmapia.game.domain.skill.SkillType;
-import com.nsl.webmapia.game.dto.*;
+import com.nsl.webmapia.game.dto.response.*;
 import com.nsl.webmapia.game.repository.GameRepository;
 import com.nsl.webmapia.game.repository.MemoryUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

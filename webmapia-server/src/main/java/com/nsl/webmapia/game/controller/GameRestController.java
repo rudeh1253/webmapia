@@ -1,9 +1,9 @@
 package com.nsl.webmapia.game.controller;
 
 import com.nsl.webmapia.common.CommonResponse;
-import com.nsl.webmapia.game.dto.GameCreationRequestDTO;
-import com.nsl.webmapia.game.dto.GameInfoDTO;
-import com.nsl.webmapia.game.dto.UserResponseDTO;
+import com.nsl.webmapia.game.dto.request.GameCreationRequestDTO;
+import com.nsl.webmapia.game.dto.response.GameInfoDTO;
+import com.nsl.webmapia.game.dto.response.UserResponseDTO;
 import com.nsl.webmapia.game.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

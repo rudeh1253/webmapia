@@ -1,4 +1,4 @@
-package com.nsl.webmapia.game.dto;
+package com.nsl.webmapia.game.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

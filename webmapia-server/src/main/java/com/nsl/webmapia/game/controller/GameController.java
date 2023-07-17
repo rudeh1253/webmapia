@@ -4,8 +4,8 @@ import com.nsl.webmapia.common.CommonResponse;
 import com.nsl.webmapia.common.exception.ErrorCode;
 import com.nsl.webmapia.common.exception.UnsupportedNotificationTypeException;
 import com.nsl.webmapia.game.domain.GameNotificationType;
-import com.nsl.webmapia.game.dto.UserRequestDTO;
-import com.nsl.webmapia.game.dto.UserResponseDTO;
+import com.nsl.webmapia.game.dto.request.UserRequestDTO;
+import com.nsl.webmapia.game.dto.response.UserResponseDTO;
 import com.nsl.webmapia.game.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +44,6 @@ public class GameController {
 
     @Scheduled(fixedRate = 1000)
     public void notifyOneSecondElapsed() {
-        System.out.println("Hello, World!");
         messagingTemplate.convertAndSend("/notification/public", CommonResponse.ok(GameNotificationType.ONE_SECOND_ELAPSED, LocalDateTime.now()));
     }
 }
