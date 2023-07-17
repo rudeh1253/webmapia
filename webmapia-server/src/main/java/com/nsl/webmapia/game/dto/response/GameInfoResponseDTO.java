@@ -14,6 +14,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class GameInfoResponseDTO {
     private final GameNotificationType notificationType;
     private final Long gameId;
+    private final Long hostId;
+    private final String gameName;
     private final List<UserResponseDTO> users;
 
     public static GameInfoResponseDTO from(GameManager gameManager) {
@@ -23,6 +25,8 @@ public class GameInfoResponseDTO {
         return GameInfoResponseDTO.builder()
                 .gameId(gameManager.getGameId())
                 .notificationType(GameNotificationType.GAME_INFO)
+                .hostId(gameManager.getHost().getID())
+                .gameName(gameManager.getGameName())
                 .users(userResponseDTOs)
                 .build();
     }
