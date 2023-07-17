@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.repository;
 
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.management.GameManager;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.service;
 
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.management.GameManager;
 import com.nsl.webmapia.game.domain.User;
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.*;

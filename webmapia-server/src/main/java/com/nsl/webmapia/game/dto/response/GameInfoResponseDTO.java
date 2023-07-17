@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.dto.response;
 
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.management.GameManager;
 import com.nsl.webmapia.game.domain.GameNotificationType;
 import lombok.Builder;
 import lombok.Getter;

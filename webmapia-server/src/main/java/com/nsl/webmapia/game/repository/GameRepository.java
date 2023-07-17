@@ -1,6 +1,6 @@
 package com.nsl.webmapia.game.repository;
 
-import com.nsl.webmapia.game.domain.GameManager;
+import com.nsl.webmapia.game.domain.management.GameManager;
 
 import java.util.List;
 import java.util.Optional;

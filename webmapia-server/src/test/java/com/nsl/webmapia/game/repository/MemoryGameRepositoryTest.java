@@ -1,7 +1,7 @@
 package com.nsl.webmapia.game.repository;
 
-import com.nsl.webmapia.game.domain.GameManager;
-import com.nsl.webmapia.game.domain.GameManagerImpl;
+import com.nsl.webmapia.game.domain.management.GameManager;
+import com.nsl.webmapia.game.domain.management.GameManagerImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

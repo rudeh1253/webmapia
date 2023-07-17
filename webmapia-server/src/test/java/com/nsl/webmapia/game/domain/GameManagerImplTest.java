@@ -2,6 +2,8 @@ package com.nsl.webmapia.game.domain;
 
 import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.*;
+import com.nsl.webmapia.game.domain.management.GameManager;
+import com.nsl.webmapia.game.domain.management.GameManagerImpl;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
