@@ -18,13 +18,10 @@ import java.util.Map;
 @Service
 public class GameServiceImpl implements  GameService {
     private final GameRepository gameRepository;
-    private final Map<CharacterCode, Character> characters;
 
     @Autowired
-    public GameServiceImpl(Characters characters,
-                           GameRepository gameRepository) {
+    public GameServiceImpl(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-        this.characters = characters.getCharacters();
     }
 
     @Override
