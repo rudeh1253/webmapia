@@ -2,7 +2,7 @@ package com.nsl.webmapia.room.dto;
 
 import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.common.NotificationType;
-import com.nsl.webmapia.gameoperation.dto.response.UserResponseDTO;
+import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;

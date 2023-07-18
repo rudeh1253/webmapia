@@ -2,6 +2,7 @@ package com.nsl.webmapia.gameoperation.service;
 
 import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.gameoperation.dto.response.*;
+import com.nsl.webmapia.user.dto.CharacterGenerationResponseDTO;
 
 import java.util.List;
 import java.util.Map;

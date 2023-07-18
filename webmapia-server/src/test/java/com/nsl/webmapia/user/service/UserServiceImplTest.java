@@ -2,7 +2,7 @@ package com.nsl.webmapia.user.service;
 
 import com.nsl.webmapia.character.*;
 import com.nsl.webmapia.common.NotificationType;
-import com.nsl.webmapia.gameoperation.dto.response.UserResponseDTO;
+import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.gameoperation.repository.MemoryGameRepository;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;

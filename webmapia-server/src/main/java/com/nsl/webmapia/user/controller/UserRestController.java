@@ -1,7 +1,7 @@
 package com.nsl.webmapia.user.controller;
 
 import com.nsl.webmapia.common.CommonResponse;
-import com.nsl.webmapia.gameoperation.dto.response.UserResponseDTO;
+import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

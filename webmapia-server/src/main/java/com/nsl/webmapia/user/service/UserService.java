@@ -1,6 +1,6 @@
 package com.nsl.webmapia.user.service;
 
-import com.nsl.webmapia.gameoperation.dto.response.UserResponseDTO;
+import com.nsl.webmapia.user.dto.UserResponseDTO;
 
 import java.util.List;
 

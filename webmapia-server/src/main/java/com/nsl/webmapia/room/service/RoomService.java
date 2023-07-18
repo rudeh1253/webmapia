@@ -1,6 +1,5 @@
 package com.nsl.webmapia.room.service;
 
-import com.nsl.webmapia.gameoperation.dto.response.UserResponseDTO;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
 
 import java.util.List;

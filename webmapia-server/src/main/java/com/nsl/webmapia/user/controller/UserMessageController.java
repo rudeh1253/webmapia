@@ -5,7 +5,7 @@ import com.nsl.webmapia.common.exception.ErrorCode;
 import com.nsl.webmapia.common.exception.UnsupportedNotificationTypeException;
 import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.gameoperation.dto.request.UserRequestDTO;
-import com.nsl.webmapia.gameoperation.dto.response.UserResponseDTO;
+import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;

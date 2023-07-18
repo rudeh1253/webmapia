@@ -1,11 +1,8 @@
 package com.nsl.webmapia.room.service;
 
 import com.nsl.webmapia.character.*;
-import com.nsl.webmapia.common.NotificationType;
-import com.nsl.webmapia.gameoperation.dto.response.UserResponseDTO;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.gameoperation.repository.MemoryGameRepository;
-import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
 import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.user.service.UserService;
 import com.nsl.webmapia.user.service.UserServiceImpl;
@@ -13,9 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;

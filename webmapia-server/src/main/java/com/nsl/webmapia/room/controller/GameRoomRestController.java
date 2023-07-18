@@ -3,7 +3,6 @@ package com.nsl.webmapia.room.controller;
 import com.nsl.webmapia.common.CommonResponse;
 import com.nsl.webmapia.room.dto.RoomCreationRequestDTO;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
-import com.nsl.webmapia.gameoperation.dto.response.UserResponseDTO;
 import com.nsl.webmapia.room.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
