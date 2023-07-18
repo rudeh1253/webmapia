@@ -241,6 +241,14 @@ public class GameManagerImpl implements GameManager {
         return skillManager.getSkillEffects();
     }
 
+    @Override
+    public boolean endPhase(Long userId) {
+        User sentUser = userRepository.findById(userId).orElseThrow();
+        sentUser.setPhaseEnd(true);
+        List<User> users = userRepository.findAll();
+        return users.stream().filter(user -> !user.isPhaseEnd()).toList().size() == 0;
+    }
+
     public List<ActivatedSkillInfo> getActivatedSkills() {
         return activatedSkills;
     }

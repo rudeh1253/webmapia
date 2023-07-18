@@ -49,9 +49,4 @@ public class GameController {
         UserResponseDTO dto = gameService.removeUser(gameId, userId);
         messagingTemplate.convertAndSend("/notification/public/" + gameId, CommonResponse.ok(dto, LocalDateTime.now()));
     }
-
-    @Scheduled(fixedRate = 1000)
-    public void notifyOneSecondElapsed() {
-        messagingTemplate.convertAndSend("/notification/public", CommonResponse.ok(GameNotificationType.ONE_SECOND_ELAPSED, LocalDateTime.now()));
-    }
 }

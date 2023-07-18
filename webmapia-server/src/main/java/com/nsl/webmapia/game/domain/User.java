@@ -21,6 +21,7 @@ public class User {
     private String name;
     private Character character;
     private boolean isDead;
+    private boolean phaseEnd;
 
     public User(Long id) {
         this.ID = id;

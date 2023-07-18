@@ -106,6 +106,15 @@ public interface GameManager {
     void activateSkill(Long activatorId, Long targetId, SkillType skillType);
 
     /**
+     * Since the timelapse is processed at the front-end, the server just receives the signal that the time of
+     * each phase hits the end. Each client connected to this game sends the end signal, end all users in this game
+     * completes to send signals, the game phase steps forward.
+     * @param userId of who sends the end signal.
+     * @return true if this game receives signals from all users participating in this game, otherwise false.
+     */
+    boolean endPhase(Long userId);
+
+    /**
      * After the night, process activated skills.
      * @return a list of notification body.
      */
