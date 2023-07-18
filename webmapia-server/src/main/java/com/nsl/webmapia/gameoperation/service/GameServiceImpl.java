@@ -1,7 +1,6 @@
 package com.nsl.webmapia.gameoperation.service;
 
 import com.nsl.webmapia.character.*;
-import com.nsl.webmapia.character.Character;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.common.NotificationType;
@@ -43,6 +42,7 @@ public class GameServiceImpl implements  GameService {
     public void postPhase(Long gameId) {
         GameManager game = findGameManager(gameId);
         game.postPhase();
+        game.getAllUsers().forEach(user -> user.setPhaseEnd(false));
     }
 
     @Override
