@@ -23,7 +23,6 @@ public class GameManagerImpl implements GameManager {
     private String gameName;
     private Long hostId;
     private GameSetting gameSetting;
-    private long elapsedSeconds;
 
     public GameManagerImpl(Long gameId,
                            Map<CharacterCode, Character> characters,
@@ -35,17 +34,11 @@ public class GameManagerImpl implements GameManager {
         this.userRepository = userRepository;
         this.votes = new ArrayList<>();
         this.activatedSkills = new ArrayList<>();
-        this.elapsedSeconds = 0L;
     }
 
     @Override
     public void onGameStart(GameSetting gameSetting) {
         this.gameSetting = gameSetting;
-    }
-
-    @Override
-    public void onOneSecondElapsed() {
-        elapsedSeconds++;
     }
 
     @Override

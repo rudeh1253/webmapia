@@ -29,8 +29,6 @@ public interface GameManager {
 
     void onGameStart(GameSetting gameSetting);
 
-    void onOneSecondElapsed();
-
     void setGameName(String name);
 
     String getGameName();
