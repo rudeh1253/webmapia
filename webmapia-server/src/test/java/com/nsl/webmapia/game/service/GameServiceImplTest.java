@@ -194,7 +194,7 @@ class GameServiceImplTest {
             gameIds.add(gameService.createNewGame());
         }
         gameIds.add(gameId);
-        List<GameInfoResponseDTO> allGames = gameService.getAllGames();
+        List<GameInfoResponseDTO> allGames = gameService.getAllGameInfo();
         allGames.forEach(g -> assertTrue(gameIds.contains(g.getGameId())));
     }
 }

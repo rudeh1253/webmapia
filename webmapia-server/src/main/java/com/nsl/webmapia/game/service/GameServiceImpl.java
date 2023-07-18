@@ -177,17 +177,24 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public List<GameInfoResponseDTO> getAllGames() {
+    public List<GameInfoResponseDTO> getAllGameInfo() {
         return gameRepository.findAll().stream()
                 .map(GameInfoResponseDTO::from)
                 .toList();
     }
 
     @Override
-    public GameInfoResponseDTO getGame(Long gameId) {
+    public GameInfoResponseDTO getGameInfo(Long gameId) {
         GameManager gameManager = gameRepository.findById(gameId).orElse(null);
         return gameManager != null
                 ? GameInfoResponseDTO.from(gameManager)
                 : null;
+    }
+
+    @Override
+    public PhaseEndNotificationDTO phaseEnd(Long gameId, Long userId) {
+        GameManager game = findGameManager(gameId);
+        boolean isEnd = game.endPhase(userId);
+        return PhaseEndNotificationDTO.from(gameId, isEnd);
     }
 }

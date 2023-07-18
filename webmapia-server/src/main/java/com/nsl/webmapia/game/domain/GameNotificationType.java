@@ -10,5 +10,5 @@ public enum GameNotificationType {
     USER_ENTERED,
     QUERY_USER,
     GAME_INFO,
-    ONE_SECOND_ELAPSED
+    PHASE_END
 }

@@ -104,12 +104,14 @@ public interface GameService {
      * Return all games registered.
      * @return list containing all games registered.
      */
-    List<GameInfoResponseDTO> getAllGames();
+    List<GameInfoResponseDTO> getAllGameInfo();
 
     /**
      * Given id, find and return the game.
      * @param gameId id of game.
      * @return game instance. Given id, if there doesn't exist such game, it will return null.
      */
-    GameInfoResponseDTO getGame(Long gameId);
+    GameInfoResponseDTO getGameInfo(Long gameId);
+
+    PhaseEndNotificationDTO phaseEnd(Long gameId, Long userId);
 }

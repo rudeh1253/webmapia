@@ -59,7 +59,7 @@ public class GameServiceImplConcurrencyTest {
         });
         executor.shutdown();
         while (!executor.isTerminated()) {}
-        gameIds.forEach(id -> assertNotNull(gameService.getGame(id)));
+        gameIds.forEach(id -> assertNotNull(gameService.getGameInfo(id)));
     }
 
     void addUsers(Long gameId, int num) {
@@ -83,7 +83,7 @@ public class GameServiceImplConcurrencyTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        List<GameInfoResponseDTO> games = gameService.getAllGames();
+        List<GameInfoResponseDTO> games = gameService.getAllGameInfo();
         for (GameInfoResponseDTO game : games) {
             assertTrue(gameIds.contains(game.getGameId()));
         }
