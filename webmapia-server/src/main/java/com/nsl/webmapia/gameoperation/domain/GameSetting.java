@@ -11,5 +11,4 @@ public class GameSetting {
     private long discussionTimeSeconds;
     private long voteTimeSeconds;
     private long nightTimeSeconds;
-    private long maxCapacity;
 }
