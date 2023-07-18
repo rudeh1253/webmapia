@@ -9,7 +9,6 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @Builder(access = PRIVATE)
 @ToString
 public class UserResponseDTO {

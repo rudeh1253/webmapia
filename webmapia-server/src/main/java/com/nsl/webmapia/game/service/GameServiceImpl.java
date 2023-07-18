@@ -76,8 +76,9 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public void stepForward(Long gameId) {
-
+    public void postPhase(Long gameId) {
+        GameManager game = findGameManager(gameId);
+        game.postPhase();
     }
 
     @Override

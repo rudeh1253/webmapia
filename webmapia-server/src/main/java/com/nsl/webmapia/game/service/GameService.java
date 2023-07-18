@@ -25,7 +25,7 @@ public interface GameService {
      * The phase of game steps forward.
      * @param gameId id of game.
      */
-    void stepForward(Long gameId);
+    void postPhase(Long gameId);
 
     /**
      * Accept vote of each user for execution.

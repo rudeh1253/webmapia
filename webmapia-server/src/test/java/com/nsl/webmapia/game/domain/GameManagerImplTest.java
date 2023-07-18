@@ -4,6 +4,7 @@ import com.nsl.webmapia.game.domain.character.Character;
 import com.nsl.webmapia.game.domain.character.*;
 import com.nsl.webmapia.game.domain.management.GameManager;
 import com.nsl.webmapia.game.domain.management.GameManagerImpl;
+import com.nsl.webmapia.game.domain.management.GamePhase;
 import com.nsl.webmapia.game.domain.skill.ActivatedSkillInfo;
 import com.nsl.webmapia.game.domain.skill.SkillEffect;
 import com.nsl.webmapia.game.domain.skill.SkillManager;
@@ -372,5 +373,111 @@ class GameManagerImplTest {
 //        for (int i = 0; i < allUser.size(); i++) {
 //            gameManager.acceptVote(allUser.get(i).getID(), allUser.get((i + 1) % allUser.size()).getID());
 //        }
+    }
+
+    @Test
+    void testStartPhase() {
+        gameManager.onGameStart(null);
+        assertEquals(GamePhase.NIGHT, gameManager.currentPhase());
+    }
+
+    @Test
+    void testPostPhase_Normal() {
+        addUsers(5, gameManager);
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.CITIZEN, 1);
+        characterDistribution.put(CharacterCode.GUARD, 1);
+        characterDistribution.put(CharacterCode.PREDICTOR, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        gameManager.generateCharacters(characterDistribution);
+        Faction result = gameManager.postPhase();
+        assertNull(result);
+    }
+
+    @Test
+    void testPostPhase_WolfWin() {
+        addUsers(4, gameManager);
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.BETRAYER, 1);
+        characterDistribution.put(CharacterCode.SOLDIER, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        gameManager.generateCharacters(characterDistribution);
+        Faction result = gameManager.postPhase();
+        assertEquals(Faction.WOLF, result);
+    }
+
+    @Test
+    void testPostPhase_HumanWin() {
+        addUsers(4, gameManager);
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.CITIZEN, 1);
+        characterDistribution.put(CharacterCode.GUARD, 1);
+        characterDistribution.put(CharacterCode.MURDERER, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        gameManager.generateCharacters(characterDistribution);
+        Faction result = gameManager.postPhase();
+        assertEquals(Faction.HUMAN, result);
+    }
+
+    @Test
+    void testPostPhase_HumanWin_TEMPLAR() {
+        addUsers(2, gameManager);
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.TEMPLAR, 1);
+        gameManager.generateCharacters(characterDistribution);
+        Faction result = gameManager.postPhase();
+        assertEquals(Faction.HUMAN, result);
+    }
+
+    @Test
+    void testPostPhase_HumanMouseWin1() {
+        addUsers(4, gameManager);
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.BETRAYER, 1);
+        characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        gameManager.generateCharacters(characterDistribution);
+        Faction result = gameManager.postPhase();
+        assertEquals(Faction.HUMAN_MOUSE, result);
+    }
+
+    @Test
+    void testPostPhase_HumanMouseWin2() {
+        addUsers(4, gameManager);
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.CITIZEN, 1);
+        characterDistribution.put(CharacterCode.GUARD, 1);
+        characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
+        characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        gameManager.generateCharacters(characterDistribution);
+        Faction result = gameManager.postPhase();
+        assertEquals(Faction.HUMAN_MOUSE, result);
+    }
+
+    @Test
+    void testPostPhase_HumanMouseWin3() {
+        addUsers(2, gameManager);
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
+        gameManager.generateCharacters(characterDistribution);
+        Faction result = gameManager.postPhase();
+        assertEquals(Faction.HUMAN_MOUSE, result);
+    }
+
+    @Test
+    void testPostPhase_HumanMouseWin4() {
+        addUsers(3, gameManager);
+        Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
+        characterDistribution.put(CharacterCode.WOLF, 1);
+        characterDistribution.put(CharacterCode.TEMPLAR, 1);
+        characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
+        gameManager.generateCharacters(characterDistribution);
+        Faction result = gameManager.postPhase();
+        assertEquals(Faction.HUMAN_MOUSE, result);
     }
 }

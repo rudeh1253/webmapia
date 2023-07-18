@@ -51,9 +51,13 @@ public interface GameManager {
     List<User> generateCharacters(Map<CharacterCode, Integer> characterDistribution);
 
     /**
-     * The phase of game steps forward.
+     * This method defines process after the phase.
+     * If a faction achieves victory at the end of the phase, then it will return the enum of Faction
+     * who won, otherwise null.
      */
-    void stepForward();
+    Faction postPhase();
+
+    GamePhase currentPhase();
 
     /**
      * Accept vote.

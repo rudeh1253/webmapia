@@ -13,6 +13,13 @@ import com.nsl.webmapia.game.repository.UserRepository;
 import java.util.*;
 
 public class GameManagerImpl implements GameManager {
+    private static final GamePhase[] PHASE_ORDER = {
+            GamePhase.NIGHT,
+            GamePhase.DAYTIME,
+            GamePhase.VOTE,
+            GamePhase.EXECUTION
+    };
+
     private final Long GAME_ID;
     private final Map<CharacterCode, Character> characters;
     private final SkillManager skillManager;
@@ -23,6 +30,7 @@ public class GameManagerImpl implements GameManager {
     private String gameName;
     private Long hostId;
     private GameSetting gameSetting;
+    private int currentPhase;
 
     public GameManagerImpl(Long gameId,
                            Map<CharacterCode, Character> characters,
@@ -34,6 +42,7 @@ public class GameManagerImpl implements GameManager {
         this.userRepository = userRepository;
         this.votes = new ArrayList<>();
         this.activatedSkills = new ArrayList<>();
+        currentPhase = 0;
     }
 
     @Override
@@ -85,8 +94,47 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public void stepForward() {
+    public Faction postPhase() {
+        List<User> users = userRepository.findAll();
+        List<User> aliveUsers = users.stream().filter(user -> !user.isDead()).toList();
+        List<User> wolfUsers = aliveUsers.stream()
+                .filter(user -> user.getCharacter().getFaction() == Faction.WOLF)
+                .toList();
+        List<User> humanUsers = aliveUsers.stream()
+                .filter(user -> user.getCharacter().getFaction() == Faction.HUMAN)
+                .toList();
+        List<User> humanMouseUsers = aliveUsers.stream()
+                .filter(user -> user.getCharacter().getFaction() == Faction.HUMAN_MOUSE)
+                .toList();
 
+        Faction winner = null;
+        if (wolfUsers.size() >= humanUsers.size()) {
+            if (wolfUsers.size() == 1
+                    && humanUsers.size() == 1
+                    && humanUsers.stream().anyMatch(user -> user.getCharacter().getCharacterCode() == CharacterCode.TEMPLAR)) {
+                winner = Faction.HUMAN;
+            } else {
+                winner = Faction.WOLF;
+            }
+        } else if (wolfUsers.size() == 0) {
+            winner = Faction.HUMAN;
+        }
+        if (winner != null && humanMouseUsers.size() >= 1) {
+            winner = Faction.HUMAN_MOUSE;
+        }
+        if (winner == null) {
+            stepForward();
+        }
+        return winner;
+    }
+
+    private void stepForward() {
+        currentPhase = (currentPhase + 1) % PHASE_ORDER.length;
+    }
+
+    @Override
+    public GamePhase currentPhase() {
+        return PHASE_ORDER[currentPhase];
     }
 
     @Override
