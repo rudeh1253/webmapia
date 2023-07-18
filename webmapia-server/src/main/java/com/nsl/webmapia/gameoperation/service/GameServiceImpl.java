@@ -2,9 +2,10 @@ package com.nsl.webmapia.gameoperation.service;
 
 import com.nsl.webmapia.character.*;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
+import com.nsl.webmapia.gameoperation.dto.PhaseEndNotificationDTO;
+import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.common.NotificationType;
-import com.nsl.webmapia.gameoperation.dto.response.*;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.user.dto.CharacterGenerationResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;

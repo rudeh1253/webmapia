@@ -1,4 +1,4 @@
-package com.nsl.webmapia.gameoperation.dto.request;
+package com.nsl.webmapia.user.dto;
 
 import com.nsl.webmapia.common.NotificationType;
 import lombok.Getter;

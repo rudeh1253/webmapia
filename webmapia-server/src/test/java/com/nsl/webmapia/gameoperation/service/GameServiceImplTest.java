@@ -8,7 +8,7 @@ import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.user.dto.CharacterGenerationResponseDTO;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
 import com.nsl.webmapia.user.dto.UserResponseDTO;
-import com.nsl.webmapia.gameoperation.dto.response.VoteResultResponseDTO;
+import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.gameoperation.repository.MemoryGameRepository;
 import com.nsl.webmapia.user.service.UserService;

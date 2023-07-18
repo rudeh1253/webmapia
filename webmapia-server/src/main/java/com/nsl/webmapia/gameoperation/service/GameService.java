@@ -1,7 +1,8 @@
 package com.nsl.webmapia.gameoperation.service;
 
 import com.nsl.webmapia.character.CharacterCode;
-import com.nsl.webmapia.gameoperation.dto.response.*;
+import com.nsl.webmapia.gameoperation.dto.PhaseEndNotificationDTO;
+import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.user.dto.CharacterGenerationResponseDTO;
 
 import java.util.List;
