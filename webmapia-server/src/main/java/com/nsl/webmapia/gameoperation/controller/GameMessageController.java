@@ -6,12 +6,12 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class GameController {
+public class GameMessageController {
     private GameService gameService;
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate) {
+    public GameMessageController(GameService gameService, SimpMessagingTemplate messagingTemplate) {
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
     }
