@@ -6,9 +6,11 @@ import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
     private final GameRepository gameRepository;
 

@@ -9,11 +9,13 @@ import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.skill.domain.SkillEffect;
 import com.nsl.webmapia.skill.domain.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class SkillServiceImpl implements SkillService {
     private final Map<CharacterCode, Character> characters;
     private final GameRepository gameRepository;
