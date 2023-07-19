@@ -182,6 +182,6 @@ class GameServiceImplTest {
         gameIds.forEach(id -> userService.addUser(id, 1L));
         gameIds.add(gameId);
         List<RoomInfoResponseDTO> allGames = roomService.getAllRoomInfo();
-        allGames.forEach(g -> assertTrue(gameIds.contains(g.getGameId())));
+        allGames.forEach(g -> assertTrue(gameIds.contains(g.getRoomId())));
     }
 }

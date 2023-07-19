@@ -15,9 +15,9 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder(access = PRIVATE)
 public class RoomInfoResponseDTO {
     private final NotificationType notificationType;
-    private final Long gameId;
+    private final Long roomId;
     private final Long hostId;
-    private final String gameName;
+    private final String roomName;
     private final List<UserResponseDTO> users;
 
     public static RoomInfoResponseDTO from(GameManager gameManager) {
@@ -26,10 +26,10 @@ public class RoomInfoResponseDTO {
                 .toList();
         User host = gameManager.getHost();
         return RoomInfoResponseDTO.builder()
-                .gameId(gameManager.getGameId())
+                .roomId(gameManager.getGameId())
                 .notificationType(NotificationType.GAME_INFO)
                 .hostId(host != null ? host.getID() : null)
-                .gameName(gameManager.getGameName())
+                .roomName(gameManager.getGameName())
                 .users(userResponseDTOs)
                 .build();
     }

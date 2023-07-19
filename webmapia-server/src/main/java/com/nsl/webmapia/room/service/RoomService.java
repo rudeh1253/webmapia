@@ -24,4 +24,10 @@ public interface RoomService {
      * @return gameId.
      */
     Long createNewRoom(String roomName, Long hostId);
+
+    /**
+     * Create a new game. The id of the game is generated at random. No duplicate of game id is allowed.
+     * @return gameId.
+     */
+    Long createNewRoom(String roomName, Long hostId, String hostName);
 }

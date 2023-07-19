@@ -32,6 +32,17 @@ public class RoomServiceImpl implements RoomService{
         game.setGameName(roomName);
         game.setHost(hostId);
         gameRepository.save(game);
+        game.addUser(hostId);
+        return game.getGameId();
+    }
+
+    @Override
+    public Long createNewRoom(String roomName, Long hostId, String hostName) {
+        GameManager game = GameManager.newInstance(characters, new SkillManager(), new MemoryUserRepository());
+        game.setGameName(roomName);
+        game.setHost(hostId);
+        gameRepository.save(game);
+        game.addUser(hostId, hostName);
         return game.getGameId();
     }
 

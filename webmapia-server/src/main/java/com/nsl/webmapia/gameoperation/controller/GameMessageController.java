@@ -20,7 +20,7 @@ public class GameMessageController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping
+    @MessageMapping("/game/start")
     public void gameStart(@Payload GameStartNotificationDTO request) {
         messagingTemplate.convertAndSend("/notification/public" + request.getGameId(), request);
     }

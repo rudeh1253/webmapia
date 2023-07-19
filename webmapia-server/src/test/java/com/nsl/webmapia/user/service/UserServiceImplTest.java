@@ -91,7 +91,7 @@ class UserServiceImplTest {
         }
         List<RoomInfoResponseDTO> games = roomService.getAllRoomInfo();
         for (RoomInfoResponseDTO game : games) {
-            assertTrue(gameIds.contains(game.getGameId()));
+            assertTrue(gameIds.contains(game.getRoomId()));
         }
         for (RoomInfoResponseDTO game : games) {
             List<UserResponseDTO> users = game.getUsers();
