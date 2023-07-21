@@ -3,16 +3,14 @@ package com.nsl.webmapia.gameoperation.controller;
 import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.common.exception.ErrorCode;
 import com.nsl.webmapia.common.exception.UnsupportedNotificationTypeException;
-import com.nsl.webmapia.gameoperation.dto.CharacterGenerationRequestDTO;
-import com.nsl.webmapia.gameoperation.dto.GameStartNotificationDTO;
-import com.nsl.webmapia.gameoperation.dto.VoteRequestDTO;
+import com.nsl.webmapia.gameoperation.dto.*;
 import com.nsl.webmapia.gameoperation.service.GameService;
-import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -43,6 +41,14 @@ public class GameMessageController {
             String dest = "/notification/private/" + dto.getGameId() + "/" + dto.getReceiverId();
             messagingTemplate.convertAndSend(dest, dto);
         });
+    }
+
+    @MessageMapping("/game/end-phase")
+    public void endPhase(@Payload PhaseEndRequestDTO request) {
+        PhaseEndNotificationDTO result = gameService.phaseEnd(request.getGameId(), request.getUserId());
+        if (result.isEnd()) {
+            messagingTemplate.convertAndSend("/notification/public/" + result.getGameId(), result);
+        }
     }
 
     @MessageMapping("/game/vote")
