@@ -3,6 +3,7 @@ package com.nsl.webmapia.gameoperation.service;
 import com.nsl.webmapia.character.*;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.gameoperation.dto.PhaseEndNotificationDTO;
+import com.nsl.webmapia.gameoperation.dto.PhaseResultDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.common.NotificationType;
@@ -40,10 +41,11 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public void postPhase(Long gameId) {
+    public PhaseResultDTO postPhase(Long gameId) {
         GameManager game = findGameManager(gameId);
-        game.postPhase();
+        Faction winner = game.postPhase();
         game.getAllUsers().forEach(user -> user.setPhaseEnd(false));
+        return PhaseResultDTO.of(gameId, winner != null, winner);
     }
 
     @Override

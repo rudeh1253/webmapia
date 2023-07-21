@@ -2,6 +2,7 @@ package com.nsl.webmapia.gameoperation.service;
 
 import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.gameoperation.dto.PhaseEndNotificationDTO;
+import com.nsl.webmapia.gameoperation.dto.PhaseResultDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
 
@@ -26,7 +27,7 @@ public interface GameService {
      * The phase of game steps forward.
      * @param gameId id of game.
      */
-    void postPhase(Long gameId);
+    PhaseResultDTO postPhase(Long gameId);
 
     /**
      * Accept vote of each user for execution.

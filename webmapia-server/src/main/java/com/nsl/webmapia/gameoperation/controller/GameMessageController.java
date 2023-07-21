@@ -51,6 +51,12 @@ public class GameMessageController {
         }
     }
 
+    @MessageMapping("/game/post-phase")
+    public void postPhase(@Payload PostPhaseRequestDTO request) {
+        PhaseResultDTO phaseResultDTO = gameService.postPhase(request.getGameId());
+        messagingTemplate.convertAndSend("/notification/public/" + phaseResultDTO.getGameId(), phaseResultDTO);
+    }
+
     @MessageMapping("/game/vote")
     public void vote(@Payload VoteRequestDTO request) {
         if (request.getNotificationType() != NotificationType.VOTE) {

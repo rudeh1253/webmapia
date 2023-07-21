@@ -13,5 +13,6 @@ public enum NotificationType {
     GAME_INFO,
     PHASE_END,
     GAME_START,
-    CHARACTER_GENERATION
+    CHARACTER_GENERATION,
+    PHASE_RESULT
 }
