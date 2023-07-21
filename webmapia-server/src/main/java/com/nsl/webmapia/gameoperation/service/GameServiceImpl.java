@@ -7,7 +7,7 @@ import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
-import com.nsl.webmapia.user.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

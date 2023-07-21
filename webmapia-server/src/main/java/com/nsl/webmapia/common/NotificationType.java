@@ -4,6 +4,7 @@ public enum NotificationType {
     SKILL_PUBLIC,
     SKILL_PRIVATE,
     NOTIFY_WHICH_CHARACTER_ALLOCATED,
+    VOTE,
     EXECUTE_BY_VOTE,
     INVALID_VOTE,
     USER_REMOVED,
@@ -11,5 +12,6 @@ public enum NotificationType {
     QUERY_USER,
     GAME_INFO,
     PHASE_END,
-    GAME_START
+    GAME_START,
+    CHARACTER_GENERATION
 }

@@ -5,7 +5,7 @@ import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.room.service.RoomService;
 import com.nsl.webmapia.room.service.RoomServiceImpl;
 import com.nsl.webmapia.skill.domain.SkillManager;
-import com.nsl.webmapia.user.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
 import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;

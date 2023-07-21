@@ -1,4 +1,4 @@
-package com.nsl.webmapia.user.dto;
+package com.nsl.webmapia.gameoperation.dto;
 
 import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.common.NotificationType;
