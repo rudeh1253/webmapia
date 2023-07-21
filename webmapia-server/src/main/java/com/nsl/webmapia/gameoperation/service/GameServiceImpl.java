@@ -2,6 +2,7 @@ package com.nsl.webmapia.gameoperation.service;
 
 import com.nsl.webmapia.character.*;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
+import com.nsl.webmapia.gameoperation.domain.GamePhase;
 import com.nsl.webmapia.gameoperation.dto.PhaseEndNotificationDTO;
 import com.nsl.webmapia.gameoperation.dto.PhaseResultDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
@@ -72,5 +73,11 @@ public class GameServiceImpl implements  GameService {
 
     private GameManager findGameManager(Long gameId) {
         return gameRepository.findById(gameId).orElseThrow();
+    }
+
+    @Override
+    public GamePhase getCurrentPhase(Long gameId) {
+        GameManager game = findGameManager(gameId);
+        return game.currentPhase();
     }
 }

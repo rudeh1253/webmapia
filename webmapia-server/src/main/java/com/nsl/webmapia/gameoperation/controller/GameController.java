@@ -10,6 +10,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -63,5 +65,10 @@ public class GameController {
             throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
         }
         gameService.acceptVote(request.getGameId(), request.getVoterId(), request.getSubjectId());
+    }
+
+    @GetMapping("/game/current-phase/{gameId}")
+    public CurrentPhaseResponseDTO getCurrentPhase(@PathVariable("gameId") Long gameId) {
+        return CurrentPhaseResponseDTO.of(gameId, gameService.getCurrentPhase(gameId));
     }
 }
