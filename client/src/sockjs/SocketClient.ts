@@ -1,4 +1,4 @@
-import data from "../../secret/server-spec.json";
+import data from "../resource/secret/server-spec.json";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client";
 
