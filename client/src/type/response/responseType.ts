@@ -1,5 +1,7 @@
+import { NotificationType } from "../notificationType";
+
 export type CharacterGenerationResponse = {
-    notificationType: string;
+    notificationType: NotificationType;
     receiverId: number;
     characterCode: string;
     gameId: number;
@@ -11,26 +13,26 @@ export type CurrentPhaseResponse = {
 };
 
 export type PhaseEndNotificationResponse = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
     isEnd: boolean;
 };
 
 export type PhaseResultResponse = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
     isGameEnd: boolean;
     winner: string;
 };
 
 export type VoteResultResponse = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
     idOfUserToBeExecuted: number;
 };
 
 export type RoomInfoResponse = {
-    notificationType: string;
+    notificationType: NotificationType;
     roomId: number;
     hostId: number;
     roomName: string;
@@ -38,7 +40,7 @@ export type RoomInfoResponse = {
 };
 
 export type UserResponse = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
     userId: number;
     username: string;
@@ -47,7 +49,7 @@ export type UserResponse = {
 };
 
 export type SkillResultResponse = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
     skillTargetId: number;
     skillActivatorId: number;
