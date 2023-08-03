@@ -1,5 +1,7 @@
+import { NotificationType } from "../notificationType";
+
 export type CharacterGenerationRequest = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
     characterDistribution: {
         WOLF: number;
@@ -21,24 +23,24 @@ export type CharacterGenerationRequest = {
 };
 
 export type GameStartNotificationRequest = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameSetting: string;
     gameId: number;
 };
 
 export type PhaseEndRequest = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
     userId: number;
 };
 
 export type PostPhaseRequest = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
 };
 
 export type VoteRequest = {
-    notificationType: string;
+    notificationType: NotificationType;
     gameId: number;
     voterId: number;
     subjectId: number;
