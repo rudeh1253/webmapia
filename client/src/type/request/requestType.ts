@@ -51,3 +51,10 @@ export type RoomCreationRequest = {
     hostId: number;
     hostName: string;
 };
+
+export type UserRequest = {
+    notificationType: NotificationType;
+    gameId: number;
+    userId: number;
+    username: string;
+};
