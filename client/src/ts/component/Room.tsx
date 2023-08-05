@@ -24,18 +24,26 @@ export default function Room() {
             </ul>
             <div className="chat-container">
                 <div className="chat-log">
-                    {chatLogs.map((chat) => (
+                    {chatLogs.map((chat, idx) => (
                         <ChatItem
+                            key={`chat-item-${idx + 1}`}
                             sender={chat.sender}
                             message={chat.message}
                             timestamp={chat.timestamp}
+                            isMe={chat.isMe}
                         />
                     ))}
                 </div>
                 <div className="enter-chat">
                     <div className="message-input-container">
-                        <input className="message-input" type="text" ref={chatInputRef} />
-                        <button className="send-message" type="button">{data.room.send}</button>
+                        <input
+                            className="message-input"
+                            type="text"
+                            ref={chatInputRef}
+                        />
+                        <button className="send-message" type="button">
+                            {data.room.send}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -54,7 +62,7 @@ function UserItem({ userId, username, characterCode, isDead }: UserInfo) {
     );
 }
 
-function ChatItem({ sender, message, timestamp }: Chat) {
+function ChatItem({ sender, message, timestamp, isMe }: Chat) {
     return (
         <div>
             <p>

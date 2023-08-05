@@ -35,4 +35,5 @@ export type Chat = {
     sender: UserInfo;
     message: string;
     timestamp: Date;
+    isMe: boolean;
 };
