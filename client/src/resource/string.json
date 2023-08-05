@@ -7,5 +7,8 @@
         "inputRoomName": "방 이름을 입력하세요",
         "close": "닫기",
         "enter": "입장"
+    },
+    "room": {
+        "send": "전송"
     }
 }

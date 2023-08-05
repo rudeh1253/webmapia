@@ -30,3 +30,9 @@ export type CharacterCode =
     | "MURDERER"
     | "HUMAN_MOUSE"
     | "GOOD_MAN";
+
+export type Chat = {
+    sender: UserInfo;
+    message: string;
+    timestamp: Date;
+};

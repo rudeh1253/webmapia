@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./component/Home";
+import Room from "./component/Room";
 
 /**
  * Root component.
@@ -11,6 +12,7 @@ export default function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/room" element={<Room />} />
                 </Routes>
             </BrowserRouter>
         </div>
