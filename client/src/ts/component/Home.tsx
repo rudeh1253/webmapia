@@ -1,10 +1,16 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import data from "../../resource/string.json";
 
+interface ModalProps {
+    setModalState: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 export default function Home() {
+    const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
     const usernameInput = useRef<HTMLInputElement>(null);
     return (
         <div className="container">
+            {roomCreationModal ? <RoomCreationModal setModalState={setRoomCreationModal} /> : null}
             <div className="user-info">
                 <div className="input-container">
                     <label
@@ -28,7 +34,11 @@ export default function Home() {
                             {data.home.search}
                         </button>
                     </div>
-                    <button className="room-create-btn" type="button">
+                    <button
+                        className="room-create-btn"
+                        type="button"
+                        onClick={() => setRoomCreationModal(true)}
+                    >
                         {data.home.createRoom}
                     </button>
                     <button className="reload-btn" type="button">
@@ -37,6 +47,21 @@ export default function Home() {
                 </div>
                 <div className="room-container"></div>
             </div>
+        </div>
+    );
+}
+
+function RoomCreationModal({setModalState}: ModalProps) {
+    return (
+        <div className="modal">
+            <button type="button" onClick={() => setModalState(false)}>{data.home.close}</button>
+            <div className="room-info-input-container">
+                <label htmlFor="room-info-input">
+                    {data.home.inputRoomName}
+                </label>
+                <input type="text" id="room-info-input" />
+            </div>
+            <button type="button">{data.home.createRoom}</button>
         </div>
     );
 }

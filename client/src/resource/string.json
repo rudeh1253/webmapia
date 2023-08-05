@@ -3,6 +3,8 @@
         "usernameInputLabel": "유저 이름을 입력하세요",
         "createRoom": "방 생성",
         "reload": "새로고침",
-        "search": "검색"
+        "search": "검색",
+        "inputRoomName": "방 이름을 입력하세요",
+        "close": "닫기"
     }
 }
