@@ -1,9 +1,40 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import data from "../../resource/string.json";
+import { RoomInfo } from "../type/roomInfoType";
 
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
+    const [roomList, setRoomList] = useState<Array<RoomInfo>>([]);
+
     const usernameInput = useRef<HTMLInputElement>(null);
+    const searchKeywordInput = useRef<HTMLInputElement>(null);
+
+    const getRoomList = (keyword?: string) => {
+        // TODO: We will get room data from server
+        if (keyword) {
+            // If keyword exists
+        } else {
+            // Temp
+            const room1: RoomInfo = {
+                roomId: 1,
+                hostId: 13,
+                roomName: "Temp1",
+                numOfUsers: 10,
+            };
+            const room2: RoomInfo = {
+                roomId: 2,
+                hostId: 15,
+                roomName: "Temp2",
+                numOfUsers: 8,
+            };
+            setRoomList([room1, room2]);
+        }
+    };
+
+    useEffect(() => {
+        getRoomList();
+    }, []);
+
     return (
         <div className="container">
             {roomCreationModal ? (
@@ -27,8 +58,11 @@ export default function Home() {
             <div className="game-container">
                 <div className="function-container">
                     <div className="room-search-container">
-                        <input className="search-keyword-input" type="text" />
-                        <button className="search-btn" type="button">
+                        <input className="search-keyword-input" type="text" ref={searchKeywordInput} />
+                        <button className="search-btn" type="button" onClick={() => {
+                            const searchKeyword = searchKeywordInput.current?.value;
+                            getRoomList(searchKeyword);
+                        }}>
                             {data.home.search}
                         </button>
                     </div>
@@ -43,7 +77,17 @@ export default function Home() {
                         {data.home.reload}
                     </button>
                 </div>
-                <div className="room-container"></div>
+                <div className="room-container">
+                    {roomList.map((item) => (
+                        <RoomItem
+                            key={item.roomId}
+                            roomId={item.roomId}
+                            roomName={item.roomName}
+                            hostId={item.hostId}
+                            numOfUsers={item.numOfUsers}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );
@@ -66,6 +110,16 @@ function RoomCreationModal({ setModalState }: ModalProps) {
                 <input type="text" id="room-info-input" />
             </div>
             <button type="button">{data.home.createRoom}</button>
+        </div>
+    );
+}
+
+function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
+    return (
+        <div className="room-item">
+            <p>{roomName}</p>
+            <p>{numOfUsers}</p>
+            <button type="button">{data.home.enter}</button>
         </div>
     );
 }
