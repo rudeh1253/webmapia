@@ -1,16 +1,14 @@
 import { useRef, useState } from "react";
 import data from "../../resource/string.json";
 
-interface ModalProps {
-    setModalState: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
     const usernameInput = useRef<HTMLInputElement>(null);
     return (
         <div className="container">
-            {roomCreationModal ? <RoomCreationModal setModalState={setRoomCreationModal} /> : null}
+            {roomCreationModal ? (
+                <RoomCreationModal setModalState={setRoomCreationModal} />
+            ) : null}
             <div className="user-info">
                 <div className="input-container">
                     <label
@@ -51,10 +49,16 @@ export default function Home() {
     );
 }
 
-function RoomCreationModal({setModalState}: ModalProps) {
+interface ModalProps {
+    setModalState: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function RoomCreationModal({ setModalState }: ModalProps) {
     return (
         <div className="modal">
-            <button type="button" onClick={() => setModalState(false)}>{data.home.close}</button>
+            <button type="button" onClick={() => setModalState(false)}>
+                {data.home.close}
+            </button>
             <div className="room-info-input-container">
                 <label htmlFor="room-info-input">
                     {data.home.inputRoomName}
