@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import data from "../../resource/string.json";
-import { RoomInfo } from "../type/roomInfoType";
+import { RoomInfo } from "../type/gameDomainType";
 
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
@@ -58,11 +58,20 @@ export default function Home() {
             <div className="game-container">
                 <div className="function-container">
                     <div className="room-search-container">
-                        <input className="search-keyword-input" type="text" ref={searchKeywordInput} />
-                        <button className="search-btn" type="button" onClick={() => {
-                            const searchKeyword = searchKeywordInput.current?.value;
-                            getRoomList(searchKeyword);
-                        }}>
+                        <input
+                            className="search-keyword-input"
+                            type="text"
+                            ref={searchKeywordInput}
+                        />
+                        <button
+                            className="search-btn"
+                            type="button"
+                            onClick={() => {
+                                const searchKeyword =
+                                    searchKeywordInput.current?.value;
+                                getRoomList(searchKeyword);
+                            }}
+                        >
                             {data.home.search}
                         </button>
                     </div>
@@ -114,7 +123,7 @@ function RoomCreationModal({ setModalState }: ModalProps) {
     );
 }
 
-function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
+function RoomItem({ roomId, roomName, hostId, numOfUsers }: RoomInfo) {
     return (
         <div className="room-item">
             <p>{roomName}</p>
