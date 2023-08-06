@@ -1,10 +1,13 @@
 import { useRef, useState } from "react";
 import { Chat, UserInfo } from "../type/gameDomainType";
 import data from "../../resource/string.json";
+import { useAppSelector } from "../redux/hook";
 
 export default function Room() {
     const [users, setUsers] = useState<Array<UserInfo>>([]);
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
+
+    const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
 
     const chatInputRef = useRef<HTMLInputElement>(null);
 
