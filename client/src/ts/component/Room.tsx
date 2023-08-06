@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
-import { Chat, UserInfo } from "../type/gameDomainType";
+import {useRef, useState} from "react";
+import {Chat, UserInfo} from "../type/gameDomainType";
 import data from "../../resource/string.json";
-import { useAppSelector } from "../redux/hook";
+import {useAppSelector} from "../redux/hook";
 
 export default function Room() {
     const [users, setUsers] = useState<Array<UserInfo>>([]);
@@ -54,7 +54,7 @@ export default function Room() {
     );
 }
 
-function UserItem({ userId, username, characterCode, isDead }: UserInfo) {
+function UserItem({userId, username, characterCode, isDead}: UserInfo) {
     return (
         <div>
             <p>{userId}</p>
@@ -65,7 +65,7 @@ function UserItem({ userId, username, characterCode, isDead }: UserInfo) {
     );
 }
 
-function ChatItem({ sender, message, timestamp, isMe }: Chat) {
+function ChatItem({sender, message, timestamp, isMe}: Chat) {
     return (
         <div>
             <p>

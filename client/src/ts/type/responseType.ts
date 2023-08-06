@@ -1,4 +1,4 @@
-import { NotificationType } from "./notificationType";
+import {NotificationType} from "./notificationType";
 
 export type CharacterGenerationResponse = {
     notificationType: NotificationType;

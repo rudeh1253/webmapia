@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import data from "../../resource/string.json";
-import { RoomInfo } from "../type/gameDomainType";
+import {RoomInfo} from "../type/gameDomainType";
 
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
@@ -19,13 +19,13 @@ export default function Home() {
                 roomId: 1,
                 hostId: 13,
                 roomName: "Temp1",
-                numOfUsers: 10,
+                numOfUsers: 10
             };
             const room2: RoomInfo = {
                 roomId: 2,
                 hostId: 15,
                 roomName: "Temp2",
-                numOfUsers: 8,
+                numOfUsers: 8
             };
             setRoomList([room1, room2]);
         }
@@ -106,7 +106,7 @@ interface ModalProps {
     setModalState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function RoomCreationModal({ setModalState }: ModalProps) {
+function RoomCreationModal({setModalState}: ModalProps) {
     return (
         <div className="modal">
             <button type="button" onClick={() => setModalState(false)}>
@@ -123,7 +123,7 @@ function RoomCreationModal({ setModalState }: ModalProps) {
     );
 }
 
-function RoomItem({ roomId, roomName, hostId, numOfUsers }: RoomInfo) {
+function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
     return (
         <div className="room-item">
             <p>{roomName}</p>

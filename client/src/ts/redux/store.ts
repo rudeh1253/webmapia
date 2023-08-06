@@ -1,10 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
+import {configureStore} from "@reduxjs/toolkit";
 import currentRoomInfoSlice from "./slice/currentRoomInfoSlice";
 
 export const store = configureStore({
     reducer: {
-        currentRoomInfo: currentRoomInfoSlice,
-    },
+        currentRoomInfo: currentRoomInfoSlice
+    }
 });
 
 export type RootState = ReturnType<typeof store.getState>;

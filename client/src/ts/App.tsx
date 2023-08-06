@@ -1,8 +1,8 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "./component/Home";
 import Room from "./component/Room";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import {Provider} from "react-redux";
+import {store} from "./redux/store";
 
 /**
  * Root component.

@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RoomInfo } from "../../type/gameDomainType";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {RoomInfo} from "../../type/gameDomainType";
 
 export interface CurrentRoomInfoInitialState {
     roomInfo: RoomInfo;
@@ -10,8 +10,8 @@ const currentRoomInfoInitialState: CurrentRoomInfoInitialState = {
         roomId: -1,
         roomName: "",
         hostId: -1,
-        numOfUsers: -1,
-    },
+        numOfUsers: -1
+    }
 };
 
 export const currentRoomInfoSlice = createSlice({
@@ -20,9 +20,9 @@ export const currentRoomInfoSlice = createSlice({
     reducers: {
         setCurrentRoomInfo(state, action: PayloadAction<RoomInfo>) {
             state.roomInfo = action.payload;
-        },
-    },
+        }
+    }
 });
 
-export const { setCurrentRoomInfo } = currentRoomInfoSlice.actions;
+export const {setCurrentRoomInfo} = currentRoomInfoSlice.actions;
 export default currentRoomInfoSlice.reducer;
