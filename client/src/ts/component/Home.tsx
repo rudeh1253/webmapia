@@ -1,6 +1,9 @@
 import {useEffect, useRef, useState} from "react";
 import data from "../../resource/string.json";
 import {RoomInfo} from "../type/gameDomainType";
+import {useAppDispatch} from "../redux/hook";
+import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
@@ -123,12 +126,29 @@ function RoomCreationModal({setModalState}: ModalProps) {
     );
 }
 
-function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
+function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo, ) {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const onClickEnterBtn = () => {
+        dispatch(
+            setCurrentRoomInfo({
+                roomId,
+                roomName,
+                hostId,
+                numOfUsers
+            })
+        );
+        navigate("/room");
+    };
+
     return (
         <div className="room-item">
             <p>{roomName}</p>
             <p>{numOfUsers}</p>
-            <button type="button">{data.home.enter}</button>
+            <button type="button" onClick={onClickEnterBtn}>
+                {data.home.enter}
+            </button>
         </div>
     );
 }
