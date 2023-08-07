@@ -1,5 +1,5 @@
 import {useRef, useState, useEffect} from "react";
-import {Chat, RoomInfo, UserInfo} from "../type/gameDomainType";
+import {Chat, UserInfo} from "../type/gameDomainType";
 import data from "../../resource/string.json";
 import {useAppSelector} from "../redux/hook";
 
@@ -39,7 +39,7 @@ const tempUsers: UserInfo[] = [
 export default function Room() {
     const [thisUser, setThisUser] = useState<UserInfo>({
         userId: -1,
-        username: "",
+        username: "temp",
         characterCode: null,
         isDead: false
     });
@@ -55,6 +55,39 @@ export default function Room() {
     const onChatReceived = (newChat: Chat) =>
         setChatLogs([...chatLogs, newChat]);
 
+    // TODO: Remove temporary data after testing
+    const tempChatLog: Chat[] = [
+        {
+            sender: tempUsers[0],
+            message: "Hi",
+            timestamp: new Date(2023, 7, 7, 2, 30, 0).getTime(),
+            isMe: false
+        },
+        {
+            sender: tempUsers[1],
+            message: "Hello",
+            timestamp: new Date(2023, 7, 7, 2, 32, 0).getTime(),
+            isMe: false
+        },
+        {
+            sender: tempUsers[0],
+            message: "How are you",
+            timestamp: new Date(2023, 7, 7, 2, 32, 23).getTime(),
+            isMe: false
+        },
+        {
+            sender: tempUsers[3],
+            message: "Come on",
+            timestamp: new Date(2023, 7, 7, 2, 32, 50).getTime(),
+            isMe: false
+        }
+    ];
+
+    useEffect(() => {
+        setChatLogs(tempChatLog);
+        console.log(tempChatLog);
+    }, []);
+
     const chat = (message: string) => {
         const newChat: Chat = {
             sender: thisUser,
@@ -62,7 +95,12 @@ export default function Room() {
             timestamp: Date.now(),
             isMe: true
         };
+        tempChat(newChat); // Temporary chat
         // TODO: send newChat
+    };
+
+    const tempChat = (newChat: Chat) => {
+        setChatLogs([...chatLogs, newChat]);
     };
 
     useEffect(() => {
@@ -105,7 +143,11 @@ export default function Room() {
                             type="text"
                             ref={chatInputRef}
                         />
-                        <button className="send-message" type="button">
+                        <button
+                            className="send-message"
+                            type="button"
+                            onClick={() => chat(chatInputRef.current!.value)}
+                        >
                             {data.room.send}
                         </button>
                     </div>
@@ -127,6 +169,7 @@ function UserItem({userId, username, characterCode, isDead}: UserInfo) {
 }
 
 function ChatItem({sender, message, timestamp, isMe}: Chat) {
+    const time = new Date(timestamp);
     return (
         <div>
             <p>
@@ -138,7 +181,7 @@ function ChatItem({sender, message, timestamp, isMe}: Chat) {
                 />
             </p>
             <p>{message}</p>
-            <p>{timestamp.toString()}</p>
+            <p>{`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`}</p>
         </div>
     );
 }
