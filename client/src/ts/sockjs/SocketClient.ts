@@ -1,4 +1,4 @@
-import data from "../../resource/secret/server-spec.json";
+import serverSpecResource from "../../resource/secret/server-spec.json";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client";
 
@@ -7,14 +7,16 @@ export default class SocketClient {
     private stompClient: Stomp.Client;
 
     constructor() {
-        let socket = new SockJS(data.socketUrl);
+        let socket = new SockJS(serverSpecResource.socketUrl);
         this.stompClient = Stomp.over(socket);
         this.stompClient.connect({}, this.onConnected, this.onError);
     }
 
     private onConnected(): void {
         setTimeout(() => {
-            this.stompClient.subscribe(data.socketEndpoints.notificationPublic);
+            this.stompClient.subscribe(
+                serverSpecResource.socketEndpoints.notificationPublic
+            );
         }, 500);
     }
 
@@ -31,5 +33,9 @@ export default class SocketClient {
 
     public async sendMessage(endpoint: string, headers: object, data: object) {
         await this.stompClient.send(endpoint, headers, JSON.stringify(data));
+    }
+
+    public subscribe(url: string, callback: (payload: any) => void): void {
+        this.stompClient.subscribe(url, callback);
     }
 }
