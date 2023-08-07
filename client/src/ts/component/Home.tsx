@@ -1,9 +1,12 @@
 import {useEffect, useRef, useState} from "react";
-import data from "../../resource/string.json";
+import strResource from "../../resource/string.json";
+import serverSpecResource from "../../resource/secret/server-spec.json";
 import {RoomInfo} from "../type/gameDomainType";
 import {useAppDispatch} from "../redux/hook";
 import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
+import {CommonResponse, RoomInfoResponse} from "../type/responseType";
 
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
@@ -12,25 +15,21 @@ export default function Home() {
     const usernameInput = useRef<HTMLInputElement>(null);
     const searchKeywordInput = useRef<HTMLInputElement>(null);
 
-    const getRoomList = (keyword?: string) => {
-        // TODO: We will get room data from server
+    const getRoomList = async (keyword?: string) => {
         if (keyword) {
             // If keyword exists
         } else {
-            // Temp
-            const room1: RoomInfo = {
-                roomId: 1,
-                hostId: 13,
-                roomName: "Temp1",
-                numOfUsers: 10
-            };
-            const room2: RoomInfo = {
-                roomId: 2,
-                hostId: 15,
-                roomName: "Temp2",
-                numOfUsers: 8
-            };
-            setRoomList([room1, room2]);
+            const roomInfoResponses = await axios.get<CommonResponse<RoomInfoResponse[]>>(
+                serverSpecResource.restApiUrl + serverSpecResource.restEndpoints.gameRoom
+            );
+            const roomInfo: RoomInfo[] = [];
+            roomInfoResponses.data.data.forEach(v => roomInfo.push({
+                roomId: v.roomId,
+                roomName: v.roomName,
+                hostId: v.hostId,
+                numOfUsers: 0
+            }));
+            setRoomList(roomInfo);
         }
     };
 
@@ -49,7 +48,7 @@ export default function Home() {
                         className="username-input-label"
                         htmlFor="username-input"
                     >
-                        {data.home.usernameInputLabel}
+                        {strResource.home.usernameInputLabel}
                     </label>
                     <input
                         id="username-input"
@@ -75,7 +74,7 @@ export default function Home() {
                                 getRoomList(searchKeyword);
                             }}
                         >
-                            {data.home.search}
+                            {strResource.home.search}
                         </button>
                     </div>
                     <button
@@ -83,10 +82,10 @@ export default function Home() {
                         type="button"
                         onClick={() => setRoomCreationModal(true)}
                     >
-                        {data.home.createRoom}
+                        {strResource.home.createRoom}
                     </button>
                     <button className="reload-btn" type="button">
-                        {data.home.reload}
+                        {strResource.home.reload}
                     </button>
                 </div>
                 <div className="room-container">
@@ -113,20 +112,20 @@ function RoomCreationModal({setModalState}: ModalProps) {
     return (
         <div className="modal">
             <button type="button" onClick={() => setModalState(false)}>
-                {data.home.close}
+                {strResource.home.close}
             </button>
             <div className="room-info-input-container">
                 <label htmlFor="room-info-input">
-                    {data.home.inputRoomName}
+                    {strResource.home.inputRoomName}
                 </label>
                 <input type="text" id="room-info-input" />
             </div>
-            <button type="button">{data.home.createRoom}</button>
+            <button type="button">{strResource.home.createRoom}</button>
         </div>
     );
 }
 
-function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo, ) {
+function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -147,7 +146,7 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo, ) {
             <p>{roomName}</p>
             <p>{numOfUsers}</p>
             <button type="button" onClick={onClickEnterBtn}>
-                {data.home.enter}
+                {strResource.home.enter}
             </button>
         </div>
     );

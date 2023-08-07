@@ -1,5 +1,12 @@
 import {NotificationType} from "./notificationType";
 
+export interface CommonResponse<D> {
+    status: number;
+    message: string;
+    dateTime: string;
+    data: D;
+}
+
 export type CharacterGenerationResponse = {
     notificationType: NotificationType;
     receiverId: number;
