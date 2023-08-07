@@ -1,7 +1,10 @@
 import {useRef, useState, useEffect} from "react";
 import {Chat, UserInfo} from "../type/gameDomainType";
-import data from "../../resource/string.json";
+import strResource from "../../resource/string.json";
+import serverSpecResource from "../../resource/secret/server-spec.json";
 import {useAppSelector} from "../redux/hook";
+import axios from "axios";
+import {CommonResponse, UserResponse} from "../type/responseType";
 
 const tempUsers: UserInfo[] = [
     {
@@ -41,6 +44,7 @@ export default function Room() {
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
+    console.log(thisUser);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
 
     const chatInputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +85,16 @@ export default function Room() {
     useEffect(() => {
         setChatLogs(tempChatLog);
         // TODO: set thisUser after notifying that this user entered the room.
+
+        axios
+            .get<CommonResponse<UserResponse>>(
+                serverSpecResource.restApiUrl +
+                    serverSpecResource.restEndpoints.gameUser.replace(
+                        "{gameId}",
+                        currentRoomInfo.roomInfo.roomId.toString()
+                    )
+            )
+            .then((result) => console.log(result));
         return () => {
             // TODO: send exit message to server
         };
@@ -146,7 +160,7 @@ export default function Room() {
                             type="button"
                             onClick={() => chat(chatInputRef.current!.value)}
                         >
-                            {data.room.send}
+                            {strResource.room.send}
                         </button>
                     </div>
                 </div>

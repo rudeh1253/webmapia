@@ -13,7 +13,10 @@ export const thisUserInfo = createSlice({
     initialState,
     reducers: {
         setThisUserInfo(state, action: PayloadAction<UserInfo>) {
-            state = action.payload;
+            state.username = action.payload.username;
+            state.characterCode = action.payload.characterCode;
+            state.userId = action.payload.userId;
+            state.isDead = action.payload.isDead;
         }
     } 
 });

@@ -15,6 +15,7 @@ export default function Home() {
     const [roomList, setRoomList] = useState<Array<RoomInfo>>([]);
 
     const searchKeywordInput = useRef<HTMLInputElement>(null);
+    const usernameInputRef = useRef<HTMLInputElement>(null);
 
     const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
 
@@ -101,7 +102,11 @@ export default function Home() {
                     >
                         {strResource.home.createRoom}
                     </button>
-                    <button className="reload-btn" type="button">
+                    <button
+                        className="reload-btn"
+                        type="button"
+                        onClick={() => getRoomList()}
+                    >
                         {strResource.home.reload}
                     </button>
                 </div>
