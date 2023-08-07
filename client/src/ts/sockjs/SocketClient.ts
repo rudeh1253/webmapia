@@ -14,6 +14,7 @@ export default class SocketClient {
 
     private onConnected(): void {
         setTimeout(() => {
+            console.log("here");
             this.stompClient.subscribe(
                 serverSpecResource.socketEndpoints.notificationPublic
             );

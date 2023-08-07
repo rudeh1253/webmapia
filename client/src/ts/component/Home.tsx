@@ -134,6 +134,9 @@ function RoomCreationModal({setModalState}: ModalProps) {
     const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
 
     const roomNameInputRef = useRef<HTMLInputElement>(null);
+
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     return (
         <div className="modal">
             <button type="button" onClick={() => setModalState(false)}>
@@ -159,11 +162,24 @@ function RoomCreationModal({setModalState}: ModalProps) {
                         hostId,
                         hostName: thisUserInfo.username
                     };
-                    await axios.post<RoomCreationRequest>(
+                    const roomInfo = await axios.post<CommonResponse<RoomInfoResponse>>(
                         serverSpecResource.restApiUrl +
                             serverSpecResource.restEndpoints.gameRoom,
                         roomCreationRequestBody
                     );
+                    dispatch(setCurrentRoomInfo({
+                        roomId: roomInfo.data.data.roomId,
+                        roomName: roomInfo.data.data.roomName,
+                        hostId: roomInfo.data.data.hostId,
+                        numOfUsers: roomInfo.data.data.users.length
+                    }));
+                    console.log({
+                        roomId: roomInfo.data.data.roomId,
+                        roomName: roomInfo.data.data.roomName,
+                        hostId: roomInfo.data.data.hostId,
+                        numOfUsers: roomInfo.data.data.users.length
+                    });
+                    navigate("/room");
                 }}
             >
                 {strResource.home.createRoom}

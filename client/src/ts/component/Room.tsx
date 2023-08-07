@@ -5,6 +5,7 @@ import serverSpecResource from "../../resource/secret/server-spec.json";
 import {useAppSelector} from "../redux/hook";
 import axios from "axios";
 import {CommonResponse, UserResponse} from "../type/responseType";
+import SocketClient from "../sockjs/SocketClient";
 
 const tempUsers: UserInfo[] = [
     {
@@ -39,15 +40,29 @@ const tempUsers: UserInfo[] = [
     }
 ];
 
+var sock;
+
 export default function Room() {
     const [users, setUsers] = useState<Array<UserInfo>>([]);
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
-    console.log(thisUser);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
 
     const chatInputRef = useRef<HTMLInputElement>(null);
+
+    const init = () => {
+        sock = SocketClient.getInstance();
+        // sock.subscribe(
+        //     `${
+        //         serverSpecResource.socketUrl +
+        //         serverSpecResource.socketEndpoints.notificationPublic
+        //     }/${currentRoomInfo.roomInfo.roomId}`,
+        //     (payload) => {
+        //         console.log(payload);
+        //     }
+        // );
+    };
 
     const onUserEnter = (newUser: UserInfo) => setUsers([...users, newUser]);
 
@@ -85,6 +100,8 @@ export default function Room() {
     useEffect(() => {
         setChatLogs(tempChatLog);
         // TODO: set thisUser after notifying that this user entered the room.
+
+        init();
 
         axios
             .get<CommonResponse<UserResponse>>(
