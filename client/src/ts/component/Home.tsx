@@ -2,35 +2,43 @@ import {useEffect, useRef, useState} from "react";
 import strResource from "../../resource/string.json";
 import serverSpecResource from "../../resource/secret/server-spec.json";
 import {RoomInfo} from "../type/gameDomainType";
-import {useAppDispatch} from "../redux/hook";
+import {useAppDispatch, useAppSelector} from "../redux/hook";
 import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {CommonResponse, RoomInfoResponse} from "../type/responseType";
-import { RoomCreationRequest } from "../type/requestType";
+import {RoomCreationRequest} from "../type/requestType";
+import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 
 export default function Home() {
-    const [userId, setUserId] = useState<number>(-1);
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
     const [roomList, setRoomList] = useState<Array<RoomInfo>>([]);
 
-    const usernameInput = useRef<HTMLInputElement>(null);
     const searchKeywordInput = useRef<HTMLInputElement>(null);
+
+    const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
+
+    const dispatch = useAppDispatch();
 
     const getRoomList = async (keyword?: string) => {
         if (keyword) {
             // If keyword exists
         } else {
-            const roomInfoResponses = await axios.get<CommonResponse<RoomInfoResponse[]>>(
-                serverSpecResource.restApiUrl + serverSpecResource.restEndpoints.gameRoom
+            const roomInfoResponses = await axios.get<
+                CommonResponse<RoomInfoResponse[]>
+            >(
+                serverSpecResource.restApiUrl +
+                    serverSpecResource.restEndpoints.gameRoom
             );
             const roomInfo: RoomInfo[] = [];
-            roomInfoResponses.data.data.forEach(v => roomInfo.push({
-                roomId: v.roomId,
-                roomName: v.roomName,
-                hostId: v.hostId,
-                numOfUsers: 0
-            }));
+            roomInfoResponses.data.data.forEach((v) =>
+                roomInfo.push({
+                    roomId: v.roomId,
+                    roomName: v.roomName,
+                    hostId: v.hostId,
+                    numOfUsers: 0
+                })
+            );
             setRoomList(roomInfo);
         }
     };
@@ -55,7 +63,14 @@ export default function Home() {
                     <input
                         id="username-input"
                         type="text"
-                        ref={usernameInput}
+                        onChange={(e) =>
+                            dispatch(
+                                setThisUserInfo({
+                                    ...thisUserInfo,
+                                    username: e.target.value
+                                })
+                            )
+                        }
                     />
                 </div>
             </div>
@@ -111,6 +126,8 @@ interface ModalProps {
 }
 
 function RoomCreationModal({setModalState}: ModalProps) {
+    const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
+
     const roomNameInputRef = useRef<HTMLInputElement>(null);
     return (
         <div className="modal">
@@ -121,15 +138,41 @@ function RoomCreationModal({setModalState}: ModalProps) {
                 <label htmlFor="room-name-input">
                     {strResource.home.inputRoomName}
                 </label>
-                <input type="text" id="room-name-input" ref={roomNameInputRef} />
+                <input
+                    type="text"
+                    id="room-name-input"
+                    ref={roomNameInputRef}
+                />
             </div>
-            <button type="button" onClick={() => {
-                const roomName = roomNameInputRef.current?.value!;
-                
-                axios.post(serverSpecResource.restApiUrl + serverSpecResource.restEndpoints.gameRoom, )
-            }}>{strResource.home.createRoom}</button>
+            <button
+                type="button"
+                onClick={async () => {
+                    const roomName = roomNameInputRef.current?.value!;
+                    const hostId = await generateId();
+                    const roomCreationRequestBody: RoomCreationRequest = {
+                        gameName: roomName,
+                        hostId,
+                        hostName: thisUserInfo.username
+                    };
+                    await axios.post<RoomCreationRequest>(
+                        serverSpecResource.restApiUrl +
+                            serverSpecResource.restEndpoints.gameRoom,
+                        roomCreationRequestBody
+                    );
+                }}
+            >
+                {strResource.home.createRoom}
+            </button>
         </div>
     );
+}
+
+async function generateId(): Promise<number> {
+    const response = await axios.post<CommonResponse<number>>(
+        serverSpecResource.restApiUrl + serverSpecResource.restEndpoints.userId
+    );
+    const generatedId = response.data.data;
+    return generatedId;
 }
 
 function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {

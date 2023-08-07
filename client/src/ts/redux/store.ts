@@ -1,9 +1,11 @@
 import {configureStore} from "@reduxjs/toolkit";
 import currentRoomInfoSlice from "./slice/currentRoomInfoSlice";
+import thisUserInfoSlice from "./slice/thisUserInfo";
 
 export const store = configureStore({
     reducer: {
-        currentRoomInfo: currentRoomInfoSlice
+        currentRoomInfo: currentRoomInfoSlice,
+        thisUserInfo: thisUserInfoSlice
     }
 });
 

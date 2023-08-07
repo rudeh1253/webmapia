@@ -26,4 +26,16 @@ public class UserRestController {
         List<UserResponseDTO> users = userService.getAllUsers(gameId);
         return CommonResponse.ok(users, LocalDateTime.now());
     }
+
+    @PostMapping("/user/id")
+    public ResponseEntity<CommonResponse> generateId() {
+        Long id = userService.generateId();
+        return CommonResponse.ok(id, LocalDateTime.now());
+    }
+
+    @DeleteMapping("/user/id/{userId}")
+    public ResponseEntity<CommonResponse> removeUser(@PathVariable("userId")Long userId) {
+        userService.removeId(userId);
+        return CommonResponse.ok(userId, LocalDateTime.now());
+    }
 }

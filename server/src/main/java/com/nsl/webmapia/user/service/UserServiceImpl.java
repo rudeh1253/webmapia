@@ -5,18 +5,26 @@ import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.user.domain.User;
+import com.nsl.webmapia.user.repository.UserIdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final GameRepository gameRepository;
+    private UserIdRepository userIdRepository;
 
-    @Autowired
     public UserServiceImpl(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
+    }
+
+    @Autowired
+    public UserServiceImpl(GameRepository gameRepository, UserIdRepository userIdRepository) {
+        this.gameRepository = gameRepository;
+        this.userIdRepository = userIdRepository;
     }
 
     @Override
@@ -60,5 +68,21 @@ public class UserServiceImpl implements UserService {
 
     private GameManager findGameManager(Long gameId) {
         return gameRepository.findById(gameId).orElseThrow();
+    }
+
+    @Override
+    public Long generateId() {
+        Random random = new Random();
+        Long id = random.nextLong();
+        if (userIdRepository.exist(id)) {
+            return generateId();
+        }
+        userIdRepository.addId(id);
+        return id;
+    }
+
+    @Override
+    public void removeId(Long id) {
+        userIdRepository.remove(id);
     }
 }

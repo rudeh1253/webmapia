@@ -33,4 +33,8 @@ public interface UserService {
     List<UserResponseDTO> getAllUsers(Long gameId);
 
     UserResponseDTO getUser(Long gameId, Long userId);
+
+    Long generateId();
+
+    void removeId(Long id);
 }

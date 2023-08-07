@@ -37,15 +37,10 @@ const tempUsers: UserInfo[] = [
 ];
 
 export default function Room() {
-    const [thisUser, setThisUser] = useState<UserInfo>({
-        userId: -1,
-        username: "temp",
-        characterCode: null,
-        isDead: false
-    });
     const [users, setUsers] = useState<Array<UserInfo>>([]);
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
 
+    const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
 
     const chatInputRef = useRef<HTMLInputElement>(null);
