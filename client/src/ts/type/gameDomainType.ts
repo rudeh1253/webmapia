@@ -29,11 +29,12 @@ export type CharacterCode =
     | "CITIZEN"
     | "MURDERER"
     | "HUMAN_MOUSE"
-    | "GOOD_MAN";
+    | "GOOD_MAN"
+    | null;
 
 export type Chat = {
     sender: UserInfo;
     message: string;
-    timestamp: Date;
+    timestamp: number;
     isMe: boolean;
 };
