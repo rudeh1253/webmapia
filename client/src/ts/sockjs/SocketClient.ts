@@ -4,40 +4,55 @@ import SockJS from "sockjs-client";
 
 export default class SocketClient {
     private static singleton: SocketClient;
-    private stompClient: Stomp.Client;
+    private stompClient: Stomp.Client | undefined;
 
-    constructor() {
+    private constructor() {}
+
+    private async init() {
         let socket = new SockJS(serverSpecResource.socketUrl);
         this.stompClient = Stomp.over(socket);
         this.stompClient.connect({}, this.onConnected, this.onError);
     }
 
     private onConnected(): void {
-        setTimeout(() => {
-            console.log("here");
-            this.stompClient.subscribe(
-                serverSpecResource.socketEndpoints.notificationPublic
-            );
-        }, 500);
+        console.log("Succeeded to connect");
     }
 
     private onError(err: any): void {
         console.error(err);
     }
 
-    public static getInstance(): SocketClient {
-        if (this.singleton === null) {
+    public static async getInstance(): Promise<SocketClient> {
+        if (!this.singleton) {
             this.singleton = new SocketClient();
+            await this.singleton.init();
         }
         return this.singleton;
     }
 
-    public async sendMessage(endpoint: string, headers: object, data: object) {
-        await this.stompClient.send(endpoint, headers, JSON.stringify(data));
+    public sendMessage(endpoint: string, headers: object, data: object) {
+        setTimeout(async () => {
+            await this.stompClient?.send(
+                endpoint,
+                headers,
+                JSON.stringify(data)
+            );
+        }, 100);
     }
 
-    public subscribe(url: string, callback: (payload: any) => void): Stomp.Subscription {
-        return this.stompClient.subscribe(url, callback);
+    public async subscribe(
+        url: string,
+        callback: (payload: any) => void
+    ): Promise<Stomp.Subscription> {
+        return new Promise((resolve, reject) => {
+            setTimeout(async () => {
+                const subscription = await this.stompClient!.subscribe(
+                    url,
+                    callback
+                );
+                resolve(subscription);
+            }, 500);
+        });
     }
 
     public unsubscribe(subscription: Stomp.Subscription): void {

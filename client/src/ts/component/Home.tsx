@@ -7,15 +7,15 @@ import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {CommonResponse, RoomInfoResponse} from "../type/responseType";
-import {RoomCreationRequest} from "../type/requestType";
+import {RoomCreationRequest, UserRequest} from "../type/requestType";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
+import SocketClient from "../sockjs/SocketClient";
 
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
     const [roomList, setRoomList] = useState<Array<RoomInfo>>([]);
 
     const searchKeywordInput = useRef<HTMLInputElement>(null);
-    const usernameInputRef = useRef<HTMLInputElement>(null);
 
     const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
 
@@ -162,17 +162,21 @@ function RoomCreationModal({setModalState}: ModalProps) {
                         hostId,
                         hostName: thisUserInfo.username
                     };
-                    const roomInfo = await axios.post<CommonResponse<RoomInfoResponse>>(
+                    const roomInfo = await axios.post<
+                        CommonResponse<RoomInfoResponse>
+                    >(
                         serverSpecResource.restApiUrl +
                             serverSpecResource.restEndpoints.gameRoom,
                         roomCreationRequestBody
                     );
-                    dispatch(setCurrentRoomInfo({
-                        roomId: roomInfo.data.data.roomId,
-                        roomName: roomInfo.data.data.roomName,
-                        hostId: roomInfo.data.data.hostId,
-                        numOfUsers: roomInfo.data.data.users.length
-                    }));
+                    dispatch(
+                        setCurrentRoomInfo({
+                            roomId: roomInfo.data.data.roomId,
+                            roomName: roomInfo.data.data.roomName,
+                            hostId: roomInfo.data.data.hostId,
+                            numOfUsers: roomInfo.data.data.users.length
+                        })
+                    );
                     console.log({
                         roomId: roomInfo.data.data.roomId,
                         roomName: roomInfo.data.data.roomName,
@@ -197,10 +201,12 @@ async function generateId(): Promise<number> {
 }
 
 function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
+    const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
+
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const onClickEnterBtn = () => {
+    const onClickEnterBtn = async () => {
         dispatch(
             setCurrentRoomInfo({
                 roomId,
@@ -209,6 +215,21 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
                 numOfUsers
             })
         );
+        const userId = await (
+            await axios.post<CommonResponse<number>>(
+                serverSpecResource.restApiUrl +
+                    serverSpecResource.restEndpoints.userId
+            )
+        ).data.data;
+        dispatch(setThisUserInfo({...thisUserInfo, userId}));
+        const sock = await SocketClient.getInstance();
+        const body: UserRequest = {
+            notificationType: "USER_ENTERED",
+            gameId: roomId,
+            userId,
+            username: thisUserInfo.username
+        };
+        await sock.sendMessage("/game/user-enter", {}, body);
         navigate("/room");
     };
 

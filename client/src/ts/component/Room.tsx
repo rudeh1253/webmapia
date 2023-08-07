@@ -40,7 +40,7 @@ const tempUsers: UserInfo[] = [
     }
 ];
 
-var sock;
+var sockClient;
 
 export default function Room() {
     const [users, setUsers] = useState<Array<UserInfo>>([]);
@@ -51,17 +51,19 @@ export default function Room() {
 
     const chatInputRef = useRef<HTMLInputElement>(null);
 
-    const init = () => {
-        sock = SocketClient.getInstance();
-        // sock.subscribe(
-        //     `${
-        //         serverSpecResource.socketUrl +
-        //         serverSpecResource.socketEndpoints.notificationPublic
-        //     }/${currentRoomInfo.roomInfo.roomId}`,
-        //     (payload) => {
-        //         console.log(payload);
-        //     }
-        // );
+    const init = async () => {
+        const sock = await SocketClient.getInstance();
+        // TODO: store Subscription object returned
+        await sock.subscribe(
+            `${
+                serverSpecResource.socketUrl +
+                serverSpecResource.socketEndpoints.notificationPublic
+            }/${currentRoomInfo.roomInfo.roomId}`,
+            (payload: any) => {
+                console.log(payload);
+            }
+        );
+        sockClient = sock;
     };
 
     const onUserEnter = (newUser: UserInfo) => setUsers([...users, newUser]);
