@@ -35,7 +35,11 @@ export default class SocketClient {
         await this.stompClient.send(endpoint, headers, JSON.stringify(data));
     }
 
-    public subscribe(url: string, callback: (payload: any) => void): void {
-        this.stompClient.subscribe(url, callback);
+    public subscribe(url: string, callback: (payload: any) => void): Stomp.Subscription {
+        return this.stompClient.subscribe(url, callback);
+    }
+
+    public unsubscribe(subscription: Stomp.Subscription): void {
+        subscription.unsubscribe();
     }
 }
