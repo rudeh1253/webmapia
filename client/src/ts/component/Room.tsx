@@ -85,7 +85,10 @@ export default function Room() {
 
     useEffect(() => {
         setChatLogs(tempChatLog);
-        console.log(tempChatLog);
+        // TODO: set thisUser after notifying that this user entered the room.
+        return () => {
+            // TODO: send exit message to server
+        };
     }, []);
 
     const chat = (message: string) => {
