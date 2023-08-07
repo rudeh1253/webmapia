@@ -7,8 +7,10 @@ import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {CommonResponse, RoomInfoResponse} from "../type/responseType";
+import { RoomCreationRequest } from "../type/requestType";
 
 export default function Home() {
+    const [userId, setUserId] = useState<number>(-1);
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
     const [roomList, setRoomList] = useState<Array<RoomInfo>>([]);
 
@@ -109,18 +111,23 @@ interface ModalProps {
 }
 
 function RoomCreationModal({setModalState}: ModalProps) {
+    const roomNameInputRef = useRef<HTMLInputElement>(null);
     return (
         <div className="modal">
             <button type="button" onClick={() => setModalState(false)}>
                 {strResource.home.close}
             </button>
-            <div className="room-info-input-container">
-                <label htmlFor="room-info-input">
+            <div className="room-name-input-container">
+                <label htmlFor="room-name-input">
                     {strResource.home.inputRoomName}
                 </label>
-                <input type="text" id="room-info-input" />
+                <input type="text" id="room-name-input" ref={roomNameInputRef} />
             </div>
-            <button type="button">{strResource.home.createRoom}</button>
+            <button type="button" onClick={() => {
+                const roomName = roomNameInputRef.current?.value!;
+                
+                axios.post(serverSpecResource.restApiUrl + serverSpecResource.restEndpoints.gameRoom, )
+            }}>{strResource.home.createRoom}</button>
         </div>
     );
 }
