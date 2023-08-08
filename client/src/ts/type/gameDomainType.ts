@@ -12,6 +12,16 @@ export type UserInfo = {
     isDead: boolean;
 };
 
+export type PublicChatMessage = {
+    gameId: number;
+    senderId: number;
+    message: string;
+};
+
+export type PrivateChatMessage = PublicChatMessage & {
+    receiverUserIds: number[];
+};
+
 export type CharacterCode =
     | "WOLF"
     | "BETRAYER"

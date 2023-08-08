@@ -22,11 +22,13 @@ public class ChatController {
 
     @MessageMapping("/chatroom/public-message")
     public void receivePublicMessage(@Payload PublicChatMessage publicChatMessage) {
+        System.out.println("publicChatMessage = " + publicChatMessage);
         messagingTemplate.convertAndSend("/chatroom/" + publicChatMessage.getGameId(), publicChatMessage);
     }
 
     @MessageMapping("/chatroom/private-message")
     public void receivePrivateMessage(@Payload PrivateChatMessage privateChatMessage) {
+        System.out.println("privateChatMessage = " + privateChatMessage);
         privateChatMessage.getReceiverUserIds().forEach(id -> {
             messagingTemplate.convertAndSend("/chatroom/" + privateChatMessage.getGameId() + "/private/" + id);
         });
