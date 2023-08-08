@@ -177,12 +177,6 @@ function RoomCreationModal({setModalState}: ModalProps) {
                             numOfUsers: roomInfo.data.data.users.length
                         })
                     );
-                    console.log({
-                        roomId: roomInfo.data.data.roomId,
-                        roomName: roomInfo.data.data.roomName,
-                        hostId: roomInfo.data.data.hostId,
-                        numOfUsers: roomInfo.data.data.users.length
-                    });
                     navigate("/room");
                 }}
             >
@@ -215,12 +209,7 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
                 numOfUsers
             })
         );
-        const userId = await (
-            await axios.post<CommonResponse<number>>(
-                serverSpecResource.restApiUrl +
-                    serverSpecResource.restEndpoints.userId
-            )
-        ).data.data;
+        const userId = await generateId();
         dispatch(setThisUserInfo({...thisUserInfo, userId}));
         const sock = await SocketClient.getInstance();
         const body: UserRequest = {
