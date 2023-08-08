@@ -26,7 +26,7 @@ export default function Room() {
         const sock = await SocketClient.getInstance();
         // TODO: store Subscription object returned
         await sock.subscribe(
-            `${serverSpecResource.socketEndpoints.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
+            `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
             (payload) => {
                 const payloadData =
                     payload.body as CommonResponse<UserResponse>;
