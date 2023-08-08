@@ -229,7 +229,7 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
             userId,
             username: thisUserInfo.username
         };
-        await sock.sendMessage("/game/user-enter", {}, body);
+        await sock.sendMessage("/app/game/user-enter", {}, body);
         navigate("/room");
     };
 

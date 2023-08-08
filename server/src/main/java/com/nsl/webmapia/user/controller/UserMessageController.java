@@ -26,8 +26,9 @@ public class UserMessageController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping("/game/enter-user")
+    @MessageMapping("/game/user-enter")
     public void addUser(@Payload UserRequestDTO request) {
+        System.out.println("request = " + request);
         if (request.getNotificationType() != NotificationType.USER_ENTERED) {
             throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
         }

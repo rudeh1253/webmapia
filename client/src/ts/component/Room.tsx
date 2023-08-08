@@ -7,39 +7,6 @@ import axios from "axios";
 import {CommonResponse, UserResponse} from "../type/responseType";
 import SocketClient from "../sockjs/SocketClient";
 
-const tempUsers: UserInfo[] = [
-    {
-        userId: 1,
-        username: "Michael",
-        characterCode: "BETRAYER",
-        isDead: false
-    },
-    {
-        userId: 2,
-        username: "Michael",
-        characterCode: "WOLF",
-        isDead: false
-    },
-    {
-        userId: 3,
-        username: "Annie",
-        characterCode: "GUARD",
-        isDead: false
-    },
-    {
-        userId: 4,
-        username: "Kenny",
-        characterCode: "MEDIUMSHIP",
-        isDead: false
-    },
-    {
-        userId: 5,
-        username: "Router",
-        characterCode: "SOLDIER",
-        isDead: false
-    }
-];
-
 var sockClient;
 
 export default function Room() {
@@ -52,15 +19,24 @@ export default function Room() {
     const chatInputRef = useRef<HTMLInputElement>(null);
 
     const init = async () => {
+        // TODO: Fetch user info belonging to this room from server
+        // axios.get(...)
+        // For now, use temporary data
+        
         const sock = await SocketClient.getInstance();
         // TODO: store Subscription object returned
         await sock.subscribe(
-            `${
-                serverSpecResource.socketUrl +
-                serverSpecResource.socketEndpoints.notificationPublic
-            }/${currentRoomInfo.roomInfo.roomId}`,
-            (payload: any) => {
-                console.log(payload);
+            `${serverSpecResource.socketEndpoints.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
+            (payload) => {
+                const payloadData =
+                    payload.body as CommonResponse<UserResponse>;
+                const userInfo: UserInfo = {
+                    userId: payloadData.data.userId,
+                    username: payloadData.data.username,
+                    characterCode: null,
+                    isDead: false
+                };
+                onUserEnter(userInfo);
             }
         );
         sockClient = sock;
@@ -71,38 +47,8 @@ export default function Room() {
     const onChatReceived = (newChat: Chat) =>
         setChatLogs([...chatLogs, newChat]);
 
-    // TODO: Remove temporary data after testing
-    const tempChatLog: Chat[] = [
-        {
-            sender: tempUsers[0],
-            message: "Hi",
-            timestamp: new Date(2023, 7, 7, 2, 30, 0).getTime(),
-            isMe: false
-        },
-        {
-            sender: tempUsers[1],
-            message: "Hello",
-            timestamp: new Date(2023, 7, 7, 2, 32, 0).getTime(),
-            isMe: false
-        },
-        {
-            sender: tempUsers[0],
-            message: "How are you",
-            timestamp: new Date(2023, 7, 7, 2, 32, 23).getTime(),
-            isMe: false
-        },
-        {
-            sender: tempUsers[3],
-            message: "Come on",
-            timestamp: new Date(2023, 7, 7, 2, 32, 50).getTime(),
-            isMe: false
-        }
-    ];
-
     useEffect(() => {
-        setChatLogs(tempChatLog);
         // TODO: set thisUser after notifying that this user entered the room.
-
         init();
 
         axios
@@ -120,27 +66,8 @@ export default function Room() {
     }, []);
 
     const chat = (message: string) => {
-        const newChat: Chat = {
-            sender: thisUser,
-            message,
-            timestamp: Date.now(),
-            isMe: true
-        };
-        tempChat(newChat); // Temporary chat
         // TODO: send newChat
     };
-
-    const tempChat = (newChat: Chat) => {
-        setChatLogs([...chatLogs, newChat]);
-    };
-
-    useEffect(() => {
-        // TODO: Fetch user info belonging to this room from server
-        // axios.get(...)
-        // For now, use temporary data
-        setUsers(tempUsers);
-    }, [currentRoomInfo.roomInfo]);
-
     return (
         <div className="room-container">
             <ul className="user-list">
