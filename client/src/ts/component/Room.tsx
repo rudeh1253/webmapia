@@ -15,7 +15,7 @@ import SocketClient from "../sockjs/SocketClient";
 var sockClient: SocketClient;
 
 export default function Room() {
-    const [users, setUsers] = useState<Array<UserInfo>>([]);
+    const [usersInRoom, setUsersInRoom] = useState<Array<UserInfo>>([]);
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
@@ -24,16 +24,33 @@ export default function Room() {
     const chatInputRef = useRef<HTMLInputElement>(null);
 
     const init = async () => {
-        // TODO: Fetch user info belonging to this room from server
-        // axios.get(...)
-        // For now, use temporary data
+        const fetchedUsers = await axios.get<CommonResponse<UserResponse[]>>(
+            serverSpecResource.restApiUrl +
+                serverSpecResource.restEndpoints.gameUser.replace(
+                    "{gameId}",
+                    currentRoomInfo.roomInfo.roomId.toString()
+                )
+        );
+        console.log(fetchedUsers);
+        const u: UserInfo[] = [];
+        fetchedUsers.data.data.forEach((us) =>
+            u.push({
+                userId: us.userId,
+                username: us.username,
+                characterCode: null,
+                isDead: false
+            })
+        );
+        console.log(u);
+        setUsersInRoom(u);
 
         const sock = await SocketClient.getInstance();
         // TODO: store Subscription object returned
         await sock.subscribe(
             `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
             (payload) => {
-                const payloadData = JSON.parse(payload.body).body as CommonResponse<UserResponse>;
+                const payloadData = JSON.parse(payload.body)
+                    .body as CommonResponse<UserResponse>;
                 const userInfo: UserInfo = {
                     userId: payloadData.data.userId,
                     username: payloadData.data.username,
@@ -46,23 +63,28 @@ export default function Room() {
         await sock.subscribe(
             `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}`,
             (payload) => {
-                const payloadData =
-                    JSON.parse(payload.body) as CommonResponse<PublicChatMessage>;
+                const payloadData = JSON.parse(
+                    payload.body
+                ) as CommonResponse<PublicChatMessage>;
                 console.log(payloadData);
             }
         );
         await sock.subscribe(
             `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}/private/${thisUser.userId}`,
             (payload) => {
-                const payloadData =
-                    JSON.parse(payload.body) as CommonResponse<PrivateChatMessage>;
+                const payloadData = JSON.parse(
+                    payload.body
+                ) as CommonResponse<PrivateChatMessage>;
                 console.log(payloadData);
             }
         );
         sockClient = sock;
     };
 
-    const onUserEnter = (newUser: UserInfo) => setUsers([...users, newUser]);
+    const onUserEnter = (newUser: UserInfo) => {
+        console.log(usersInRoom);
+        setUsersInRoom([...usersInRoom, newUser]);
+    };
 
     const onChatReceived = (newChat: Chat) =>
         setChatLogs([...chatLogs, newChat]);
@@ -70,16 +92,6 @@ export default function Room() {
     useEffect(() => {
         // TODO: set thisUser after notifying that this user entered the room.
         init();
-
-        axios
-            .get<CommonResponse<UserResponse>>(
-                serverSpecResource.restApiUrl +
-                    serverSpecResource.restEndpoints.gameUser.replace(
-                        "{gameId}",
-                        currentRoomInfo.roomInfo.roomId.toString()
-                    )
-            )
-            .then((result) => console.log(result));
         return () => {
             // TODO: send exit message to server
         };
@@ -96,7 +108,7 @@ export default function Room() {
     return (
         <div className="room-container">
             <ul className="user-list">
-                {users.map((user, idx) => (
+                {usersInRoom.map((user, idx) => (
                     <li key={`user-item-${idx}`}>
                         <UserItem
                             userId={user.userId}
