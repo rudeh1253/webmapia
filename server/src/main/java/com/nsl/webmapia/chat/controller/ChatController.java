@@ -1,12 +1,12 @@
 package com.nsl.webmapia.chat.controller;
 
-import com.nsl.webmapia.chat.domain.Message;
+import com.nsl.webmapia.chat.domain.PrivateChatMessage;
+import com.nsl.webmapia.chat.domain.PublicChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 
 /**
  * Controller for chatting
@@ -20,15 +20,15 @@ public class ChatController {
         this.messagingTemplate = simpMessagingTemplate;
     }
 
-    @MessageMapping("/message")
-    @SendTo("/chatroom/public")
-    public Message receivePublicMessage(@Payload Message message) {
-        return message;
+    @MessageMapping("/chatroom/public-message")
+    public void receivePublicMessage(@Payload PublicChatMessage publicChatMessage) {
+        messagingTemplate.convertAndSend("/chatroom/" + publicChatMessage.getGameId(), publicChatMessage);
     }
 
-    @MessageMapping("/private-message")
-    public Message receivePrivateMessage(@Payload Message message) {
-        messagingTemplate.convertAndSendToUser(message.getReceiverName(), "/private", message);
-        return message;
+    @MessageMapping("/chatroom/private-message")
+    public void receivePrivateMessage(@Payload PrivateChatMessage privateChatMessage) {
+        privateChatMessage.getReceiverUserIds().forEach(id -> {
+            messagingTemplate.convertAndSend("/chatroom/" + privateChatMessage.getGameId() + "/private/" + id);
+        });
     }
 }
