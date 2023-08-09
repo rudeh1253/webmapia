@@ -12,12 +12,25 @@ import axios from "axios";
 import {CommonResponse, UserResponse} from "../type/responseType";
 import SocketClient from "../sockjs/SocketClient";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
-import { ChatItem, UserItem } from "./HomeSubcomponents";
+import {ChatItem, UserItem} from "./HomeSubcomponents";
 
 var sockClient: SocketClient;
 
 export default function Room() {
     const [usersInRoom, setUsersInRoom] = useState<UserInfo[]>([]);
+    const [newUser, setNewUser] = useState<UserInfo>({
+        userId: -1,
+        username: "",
+        characterCode: null,
+        isDead: false
+    });
+    const [delayStateForNewUser, setDelayStateForNewUser] = useState<UserInfo>({
+        userId: -1,
+        username: "",
+        characterCode: null,
+        isDead: false
+    });
+    console.log("1: ", usersInRoom);
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
@@ -32,6 +45,7 @@ export default function Room() {
             currentRoomInfo,
             usersInRoom,
             setUsersInRoom,
+            setNewUser,
             chatLogs,
             setChatLogs
         );
@@ -39,6 +53,15 @@ export default function Room() {
             // TODO: send exit message to server
         };
     }, []);
+
+    useEffect(() => {
+        if (newUser.userId !== -1) {
+            if (delayStateForNewUser.userId !== newUser.userId) {
+                setUsersInRoom([...usersInRoom, newUser]);
+                setDelayStateForNewUser({...newUser});
+            }
+        }
+    }, [newUser]);
 
     return (
         <div className="room-container">
@@ -99,6 +122,7 @@ async function init(
     currentRoomInfo: CurrentRoomInfoInitialState,
     usersInRoom: UserInfo[],
     setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>,
+    setNewUser: React.Dispatch<React.SetStateAction<UserInfo>>,
     chatLogs: Chat[],
     setChatLogs: React.Dispatch<React.SetStateAction<Chat[]>>
 ) {
@@ -134,7 +158,7 @@ async function init(
                 characterCode: null,
                 isDead: false
             };
-            onUserEnter(userInfo, usersInRoom, setUsersInRoom);
+            setNewUser(userInfo);
         }
     );
     await sock.subscribe(
@@ -180,14 +204,6 @@ const chat = (
     };
     sockClient.sendMessage("/app/chatroom/public-message", {}, messageObj);
 };
-
-function onUserEnter(
-    newUser: UserInfo,
-    usersInRoom: UserInfo[],
-    setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>
-) {
-    setUsersInRoom([...usersInRoom, newUser]);
-}
 
 function onChatReceived(
     newChat: Chat,
