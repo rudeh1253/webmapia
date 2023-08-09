@@ -30,7 +30,6 @@ export default function Room() {
         characterCode: null,
         isDead: false
     });
-    console.log("1: ", usersInRoom);
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
@@ -133,7 +132,6 @@ async function init(
                 currentRoomInfo.roomInfo.roomId.toString()
             )
     );
-    console.log(fetchedUsers);
     const u: UserInfo[] = [];
     fetchedUsers.data.data.forEach((us) =>
         u.push({
@@ -186,7 +184,6 @@ async function init(
             const payloadData = JSON.parse(
                 payload.body
             ) as CommonResponse<PrivateChatMessage>;
-            console.log(payloadData);
         }
     );
     sockClient = sock;
