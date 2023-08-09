@@ -184,9 +184,8 @@ async function init(
     await sock.subscribe(
         `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}`,
         (payload) => {
-            const payloadData = JSON.parse(
-                payload.body
-            ).body as CommonResponse<PublicChatMessage>;
+            const payloadData = JSON.parse(payload.body)
+                .body as CommonResponse<PublicChatMessage>;
             console.log(payloadData);
 
             const chat: Chat = {
@@ -202,9 +201,8 @@ async function init(
     await sock.subscribe(
         `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}/private/${thisUser.userId}`,
         (payload) => {
-            const payloadData = JSON.parse(
-                payload.body
-            ).body as CommonResponse<PrivateChatMessage>;
+            const payloadData = JSON.parse(payload.body)
+                .body as CommonResponse<PrivateChatMessage>;
 
             const chat: Chat = {
                 senderId: payloadData.data.senderId,
@@ -233,11 +231,3 @@ const chat = (
     console.log("chat:", sockClient);
     sockClient.sendMessage("/app/chatroom/public-message", {}, messageObj);
 };
-
-function onChatReceived(
-    newChat: Chat,
-    chatLogs: Chat[],
-    setChatLogs: React.Dispatch<React.SetStateAction<Chat[]>>
-) {
-    setChatLogs([...chatLogs, newChat]);
-}
