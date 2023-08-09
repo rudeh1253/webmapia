@@ -11,18 +11,11 @@ export function UserItem({userId, username, characterCode, isDead}: UserInfo) {
     );
 }
 
-export function ChatItem({sender, message, timestamp, isMe}: Chat) {
+export function ChatItem({senderId, message, timestamp, isMe}: Chat) {
     const time = new Date(timestamp);
     return (
         <div>
-            <p>
-                <UserItem
-                    userId={sender.userId}
-                    username={sender.username}
-                    characterCode={sender.characterCode}
-                    isDead={sender.isDead}
-                />
-            </p>
+            <p>{senderId}</p>
             <p>{message}</p>
             <p>{`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`}</p>
         </div>

@@ -43,7 +43,7 @@ export type CharacterCode =
     | null;
 
 export type Chat = {
-    sender: UserInfo;
+    senderId: number;
     message: string;
     timestamp: number;
     isPublic: boolean;

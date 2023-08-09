@@ -31,6 +31,20 @@ export default function Room() {
         isDead: false
     });
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
+    const [newChat, setNewChat] = useState<Chat>({
+        senderId: -1,
+        message: "",
+        timestamp: -1,
+        isPublic: false,
+        isMe: false
+    });
+    const [delayStateForNewChat, setDelayStateForNewChat] = useState<Chat>({
+        senderId: -1,
+        message: "",
+        timestamp: -1,
+        isPublic: false,
+        isMe: false
+    });
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
@@ -45,8 +59,7 @@ export default function Room() {
             usersInRoom,
             setUsersInRoom,
             setNewUser,
-            chatLogs,
-            setChatLogs
+            setNewChat
         );
         return () => {
             // TODO: send exit message to server
@@ -62,8 +75,18 @@ export default function Room() {
         }
     }, [newUser]);
 
+    useEffect(() => {
+        if (newChat.senderId !== -1) {
+            if (delayStateForNewChat.senderId !== newChat.senderId) {
+                setChatLogs([...chatLogs, newChat]);
+                setDelayStateForNewChat({...newChat});
+            }
+        }
+    }, [newChat]);
+
     return (
         <div className="room-container">
+            <p>User ID: {thisUser.userId}</p>
             <ul className="user-list">
                 {usersInRoom.map((user, idx) => (
                     <li key={`user-item-${idx}`}>
@@ -81,7 +104,7 @@ export default function Room() {
                     {chatLogs.map((chat, idx) => (
                         <ChatItem
                             key={`chat-item-${idx + 1}`}
-                            sender={chat.sender}
+                            senderId={chat.senderId}
                             message={chat.message}
                             timestamp={chat.timestamp}
                             isPublic={chat.isPublic}
@@ -122,8 +145,7 @@ async function init(
     usersInRoom: UserInfo[],
     setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>,
     setNewUser: React.Dispatch<React.SetStateAction<UserInfo>>,
-    chatLogs: Chat[],
-    setChatLogs: React.Dispatch<React.SetStateAction<Chat[]>>
+    setNewChat: React.Dispatch<React.SetStateAction<Chat>>
 ) {
     const fetchedUsers = await axios.get<CommonResponse<UserResponse[]>>(
         serverSpecResource.restApiUrl +
@@ -164,18 +186,17 @@ async function init(
         (payload) => {
             const payloadData = JSON.parse(
                 payload.body
-            ) as CommonResponse<PublicChatMessage>;
+            ).body as CommonResponse<PublicChatMessage>;
+            console.log(payloadData);
 
             const chat: Chat = {
-                sender: usersInRoom.filter(
-                    (v) => v.userId === payloadData.data.senderId
-                )[0],
+                senderId: payloadData.data.senderId,
                 message: payloadData.data.message,
                 timestamp: new Date(payloadData.dateTime).getTime(),
                 isPublic: true,
                 isMe: thisUser.userId === payloadData.data.senderId
             };
-            onChatReceived(chat, chatLogs, setChatLogs);
+            setNewChat(chat);
         }
     );
     await sock.subscribe(
@@ -183,10 +204,20 @@ async function init(
         (payload) => {
             const payloadData = JSON.parse(
                 payload.body
-            ) as CommonResponse<PrivateChatMessage>;
+            ).body as CommonResponse<PrivateChatMessage>;
+
+            const chat: Chat = {
+                senderId: payloadData.data.senderId,
+                message: payloadData.data.message,
+                timestamp: new Date(payloadData.dateTime).getTime(),
+                isPublic: false,
+                isMe: thisUser.userId === payloadData.data.senderId
+            };
+            setNewChat(chat);
         }
     );
     sockClient = sock;
+    console.log(sockClient);
 }
 
 const chat = (
@@ -199,6 +230,7 @@ const chat = (
         senderId: thisUser.userId,
         message
     };
+    console.log("chat:", sockClient);
     sockClient.sendMessage("/app/chatroom/public-message", {}, messageObj);
 };
 

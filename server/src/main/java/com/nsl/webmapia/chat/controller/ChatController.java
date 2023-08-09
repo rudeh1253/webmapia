@@ -2,11 +2,14 @@ package com.nsl.webmapia.chat.controller;
 
 import com.nsl.webmapia.chat.domain.PrivateChatMessage;
 import com.nsl.webmapia.chat.domain.PublicChatMessage;
+import com.nsl.webmapia.common.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+
+import java.time.LocalDateTime;
 
 /**
  * Controller for chatting
@@ -23,14 +26,14 @@ public class ChatController {
     @MessageMapping("/chatroom/public-message")
     public void receivePublicMessage(@Payload PublicChatMessage publicChatMessage) {
         System.out.println("publicChatMessage = " + publicChatMessage);
-        messagingTemplate.convertAndSend("/chatroom/" + publicChatMessage.getGameId(), publicChatMessage);
+        messagingTemplate.convertAndSend("/chatroom/" + publicChatMessage.getGameId(), CommonResponse.ok(publicChatMessage, LocalDateTime.now()));
     }
 
     @MessageMapping("/chatroom/private-message")
     public void receivePrivateMessage(@Payload PrivateChatMessage privateChatMessage) {
         System.out.println("privateChatMessage = " + privateChatMessage);
         privateChatMessage.getReceiverUserIds().forEach(id -> {
-            messagingTemplate.convertAndSend("/chatroom/" + privateChatMessage.getGameId() + "/private/" + id);
+            messagingTemplate.convertAndSend("/chatroom/" + privateChatMessage.getGameId() + "/private/" + id, CommonResponse.ok(privateChatMessage, LocalDateTime.now()));
         });
     }
 }
