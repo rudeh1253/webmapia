@@ -46,5 +46,6 @@ export type Chat = {
     sender: UserInfo;
     message: string;
     timestamp: number;
+    isPublic: boolean;
     isMe: boolean;
 };

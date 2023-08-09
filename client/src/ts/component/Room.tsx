@@ -11,11 +11,13 @@ import {useAppSelector} from "../redux/hook";
 import axios from "axios";
 import {CommonResponse, UserResponse} from "../type/responseType";
 import SocketClient from "../sockjs/SocketClient";
+import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
+import { ChatItem, UserItem } from "./HomeSubcomponents";
 
 var sockClient: SocketClient;
 
 export default function Room() {
-    const [usersInRoom, setUsersInRoom] = useState<Array<UserInfo>>([]);
+    const [usersInRoom, setUsersInRoom] = useState<UserInfo[]>([]);
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
@@ -23,88 +25,21 @@ export default function Room() {
 
     const chatInputRef = useRef<HTMLInputElement>(null);
 
-    const init = async () => {
-        const fetchedUsers = await axios.get<CommonResponse<UserResponse[]>>(
-            serverSpecResource.restApiUrl +
-                serverSpecResource.restEndpoints.gameUser.replace(
-                    "{gameId}",
-                    currentRoomInfo.roomInfo.roomId.toString()
-                )
-        );
-        console.log(fetchedUsers);
-        const u: UserInfo[] = [];
-        fetchedUsers.data.data.forEach((us) =>
-            u.push({
-                userId: us.userId,
-                username: us.username,
-                characterCode: null,
-                isDead: false
-            })
-        );
-        console.log(u);
-        setUsersInRoom(u);
-
-        const sock = await SocketClient.getInstance();
-        // TODO: store Subscription object returned
-        await sock.subscribe(
-            `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
-            (payload) => {
-                const payloadData = JSON.parse(payload.body)
-                    .body as CommonResponse<UserResponse>;
-                const userInfo: UserInfo = {
-                    userId: payloadData.data.userId,
-                    username: payloadData.data.username,
-                    characterCode: null,
-                    isDead: false
-                };
-                onUserEnter(userInfo);
-            }
-        );
-        await sock.subscribe(
-            `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}`,
-            (payload) => {
-                const payloadData = JSON.parse(
-                    payload.body
-                ) as CommonResponse<PublicChatMessage>;
-                console.log(payloadData);
-            }
-        );
-        await sock.subscribe(
-            `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}/private/${thisUser.userId}`,
-            (payload) => {
-                const payloadData = JSON.parse(
-                    payload.body
-                ) as CommonResponse<PrivateChatMessage>;
-                console.log(payloadData);
-            }
-        );
-        sockClient = sock;
-    };
-
-    const onUserEnter = (newUser: UserInfo) => {
-        console.log(usersInRoom);
-        setUsersInRoom([...usersInRoom, newUser]);
-    };
-
-    const onChatReceived = (newChat: Chat) =>
-        setChatLogs([...chatLogs, newChat]);
-
     useEffect(() => {
         // TODO: set thisUser after notifying that this user entered the room.
-        init();
+        init(
+            thisUser,
+            currentRoomInfo,
+            usersInRoom,
+            setUsersInRoom,
+            chatLogs,
+            setChatLogs
+        );
         return () => {
             // TODO: send exit message to server
         };
     }, []);
 
-    const chat = (message: string) => {
-        const messageObj: PublicChatMessage = {
-            gameId: currentRoomInfo.roomInfo.roomId,
-            senderId: thisUser.userId,
-            message
-        };
-        sockClient.sendMessage("/app/chatroom/public-message", {}, messageObj);
-    };
     return (
         <div className="room-container">
             <ul className="user-list">
@@ -127,6 +62,7 @@ export default function Room() {
                             sender={chat.sender}
                             message={chat.message}
                             timestamp={chat.timestamp}
+                            isPublic={chat.isPublic}
                             isMe={chat.isMe}
                         />
                     ))}
@@ -141,7 +77,13 @@ export default function Room() {
                         <button
                             className="send-message"
                             type="button"
-                            onClick={() => chat(chatInputRef.current!.value)}
+                            onClick={() =>
+                                chat(
+                                    chatInputRef.current!.value,
+                                    currentRoomInfo,
+                                    thisUser
+                                )
+                            }
                         >
                             {strResource.room.send}
                         </button>
@@ -152,31 +94,105 @@ export default function Room() {
     );
 }
 
-function UserItem({userId, username, characterCode, isDead}: UserInfo) {
-    return (
-        <div>
-            <p>{userId}</p>
-            <p>{username}</p>
-            <p>{characterCode}</p>
-            <p>{isDead.toString()}</p>
-        </div>
+async function init(
+    thisUser: UserInfo,
+    currentRoomInfo: CurrentRoomInfoInitialState,
+    usersInRoom: UserInfo[],
+    setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>,
+    chatLogs: Chat[],
+    setChatLogs: React.Dispatch<React.SetStateAction<Chat[]>>
+) {
+    const fetchedUsers = await axios.get<CommonResponse<UserResponse[]>>(
+        serverSpecResource.restApiUrl +
+            serverSpecResource.restEndpoints.gameUser.replace(
+                "{gameId}",
+                currentRoomInfo.roomInfo.roomId.toString()
+            )
     );
+    console.log(fetchedUsers);
+    const u: UserInfo[] = [];
+    fetchedUsers.data.data.forEach((us) =>
+        u.push({
+            userId: us.userId,
+            username: us.username,
+            characterCode: null,
+            isDead: false
+        })
+    );
+    setUsersInRoom(u);
+
+    const sock = await SocketClient.getInstance();
+    // TODO: store Subscription object returned
+    await sock.subscribe(
+        `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
+        (payload) => {
+            const payloadData = JSON.parse(payload.body)
+                .body as CommonResponse<UserResponse>;
+            const userInfo: UserInfo = {
+                userId: payloadData.data.userId,
+                username: payloadData.data.username,
+                characterCode: null,
+                isDead: false
+            };
+            onUserEnter(userInfo, usersInRoom, setUsersInRoom);
+        }
+    );
+    await sock.subscribe(
+        `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}`,
+        (payload) => {
+            const payloadData = JSON.parse(
+                payload.body
+            ) as CommonResponse<PublicChatMessage>;
+
+            const chat: Chat = {
+                sender: usersInRoom.filter(
+                    (v) => v.userId === payloadData.data.senderId
+                )[0],
+                message: payloadData.data.message,
+                timestamp: new Date(payloadData.dateTime).getTime(),
+                isPublic: true,
+                isMe: thisUser.userId === payloadData.data.senderId
+            };
+            onChatReceived(chat, chatLogs, setChatLogs);
+        }
+    );
+    await sock.subscribe(
+        `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}/private/${thisUser.userId}`,
+        (payload) => {
+            const payloadData = JSON.parse(
+                payload.body
+            ) as CommonResponse<PrivateChatMessage>;
+            console.log(payloadData);
+        }
+    );
+    sockClient = sock;
 }
 
-function ChatItem({sender, message, timestamp, isMe}: Chat) {
-    const time = new Date(timestamp);
-    return (
-        <div>
-            <p>
-                <UserItem
-                    userId={sender.userId}
-                    username={sender.username}
-                    characterCode={sender.characterCode}
-                    isDead={sender.isDead}
-                />
-            </p>
-            <p>{message}</p>
-            <p>{`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`}</p>
-        </div>
-    );
+const chat = (
+    message: string,
+    currentRoomInfo: CurrentRoomInfoInitialState,
+    thisUser: UserInfo
+) => {
+    const messageObj: PublicChatMessage = {
+        gameId: currentRoomInfo.roomInfo.roomId,
+        senderId: thisUser.userId,
+        message
+    };
+    sockClient.sendMessage("/app/chatroom/public-message", {}, messageObj);
+};
+
+function onUserEnter(
+    newUser: UserInfo,
+    usersInRoom: UserInfo[],
+    setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>
+) {
+    setUsersInRoom([...usersInRoom, newUser]);
+}
+
+function onChatReceived(
+    newChat: Chat,
+    chatLogs: Chat[],
+    setChatLogs: React.Dispatch<React.SetStateAction<Chat[]>>
+) {
+    setChatLogs([...chatLogs, newChat]);
 }
