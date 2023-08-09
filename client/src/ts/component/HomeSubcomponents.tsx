@@ -1,4 +1,4 @@
-import { Chat, UserInfo } from "../type/gameDomainType";
+import {Chat, UserInfo} from "../type/gameDomainType";
 
 export function UserItem({userId, username, characterCode, isDead}: UserInfo) {
     return (
