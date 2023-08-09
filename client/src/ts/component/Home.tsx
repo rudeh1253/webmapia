@@ -157,6 +157,9 @@ function RoomCreationModal({setModalState}: ModalProps) {
                 onClick={async () => {
                     const roomName = roomNameInputRef.current?.value!;
                     const hostId = await generateId();
+                    dispatch(
+                        setThisUserInfo({...thisUserInfo, userId: hostId})
+                    );
                     const roomCreationRequestBody: RoomCreationRequest = {
                         gameName: roomName,
                         hostId,
