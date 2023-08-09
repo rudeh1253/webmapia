@@ -13,6 +13,7 @@ import {CommonResponse, UserResponse} from "../type/responseType";
 import SocketClient from "../sockjs/SocketClient";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {ChatItem, UserItem} from "./HomeSubcomponents";
+import {GameConfigurationModal} from "./RoomSubcomponent";
 
 var sockClient: SocketClient;
 
@@ -45,6 +46,8 @@ export default function Room() {
         isPublic: false,
         isMe: false
     });
+    const [gameConfigurationModal, setGameConfigurationModal] =
+        useState<boolean>(false);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
@@ -52,7 +55,6 @@ export default function Room() {
     const chatInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        // TODO: set thisUser after notifying that this user entered the room.
         init(
             thisUser,
             currentRoomInfo,
@@ -87,6 +89,18 @@ export default function Room() {
     return (
         <div className="room-container">
             <p>User ID: {thisUser.userId}</p>
+            <div className="host-bar">
+                {thisUser.userId === currentRoomInfo.roomInfo.hostId ? (
+                    <button type="button">{strResource.room.gameStart}</button>
+                ) : null}
+                <button
+                    type="button"
+                    onClick={() => setGameConfigurationModal(true)}
+                >
+                    {strResource.room.gameConfiguration}
+                </button>
+            </div>
+            {gameConfigurationModal ? <GameConfigurationModal /> : null}
             <ul className="user-list">
                 {usersInRoom.map((user, idx) => (
                     <li key={`user-item-${idx}`}>

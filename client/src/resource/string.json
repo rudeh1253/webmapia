@@ -10,6 +10,8 @@
         "input": "입력"
     },
     "room": {
-        "send": "전송"
+        "send": "전송",
+        "gameStart": "게임시작",
+        "gameConfiguration": "게임설정"
     }
 }
