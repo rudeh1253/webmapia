@@ -49,3 +49,9 @@ export type Chat = {
     isPublic: boolean;
     isMe: boolean;
 };
+
+export type GameSetting = {
+    discussionTimeSeconds: number;
+    voteTimeSeconds: number;
+    nightTimeSeconds: number;
+}

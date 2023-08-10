@@ -1,3 +1,4 @@
+import { GameSetting } from "./gameDomainType";
 import {NotificationType} from "./notificationType";
 
 export type CharacterGenerationRequest = {
@@ -24,7 +25,7 @@ export type CharacterGenerationRequest = {
 
 export type GameStartNotificationRequest = {
     notificationType: NotificationType;
-    gameSetting: string;
+    gameSetting: GameSetting;
     gameId: number;
 };
 
