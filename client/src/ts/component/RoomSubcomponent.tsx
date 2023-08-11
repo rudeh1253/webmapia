@@ -1,13 +1,10 @@
-import {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hook";
 import {setGameConfiguration} from "../redux/slice/gameConfiguration";
 import strResource from "../../resource/string.json";
+import {setGameConfigurationModal} from "../redux/slice/gameConfigurationModal";
 
 export function GameConfigurationModal() {
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
-    useEffect(() => {
-        console.log(gameConfiguration);
-    }, [gameConfiguration]);
     const dispatch = useAppDispatch();
     return (
         <div className="configuration-modal-container">
@@ -177,6 +174,12 @@ export function GameConfigurationModal() {
                         </div>
                     </div>
                 </div>
+                <button
+                    type="button"
+                    onClick={() => dispatch(setGameConfigurationModal(false))}
+                >
+                    {strResource.room.gameConfigurationModal.close}
+                </button>
             </div>
         </div>
     );

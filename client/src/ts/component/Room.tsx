@@ -7,13 +7,14 @@ import {
 } from "../type/gameDomainType";
 import strResource from "../../resource/string.json";
 import serverSpecResource from "../../resource/secret/server-spec.json";
-import {useAppSelector} from "../redux/hook";
+import {useAppDispatch, useAppSelector} from "../redux/hook";
 import axios from "axios";
 import {CommonResponse, UserResponse} from "../type/responseType";
 import SocketClient from "../sockjs/SocketClient";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {ChatItem, UserItem} from "./HomeSubcomponents";
 import {GameConfigurationModal} from "./RoomSubcomponent";
+import { setGameConfigurationModal } from "../redux/slice/gameConfigurationModal";
 
 var sockClient: SocketClient;
 
@@ -46,13 +47,14 @@ export default function Room() {
         isPublic: false,
         isMe: false
     });
-    const [gameConfigurationModal, setGameConfigurationModal] =
-        useState<boolean>(false);
+    const gameConfigurationModal = useAppSelector(state => state.gameConfigurationModal);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
 
     const chatInputRef = useRef<HTMLInputElement>(null);
+
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         init(
@@ -95,7 +97,7 @@ export default function Room() {
                 ) : null}
                 <button
                     type="button"
-                    onClick={() => setGameConfigurationModal(true)}
+                    onClick={() => dispatch(setGameConfigurationModal(true))}
                 >
                     {strResource.room.gameConfiguration}
                 </button>
