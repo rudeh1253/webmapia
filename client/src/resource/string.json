@@ -12,6 +12,11 @@
     "room": {
         "send": "전송",
         "gameStart": "게임시작",
-        "gameConfiguration": "게임설정"
+        "gameConfiguration": "게임설정",
+        "gameConfigurationModal": {
+            "discussionTime": "토론 시간",
+            "voteTime": "투표 시간",
+            "nightTime": "밤 시간"
+        }
     }
 }

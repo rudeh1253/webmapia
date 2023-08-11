@@ -1,11 +1,13 @@
 import {configureStore} from "@reduxjs/toolkit";
 import currentRoomInfoSlice from "./slice/currentRoomInfoSlice";
 import thisUserInfoSlice from "./slice/thisUserInfo";
+import gameConfiguration from "./slice/gameConfiguration";
 
 export const store = configureStore({
     reducer: {
         currentRoomInfo: currentRoomInfoSlice,
-        thisUserInfo: thisUserInfoSlice
+        thisUserInfo: thisUserInfoSlice,
+        gameConfiugraion: gameConfiguration
     }
 });
 
