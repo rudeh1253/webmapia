@@ -14,7 +14,7 @@ import SocketClient from "../sockjs/SocketClient";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {ChatItem, UserItem} from "./HomeSubcomponents";
 import {GameConfigurationModal} from "./RoomSubcomponent";
-import { setGameConfigurationModal } from "../redux/slice/gameConfigurationModal";
+import {setGameConfigurationModal} from "../redux/slice/gameConfigurationModal";
 
 var sockClient: SocketClient;
 
@@ -47,7 +47,9 @@ export default function Room() {
         isPublic: false,
         isMe: false
     });
-    const gameConfigurationModal = useAppSelector(state => state.gameConfigurationModal);
+    const gameConfigurationModal = useAppSelector(
+        (state) => state.gameConfigurationModal
+    );
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
@@ -91,17 +93,19 @@ export default function Room() {
     return (
         <div className="room-container">
             <p>User ID: {thisUser.userId}</p>
-            <div className="host-bar">
-                {thisUser.userId === currentRoomInfo.roomInfo.hostId ? (
+            {thisUser.userId === currentRoomInfo.roomInfo.hostId ? (
+                <div className="host-bar">
                     <button type="button">{strResource.room.gameStart}</button>
-                ) : null}
-                <button
-                    type="button"
-                    onClick={() => dispatch(setGameConfigurationModal(true))}
-                >
-                    {strResource.room.gameConfiguration}
-                </button>
-            </div>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            dispatch(setGameConfigurationModal(true))
+                        }
+                    >
+                        {strResource.room.gameConfiguration}
+                    </button>
+                </div>
+            ) : null}
             {gameConfigurationModal ? <GameConfigurationModal /> : null}
             <ul className="user-list">
                 {usersInRoom.map((user, idx) => (
