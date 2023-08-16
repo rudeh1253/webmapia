@@ -29,6 +29,7 @@ public class GameController {
 
     @MessageMapping("/game/start")
     public void gameStart(@Payload GameStartNotificationDTO request) {
+        System.out.println("request = " + request);
         messagingTemplate.convertAndSend("/notification/public" + request.getGameId(), request);
     }
 

@@ -41,9 +41,11 @@ public class UserMessageController {
 
     @MessageMapping("/game/user-exit")
     public void removeUser(@Payload UserRequestDTO request) {
+        System.out.println("request = " + request);
         Long gameId = request.getGameId();
         Long userId = request.getUserId();
         UserResponseDTO dto = userService.removeUser(gameId, userId);
+        System.out.println(userService.getAllUsers(gameId));
         messagingTemplate.convertAndSend("/notification/public/" + gameId, CommonResponse.ok(dto, LocalDateTime.now()));
     }
 }
