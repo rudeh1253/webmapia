@@ -221,7 +221,11 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
             userId,
             username: thisUserInfo.username
         };
-        await sock.sendMessage("/app/game/user-enter", {}, body);
+        try {
+            await sock.sendMessage("/app/game/user-enter", {}, body);
+        } catch (err) { 
+            console.error(err);
+        }
         navigate("/room");
     };
 

@@ -15,23 +15,39 @@ import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {ChatItem, UserItem} from "./HomeSubcomponents";
 import {GameConfigurationModal} from "./RoomSubcomponent";
 import {setGameConfigurationModal} from "../redux/slice/gameConfigurationModal";
+import {UserRequest} from "../type/requestType";
 
 var sockClient: SocketClient;
 
+const EMPTY_NEW_USER = -1;
+
+type UserState = {
+    stateType: "USER_ENTERED" | "USER_EXITED" | null;
+    userInfo: UserInfo;
+};
+
 export default function Room() {
     const [usersInRoom, setUsersInRoom] = useState<UserInfo[]>([]);
-    const [newUser, setNewUser] = useState<UserInfo>({
-        userId: -1,
-        username: "",
-        characterCode: null,
-        isDead: false
+    const [newUserState, setNewUserState] = useState<UserState>({
+        stateType: null,
+        userInfo: {
+            userId: -1,
+            username: "",
+            characterCode: null,
+            isDead: false
+        }
     });
-    const [delayStateForNewUser, setDelayStateForNewUser] = useState<UserInfo>({
-        userId: -1,
-        username: "",
-        characterCode: null,
-        isDead: false
-    });
+    const [delayStateForNewUser, setDelayStateForNewUser] = useState<UserState>(
+        {
+            stateType: null,
+            userInfo: {
+                userId: -1,
+                username: "",
+                characterCode: null,
+                isDead: false
+            }
+        }
+    );
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
     const [newChat, setNewChat] = useState<Chat>({
         senderId: -1,
@@ -59,27 +75,51 @@ export default function Room() {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        init(
-            thisUser,
-            currentRoomInfo,
-            usersInRoom,
-            setUsersInRoom,
-            setNewUser,
-            setNewChat
-        );
+        if (!sockClient) {
+            init(
+                thisUser,
+                currentRoomInfo,
+                usersInRoom,
+                setUsersInRoom,
+                setNewUserState,
+                setNewChat
+            );
+        }
         return () => {
-            // TODO: send exit message to server
+            if (sockClient) {
+                const exitRequestBody: UserRequest = {
+                    notificationType: "USER_REMOVED",
+                    gameId: currentRoomInfo.roomInfo.roomId,
+                    userId: thisUser.userId,
+                    username: thisUser.username
+                };
+                sockClient.sendMessage(
+                    serverSpecResource.socketEndpoints.send.userExit,
+                    {},
+                    exitRequestBody
+                );
+            }
         };
     }, []);
 
     useEffect(() => {
-        if (newUser.userId !== -1) {
-            if (delayStateForNewUser.userId !== newUser.userId) {
-                setUsersInRoom([...usersInRoom, newUser]);
-                setDelayStateForNewUser({...newUser});
+        if (newUserState.userInfo.userId !== EMPTY_NEW_USER) {
+            if (newUserState.stateType === "USER_EXITED") {
+                const mUsersInRoom = usersInRoom.filter(
+                    (val) => val.userId !== newUserState.userInfo.userId
+                );
+                setUsersInRoom([...mUsersInRoom]);
+            } else if (
+                delayStateForNewUser.userInfo.userId !==
+                newUserState.userInfo.userId
+            ) {
+                if (newUserState.stateType === "USER_ENTERED") {
+                    setUsersInRoom([...usersInRoom, newUserState.userInfo]);
+                }
+                setDelayStateForNewUser({...newUserState});
             }
         }
-    }, [newUser]);
+    }, [newUserState]);
 
     useEffect(() => {
         if (newChat.senderId !== -1) {
@@ -164,9 +204,12 @@ async function init(
     currentRoomInfo: CurrentRoomInfoInitialState,
     usersInRoom: UserInfo[],
     setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>,
-    setNewUser: React.Dispatch<React.SetStateAction<UserInfo>>,
+    setNewUserState: React.Dispatch<React.SetStateAction<UserState>>,
     setNewChat: React.Dispatch<React.SetStateAction<Chat>>
 ) {
+    const sock = await SocketClient.getInstance();
+    sockClient = sock;
+
     const fetchedUsers = await axios.get<CommonResponse<UserResponse[]>>(
         serverSpecResource.restApiUrl +
             serverSpecResource.restEndpoints.gameUser.replace(
@@ -184,8 +227,6 @@ async function init(
         })
     );
     setUsersInRoom(u);
-
-    const sock = await SocketClient.getInstance();
     // TODO: store Subscription object returned
     await sock.subscribe(
         `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
@@ -198,7 +239,15 @@ async function init(
                 characterCode: null,
                 isDead: false
             };
-            setNewUser(userInfo);
+            setNewUserState({
+                stateType:
+                    payloadData.data.notificationType === "USER_ENTERED"
+                        ? "USER_ENTERED"
+                        : payloadData.data.notificationType === "USER_REMOVED"
+                        ? "USER_EXITED"
+                        : null,
+                userInfo
+            });
         }
     );
     await sock.subscribe(
@@ -206,7 +255,6 @@ async function init(
         (payload) => {
             const payloadData = JSON.parse(payload.body)
                 .body as CommonResponse<PublicChatMessage>;
-            console.log(payloadData);
 
             const chat: Chat = {
                 senderId: payloadData.data.senderId,
@@ -234,8 +282,6 @@ async function init(
             setNewChat(chat);
         }
     );
-    sockClient = sock;
-    console.log(sockClient);
 }
 
 const chat = (
@@ -248,6 +294,5 @@ const chat = (
         senderId: thisUser.userId,
         message
     };
-    console.log("chat:", sockClient);
     sockClient.sendMessage("/app/chatroom/public-message", {}, messageObj);
 };
