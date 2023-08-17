@@ -11,7 +11,7 @@ import {RoomCreationRequest, UserRequest} from "../type/requestType";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import SocketClient from "../sockjs/SocketClient";
 
-var sock: SocketClient;
+var sockClient: SocketClient;
 
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
@@ -25,8 +25,8 @@ export default function Home() {
 
     const init = async () => {
         await getRoomList();
-        if (!sock) {
-            sock = await SocketClient.getInstance();
+        if (!sockClient) {
+            sockClient = await SocketClient.getInstance();
         }
     }
 
@@ -230,7 +230,7 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
             username: thisUserInfo.username
         };
         try {
-            await sock.sendMessage("/app/game/user-enter", {}, body);
+            await sockClient.sendMessage("/app/game/user-enter", {}, body);
         } catch (err) { 
             console.error(err);
         }
