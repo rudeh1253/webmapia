@@ -6,7 +6,6 @@ import {
     UserInfo
 } from "../type/gameDomainType";
 import strResource from "../../resource/string.json";
-import serverSpecResource from "../../resource/secret/server-spec.json";
 import {useAppDispatch, useAppSelector} from "../redux/hook";
 import axios from "axios";
 import {CommonResponse, UserResponse} from "../type/responseType";
@@ -165,6 +164,11 @@ export default function Room() {
                     {},
                     exitRequestBody
                 );
+                if (subscriptions) {
+                    subscriptions.forEach((sub) => {
+                        sub.subscription.unsubscribe();
+                    });
+                }
             }
         };
     }, []);

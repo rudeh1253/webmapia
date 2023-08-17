@@ -1,6 +1,5 @@
 import {useEffect, useRef, useState} from "react";
 import strResource from "../../resource/string.json";
-import serverSpecResource from "../../resource/secret/server-spec.json";
 import {RoomInfo} from "../type/gameDomainType";
 import {useAppDispatch, useAppSelector} from "../redux/hook";
 import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
