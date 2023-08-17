@@ -42,13 +42,15 @@ export default class SocketClient {
 
     public async subscribe(
         url: string,
-        callback: (payload: any) => void
+        callback: (payload: any) => void,
+        headers?: {}
     ): Promise<Stomp.Subscription> {
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
                 const subscription = await this.stompClient!.subscribe(
                     url,
-                    callback
+                    callback,
+                    headers
                 );
                 resolve(subscription);
             }, 500);

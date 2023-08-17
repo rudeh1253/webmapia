@@ -16,9 +16,10 @@ import {ChatItem, UserItem} from "./HomeSubcomponents";
 import {GameConfigurationModal} from "./RoomSubcomponent";
 import {setGameConfigurationModal} from "../redux/slice/gameConfigurationModal";
 import {UserRequest} from "../type/requestType";
+import {Subscription} from "stompjs";
 
 var sockClient: SocketClient;
-
+var subscriptions: {endpoint: string; subscription: Subscription}[];
 
 const EMPTY_NEW_USER = -1;
 
@@ -276,11 +277,21 @@ async function init(
         })
     );
     setUsersInRoom(u);
-    // TODO: store Subscription object returned
+
+    if (!subscriptions) {
+        subscriptions = [];
+    }
+    let i = 1;
     for (let sub of toSubscribe) {
-        sockClient.subscribe(sub.endpoint, sub.callback);
+        const subscription = await sockClient.subscribe(
+            sub.endpoint,
+            sub.callback,
+            {id: `sub-${i++}`}
+        );
+        subscriptions.push({endpoint: sub.endpoint, subscription});
     }
 }
+
 
 const chat = (
     message: string,
