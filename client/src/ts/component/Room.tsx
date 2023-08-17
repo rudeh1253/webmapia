@@ -19,6 +19,7 @@ import {UserRequest} from "../type/requestType";
 
 var sockClient: SocketClient;
 
+
 const EMPTY_NEW_USER = -1;
 
 type UserState = {
@@ -74,7 +75,7 @@ export default function Room() {
 
     const dispatch = useAppDispatch();
 
-    const subscriptions = [
+    const toSubscribe = [
         {
             endpoint: `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
             callback: (payload: any) => {
@@ -134,11 +135,7 @@ export default function Room() {
 
     useEffect(() => {
         if (!sockClient) {
-            init(
-                currentRoomInfo,
-                setUsersInRoom,
-                subscriptions
-            );
+            init(currentRoomInfo, setUsersInRoom, toSubscribe);
         }
         return () => {
             if (sockClient) {
@@ -257,7 +254,7 @@ export default function Room() {
 async function init(
     currentRoomInfo: CurrentRoomInfoInitialState,
     setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>,
-    subscriptions: {endpoint: string; callback: (payload: any) => void}[]
+    toSubscribe: {endpoint: string; callback: (payload: any) => void}[]
 ) {
     const sock = await SocketClient.getInstance();
     sockClient = sock;
@@ -280,7 +277,7 @@ async function init(
     );
     setUsersInRoom(u);
     // TODO: store Subscription object returned
-    for (let sub of subscriptions) {
+    for (let sub of toSubscribe) {
         sockClient.subscribe(sub.endpoint, sub.callback);
     }
 }
