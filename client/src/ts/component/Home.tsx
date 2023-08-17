@@ -10,6 +10,7 @@ import {CommonResponse, RoomInfoResponse} from "../type/responseType";
 import {RoomCreationRequest, UserRequest} from "../type/requestType";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import SocketClient from "../sockjs/SocketClient";
+import {REST_GAME_ROOM, REST_USER_ID} from "../etc/const";
 
 var sockClient: SocketClient;
 
@@ -28,7 +29,7 @@ export default function Home() {
         if (!sockClient) {
             sockClient = await SocketClient.getInstance();
         }
-    }
+    };
 
     const getRoomList = async (keyword?: string) => {
         if (keyword) {
@@ -36,10 +37,7 @@ export default function Home() {
         } else {
             const roomInfoResponses = await axios.get<
                 CommonResponse<RoomInfoResponse[]>
-            >(
-                serverSpecResource.restApiUrl +
-                    serverSpecResource.restEndpoints.gameRoom
-            );
+            >(REST_GAME_ROOM);
             const roomInfo: RoomInfo[] = [];
             roomInfoResponses.data.data.forEach((v) =>
                 roomInfo.push({
@@ -176,11 +174,7 @@ function RoomCreationModal({setModalState}: ModalProps) {
                     };
                     const roomInfo = await axios.post<
                         CommonResponse<RoomInfoResponse>
-                    >(
-                        serverSpecResource.restApiUrl +
-                            serverSpecResource.restEndpoints.gameRoom,
-                        roomCreationRequestBody
-                    );
+                    >(REST_GAME_ROOM, roomCreationRequestBody);
                     dispatch(
                         setCurrentRoomInfo({
                             roomId: roomInfo.data.data.roomId,
@@ -199,9 +193,7 @@ function RoomCreationModal({setModalState}: ModalProps) {
 }
 
 async function generateId(): Promise<number> {
-    const response = await axios.post<CommonResponse<number>>(
-        serverSpecResource.restApiUrl + serverSpecResource.restEndpoints.userId
-    );
+    const response = await axios.post<CommonResponse<number>>(REST_USER_ID);
     const generatedId = response.data.data;
     return generatedId;
 }
@@ -231,7 +223,7 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
         };
         try {
             await sockClient.sendMessage("/app/game/user-enter", {}, body);
-        } catch (err) { 
+        } catch (err) {
             console.error(err);
         }
         navigate("/room");

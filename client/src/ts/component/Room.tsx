@@ -17,6 +17,13 @@ import {GameConfigurationModal} from "./RoomSubcomponent";
 import {setGameConfigurationModal} from "../redux/slice/gameConfigurationModal";
 import {UserRequest} from "../type/requestType";
 import {Subscription} from "stompjs";
+import {
+    REST_GAME_USER,
+    SOCKET_SEND_USER_EXIT,
+    SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
+    SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
+    SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
+} from "../etc/const";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[];
@@ -78,7 +85,9 @@ export default function Room() {
 
     const toSubscribe = [
         {
-            endpoint: `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
+            endpoint: `${SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC(
+                currentRoomInfo.roomInfo.roomId
+            )}`,
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
                     .body as CommonResponse<UserResponse>;
@@ -101,7 +110,9 @@ export default function Room() {
             }
         },
         {
-            endpoint: `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}`,
+            endpoint: `${SOCKET_SUBSCRIBE_CHATROOM_PUBLIC(
+                currentRoomInfo.roomInfo.roomId
+            )}`,
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
                     .body as CommonResponse<PublicChatMessage>;
@@ -117,7 +128,10 @@ export default function Room() {
             }
         },
         {
-            endpoint: `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}/private/${thisUser.userId}`,
+            endpoint: `${SOCKET_SUBSCRIBE_CHATROOM_PRIVATE(
+                currentRoomInfo.roomInfo.roomId,
+                thisUser.userId
+            )}`,
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
                     .body as CommonResponse<PrivateChatMessage>;
@@ -147,7 +161,7 @@ export default function Room() {
                     username: thisUser.username
                 };
                 sockClient.sendMessage(
-                    serverSpecResource.socketEndpoints.send.userExit,
+                    SOCKET_SEND_USER_EXIT,
                     {},
                     exitRequestBody
                 );
@@ -261,11 +275,7 @@ async function init(
     sockClient = sock;
 
     const fetchedUsers = await axios.get<CommonResponse<UserResponse[]>>(
-        serverSpecResource.restApiUrl +
-            serverSpecResource.restEndpoints.gameUser.replace(
-                "{gameId}",
-                currentRoomInfo.roomInfo.roomId.toString()
-            )
+        REST_GAME_USER(currentRoomInfo.roomInfo.roomId)
     );
     const u: UserInfo[] = [];
     fetchedUsers.data.data.forEach((us) =>
@@ -291,7 +301,6 @@ async function init(
         subscriptions.push({endpoint: sub.endpoint, subscription});
     }
 }
-
 
 const chat = (
     message: string,
