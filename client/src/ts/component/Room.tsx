@@ -74,15 +74,70 @@ export default function Room() {
 
     const dispatch = useAppDispatch();
 
+    const subscriptions = [
+        {
+            endpoint: `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
+            callback: (payload: any) => {
+                const payloadData = JSON.parse(payload.body)
+                    .body as CommonResponse<UserResponse>;
+                const userInfo: UserInfo = {
+                    userId: payloadData.data.userId,
+                    username: payloadData.data.username,
+                    characterCode: null,
+                    isDead: false
+                };
+                setNewUserState({
+                    stateType:
+                        payloadData.data.notificationType === "USER_ENTERED"
+                            ? "USER_ENTERED"
+                            : payloadData.data.notificationType ===
+                              "USER_REMOVED"
+                            ? "USER_EXITED"
+                            : null,
+                    userInfo
+                });
+            }
+        },
+        {
+            endpoint: `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}`,
+            callback: (payload: any) => {
+                const payloadData = JSON.parse(payload.body)
+                    .body as CommonResponse<PublicChatMessage>;
+
+                const chat: Chat = {
+                    senderId: payloadData.data.senderId,
+                    message: payloadData.data.message,
+                    timestamp: new Date(payloadData.dateTime).getTime(),
+                    isPublic: true,
+                    isMe: thisUser.userId === payloadData.data.senderId
+                };
+                setNewChat(chat);
+            }
+        },
+        {
+            endpoint: `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}/private/${thisUser.userId}`,
+            callback: (payload: any) => {
+                const payloadData = JSON.parse(payload.body)
+                    .body as CommonResponse<PrivateChatMessage>;
+
+                const chat: Chat = {
+                    senderId: payloadData.data.senderId,
+                    message: payloadData.data.message,
+                    timestamp: new Date(payloadData.dateTime).getTime(),
+                    isPublic: false,
+                    isMe: thisUser.userId === payloadData.data.senderId
+                };
+                setNewChat(chat);
+            }
+        }
+    ];
+
     useEffect(() => {
         if (!sockClient) {
             init(
-                thisUser,
                 currentRoomInfo,
-                usersInRoom,
                 setUsersInRoom,
-                setNewUserState,
-                setNewChat
+                subscriptions
             );
         }
         return () => {
@@ -200,12 +255,9 @@ export default function Room() {
 }
 
 async function init(
-    thisUser: UserInfo,
     currentRoomInfo: CurrentRoomInfoInitialState,
-    usersInRoom: UserInfo[],
     setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>,
-    setNewUserState: React.Dispatch<React.SetStateAction<UserState>>,
-    setNewChat: React.Dispatch<React.SetStateAction<Chat>>
+    subscriptions: {endpoint: string; callback: (payload: any) => void}[]
 ) {
     const sock = await SocketClient.getInstance();
     sockClient = sock;
@@ -228,60 +280,9 @@ async function init(
     );
     setUsersInRoom(u);
     // TODO: store Subscription object returned
-    await sock.subscribe(
-        `${serverSpecResource.socketEndpoints.subscribe.notificationPublic}/${currentRoomInfo.roomInfo.roomId}`,
-        (payload) => {
-            const payloadData = JSON.parse(payload.body)
-                .body as CommonResponse<UserResponse>;
-            const userInfo: UserInfo = {
-                userId: payloadData.data.userId,
-                username: payloadData.data.username,
-                characterCode: null,
-                isDead: false
-            };
-            setNewUserState({
-                stateType:
-                    payloadData.data.notificationType === "USER_ENTERED"
-                        ? "USER_ENTERED"
-                        : payloadData.data.notificationType === "USER_REMOVED"
-                        ? "USER_EXITED"
-                        : null,
-                userInfo
-            });
-        }
-    );
-    await sock.subscribe(
-        `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}`,
-        (payload) => {
-            const payloadData = JSON.parse(payload.body)
-                .body as CommonResponse<PublicChatMessage>;
-
-            const chat: Chat = {
-                senderId: payloadData.data.senderId,
-                message: payloadData.data.message,
-                timestamp: new Date(payloadData.dateTime).getTime(),
-                isPublic: true,
-                isMe: thisUser.userId === payloadData.data.senderId
-            };
-            setNewChat(chat);
-        }
-    );
-    await sock.subscribe(
-        `${serverSpecResource.socketEndpoints.subscribe.chatroom}/${currentRoomInfo.roomInfo.roomId}/private/${thisUser.userId}`,
-        (payload) => {
-            const payloadData = JSON.parse(payload.body)
-                .body as CommonResponse<PrivateChatMessage>;
-
-            const chat: Chat = {
-                senderId: payloadData.data.senderId,
-                message: payloadData.data.message,
-                timestamp: new Date(payloadData.dateTime).getTime(),
-                isPublic: false,
-                isMe: thisUser.userId === payloadData.data.senderId
-            };
-            setNewChat(chat);
-        }
-    );
+    for (let sub of subscriptions) {
+        sockClient.subscribe(sub.endpoint, sub.callback);
+    }
 }
 
 const chat = (
