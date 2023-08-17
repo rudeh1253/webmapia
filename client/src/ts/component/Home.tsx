@@ -11,6 +11,8 @@ import {RoomCreationRequest, UserRequest} from "../type/requestType";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import SocketClient from "../sockjs/SocketClient";
 
+var sock: SocketClient;
+
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
     const [roomList, setRoomList] = useState<Array<RoomInfo>>([]);
@@ -20,6 +22,13 @@ export default function Home() {
     const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
 
     const dispatch = useAppDispatch();
+
+    const init = async () => {
+        await getRoomList();
+        if (!sock) {
+            sock = await SocketClient.getInstance();
+        }
+    }
 
     const getRoomList = async (keyword?: string) => {
         if (keyword) {
@@ -45,7 +54,7 @@ export default function Home() {
     };
 
     useEffect(() => {
-        getRoomList();
+        init();
     }, []);
 
     return (
@@ -214,7 +223,6 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
         );
         const userId = await generateId();
         dispatch(setThisUserInfo({...thisUserInfo, userId}));
-        const sock = await SocketClient.getInstance();
         const body: UserRequest = {
             notificationType: "USER_ENTERED",
             gameId: roomId,
