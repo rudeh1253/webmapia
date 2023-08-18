@@ -23,6 +23,7 @@ import {
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
 } from "../util/const";
+import { chat } from "../util/chat";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[];
@@ -257,7 +258,8 @@ export default function Room() {
                                 chat(
                                     chatInputRef.current!.value,
                                     currentRoomInfo,
-                                    thisUser
+                                    thisUser,
+                                    sockClient
                                 )
                             }
                         >
@@ -305,16 +307,3 @@ async function init(
         subscriptions.push({endpoint: sub.endpoint, subscription});
     }
 }
-
-const chat = (
-    message: string,
-    currentRoomInfo: CurrentRoomInfoInitialState,
-    thisUser: UserInfo
-) => {
-    const messageObj: PublicChatMessage = {
-        gameId: currentRoomInfo.roomInfo.roomId,
-        senderId: thisUser.userId,
-        message
-    };
-    sockClient.sendMessage("/app/chatroom/public-message", {}, messageObj);
-};
