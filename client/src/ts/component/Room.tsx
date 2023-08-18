@@ -22,7 +22,7 @@ import {
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
-} from "../etc/const";
+} from "../util/const";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[];

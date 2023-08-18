@@ -9,7 +9,7 @@ import {CommonResponse, RoomInfoResponse} from "../type/responseType";
 import {RoomCreationRequest, UserRequest} from "../type/requestType";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import SocketClient from "../sockjs/SocketClient";
-import {REST_GAME_ROOM, REST_USER_ID} from "../etc/const";
+import {REST_GAME_ROOM, REST_USER_ID} from "../util/const";
 
 var sockClient: SocketClient;
 
