@@ -214,17 +214,7 @@ function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
         );
         const userId = await generateId();
         dispatch(setThisUserInfo({...thisUserInfo, userId}));
-        const body: UserRequest = {
-            notificationType: "USER_ENTERED",
-            gameId: roomId,
-            userId,
-            username: thisUserInfo.username
-        };
-        try {
-            await sockClient.sendMessage("/app/game/user-enter", {}, body);
-        } catch (err) {
-            console.error(err);
-        }
+        
         navigate("/room");
     };
 

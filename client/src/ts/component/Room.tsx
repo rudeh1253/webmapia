@@ -7,7 +7,6 @@ import {
 } from "../type/gameDomainType";
 import strResource from "../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../redux/hook";
-import axios from "axios";
 import {CommonResponse, UserResponse} from "../type/responseType";
 import SocketClient from "../sockjs/SocketClient";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
@@ -17,16 +16,16 @@ import {setGameConfigurationModal} from "../redux/slice/gameConfigurationModal";
 import {UserRequest} from "../type/requestType";
 import {Subscription} from "stompjs";
 import {
-    REST_GAME_USER,
     SOCKET_SEND_USER_EXIT,
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
 } from "../util/const";
-import { chat } from "../util/chat";
+import {chat} from "../util/chat";
+import {fetchUsers} from "../util/fetchUsers";
 
 var sockClient: SocketClient;
-var subscriptions: {endpoint: string; subscription: Subscription}[];
+var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
 
 const EMPTY_NEW_USER = -1;
 
@@ -150,7 +149,7 @@ export default function Room() {
 
     useEffect(() => {
         if (!sockClient) {
-            init(currentRoomInfo, setUsersInRoom, toSubscribe);
+            init(currentRoomInfo, thisUser, setUsersInRoom, toSubscribe);
         }
         return () => {
             if (sockClient) {
@@ -169,6 +168,7 @@ export default function Room() {
                     subscriptions.forEach((sub) => {
                         sub.subscription.unsubscribe();
                     });
+                    subscriptions = undefined;
                 }
             }
         };
@@ -274,24 +274,14 @@ export default function Room() {
 
 async function init(
     currentRoomInfo: CurrentRoomInfoInitialState,
+    thisUser: UserInfo,
     setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>,
     toSubscribe: {endpoint: string; callback: (payload: any) => void}[]
 ) {
     const sock = await SocketClient.getInstance();
     sockClient = sock;
 
-    const fetchedUsers = await axios.get<CommonResponse<UserResponse[]>>(
-        REST_GAME_USER(currentRoomInfo.roomInfo.roomId)
-    );
-    const u: UserInfo[] = [];
-    fetchedUsers.data.data.forEach((us) =>
-        u.push({
-            userId: us.userId,
-            username: us.username,
-            characterCode: null,
-            isDead: false
-        })
-    );
+    const u: UserInfo[] = await fetchUsers(currentRoomInfo);
     setUsersInRoom(u);
 
     if (!subscriptions) {
@@ -305,5 +295,26 @@ async function init(
             {id: `sub-${i++}`}
         );
         subscriptions.push({endpoint: sub.endpoint, subscription});
+    }
+
+    // TODO: Logically, when the host create a room, the client
+    // send a post request to the server. The server creates a room and add
+    // a user to the room simultaneosly, which the added user is the host.
+    // Without the check by if shown below, the host user will be added to the
+    // room twice, which I have to prevent.
+    // For now, check whether the user is the host which already belongs to the room.
+    // Later, I wish make this logic more reasonable.
+    if (thisUser.userId !== currentRoomInfo.roomInfo.hostId) {
+        const body: UserRequest = {
+            notificationType: "USER_ENTERED",
+            gameId: currentRoomInfo.roomInfo.roomId,
+            userId: thisUser.userId,
+            username: thisUser.username
+        };
+        try {
+            await sockClient.sendMessage("/app/game/user-enter", {}, body);
+        } catch (err) {
+            console.error(err);
+        }
     }
 }
