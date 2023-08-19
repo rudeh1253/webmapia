@@ -1,13 +1,10 @@
 import {useRef, useState, useEffect} from "react";
 import {
     Chat,
-    PrivateChatMessage,
-    PublicChatMessage,
     UserInfo
 } from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
-import {CommonResponse, UserResponse} from "../../type/responseType";
 import SocketClient from "../../sockjs/SocketClient";
 import {CurrentRoomInfoInitialState} from "../../redux/slice/currentRoomInfoSlice";
 import {ChatItem, UserItem} from "../HomeSubcomponents";
@@ -20,21 +17,18 @@ import {
 import {Subscription} from "stompjs";
 import {
     SOCKET_SEND_GAME_START,
-    SOCKET_SEND_USER_EXIT,
-    SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
-    SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
-    SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
-} from "../../util/const";
+    SOCKET_SEND_USER_EXIT} from "../../util/const";
 import {chat} from "../../util/chat";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameUI from "./GameUI";
+import { getSubscription } from "../../util/getSubscription";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
 
 const EMPTY_NEW_USER = -1;
 
-type UserState = {
+export type UserState = {
     stateType: "USER_ENTERED" | "USER_EXITED" | null;
     userInfo: UserInfo;
 };
@@ -89,83 +83,12 @@ export default function Room() {
 
     const dispatch = useAppDispatch();
 
-    const toSubscribe = [
-        {
-            endpoint: `${SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC(
-                currentRoomInfo.roomInfo.roomId
-            )}`,
-            callback: (payload: any) => {
-                const payloadData = JSON.parse(payload.body)
-                    .body as CommonResponse<UserResponse>;
-                switch (payloadData.data.notificationType) {
-                    case "USER_ENTERED":
-                    case "USER_REMOVED":
-                        const userInfo: UserInfo = {
-                            userId: payloadData.data.userId,
-                            username: payloadData.data.username,
-                            characterCode: null,
-                            isDead: false
-                        };
-                        setNewUserState({
-                            stateType:
-                                payloadData.data.notificationType ===
-                                "USER_ENTERED"
-                                    ? "USER_ENTERED"
-                                    : payloadData.data.notificationType ===
-                                      "USER_REMOVED"
-                                    ? "USER_EXITED"
-                                    : null,
-                            userInfo
-                        });
-                        break;
-                    case "GAME_START":
-                        // const body: GameStartNotificationRequest = {
-                        //     notificationType: "GAME_START",
-                        //     gameId: currentRoomInfo.roomInfo.roomId,
-                        // };
-                        // sockClient.sendMessage(SOCKET_SEND_GAME_START, {});
-                        break;
-                }
-            }
-        },
-        {
-            endpoint: `${SOCKET_SUBSCRIBE_CHATROOM_PUBLIC(
-                currentRoomInfo.roomInfo.roomId
-            )}`,
-            callback: (payload: any) => {
-                const payloadData = JSON.parse(payload.body)
-                    .body as CommonResponse<PublicChatMessage>;
-
-                const chat: Chat = {
-                    senderId: payloadData.data.senderId,
-                    message: payloadData.data.message,
-                    timestamp: new Date(payloadData.dateTime).getTime(),
-                    isPublic: true,
-                    isMe: thisUser.userId === payloadData.data.senderId
-                };
-                setNewChat(chat);
-            }
-        },
-        {
-            endpoint: `${SOCKET_SUBSCRIBE_CHATROOM_PRIVATE(
-                currentRoomInfo.roomInfo.roomId,
-                thisUser.userId
-            )}`,
-            callback: (payload: any) => {
-                const payloadData = JSON.parse(payload.body)
-                    .body as CommonResponse<PrivateChatMessage>;
-
-                const chat: Chat = {
-                    senderId: payloadData.data.senderId,
-                    message: payloadData.data.message,
-                    timestamp: new Date(payloadData.dateTime).getTime(),
-                    isPublic: false,
-                    isMe: thisUser.userId === payloadData.data.senderId
-                };
-                setNewChat(chat);
-            }
-        }
-    ];
+    const toSubscribe = getSubscription(
+        currentRoomInfo,
+        setNewUserState,
+        thisUser,
+        setNewChat
+    );
 
     useEffect(() => {
         if (!sockClient) {
