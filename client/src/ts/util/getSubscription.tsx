@@ -4,14 +4,14 @@ import {
     PublicChatMessage,
     UserInfo
 } from "../type/gameDomainType";
-import { CommonResponse, UserResponse } from "../type/responseType";
-import { CurrentRoomInfoInitialState } from "../redux/slice/currentRoomInfoSlice";
+import {CommonResponse, UserResponse} from "../type/responseType";
+import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
 } from "./const";
-import { UserState } from "../component/room/Room";
+import {UserState} from "../component/room/Room";
 
 export function getSubscription(
     currentRoomInfo: CurrentRoomInfoInitialState,
@@ -30,22 +30,7 @@ export function getSubscription(
                 switch (payloadData.data.notificationType) {
                     case "USER_ENTERED":
                     case "USER_REMOVED":
-                        const userInfo: UserInfo = {
-                            userId: payloadData.data.userId,
-                            username: payloadData.data.username,
-                            characterCode: null,
-                            isDead: false
-                        };
-                        setNewUserState({
-                            stateType: payloadData.data.notificationType ===
-                                "USER_ENTERED"
-                                ? "USER_ENTERED"
-                                : payloadData.data.notificationType ===
-                                    "USER_REMOVED"
-                                    ? "USER_EXITED"
-                                    : null,
-                            userInfo
-                        });
+                        onUserEnterOrExit(payloadData, setNewUserState);
                         break;
                     case "GAME_START":
                         // const body: GameStartNotificationRequest = {
@@ -95,4 +80,25 @@ export function getSubscription(
             }
         }
     ];
+}
+
+function onUserEnterOrExit(
+    payloadData: CommonResponse<UserResponse>,
+    setNewUserState: React.Dispatch<React.SetStateAction<UserState>>
+) {
+    const userInfo: UserInfo = {
+        userId: payloadData.data.userId,
+        username: payloadData.data.username,
+        characterCode: null,
+        isDead: false
+    };
+    setNewUserState({
+        stateType:
+            payloadData.data.notificationType === "USER_ENTERED"
+                ? "USER_ENTERED"
+                : payloadData.data.notificationType === "USER_REMOVED"
+                ? "USER_EXITED"
+                : null,
+        userInfo
+    });
 }
