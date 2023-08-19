@@ -1,7 +1,7 @@
-import {useAppDispatch, useAppSelector} from "../redux/hook";
-import {setGameConfiguration} from "../redux/slice/gameConfiguration";
-import strResource from "../../resource/string.json";
-import {setGameConfigurationModal} from "../redux/slice/gameConfigurationModal";
+import {useAppDispatch, useAppSelector} from "../../redux/hook";
+import {setGameConfiguration} from "../../redux/slice/gameConfiguration";
+import strResource from "../../../resource/string.json";
+import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
 
 export function GameConfigurationModal() {
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);

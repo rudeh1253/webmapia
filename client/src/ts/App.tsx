@@ -1,9 +1,9 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "./component/Home";
-import Room from "./component/Room";
+import Room from "./component/room/Room";
 import {Provider} from "react-redux";
 import {store} from "./redux/store";
-import Game from "./component/Game";
+import Game from "./component/room/Game";
 
 /**
  * Root component.

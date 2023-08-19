@@ -4,25 +4,27 @@ import {
     PrivateChatMessage,
     PublicChatMessage,
     UserInfo
-} from "../type/gameDomainType";
-import strResource from "../../resource/string.json";
-import {useAppDispatch, useAppSelector} from "../redux/hook";
-import {CommonResponse, UserResponse} from "../type/responseType";
-import SocketClient from "../sockjs/SocketClient";
-import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
-import {ChatItem, UserItem} from "./HomeSubcomponents";
+} from "../../type/gameDomainType";
+import strResource from "../../../resource/string.json";
+import {useAppDispatch, useAppSelector} from "../../redux/hook";
+import {CommonResponse, UserResponse} from "../../type/responseType";
+import SocketClient from "../../sockjs/SocketClient";
+import {CurrentRoomInfoInitialState} from "../../redux/slice/currentRoomInfoSlice";
+import {ChatItem, UserItem} from "../HomeSubcomponents";
 import {GameConfigurationModal} from "./RoomSubcomponent";
-import {setGameConfigurationModal} from "../redux/slice/gameConfigurationModal";
-import {UserRequest} from "../type/requestType";
+import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
+import {GameStartNotificationRequest, UserRequest} from "../../type/requestType";
 import {Subscription} from "stompjs";
 import {
+    SOCKET_SEND_GAME_START,
     SOCKET_SEND_USER_EXIT,
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
-} from "../util/const";
-import {chat} from "../util/chat";
-import {fetchUsers} from "../util/fetchUsers";
+} from "../../util/const";
+import {chat} from "../../util/chat";
+import {fetchUsers} from "../../util/fetchUsers";
+import {useNavigate} from "react-router-dom";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
@@ -77,10 +79,12 @@ export default function Room() {
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
+    const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
 
     const chatInputRef = useRef<HTMLInputElement>(null);
 
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const toSubscribe = [
         {
@@ -90,22 +94,35 @@ export default function Room() {
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
                     .body as CommonResponse<UserResponse>;
-                const userInfo: UserInfo = {
-                    userId: payloadData.data.userId,
-                    username: payloadData.data.username,
-                    characterCode: null,
-                    isDead: false
-                };
-                setNewUserState({
-                    stateType:
-                        payloadData.data.notificationType === "USER_ENTERED"
-                            ? "USER_ENTERED"
-                            : payloadData.data.notificationType ===
-                              "USER_REMOVED"
-                            ? "USER_EXITED"
-                            : null,
-                    userInfo
-                });
+                switch (payloadData.data.notificationType) {
+                    case "USER_ENTERED":
+                    case "USER_REMOVED":
+                        const userInfo: UserInfo = {
+                            userId: payloadData.data.userId,
+                            username: payloadData.data.username,
+                            characterCode: null,
+                            isDead: false
+                        };
+                        setNewUserState({
+                            stateType:
+                                payloadData.data.notificationType ===
+                                "USER_ENTERED"
+                                    ? "USER_ENTERED"
+                                    : payloadData.data.notificationType ===
+                                      "USER_REMOVED"
+                                    ? "USER_EXITED"
+                                    : null,
+                            userInfo
+                        });
+                        break;
+                    case "GAME_START":
+                        // const body: GameStartNotificationRequest = {
+                        //     notificationType: "GAME_START",
+                        //     gameId: currentRoomInfo.roomInfo.roomId,
+                        // };
+                        // sockClient.sendMessage(SOCKET_SEND_GAME_START, {});
+                        break;
+                }
             }
         },
         {
@@ -207,7 +224,23 @@ export default function Room() {
             <p>User ID: {thisUser.userId}</p>
             {thisUser.userId === currentRoomInfo.roomInfo.hostId ? (
                 <div className="host-bar">
-                    <button type="button">{strResource.room.gameStart}</button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const body: GameStartNotificationRequest = {
+                                notificationType: "GAME_START",
+                                gameSetting: gameConfiguration,
+                                gameId: currentRoomInfo.roomInfo.roomId
+                            };
+                            sockClient.sendMessage(
+                                SOCKET_SEND_GAME_START,
+                                {},
+                                body
+                            );
+                        }}
+                    >
+                        {strResource.room.gameStart}
+                    </button>
                     <button
                         type="button"
                         onClick={() =>
