@@ -13,7 +13,10 @@ import {CurrentRoomInfoInitialState} from "../../redux/slice/currentRoomInfoSlic
 import {ChatItem, UserItem} from "../HomeSubcomponents";
 import {GameConfigurationModal} from "./RoomSubcomponent";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
-import {GameStartNotificationRequest, UserRequest} from "../../type/requestType";
+import {
+    GameStartNotificationRequest,
+    UserRequest
+} from "../../type/requestType";
 import {Subscription} from "stompjs";
 import {
     SOCKET_SEND_GAME_START,
@@ -24,7 +27,7 @@ import {
 } from "../../util/const";
 import {chat} from "../../util/chat";
 import {fetchUsers} from "../../util/fetchUsers";
-import {useNavigate} from "react-router-dom";
+import GameUI from "./GameUI";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
@@ -80,11 +83,11 @@ export default function Room() {
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
+    const gameStarted = useAppSelector((state) => state.gameSwitch);
 
     const chatInputRef = useRef<HTMLInputElement>(null);
 
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
 
     const toSubscribe = [
         {
@@ -301,6 +304,7 @@ export default function Room() {
                     </div>
                 </div>
             </div>
+            {gameStarted ? <GameUI /> : null}
         </div>
     );
 }
