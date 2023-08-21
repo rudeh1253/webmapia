@@ -2,14 +2,12 @@ import {useEffect, useRef, useState} from "react";
 import strResource from "../../resource/string.json";
 import {RoomInfo} from "../type/gameDomainType";
 import {useAppDispatch, useAppSelector} from "../redux/hook";
-import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
-import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {CommonResponse, RoomInfoResponse} from "../type/responseType";
-import {RoomCreationRequest, UserRequest} from "../type/requestType";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import SocketClient from "../sockjs/SocketClient";
-import {REST_GAME_ROOM, REST_USER_ID} from "../util/const";
+import {REST_GAME_ROOM} from "../util/const";
+import {RoomCreationModal, RoomItem} from "./HomeSubcomponents";
 
 var sockClient: SocketClient;
 
@@ -128,103 +126,6 @@ export default function Home() {
                     ))}
                 </div>
             </div>
-        </div>
-    );
-}
-
-interface ModalProps {
-    setModalState: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function RoomCreationModal({setModalState}: ModalProps) {
-    const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
-
-    const roomNameInputRef = useRef<HTMLInputElement>(null);
-
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    return (
-        <div className="modal">
-            <button type="button" onClick={() => setModalState(false)}>
-                {strResource.home.close}
-            </button>
-            <div className="room-name-input-container">
-                <label htmlFor="room-name-input">
-                    {strResource.home.inputRoomName}
-                </label>
-                <input
-                    type="text"
-                    id="room-name-input"
-                    ref={roomNameInputRef}
-                />
-            </div>
-            <button
-                type="button"
-                onClick={async () => {
-                    const roomName = roomNameInputRef.current?.value!;
-                    const hostId = await generateId();
-                    dispatch(
-                        setThisUserInfo({...thisUserInfo, userId: hostId})
-                    );
-                    const roomCreationRequestBody: RoomCreationRequest = {
-                        gameName: roomName,
-                        hostId,
-                        hostName: thisUserInfo.username
-                    };
-                    const roomInfo = await axios.post<
-                        CommonResponse<RoomInfoResponse>
-                    >(REST_GAME_ROOM, roomCreationRequestBody);
-                    dispatch(
-                        setCurrentRoomInfo({
-                            roomId: roomInfo.data.data.roomId,
-                            roomName: roomInfo.data.data.roomName,
-                            hostId: roomInfo.data.data.hostId,
-                            numOfUsers: roomInfo.data.data.users.length
-                        })
-                    );
-                    navigate("/room");
-                }}
-            >
-                {strResource.home.createRoom}
-            </button>
-        </div>
-    );
-}
-
-async function generateId(): Promise<number> {
-    const response = await axios.post<CommonResponse<number>>(REST_USER_ID);
-    const generatedId = response.data.data;
-    return generatedId;
-}
-
-function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
-    const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
-
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-
-    const onClickEnterBtn = async () => {
-        dispatch(
-            setCurrentRoomInfo({
-                roomId,
-                roomName,
-                hostId,
-                numOfUsers
-            })
-        );
-        const userId = await generateId();
-        dispatch(setThisUserInfo({...thisUserInfo, userId}));
-        
-        navigate("/room");
-    };
-
-    return (
-        <div className="room-item">
-            <p>{roomName}</p>
-            <p>{numOfUsers}</p>
-            <button type="button" onClick={onClickEnterBtn}>
-                {strResource.home.enter}
-            </button>
         </div>
     );
 }

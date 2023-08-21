@@ -1,23 +1,108 @@
-import {Chat, UserInfo} from "../type/gameDomainType";
+import {useRef} from "react";
+import strResource from "../../resource/string.json";
+import {useAppDispatch, useAppSelector} from "../redux/hook";
+import {useNavigate} from "react-router-dom";
+import {setThisUserInfo} from "../redux/slice/thisUserInfo";
+import {RoomCreationRequest} from "../type/requestType";
+import {CommonResponse, RoomInfoResponse} from "../type/responseType";
+import {REST_GAME_ROOM, REST_USER_ID} from "../util/const";
+import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
+import axios from "axios";
+import {RoomInfo} from "../type/gameDomainType";
 
-export function UserItem({userId, username, characterCode, isDead}: UserInfo) {
+interface ModalProps {
+    setModalState: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export function RoomCreationModal({setModalState}: ModalProps) {
+    const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
+
+    const roomNameInputRef = useRef<HTMLInputElement>(null);
+
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     return (
-        <div>
-            <p>{userId}</p>
-            <p>{username}</p>
-            <p>{characterCode}</p>
-            <p>{isDead.toString()}</p>
+        <div className="modal">
+            <button type="button" onClick={() => setModalState(false)}>
+                {strResource.home.close}
+            </button>
+            <div className="room-name-input-container">
+                <label htmlFor="room-name-input">
+                    {strResource.home.inputRoomName}
+                </label>
+                <input
+                    type="text"
+                    id="room-name-input"
+                    ref={roomNameInputRef}
+                />
+            </div>
+            <button
+                type="button"
+                onClick={async () => {
+                    const roomName = roomNameInputRef.current?.value!;
+                    const hostId = await generateId();
+                    dispatch(
+                        setThisUserInfo({...thisUserInfo, userId: hostId})
+                    );
+                    const roomCreationRequestBody: RoomCreationRequest = {
+                        gameName: roomName,
+                        hostId,
+                        hostName: thisUserInfo.username
+                    };
+                    const roomInfo = await axios.post<
+                        CommonResponse<RoomInfoResponse>
+                    >(REST_GAME_ROOM, roomCreationRequestBody);
+                    dispatch(
+                        setCurrentRoomInfo({
+                            roomId: roomInfo.data.data.roomId,
+                            roomName: roomInfo.data.data.roomName,
+                            hostId: roomInfo.data.data.hostId,
+                            numOfUsers: roomInfo.data.data.users.length
+                        })
+                    );
+                    navigate("/room");
+                }}
+            >
+                {strResource.home.createRoom}
+            </button>
         </div>
     );
 }
 
-export function ChatItem({senderId, message, timestamp, isMe}: Chat) {
-    const time = new Date(timestamp);
+async function generateId(): Promise<number> {
+    const response = await axios.post<CommonResponse<number>>(REST_USER_ID);
+    const generatedId = response.data.data;
+    return generatedId;
+}
+
+export function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
+    const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
+
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const onClickEnterBtn = async () => {
+        dispatch(
+            setCurrentRoomInfo({
+                roomId,
+                roomName,
+                hostId,
+                numOfUsers
+            })
+        );
+        const userId = await generateId();
+        dispatch(setThisUserInfo({...thisUserInfo, userId}));
+
+        navigate("/room");
+    };
+
     return (
-        <div>
-            <p>{senderId}</p>
-            <p>{message}</p>
-            <p>{`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`}</p>
+        <div className="room-item">
+            <p>{roomName}</p>
+            <p>{numOfUsers}</p>
+            <button type="button" onClick={onClickEnterBtn}>
+                {strResource.home.enter}
+            </button>
         </div>
     );
 }

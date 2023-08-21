@@ -1,5 +1,5 @@
 import {UserState} from "../component/room/Room";
-import {Chat} from "../type/gameDomainType";
+import {Chat, ChatStorage} from "../type/gameDomainType";
 
 export const iNewUserState: UserState = {
     stateType: null,
@@ -35,4 +35,11 @@ export const iDelayStateForNewChat: Chat = {
     timestamp: -1,
     isPublic: false,
     isMe: false
+};
+
+export const iChatStorage: ChatStorage = {
+    id: -1,
+    participants: [],
+    name: "",
+    chatLogs: []
 };

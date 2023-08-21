@@ -82,3 +82,10 @@ export type CharacterDistribution = {
     MURDERER: number;
     HUMAN_MOUSE: number;
 };
+
+export type ChatStorage = {
+    id: number;
+    participants: UserInfo[];
+    name: string;
+    chatLogs: Chat[];
+};

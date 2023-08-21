@@ -2,6 +2,7 @@ import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import {setGameConfiguration} from "../../redux/slice/gameConfiguration";
 import strResource from "../../../resource/string.json";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
+import {Chat, UserInfo} from "../../type/gameDomainType";
 
 export function GameConfigurationModal() {
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
@@ -181,6 +182,28 @@ export function GameConfigurationModal() {
                     {strResource.room.gameConfigurationModal.close}
                 </button>
             </div>
+        </div>
+    );
+}
+
+export function ChatItem({senderId, message, timestamp, isMe}: Chat) {
+    const time = new Date(timestamp);
+    return (
+        <div>
+            <p>{senderId}</p>
+            <p>{message}</p>
+            <p>{`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`}</p>
+        </div>
+    );
+}
+
+export function UserItem({userId, username, characterCode, isDead}: UserInfo) {
+    return (
+        <div>
+            <p>{userId}</p>
+            <p>{username}</p>
+            <p>{characterCode}</p>
+            <p>{isDead.toString()}</p>
         </div>
     );
 }

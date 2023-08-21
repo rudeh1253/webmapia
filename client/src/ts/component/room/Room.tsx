@@ -1,11 +1,10 @@
-import {useRef, useState, useEffect} from "react";
-import {Chat, GameSetting, UserInfo} from "../../type/gameDomainType";
+import {useState, useEffect} from "react";
+import {Chat, UserInfo} from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import SocketClient from "../../sockjs/SocketClient";
 import {CurrentRoomInfoInitialState} from "../../redux/slice/currentRoomInfoSlice";
-import {ChatItem, UserItem} from "../HomeSubcomponents";
-import {GameConfigurationModal} from "./RoomSubcomponent";
+import {GameConfigurationModal, UserItem} from "./RoomSubcomponent";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
 import {
     GameStartNotificationRequest,
@@ -13,7 +12,6 @@ import {
 } from "../../type/requestType";
 import {Subscription} from "stompjs";
 import {SOCKET_SEND_GAME_START, SOCKET_SEND_USER_EXIT} from "../../util/const";
-import {chat} from "../../util/chat";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
 import {getSubscription} from "../../util/getSubscription";
@@ -23,6 +21,7 @@ import {
     iNewChat,
     iNewUserState
 } from "../../util/initialState";
+import ChatComponent from "./ChatComponent";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
@@ -53,8 +52,6 @@ export default function Room() {
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
     const gameStarted = useAppSelector((state) => state.gameSwitch);
-
-    const chatInputRef = useRef<HTMLInputElement>(null);
 
     const dispatch = useAppDispatch();
 
@@ -123,7 +120,8 @@ export default function Room() {
     return (
         <div className="room-container">
             <p>User ID: {thisUser.userId}</p>
-            {thisUser.userId === currentRoomInfo.roomInfo.hostId && !gameStarted ? (
+            {thisUser.userId === currentRoomInfo.roomInfo.hostId &&
+            !gameStarted ? (
                 <div className="host-bar">
                     <button
                         type="button"
@@ -166,43 +164,7 @@ export default function Room() {
                 ))}
             </ul>
             {gameStarted ? <GameComponent /> : null}
-            <div className="chat-container">
-                <div className="chat-log">
-                    {chatLogs.map((chat, idx) => (
-                        <ChatItem
-                            key={`chat-item-${idx + 1}`}
-                            senderId={chat.senderId}
-                            message={chat.message}
-                            timestamp={chat.timestamp}
-                            isPublic={chat.isPublic}
-                            isMe={chat.isMe}
-                        />
-                    ))}
-                </div>
-                <div className="enter-chat">
-                    <div className="message-input-container">
-                        <input
-                            className="message-input"
-                            type="text"
-                            ref={chatInputRef}
-                        />
-                        <button
-                            className="send-message"
-                            type="button"
-                            onClick={() =>
-                                chat(
-                                    chatInputRef.current!.value,
-                                    currentRoomInfo,
-                                    thisUser,
-                                    sockClient
-                                )
-                            }
-                        >
-                            {strResource.room.send}
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <ChatComponent />
         </div>
     );
 }
