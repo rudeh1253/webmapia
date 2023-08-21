@@ -19,5 +19,8 @@
             "nightTime": "밤 시간",
             "close": "닫기"
         }
+    },
+    "game": {
+        "inDistribution": "캐릭터 분배 중입니다..."
     }
 }

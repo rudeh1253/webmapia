@@ -7,14 +7,14 @@ import {SECOND_IN_MILLIS} from "../util/const";
 export default class GameManager {
     private static singleton: GameManager;
 
-    private gameId: number;
-    private gameSetting: GameSetting | null;
-    private currentGamePhase: GamePhase;
+    private _gameId: number;
+    private _gameSetting: GameSetting | null;
+    private _currentGamePhase: GamePhase;
 
     private constructor() {
-        this.gameId = 0;
-        this.gameSetting = null;
-        this.currentGamePhase = GamePhase.BEFORE_START;
+        this._gameId = 0;
+        this._gameSetting = null;
+        this._currentGamePhase = GamePhase.BEFORE_START;
     }
 
     public static getInstance(): GameManager {
@@ -24,16 +24,16 @@ export default class GameManager {
         return this.singleton;
     }
 
-    public set setGameSetting(gameSetting: GameSetting) {
-        this.gameSetting = gameSetting;
+    public set gameSetting(gameSetting: GameSetting) {
+        this._gameSetting = gameSetting;
     }
 
-    public set setCurrentGamePhase(gamePhase: GamePhase) {
-        this.currentGamePhase = gamePhase;
+    public set currentGamePhase(gamePhase: GamePhase) {
+        this._currentGamePhase = gamePhase;
     }
 
-    public set setGameId(gameId: number) {
-        this.gameId = gameId;
+    public set gameId(gameId: number) {
+        this._gameId = gameId;
     }
 
     public startCountDown(
@@ -41,15 +41,15 @@ export default class GameManager {
         callbackAfterEnd: () => void
     ): void {
         let time: number;
-        switch (this.currentGamePhase) {
+        switch (this._currentGamePhase) {
             case GamePhase.DAYTIME:
-                time = this.gameSetting!.discussionTimeSeconds;
+                time = this._gameSetting!.discussionTimeSeconds;
                 break;
             case GamePhase.NIGHT:
-                time = this.gameSetting!.nightTimeSeconds;
+                time = this._gameSetting!.nightTimeSeconds;
                 break;
             case GamePhase.VOTE:
-                time = this.gameSetting!.voteTimeSeconds;
+                time = this._gameSetting!.voteTimeSeconds;
                 break;
             default:
                 time = 0;

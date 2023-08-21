@@ -17,10 +17,10 @@ export default function GameComponent() {
 
     useEffect(() => {
         if (gameStarted) {
-            gameManager.setCurrentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
-            gameManager.setGameId = roomInfo.roomInfo.roomId;
-            gameManager.setGameSetting = gameSetting;
+            gameManager.currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
+            gameManager.gameId = roomInfo.roomInfo.roomId;
+            gameManager.gameSetting = gameSetting;
         }
     }, [gameStarted]);
-    return <></>;
+    return <div></div>;
 }
