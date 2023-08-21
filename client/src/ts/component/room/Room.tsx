@@ -17,6 +17,12 @@ import {chat} from "../../util/chat";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameUI from "./GameUI";
 import {getSubscription} from "../../util/getSubscription";
+import {
+    iDelayStateForNewChat,
+    iDelayStateForNewUser,
+    iNewChat,
+    iNewUserState
+} from "../../util/initialState";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
@@ -30,41 +36,15 @@ export type UserState = {
 
 export default function Room() {
     const [usersInRoom, setUsersInRoom] = useState<UserInfo[]>([]);
-    const [newUserState, setNewUserState] = useState<UserState>({
-        stateType: null,
-        userInfo: {
-            userId: -1,
-            username: "",
-            characterCode: null,
-            isDead: false
-        }
-    });
+    const [newUserState, setNewUserState] = useState<UserState>(iNewUserState);
     const [delayStateForNewUser, setDelayStateForNewUser] = useState<UserState>(
-        {
-            stateType: null,
-            userInfo: {
-                userId: -1,
-                username: "",
-                characterCode: null,
-                isDead: false
-            }
-        }
+        iDelayStateForNewUser
     );
     const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
-    const [newChat, setNewChat] = useState<Chat>({
-        senderId: -1,
-        message: "",
-        timestamp: -1,
-        isPublic: false,
-        isMe: false
-    });
-    const [delayStateForNewChat, setDelayStateForNewChat] = useState<Chat>({
-        senderId: -1,
-        message: "",
-        timestamp: -1,
-        isPublic: false,
-        isMe: false
-    });
+    const [newChat, setNewChat] = useState<Chat>(iNewChat);
+    const [delayStateForNewChat, setDelayStateForNewChat] = useState<Chat>(
+        iDelayStateForNewChat
+    );
     const gameConfigurationModal = useAppSelector(
         (state) => state.gameConfigurationModal
     );
