@@ -26,3 +26,5 @@ export const REST_GAME_ROOM = `${REST_API_URL}/game/room`;
 export const REST_USER_ID = `${REST_API_URL}/user/id`;
 export const REST_GAME_USER = (roomId: number) =>
     `${REST_API_URL}/game/${roomId}/user`;
+
+export const SECOND_IN_MILLIS = 1000;

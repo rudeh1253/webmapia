@@ -1,8 +1,5 @@
 import {useRef, useState, useEffect} from "react";
-import {
-    Chat,
-    UserInfo
-} from "../../type/gameDomainType";
+import {Chat, GameSetting, UserInfo} from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import SocketClient from "../../sockjs/SocketClient";
@@ -15,13 +12,11 @@ import {
     UserRequest
 } from "../../type/requestType";
 import {Subscription} from "stompjs";
-import {
-    SOCKET_SEND_GAME_START,
-    SOCKET_SEND_USER_EXIT} from "../../util/const";
+import {SOCKET_SEND_GAME_START, SOCKET_SEND_USER_EXIT} from "../../util/const";
 import {chat} from "../../util/chat";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameUI from "./GameUI";
-import { getSubscription } from "../../util/getSubscription";
+import {getSubscription} from "../../util/getSubscription";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;

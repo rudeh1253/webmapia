@@ -1,26 +1,10 @@
-import { GameSetting } from "./gameDomainType";
+import {CharacterDistribution, GameSetting} from "./gameDomainType";
 import {NotificationType} from "./notificationType";
 
 export type CharacterGenerationRequest = {
     notificationType: NotificationType;
     gameId: number;
-    characterDistribution: {
-        WOLF: number;
-        BETRAYER: number;
-        FOLLOWER: number;
-        PREDICTOR: number;
-        GUARD: number;
-        MEDIUMSHIP: number;
-        DETECTIVE: number;
-        SUCCESSOR: number;
-        SECRET_SOCIETY: number;
-        NOBILITY: number;
-        SOLDIER: number;
-        TEMPLAR: number;
-        CITIZEN: number;
-        MURDERER: number;
-        HUMAN_MOUSE: number;
-    };
+    characterDistribution: CharacterDistribution;
 };
 
 export type GameStartNotificationRequest = {

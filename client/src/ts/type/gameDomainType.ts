@@ -54,4 +54,24 @@ export type GameSetting = {
     discussionTimeSeconds: number;
     voteTimeSeconds: number;
     nightTimeSeconds: number;
-}
+};
+
+export type GamePhase = "NIGHT" | "DAYTIME" | "VOTE" | "EXECUTION" | null;
+
+export type CharacterDistribution = {
+    WOLF: number;
+    BETRAYER: number;
+    FOLLOWER: number;
+    PREDICTOR: number;
+    GUARD: number;
+    MEDIUMSHIP: number;
+    DETECTIVE: number;
+    SUCCESSOR: number;
+    SECRET_SOCIETY: number;
+    NOBILITY: number;
+    SOLDIER: number;
+    TEMPLAR: number;
+    CITIZEN: number;
+    MURDERER: number;
+    HUMAN_MOUSE: number;
+};
