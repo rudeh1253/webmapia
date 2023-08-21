@@ -15,7 +15,7 @@ import {Subscription} from "stompjs";
 import {SOCKET_SEND_GAME_START, SOCKET_SEND_USER_EXIT} from "../../util/const";
 import {chat} from "../../util/chat";
 import {fetchUsers} from "../../util/fetchUsers";
-import GameUI from "./GameUI";
+import GameComponent from "./GameComponent";
 import {getSubscription} from "../../util/getSubscription";
 import {
     iDelayStateForNewChat,
@@ -165,7 +165,7 @@ export default function Room() {
                     </li>
                 ))}
             </ul>
-            {gameStarted ? <GameUI /> : null}
+            {gameStarted ? <GameComponent /> : null}
             <div className="chat-container">
                 <div className="chat-log">
                     {chatLogs.map((chat, idx) => (

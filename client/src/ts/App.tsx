@@ -3,7 +3,7 @@ import Home from "./component/Home";
 import Room from "./component/room/Room";
 import {Provider} from "react-redux";
 import {store} from "./redux/store";
-import GameUI from "./component/room/GameUI";
+import GameComponent from "./component/room/GameComponent";
 
 /**
  * Root component.
@@ -16,7 +16,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/room" element={<Room />} />
-                    <Route path="/game/:gameId" element={<GameUI />} />
+                    <Route path="/game/:gameId" element={<GameComponent />} />
                 </Routes>
             </BrowserRouter>
         </Provider>
