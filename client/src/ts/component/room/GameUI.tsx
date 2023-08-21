@@ -1,6 +1,19 @@
-import { useParams } from "react-router-dom";
+import {useEffect} from "react";
+import GameManager from "../../game/GameManager";
+import {useAppSelector} from "../../redux/hook";
+
+var gameManager: GameManager;
 
 export default function GameUI() {
-    const {gameId} = useParams();
+    const gameStarted = useAppSelector((state) => state.gameSwitch);
+    useEffect(() => {
+        if (!gameManager) {
+            gameManager = GameManager.getInstance();
+        }
+    }, []);
+
+    useEffect(() => {
+        // TODO: game started
+    }, [gameStarted]);
     return <></>;
 }

@@ -123,7 +123,7 @@ export default function Room() {
     return (
         <div className="room-container">
             <p>User ID: {thisUser.userId}</p>
-            {thisUser.userId === currentRoomInfo.roomInfo.hostId ? (
+            {thisUser.userId === currentRoomInfo.roomInfo.hostId && !gameStarted ? (
                 <div className="host-bar">
                     <button
                         type="button"
@@ -165,6 +165,7 @@ export default function Room() {
                     </li>
                 ))}
             </ul>
+            {gameStarted ? <GameUI /> : null}
             <div className="chat-container">
                 <div className="chat-log">
                     {chatLogs.map((chat, idx) => (
@@ -202,7 +203,6 @@ export default function Room() {
                     </div>
                 </div>
             </div>
-            {gameStarted ? <GameUI /> : null}
         </div>
     );
 }

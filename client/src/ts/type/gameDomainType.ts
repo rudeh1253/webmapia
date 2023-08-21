@@ -56,7 +56,13 @@ export type GameSetting = {
     nightTimeSeconds: number;
 };
 
-export type GamePhase = "NIGHT" | "DAYTIME" | "VOTE" | "EXECUTION" | null;
+export enum GamePhase {
+    NIGHT = "NIGHT",
+    DAYTIME = "DAYTIME",
+    VOTE = "VOTE",
+    EXECUTION = "EXECUTION",
+    BEFORE_START = "BEFORE_START"
+}
 
 export type CharacterDistribution = {
     WOLF: number;

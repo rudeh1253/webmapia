@@ -14,7 +14,7 @@ export default class GameManager {
     private constructor() {
         this.gameId = 0;
         this.gameSetting = null;
-        this.currentGamePhase = null;
+        this.currentGamePhase = GamePhase.BEFORE_START;
     }
 
     public static getInstance(): GameManager {
@@ -42,13 +42,13 @@ export default class GameManager {
     ): void {
         let time: number;
         switch (this.currentGamePhase) {
-            case "DAYTIME":
+            case GamePhase.DAYTIME:
                 time = this.gameSetting!.discussionTimeSeconds;
                 break;
-            case "NIGHT":
+            case GamePhase.NIGHT:
                 time = this.gameSetting!.nightTimeSeconds;
                 break;
-            case "VOTE":
+            case GamePhase.VOTE:
                 time = this.gameSetting!.voteTimeSeconds;
                 break;
             default:
