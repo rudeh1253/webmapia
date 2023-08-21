@@ -21,6 +21,7 @@
         }
     },
     "game": {
-        "inDistribution": "캐릭터 분배 중입니다..."
+        "inDistribution": "캐릭터 분배 중입니다...",
+        "publicChat": "전체 채팅"
     }
 }

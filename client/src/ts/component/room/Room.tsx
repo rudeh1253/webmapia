@@ -164,7 +164,7 @@ export default function Room() {
                 ))}
             </ul>
             {gameStarted ? <GameComponent /> : null}
-            <ChatComponent />
+            <ChatComponent users={usersInRoom} />
         </div>
     );
 }

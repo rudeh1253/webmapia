@@ -1,14 +1,33 @@
-import {useState, useRef} from "react";
-import {ChatStorage} from "../../type/gameDomainType";
+import {useState, useRef, useEffect} from "react";
+import {ChatStorage, UserInfo} from "../../type/gameDomainType";
 import {iChatStorage} from "../../util/initialState";
 import {ChatItem} from "./RoomSubcomponent";
 import strResource from "../../../resource/string.json";
 
-export default function ChatComponent() {
+export type ChatComponentProp = {
+    users: UserInfo[];
+};
+
+export default function ChatComponent({users}: ChatComponentProp) {
     const [currentChatStorage, setCurrentChatStorage] =
         useState<ChatStorage>(iChatStorage);
     const [chatStorages, setChatStorages] = useState<ChatStorage[]>([]);
     const chatInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (chatStorages.length === 0) {
+            const a: ChatStorage[] = [
+                {
+                    id: 1,
+                    participants: users,
+                    name: strResource.game.publicChat,
+                    chatLogs: []
+                }
+            ];
+            setChatStorages(a);
+            setCurrentChatStorage(a[0]);
+        }
+    }, [users]);
     return (
         <div className="chat-container">
             <div className="tab-container">
