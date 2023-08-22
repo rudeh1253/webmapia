@@ -67,4 +67,8 @@ export default class GameManager {
             }
         }, SECOND_IN_MILLIS);
     }
+
+    public distributeCharacters(): void {
+        
+    }
 }
