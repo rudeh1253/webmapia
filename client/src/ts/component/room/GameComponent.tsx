@@ -4,6 +4,10 @@ import {useAppSelector} from "../../redux/hook";
 import {GamePhase} from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import DistributionPhase from "./game/DistributionPhase";
+import DaytimePhase from "./game/DaytimePhase";
+import ExecutionPhase from "./game/ExecutionPhase";
+import NightPhase from "./game/NightPhase";
+import VotePhase from "./game/VotePhase";
 
 var gameManager: GameManager;
 
@@ -27,12 +31,20 @@ export default function GameComponent() {
                 setCurrentView(<></>);
                 break;
             case GamePhase.DAYTIME:
+                setCurrentView(<DaytimePhase />);
+                break;
             case GamePhase.CHARACTER_DISTRIBUTION:
                 setCurrentView(<DistributionPhase />);
                 break;
             case GamePhase.EXECUTION:
+                setCurrentView(<ExecutionPhase />);
+                break;
             case GamePhase.NIGHT:
+                setCurrentView(<NightPhase />);
+                break;
             case GamePhase.VOTE:
+                setCurrentView(<VotePhase />);
+                break;
             default:
                 setCurrentView(<>{strResource.common.error}</>);
         }
