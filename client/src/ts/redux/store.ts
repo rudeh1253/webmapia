@@ -4,6 +4,7 @@ import thisUserInfoSlice from "./slice/thisUserInfo";
 import gameConfiguration from "./slice/gameConfiguration";
 import gameConfigurationModal from "./slice/gameConfigurationModal";
 import gameSwitch from "./slice/GameSwitchSlice";
+import currentGamePhaseSlice from "./slice/currentGamePhaseSlice";
 
 export const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
         thisUserInfo: thisUserInfoSlice,
         gameConfiugraion: gameConfiguration,
         gameConfigurationModal: gameConfigurationModal,
-        gameSwitch
+        gameSwitch,
+        currentGamePhase: currentGamePhaseSlice
     }
 });
 
