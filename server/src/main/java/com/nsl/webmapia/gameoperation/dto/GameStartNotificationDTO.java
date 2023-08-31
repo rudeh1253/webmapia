@@ -5,9 +5,11 @@ import com.nsl.webmapia.gameoperation.domain.GameSetting;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
+@ToString
 public class GameStartNotificationDTO {
     private final NotificationType notificationType;
     private final GameSetting gameSetting;

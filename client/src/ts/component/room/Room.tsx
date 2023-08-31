@@ -59,7 +59,8 @@ export default function Room() {
         currentRoomInfo,
         setNewUserState,
         thisUser,
-        setNewChat
+        setNewChat,
+        dispatch
     );
 
     useEffect(() => {

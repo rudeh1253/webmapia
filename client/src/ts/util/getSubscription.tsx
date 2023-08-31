@@ -1,24 +1,36 @@
 import {
     Chat,
+    GamePhase,
     PrivateChatMessage,
     PublicChatMessage,
     UserInfo
 } from "../type/gameDomainType";
-import {CommonResponse, UserResponse} from "../type/responseType";
+import {
+    CharacterGenerationResponse,
+    CommonResponse,
+    GameStartNotificationResponse,
+    UserResponse
+} from "../type/responseType";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
+    SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE,
     SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
 } from "./const";
 import {UserState} from "../component/room/Room";
+import {setThisUserInfo} from "../redux/slice/thisUserInfo";
+import {setGameSwitch} from "../redux/slice/GameSwitchSlice";
+import {setGameConfiguration} from "../redux/slice/gameConfiguration";
+import GameManager from "../game/GameManager";
 
 export function getSubscription(
     currentRoomInfo: CurrentRoomInfoInitialState,
     setNewUserState: React.Dispatch<React.SetStateAction<UserState>>,
     thisUser: UserInfo,
-    setNewChat: React.Dispatch<React.SetStateAction<Chat>>
-) {
+    setNewChat: React.Dispatch<React.SetStateAction<Chat>>,
+    dispatch: any
+): {endpoint: string; callback: (payload: any) => void}[] {
     return [
         {
             endpoint: `${SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC(
@@ -26,18 +38,14 @@ export function getSubscription(
             )}`,
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
-                    .body as CommonResponse<UserResponse>;
+                    .body as CommonResponse<any>;
                 switch (payloadData.data.notificationType) {
                     case "USER_ENTERED":
                     case "USER_REMOVED":
                         onUserEnterOrExit(payloadData, setNewUserState);
                         break;
                     case "GAME_START":
-                        // const body: GameStartNotificationRequest = {
-                        //     notificationType: "GAME_START",
-                        //     gameId: currentRoomInfo.roomInfo.roomId,
-                        // };
-                        // sockClient.sendMessage(SOCKET_SEND_GAME_START, {});
+                        onGameStart(payloadData, dispatch);
                         break;
                 }
             }
@@ -78,6 +86,27 @@ export function getSubscription(
                 };
                 setNewChat(chat);
             }
+        },
+        {
+            endpoint: `${SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE(
+                currentRoomInfo.roomInfo.roomId,
+                thisUser.userId
+            )}`,
+            callback: (payload: any) => {
+                const payloadData = JSON.parse(payload.body)
+                    .body as CommonResponse<CharacterGenerationResponse>;
+                if (
+                    payloadData.data.notificationType ===
+                    "NOTIFY_WHICH_CHARACTER_ALLOCATED"
+                ) {
+                    dispatch(
+                        setThisUserInfo({
+                            ...thisUser,
+                            characterCode: payloadData.data.characterCode
+                        })
+                    );
+                }
+            }
         }
     ];
 }
@@ -101,4 +130,24 @@ function onUserEnterOrExit(
                 : null,
         userInfo
     });
+}
+
+function onGameStart(
+    payloadData: CommonResponse<GameStartNotificationResponse>,
+    dispatch: any
+) {
+    const gameSetting = payloadData.data.gameSetting;
+
+    const gameManager = GameManager.getInstance();
+    gameManager.gameSetting = gameSetting;
+    gameManager.currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
+    dispatch(setGameSwitch(true));
+
+    dispatch(
+        setGameConfiguration({
+            discussionTimeSeconds: gameSetting.discussionTimeSeconds,
+            voteTimeSeconds: gameSetting.voteTimeSeconds,
+            nightTimeSeconds: gameSetting.nightTimeSeconds
+        })
+    );
 }

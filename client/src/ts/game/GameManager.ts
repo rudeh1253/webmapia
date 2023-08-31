@@ -32,6 +32,10 @@ export default class GameManager {
         this._currentGamePhase = gamePhase;
     }
 
+    public get currentGamePhase() {
+        return this._currentGamePhase;
+    }
+
     public set gameId(gameId: number) {
         this._gameId = gameId;
     }

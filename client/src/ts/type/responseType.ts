@@ -1,3 +1,4 @@
+import { CharacterCode, GameSetting } from "./gameDomainType";
 import {NotificationType} from "./notificationType";
 
 export interface CommonResponse<D> {
@@ -10,7 +11,7 @@ export interface CommonResponse<D> {
 export type CharacterGenerationResponse = {
     notificationType: NotificationType;
     receiverId: number;
-    characterCode: string;
+    characterCode: CharacterCode;
     gameId: number;
 };
 
@@ -63,4 +64,10 @@ export type SkillResultResponse = {
     receiverId: number;
     message: string;
     characterEffectAfterNightType: string;
+};
+
+export type GameStartNotificationResponse = {
+    notificationType: NotificationType;
+    gameSetting: GameSetting;
+    gameId: number;
 };

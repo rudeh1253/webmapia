@@ -4,12 +4,9 @@ import {useAppSelector} from "../../../redux/hook";
 import {GamePhase} from "../../../type/gameDomainType";
 import SocketClient from "../../../sockjs/SocketClient";
 import GameManager from "../../../game/GameManager";
-import {Subscription} from "stompjs";
-import {SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE} from "../../../util/const";
 
 var sockClient: SocketClient;
 var gameManager: GameManager;
-var distributionSubscription: Subscription;
 
 export default function DistributionPhase() {
     const gamePhase = useAppSelector((state) => state.currentGamePhase);
@@ -23,13 +20,7 @@ export default function DistributionPhase() {
         if (!gameManager) {
             gameManager = GameManager.getInstance();
         }
-        if (!distributionSubscription) {
-            sockClient.subscribe(
-                SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE(roomInfo.roomInfo.roomId, thisUser.userId),
-                (payload) => {}
-            );
-        }
-    });
+    }, []);
 
     useEffect(() => {
         if (

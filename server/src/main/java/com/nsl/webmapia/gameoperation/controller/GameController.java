@@ -1,5 +1,6 @@
 package com.nsl.webmapia.gameoperation.controller;
 
+import com.nsl.webmapia.common.CommonResponse;
 import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.common.exception.ErrorCode;
 import com.nsl.webmapia.common.exception.UnsupportedNotificationTypeException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -30,7 +32,7 @@ public class GameController {
     @MessageMapping("/game/start")
     public void gameStart(@Payload GameStartNotificationDTO request) {
         System.out.println("request = " + request);
-        messagingTemplate.convertAndSend("/notification/public" + request.getGameId(), request);
+        messagingTemplate.convertAndSend("/notification/public/" + request.getGameId(), CommonResponse.ok(request, LocalDateTime.now()));
     }
 
     @MessageMapping("/game/distribute-character")

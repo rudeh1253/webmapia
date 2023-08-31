@@ -18,6 +18,7 @@ export default function GameComponent() {
     const roomInfo = useAppSelector((state) => state.currentRoomInfo);
     const gameSetting = useAppSelector((state) => state.gameConfiugraion);
     const currentGamePhase = useAppSelector((state) => state.currentGamePhase);
+    const thisUser = useAppSelector((state) => state.thisUserInfo);
 
     useEffect(() => {
         if (!gameManager) {
@@ -63,5 +64,12 @@ export default function GameComponent() {
             gameManager.gameSetting = gameSetting;
         }
     }, [gameStarted]);
-    return <div>{currentView}</div>;
+    return (
+        <div>
+            <button type="button" onClick={() => thisUser.characterCode}>
+                Check Character
+            </button>
+            {currentView}
+        </div>
+    );
 }
