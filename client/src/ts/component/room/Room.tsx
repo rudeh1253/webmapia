@@ -56,6 +56,9 @@ export default function Room() {
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
+    const characterDistribution = useAppSelector(
+        (state) => state.characterDistribution
+    );
     const gameStarted = useAppSelector((state) => state.gameSwitch);
 
     const dispatch = useAppDispatch();
@@ -148,23 +151,7 @@ export default function Room() {
                                 {
                                     notificationType: "CHARACTER_GENERATION",
                                     gameId: currentRoomInfo.roomInfo.roomId,
-                                    characterDistribution: { // TODO: This is just a sample
-                                        BETRAYER: 1,
-                                        CITIZEN: 1,
-                                        DETECTIVE: 1,
-                                        FOLLOWER: 1,
-                                        GUARD: 1,
-                                        HUMAN_MOUSE: 1,
-                                        MEDIUMSHIP: 1,
-                                        MURDERER: 1,
-                                        NOBILITY: 1,
-                                        PREDICTOR: 1,
-                                        SECRET_SOCIETY: 1,
-                                        SOLDIER: 1,
-                                        SUCCESSOR: 1,
-                                        TEMPLAR: 1,
-                                        WOLF: 1
-                                    }
+                                    characterDistribution
                                 };
                             sockClient.sendMessage(
                                 SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
@@ -185,7 +172,11 @@ export default function Room() {
                     </button>
                 </div>
             ) : null}
-            {gameConfigurationModal ? <GameConfigurationModal /> : null}
+            {gameConfigurationModal ? (
+                <GameConfigurationModal
+                    characterConfigurationProps={{usersInRoom}}
+                />
+            ) : null}
             <ul className="user-list">
                 {usersInRoom.map((user, idx) => (
                     <li key={`user-item-${idx}`}>

@@ -17,7 +17,9 @@
             "discussionTime": "토론 시간",
             "voteTime": "투표 시간",
             "nightTime": "밤 시간",
-            "close": "닫기"
+            "close": "닫기",
+            "up": "up",
+            "down": "down"
         }
     },
     "game": {

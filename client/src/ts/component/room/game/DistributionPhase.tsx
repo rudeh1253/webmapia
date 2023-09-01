@@ -25,23 +25,6 @@ export default function DistributionPhase() {
             gameManager = GameManager.getInstance();
         }
     }, []);
-
-    useEffect(() => {
-        if (
-            gamePhase.value === GamePhase.CHARACTER_DISTRIBUTION &&
-            thisUser.userId === roomInfo.roomInfo.hostId
-        ) {
-            if (!distributed) {
-                setDistributed(true);
-                const body: PhaseEndRequest = {
-                    notificationType: "PHASE_END",
-                    gameId: roomInfo.roomInfo.roomId,
-                    userId: thisUser.userId
-                };
-                sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
-            }
-        }
-    }, [gamePhase]);
     return (
         <div className="game-container distribution-phase">
             <p className="distribution-message">

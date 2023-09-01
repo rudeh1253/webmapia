@@ -1,13 +1,24 @@
+import {useState, useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import {setGameConfiguration} from "../../redux/slice/gameConfiguration";
 import strResource from "../../../resource/string.json";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
 import {Chat, UserInfo} from "../../type/gameDomainType";
+import {setCharacterDistribution} from "../../redux/slice/characterDistributionSlice";
 
-export function GameConfigurationModal() {
+type GameConfigurationModalProps = {
+    characterConfigurationProps: CharacterConfigurationProps;
+};
+
+export function GameConfigurationModal({
+    characterConfigurationProps
+}: GameConfigurationModalProps) {
     return (
         <div className="configuration-modal-container">
             <TimeConfiguration />
+            <CharacterConfiguration
+                usersInRoom={characterConfigurationProps.usersInRoom}
+            />
         </div>
     );
 }
@@ -192,8 +203,109 @@ function TimeConfiguration() {
     );
 }
 
-function CharacterConfiguration() {
-    
+type CharacterConfigurationProps = {
+    usersInRoom: UserInfo[];
+};
+
+function CharacterConfiguration({usersInRoom}: CharacterConfigurationProps) {
+    const [sumOfCharacterDistribution, setSumOfCharacterDistribution] =
+        useState<number>(0);
+    const characterDistribution = useAppSelector(
+        (state) => state.characterDistribution
+    );
+    const dispatch = useAppDispatch();
+    const numOfUsers = usersInRoom.length;
+    const characters = [
+        "BETRAYER",
+        "CITIZEN",
+        "DETECTIVE",
+        "FOLLOWER",
+        "GUARD",
+        "HUMAN_MOUSE",
+        "MEDIUMSHIP",
+        "MURDERER",
+        "NOBILITY",
+        "PREDICTOR",
+        "SECRET_SOCIETY",
+        "SOLDIER",
+        "SUCCESSOR",
+        "TEMPLAR",
+        "WOLF"
+    ];
+    useEffect(() => {
+        let sum = 0;
+        for (let key of characters) {
+            const k = key as
+                | "BETRAYER"
+                | "CITIZEN"
+                | "DETECTIVE"
+                | "FOLLOWER"
+                | "GUARD"
+                | "HUMAN_MOUSE"
+                | "MEDIUMSHIP"
+                | "MURDERER"
+                | "NOBILITY"
+                | "PREDICTOR"
+                | "SECRET_SOCIETY"
+                | "SOLDIER"
+                | "SUCCESSOR"
+                | "TEMPLAR"
+                | "WOLF";
+            sum += characterDistribution[k];
+        }
+        setSumOfCharacterDistribution(sum);
+    }, [characterDistribution]);
+    return (
+        <div className="character-config-container">
+            {characters.map((elem) => {
+                const key = elem as
+                    | "BETRAYER"
+                    | "CITIZEN"
+                    | "DETECTIVE"
+                    | "FOLLOWER"
+                    | "GUARD"
+                    | "HUMAN_MOUSE"
+                    | "MEDIUMSHIP"
+                    | "MURDERER"
+                    | "NOBILITY"
+                    | "PREDICTOR"
+                    | "SECRET_SOCIETY"
+                    | "SOLDIER"
+                    | "SUCCESSOR"
+                    | "TEMPLAR"
+                    | "WOLF";
+                return (
+                    <div className="character-config">
+                        <p>{key}</p>
+                        <p>{characterDistribution[key]}</p>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const newState = {...characterDistribution};
+                                newState[key]++;
+                                console.log(newState[key]);
+                                dispatch(setCharacterDistribution(newState));
+                            }}
+                            disabled={sumOfCharacterDistribution >= numOfUsers}
+                        >
+                            {strResource.room.gameConfigurationModal.up}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const newState = {...characterDistribution};
+                                newState[key]--;
+                                dispatch(setCharacterDistribution(newState));
+                            }}
+                            disabled={characterDistribution[key] <= 0}
+                        >
+                            {strResource.room.gameConfigurationModal.down}
+                        </button>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }
 
 export function ChatItem({senderId, message, timestamp, isMe}: Chat) {
