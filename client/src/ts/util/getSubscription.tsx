@@ -13,6 +13,7 @@ import {
 } from "../type/responseType";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {
+    SOCKET_SEND_PHASE_END,
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE,
@@ -23,6 +24,9 @@ import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import {setGameSwitch} from "../redux/slice/GameSwitchSlice";
 import {setGameConfiguration} from "../redux/slice/gameConfiguration";
 import GameManager from "../game/GameManager";
+import SocketClient from "../sockjs/SocketClient";
+import {PhaseEndRequest} from "../type/requestType";
+import { NotificationType } from "../type/notificationType";
 
 export function getSubscription(
     currentRoomInfo: CurrentRoomInfoInitialState,
@@ -39,13 +43,17 @@ export function getSubscription(
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
                     .body as CommonResponse<any>;
-                switch (payloadData.data.notificationType) {
+                const notificationType = payloadData.data.notificationType as NotificationType;
+                switch (notificationType) {
                     case "USER_ENTERED":
                     case "USER_REMOVED":
                         onUserEnterOrExit(payloadData, setNewUserState);
                         break;
                     case "GAME_START":
                         onGameStart(payloadData, dispatch);
+                        break;
+                    case "PHASE_END":
+                        onPhaseEnd();
                         break;
                 }
             }
@@ -95,16 +103,15 @@ export function getSubscription(
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
                     .body as CommonResponse<CharacterGenerationResponse>;
-                if (
-                    payloadData.data.notificationType ===
-                    "NOTIFY_WHICH_CHARACTER_ALLOCATED"
-                ) {
-                    dispatch(
-                        setThisUserInfo({
-                            ...thisUser,
-                            characterCode: payloadData.data.characterCode
-                        })
-                    );
+                switch (payloadData.data.notificationType) {
+                    case "NOTIFY_WHICH_CHARACTER_ALLOCATED":
+                        onCharacterAllocationResponse(
+                            dispatch,
+                            currentRoomInfo,
+                            thisUser,
+                            payloadData
+                        );
+                        break;
                 }
             }
         }
@@ -150,4 +157,30 @@ function onGameStart(
             nightTimeSeconds: gameSetting.nightTimeSeconds
         })
     );
+}
+
+async function onCharacterAllocationResponse(
+    dispatch: any,
+    currentRoomInfo: CurrentRoomInfoInitialState,
+    thisUser: UserInfo,
+    payloadData: CommonResponse<CharacterGenerationResponse>
+) {
+    dispatch(
+        setThisUserInfo({
+            ...thisUser,
+            characterCode: payloadData.data.characterCode
+        })
+    );
+    const sockClient = await SocketClient.getInstance();
+    const body: PhaseEndRequest = {
+        notificationType: "PHASE_END",
+        gameId: currentRoomInfo.roomInfo.roomId,
+        userId: thisUser.userId
+    };
+    console.log("Character code", payloadData.data.characterCode);
+    sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
+}
+
+function onPhaseEnd() {
+    console.log("Phase ended");
 }

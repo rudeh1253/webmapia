@@ -246,7 +246,11 @@ public class GameManagerImpl implements GameManager {
         User sentUser = userRepository.findById(userId).orElseThrow();
         sentUser.setPhaseEnd(true);
         List<User> users = userRepository.findAll();
-        return users.stream().filter(user -> !user.isPhaseEnd()).toList().size() == 0;
+        boolean hasPhaseEnded = users.stream().filter(user -> !user.isPhaseEnd()).toList().size() == 0;
+        if (hasPhaseEnded) {
+            users.forEach((user) -> user.setPhaseEnd(false));
+        }
+        return hasPhaseEnded;
     }
 
     public List<ActivatedSkillInfo> getActivatedSkills() {

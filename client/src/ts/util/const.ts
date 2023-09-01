@@ -8,6 +8,7 @@ export const SOCKET_SEND_CHAT_PRIVATE = `/app/chatroom/private-message`;
 export const SOCKET_SEND_USER_EXIT = "/app/game/user-exit";
 export const SOCKET_SEND_GAME_START = "/app/game/start";
 export const SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER = "/app/game/distribute-character";
+export const SOCKET_SEND_PHASE_END = "/app/game/end-phase";
 
 export const SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC = (roomId: number) =>
     `/notification/public/${roomId}`;

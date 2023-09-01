@@ -1,3 +1,4 @@
+import SocketClient from "../sockjs/SocketClient";
 import {
     GamePhase,
     GameSetting
@@ -70,9 +71,5 @@ export default class GameManager {
                 callbackAfterEnd();
             }
         }, SECOND_IN_MILLIS);
-    }
-
-    public distributeCharacters(): void {
-        
     }
 }

@@ -7,11 +7,16 @@ import {CurrentRoomInfoInitialState} from "../../redux/slice/currentRoomInfoSlic
 import {GameConfigurationModal, UserItem} from "./RoomSubcomponent";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
 import {
+    CharacterGenerationRequest,
     GameStartNotificationRequest,
     UserRequest
 } from "../../type/requestType";
 import {Subscription} from "stompjs";
-import {SOCKET_SEND_GAME_START, SOCKET_SEND_USER_EXIT} from "../../util/const";
+import {
+    SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
+    SOCKET_SEND_GAME_START,
+    SOCKET_SEND_USER_EXIT
+} from "../../util/const";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
 import {getSubscription} from "../../util/getSubscription";
@@ -127,15 +132,44 @@ export default function Room() {
                     <button
                         type="button"
                         onClick={() => {
-                            const body: GameStartNotificationRequest = {
-                                notificationType: "GAME_START",
-                                gameSetting: gameConfiguration,
-                                gameId: currentRoomInfo.roomInfo.roomId
-                            };
+                            const gameStartNotificationRequestBody: GameStartNotificationRequest =
+                                {
+                                    notificationType: "GAME_START",
+                                    gameSetting: gameConfiguration,
+                                    gameId: currentRoomInfo.roomInfo.roomId
+                                };
                             sockClient.sendMessage(
                                 SOCKET_SEND_GAME_START,
                                 {},
-                                body
+                                gameStartNotificationRequestBody
+                            );
+
+                            const characterDistributionRequestBody: CharacterGenerationRequest =
+                                {
+                                    notificationType: "CHARACTER_GENERATION",
+                                    gameId: currentRoomInfo.roomInfo.roomId,
+                                    characterDistribution: { // TODO: This is just a sample
+                                        BETRAYER: 1,
+                                        CITIZEN: 1,
+                                        DETECTIVE: 1,
+                                        FOLLOWER: 1,
+                                        GUARD: 1,
+                                        HUMAN_MOUSE: 1,
+                                        MEDIUMSHIP: 1,
+                                        MURDERER: 1,
+                                        NOBILITY: 1,
+                                        PREDICTOR: 1,
+                                        SECRET_SOCIETY: 1,
+                                        SOLDIER: 1,
+                                        SUCCESSOR: 1,
+                                        TEMPLAR: 1,
+                                        WOLF: 1
+                                    }
+                                };
+                            sockClient.sendMessage(
+                                SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
+                                {},
+                                characterDistributionRequestBody
                             );
                         }}
                     >
