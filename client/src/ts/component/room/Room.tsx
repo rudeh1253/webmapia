@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react";
-import {Chat, UserInfo} from "../../type/gameDomainType";
+import {Chat, GamePhase, UserInfo} from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import SocketClient from "../../sockjs/SocketClient";
@@ -27,6 +27,7 @@ import {
     iNewUserState
 } from "../../util/initialState";
 import ChatComponent from "./ChatComponent";
+import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
@@ -60,6 +61,7 @@ export default function Room() {
         (state) => state.characterDistribution
     );
     const gameStarted = useAppSelector((state) => state.gameSwitch);
+    const currentGamePhase = useAppSelector(state => state.currentGamePhase);
 
     const dispatch = useAppDispatch();
 
@@ -68,6 +70,7 @@ export default function Room() {
         setNewUserState,
         thisUser,
         setNewChat,
+        currentGamePhase,
         dispatch
     );
 
@@ -147,6 +150,11 @@ export default function Room() {
                                 gameStartNotificationRequestBody
                             );
 
+                            dispatch(
+                                setCurrentGamePhase(
+                                    GamePhase.CHARACTER_DISTRIBUTION
+                                )
+                            );
                             const characterDistributionRequestBody: CharacterGenerationRequest =
                                 {
                                     notificationType: "CHARACTER_GENERATION",

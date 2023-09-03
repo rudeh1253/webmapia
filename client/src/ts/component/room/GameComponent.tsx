@@ -8,6 +8,7 @@ import DaytimePhase from "./game/DaytimePhase";
 import ExecutionPhase from "./game/ExecutionPhase";
 import NightPhase from "./game/NightPhase";
 import VotePhase from "./game/VotePhase";
+import {CHARACTER_NAME_MAP} from "../../util/const";
 
 var gameManager: GameManager;
 
@@ -19,6 +20,23 @@ export default function GameComponent() {
     const gameSetting = useAppSelector((state) => state.gameConfiugraion);
     const currentGamePhase = useAppSelector((state) => state.currentGamePhase);
     const thisUser = useAppSelector((state) => state.thisUserInfo);
+
+    const characterCodeOfUser = thisUser.characterCode as
+        | "BETRAYER"
+        | "CITIZEN"
+        | "DETECTIVE"
+        | "FOLLOWER"
+        | "GUARD"
+        | "HUMAN_MOUSE"
+        | "MEDIUMSHIP"
+        | "MURDERER"
+        | "NOBILITY"
+        | "PREDICTOR"
+        | "SECRET_SOCIETY"
+        | "SOLDIER"
+        | "SUCCESSOR"
+        | "TEMPLAR"
+        | "WOLF";
 
     useEffect(() => {
         if (!gameManager) {
@@ -65,10 +83,12 @@ export default function GameComponent() {
         }
     }, [gameStarted]);
     return (
-        <div>
-            <button type="button" onClick={() => thisUser.characterCode}>
-                Check Character
-            </button>
+        <div className="game-container">
+            <p className="character-p">
+                {thisUser.characterCode === null
+                    ? strResource.game.abscence
+                    : CHARACTER_NAME_MAP[characterCodeOfUser]}
+            </p>
             {currentView}
         </div>
     );

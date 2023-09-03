@@ -13,6 +13,7 @@ import {
 } from "../type/responseType";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {
+    GAME_PHASE_ORDER,
     SOCKET_SEND_PHASE_END,
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
@@ -26,13 +27,15 @@ import {setGameConfiguration} from "../redux/slice/gameConfiguration";
 import GameManager from "../game/GameManager";
 import SocketClient from "../sockjs/SocketClient";
 import {PhaseEndRequest} from "../type/requestType";
-import { NotificationType } from "../type/notificationType";
+import {NotificationType} from "../type/notificationType";
+import {setCurrentGamePhase} from "../redux/slice/currentGamePhaseSlice";
 
 export function getSubscription(
     currentRoomInfo: CurrentRoomInfoInitialState,
     setNewUserState: React.Dispatch<React.SetStateAction<UserState>>,
     thisUser: UserInfo,
     setNewChat: React.Dispatch<React.SetStateAction<Chat>>,
+    currentGamePhase: {value: GamePhase},
     dispatch: any
 ): {endpoint: string; callback: (payload: any) => void}[] {
     return [
@@ -43,7 +46,8 @@ export function getSubscription(
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
                     .body as CommonResponse<any>;
-                const notificationType = payloadData.data.notificationType as NotificationType;
+                const notificationType = payloadData.data
+                    .notificationType as NotificationType;
                 switch (notificationType) {
                     case "USER_ENTERED":
                     case "USER_REMOVED":
@@ -53,7 +57,7 @@ export function getSubscription(
                         onGameStart(payloadData, dispatch);
                         break;
                     case "PHASE_END":
-                        onPhaseEnd();
+                        onPhaseEnd(currentGamePhase.value, dispatch);
                         break;
                 }
             }
@@ -177,10 +181,15 @@ async function onCharacterAllocationResponse(
         gameId: currentRoomInfo.roomInfo.roomId,
         userId: thisUser.userId
     };
-    console.log("Character code", payloadData.data.characterCode);
     sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
 }
 
-function onPhaseEnd() {
-    console.log("Phase ended");
+function onPhaseEnd(currentGamePhase: GamePhase, dispatch: any) {
+    toNextPhase(currentGamePhase, dispatch);
+}
+
+function toNextPhase(currentGamePhase: GamePhase, dispatch: any) {
+    const idx = GAME_PHASE_ORDER.indexOf(currentGamePhase);
+    const nextIdx = (idx % (GAME_PHASE_ORDER.length - 1)) + 1;
+    dispatch(setCurrentGamePhase(GAME_PHASE_ORDER[nextIdx]));
 }

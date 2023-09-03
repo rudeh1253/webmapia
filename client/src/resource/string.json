@@ -24,11 +24,27 @@
     },
     "game": {
         "inDistribution": "캐릭터 분배 중입니다...",
+        "abscence": "없음",
         "daytime": "낮",
         "execution": "처형",
         "night": "밤",
         "vote": "투표",
-        "publicChat": "전체 채팅"
+        "publicChat": "전체 채팅",
+        "wolf": "늑대",
+        "betrayer": "배신자",
+        "follower": "추종자",
+        "predictor": "예언자",
+        "guard": "경비병",
+        "mediumship": "영매",
+        "detective": "탐정",
+        "successor": "후계자",
+        "secretSociety": "비밀결사",
+        "nobility": "귀족",
+        "soldier": "군인",
+        "templar": "템플러",
+        "citizen": "시민",
+        "murderer": "살인자",
+        "humanMouse": "쥐인간"
     },
     "common": {
         "error": "Something problem"
