@@ -172,7 +172,7 @@ export default function Room() {
                     </button>
                 </div>
             ) : null}
-            {gameConfigurationModal ? (
+            {gameConfigurationModal && !gameStarted ? (
                 <GameConfigurationModal
                     characterConfigurationProps={{usersInRoom}}
                 />

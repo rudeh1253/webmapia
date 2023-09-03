@@ -44,7 +44,7 @@ public class GameController {
                 gameService.generateCharacters(request.getGameId(), request.getCharacterDistribution());
         result.forEach(dto -> {
             String dest = "/notification/private/" + dto.getGameId() + "/" + dto.getReceiverId();
-            messagingTemplate.convertAndSend(dest, dto);
+            messagingTemplate.convertAndSend(dest, CommonResponse.ok(dto, LocalDateTime.now()));
         });
     }
 
@@ -52,14 +52,14 @@ public class GameController {
     public void endPhase(@Payload PhaseEndRequestDTO request) {
         PhaseEndNotificationDTO result = gameService.phaseEnd(request.getGameId(), request.getUserId());
         if (result.isEnd()) {
-            messagingTemplate.convertAndSend("/notification/public/" + result.getGameId(), result);
+            messagingTemplate.convertAndSend("/notification/public/" + result.getGameId(), CommonResponse.ok(result, LocalDateTime.now()));
         }
     }
 
     @MessageMapping("/game/post-phase")
     public void postPhase(@Payload PostPhaseRequestDTO request) {
         PhaseResultDTO phaseResultDTO = gameService.postPhase(request.getGameId());
-        messagingTemplate.convertAndSend("/notification/public/" + phaseResultDTO.getGameId(), phaseResultDTO);
+        messagingTemplate.convertAndSend("/notification/public/" + phaseResultDTO.getGameId(), CommonResponse.ok(phaseResultDTO, LocalDateTime.now()));
     }
 
     @MessageMapping("/game/vote")
