@@ -1,7 +1,7 @@
 import {PayloadAction, createSlice} from "@reduxjs/toolkit";
 import {GamePhase} from "../../type/gameDomainType";
 
-const initialState: {value: GamePhase} = {value: GamePhase.BEFORE_START};
+const initialState: {value: GamePhase} = {value: GamePhase.CHARACTER_DISTRIBUTION};
 
 export const currentGamePhaseSlice = createSlice({
     name: "currentGamePhase",

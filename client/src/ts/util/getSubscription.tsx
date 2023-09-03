@@ -185,11 +185,13 @@ async function onCharacterAllocationResponse(
 }
 
 function onPhaseEnd(currentGamePhase: GamePhase, dispatch: any) {
+    console.log("before:", currentGamePhase);
     toNextPhase(currentGamePhase, dispatch);
 }
 
 function toNextPhase(currentGamePhase: GamePhase, dispatch: any) {
     const idx = GAME_PHASE_ORDER.indexOf(currentGamePhase);
     const nextIdx = (idx % (GAME_PHASE_ORDER.length - 1)) + 1;
+    console.log("after:", GAME_PHASE_ORDER[nextIdx]);
     dispatch(setCurrentGamePhase(GAME_PHASE_ORDER[nextIdx]));
 }

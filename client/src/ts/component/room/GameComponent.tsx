@@ -45,30 +45,22 @@ export default function GameComponent() {
     }, []);
 
     useEffect(() => {
-        switch (gameManager.currentGamePhase) {
-            case GamePhase.BEFORE_START:
-                setCurrentView(<></>);
-                gameManager.currentGamePhase = GamePhase.BEFORE_START;
-                break;
+        console.log(currentGamePhase.value)
+        switch (currentGamePhase.value) {
             case GamePhase.DAYTIME:
                 setCurrentView(<DaytimePhase />);
-                gameManager.currentGamePhase = GamePhase.DAYTIME;
                 break;
             case GamePhase.CHARACTER_DISTRIBUTION:
                 setCurrentView(<DistributionPhase />);
-                gameManager.currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
                 break;
             case GamePhase.EXECUTION:
                 setCurrentView(<ExecutionPhase />);
-                gameManager.currentGamePhase = GamePhase.EXECUTION;
                 break;
             case GamePhase.NIGHT:
                 setCurrentView(<NightPhase />);
-                gameManager.currentGamePhase = GamePhase.NIGHT;
                 break;
             case GamePhase.VOTE:
                 setCurrentView(<VotePhase />);
-                gameManager.currentGamePhase = GamePhase.VOTE;
                 break;
             default:
                 setCurrentView(<>{strResource.common.error}</>);
@@ -89,6 +81,7 @@ export default function GameComponent() {
                     ? strResource.game.abscence
                     : CHARACTER_NAME_MAP[characterCodeOfUser]}
             </p>
+            <p className="present-current-phase">{currentGamePhase.value}</p>
             {currentView}
         </div>
     );

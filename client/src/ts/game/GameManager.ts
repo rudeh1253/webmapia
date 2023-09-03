@@ -15,7 +15,7 @@ export default class GameManager {
     private constructor() {
         this._gameId = 0;
         this._gameSetting = null;
-        this._currentGamePhase = GamePhase.BEFORE_START;
+        this._currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
     }
 
     public static getInstance(): GameManager {
