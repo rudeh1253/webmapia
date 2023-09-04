@@ -6,6 +6,7 @@ import gameConfigurationModal from "./slice/gameConfigurationModal";
 import gameSwitch from "./slice/GameSwitchSlice";
 import currentGamePhaseSlice from "./slice/currentGamePhaseSlice";
 import characterDistributionSlice from "./slice/characterDistributionSlice";
+import timeCountSlice from "./slice/timeCountSlice";
 
 export const store = configureStore({
     reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
         gameConfigurationModal: gameConfigurationModal,
         gameSwitch,
         currentGamePhase: currentGamePhaseSlice,
-        characterDistribution: characterDistributionSlice
+        characterDistribution: characterDistributionSlice,
+        timeCount: timeCountSlice
     }
 });
 

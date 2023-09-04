@@ -187,6 +187,7 @@ async function onCharacterAllocationResponse(
 function onPhaseEnd(currentGamePhase: GamePhase, dispatch: any) {
     console.log("before:", currentGamePhase);
     toNextPhase(currentGamePhase, dispatch);
+    
 }
 
 function toNextPhase(currentGamePhase: GamePhase, dispatch: any) {
