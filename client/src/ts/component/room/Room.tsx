@@ -71,6 +71,7 @@ export default function Room() {
         thisUser,
         setNewChat,
         currentGamePhase,
+        gameConfiguration,
         dispatch
     );
 

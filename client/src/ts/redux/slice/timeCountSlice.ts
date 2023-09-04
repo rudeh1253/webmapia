@@ -7,10 +7,10 @@ export const timeCountSlice = createSlice({
     initialState,
     reducers: {
         decrementTime(state, action: PayloadAction<number>) {
-            state--;
+            return state - 1;
         },
         setTimeCount(state, action: PayloadAction<number>) {
-            state = action.payload;
+            return action.payload;
         }
     }
 });

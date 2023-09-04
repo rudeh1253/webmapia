@@ -20,6 +20,7 @@ export default function GameComponent() {
     const gameSetting = useAppSelector((state) => state.gameConfiugraion);
     const currentGamePhase = useAppSelector((state) => state.currentGamePhase);
     const thisUser = useAppSelector((state) => state.thisUserInfo);
+    const timeCount = useAppSelector((state) => state.timeCount);
 
     const characterCodeOfUser = thisUser.characterCode as
         | "BETRAYER"
@@ -45,7 +46,7 @@ export default function GameComponent() {
     }, []);
 
     useEffect(() => {
-        console.log(currentGamePhase.value)
+        console.log(currentGamePhase.value);
         switch (currentGamePhase.value) {
             case GamePhase.DAYTIME:
                 setCurrentView(<DaytimePhase />);
@@ -74,6 +75,11 @@ export default function GameComponent() {
             gameManager.gameSetting = gameSetting;
         }
     }, [gameStarted]);
+
+    // TODO: Temporary test code, should be deleted
+    useEffect(() => {
+        console.log(timeCount);
+    }, [timeCount]);
     return (
         <div className="game-container">
             <p className="character-p">
@@ -82,6 +88,7 @@ export default function GameComponent() {
                     : CHARACTER_NAME_MAP[characterCodeOfUser]}
             </p>
             <p className="present-current-phase">{currentGamePhase.value}</p>
+            <p className="time-counter">{timeCount}</p>
             {currentView}
         </div>
     );

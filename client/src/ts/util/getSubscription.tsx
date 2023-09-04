@@ -1,6 +1,7 @@
 import {
     Chat,
     GamePhase,
+    GameSetting,
     PrivateChatMessage,
     PublicChatMessage,
     UserInfo
@@ -29,6 +30,7 @@ import SocketClient from "../sockjs/SocketClient";
 import {PhaseEndRequest} from "../type/requestType";
 import {NotificationType} from "../type/notificationType";
 import {setCurrentGamePhase} from "../redux/slice/currentGamePhaseSlice";
+import {setTimeCount} from "../redux/slice/timeCountSlice";
 
 export function getSubscription(
     currentRoomInfo: CurrentRoomInfoInitialState,
@@ -36,6 +38,7 @@ export function getSubscription(
     thisUser: UserInfo,
     setNewChat: React.Dispatch<React.SetStateAction<Chat>>,
     currentGamePhase: {value: GamePhase},
+    gameConfiguration: GameSetting,
     dispatch: any
 ): {endpoint: string; callback: (payload: any) => void}[] {
     return [
@@ -57,7 +60,11 @@ export function getSubscription(
                         onGameStart(payloadData, dispatch);
                         break;
                     case "PHASE_END":
-                        onPhaseEnd(currentGamePhase.value, dispatch);
+                        onPhaseEnd(
+                            currentGamePhase.value,
+                            dispatch,
+                            gameConfiguration
+                        );
                         break;
                 }
             }
@@ -184,15 +191,56 @@ async function onCharacterAllocationResponse(
     sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
 }
 
-function onPhaseEnd(currentGamePhase: GamePhase, dispatch: any) {
-    console.log("before:", currentGamePhase);
-    toNextPhase(currentGamePhase, dispatch);
-    
+function onPhaseEnd(
+    currentGamePhase: GamePhase,
+    dispatch: any,
+    gameConfiguartion: GameSetting
+) {
+    const nextPhase = getNextPhase(currentGamePhase);
+    dispatch(setCurrentGamePhase(nextPhase));
+    taskOnNextPhase(nextPhase, dispatch, gameConfiguartion);
 }
 
-function toNextPhase(currentGamePhase: GamePhase, dispatch: any) {
+function getNextPhase(currentGamePhase: GamePhase) {
     const idx = GAME_PHASE_ORDER.indexOf(currentGamePhase);
     const nextIdx = (idx % (GAME_PHASE_ORDER.length - 1)) + 1;
-    console.log("after:", GAME_PHASE_ORDER[nextIdx]);
-    dispatch(setCurrentGamePhase(GAME_PHASE_ORDER[nextIdx]));
+    return GAME_PHASE_ORDER[nextIdx];
+}
+
+function taskOnNextPhase(
+    nextPhase: GamePhase,
+    dispatch: any,
+    gameConfiguration: GameSetting
+) {
+    let howMany;
+    switch (nextPhase) {
+        case GamePhase.DAYTIME:
+            howMany = gameConfiguration.discussionTimeSeconds;
+            startTimeCount(howMany, dispatch);
+            break;
+        case GamePhase.VOTE:
+            howMany = gameConfiguration.voteTimeSeconds;
+            startTimeCount(howMany, dispatch);
+            break;
+        case GamePhase.NIGHT:
+            howMany = gameConfiguration.nightTimeSeconds;
+            startTimeCount(howMany, dispatch);
+            break;
+        default:
+            const DEFAULT_COUNT = 90;
+            startTimeCount(DEFAULT_COUNT, dispatch);
+    }
+}
+
+function startTimeCount(count: number, dispatch: any) {
+    if (count <= 0) {
+        return;
+    }
+
+    const SECOND_IN_MILLIS = 1000;
+    setTimeout(() => {
+        const c = count - 1;
+        dispatch(setTimeCount(c));
+        startTimeCount(c, dispatch);
+    }, SECOND_IN_MILLIS);
 }
