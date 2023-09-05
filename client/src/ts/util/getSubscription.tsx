@@ -32,6 +32,8 @@ import {NotificationType} from "../type/notificationType";
 import {setCurrentGamePhase} from "../redux/slice/currentGamePhaseSlice";
 import {setTimeCount} from "../redux/slice/timeCountSlice";
 
+var gameManager = GameManager.getInstance();
+
 export function getSubscription(
     currentRoomInfo: CurrentRoomInfoInitialState,
     setNewUserState: React.Dispatch<React.SetStateAction<UserState>>,
@@ -198,7 +200,7 @@ function onPhaseEnd(
 ) {
     const nextPhase = getNextPhase(currentGamePhase);
     dispatch(setCurrentGamePhase(nextPhase));
-    taskOnNextPhase(nextPhase, dispatch, gameConfiguartion);
+    taskOnNextPhase(nextPhase, dispatch);
 }
 
 function getNextPhase(currentGamePhase: GamePhase) {
@@ -209,25 +211,29 @@ function getNextPhase(currentGamePhase: GamePhase) {
 
 function taskOnNextPhase(
     nextPhase: GamePhase,
-    dispatch: any,
-    gameConfiguration: GameSetting
+    dispatch: any
 ) {
+    const gameConfiguration = gameManager.gameSetting;
     let howMany;
     switch (nextPhase) {
         case GamePhase.DAYTIME:
             howMany = gameConfiguration.discussionTimeSeconds;
+            dispatch(setTimeCount(howMany));
             startTimeCount(howMany, dispatch);
             break;
         case GamePhase.VOTE:
             howMany = gameConfiguration.voteTimeSeconds;
+            dispatch(setTimeCount(howMany));
             startTimeCount(howMany, dispatch);
             break;
         case GamePhase.NIGHT:
             howMany = gameConfiguration.nightTimeSeconds;
+            dispatch(setTimeCount(howMany));
             startTimeCount(howMany, dispatch);
             break;
         default:
             const DEFAULT_COUNT = 90;
+            dispatch(setTimeCount(DEFAULT_COUNT));
             startTimeCount(DEFAULT_COUNT, dispatch);
     }
 }

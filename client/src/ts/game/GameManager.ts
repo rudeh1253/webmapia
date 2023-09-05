@@ -1,20 +1,21 @@
 import SocketClient from "../sockjs/SocketClient";
-import {
-    GamePhase,
-    GameSetting
-} from "../type/gameDomainType";
+import {GamePhase, GameSetting} from "../type/gameDomainType";
 import {SECOND_IN_MILLIS} from "../util/const";
 
 export default class GameManager {
     private static singleton: GameManager;
 
     private _gameId: number;
-    private _gameSetting: GameSetting | null;
+    private _gameSetting: GameSetting;
     private _currentGamePhase: GamePhase;
 
     private constructor() {
         this._gameId = 0;
-        this._gameSetting = null;
+        this._gameSetting = {
+            discussionTimeSeconds: 90,
+            voteTimeSeconds: 30,
+            nightTimeSeconds: 90
+        };
         this._currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
     }
 
@@ -27,6 +28,10 @@ export default class GameManager {
 
     public set gameSetting(gameSetting: GameSetting) {
         this._gameSetting = gameSetting;
+    }
+
+    public get gameSetting() {
+        return this._gameSetting;
     }
 
     public set currentGamePhase(gamePhase: GamePhase) {

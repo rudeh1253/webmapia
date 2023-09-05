@@ -5,6 +5,9 @@ import strResource from "../../../resource/string.json";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
 import {Chat, UserInfo} from "../../type/gameDomainType";
 import {setCharacterDistribution} from "../../redux/slice/characterDistributionSlice";
+import GameManager from "../../game/GameManager";
+
+var gameManager = GameManager.getInstance();
 
 type GameConfigurationModalProps = {
     characterConfigurationProps: CharacterConfigurationProps;
@@ -26,6 +29,16 @@ export function GameConfigurationModal({
 function TimeConfiguration() {
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
     const dispatch = useAppDispatch();
+
+    const onChangeLogic = (
+        key: "discussionTimeSeconds" | "voteTimeSeconds" | "nightTimeSeconds",
+        val: number
+    ) => {
+        const config = {...gameConfiguration};
+        config[key] = val;
+        dispatch(setGameConfiguration(config));
+        gameManager.gameSetting = config;
+    };
     return (
         <div className="radio-container">
             <div className="radio-component">
@@ -40,12 +53,7 @@ function TimeConfiguration() {
                             name="discussion-time"
                             id="discussion-time-60"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        discussionTimeSeconds: 60
-                                    })
-                                )
+                                onChangeLogic("discussionTimeSeconds", 60)
                             }
                         />
                     </div>
@@ -56,12 +64,7 @@ function TimeConfiguration() {
                             name="discussion-time"
                             id="discussion-time-90"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        discussionTimeSeconds: 90
-                                    })
-                                )
+                                onChangeLogic("discussionTimeSeconds", 90)
                             }
                         />
                     </div>
@@ -72,12 +75,7 @@ function TimeConfiguration() {
                             name="discussion-time"
                             id="discussion-time-120"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        discussionTimeSeconds: 120
-                                    })
-                                )
+                                onChangeLogic("discussionTimeSeconds", 120)
                             }
                         />
                     </div>
@@ -95,12 +93,7 @@ function TimeConfiguration() {
                             name="vote-time"
                             id="vote-time-60"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        voteTimeSeconds: 60
-                                    })
-                                )
+                                onChangeLogic("voteTimeSeconds", 60)
                             }
                         />
                     </div>
@@ -111,12 +104,7 @@ function TimeConfiguration() {
                             name="vote-time"
                             id="vote-time-90"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        voteTimeSeconds: 90
-                                    })
-                                )
+                                onChangeLogic("voteTimeSeconds", 90)
                             }
                         />
                     </div>
@@ -127,12 +115,7 @@ function TimeConfiguration() {
                             name="vote-time"
                             id="vote-time-120"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        voteTimeSeconds: 120
-                                    })
-                                )
+                                onChangeLogic("voteTimeSeconds", 120)
                             }
                         />
                     </div>
@@ -150,12 +133,7 @@ function TimeConfiguration() {
                             name="night-time"
                             id="night-time-60"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        nightTimeSeconds: 60
-                                    })
-                                )
+                                onChangeLogic("nightTimeSeconds", 60)
                             }
                         />
                     </div>
@@ -166,12 +144,7 @@ function TimeConfiguration() {
                             name="night-time"
                             id="night-time-90"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        nightTimeSeconds: 90
-                                    })
-                                )
+                                onChangeLogic("nightTimeSeconds", 90)
                             }
                         />
                     </div>
@@ -182,12 +155,7 @@ function TimeConfiguration() {
                             name="night-time"
                             id="night-time-120"
                             onChange={() =>
-                                dispatch(
-                                    setGameConfiguration({
-                                        ...gameConfiguration,
-                                        nightTimeSeconds: 120
-                                    })
-                                )
+                                onChangeLogic("nightTimeSeconds", 120)
                             }
                         />
                     </div>
