@@ -30,6 +30,7 @@ import {PhaseEndRequest} from "../type/requestType";
 import {NotificationType} from "../type/notificationType";
 import NullPointerError from "../error/NullPointerError";
 import {ErrorCode} from "../error/ErrorCode";
+import NotAssignedError from "../error/NotAssignedError";
 
 var gameManager = GameManager.getInstance();
 
@@ -61,33 +62,11 @@ export function getSubscription(
                         onGameStart(payloadData, dispatch);
                         break;
                     case "PHASE_END":
-                        gameManager.currentGamePhase = currentGamePhase.value;
-                        try {
-                            gameManager.onPhaseEnd();
-                        } catch (err) {
-                            if (err instanceof NullPointerError) {
-                                if (
-                                    err.errorCode ===
-                                    ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER
-                                ) {
-                                    gameManager.dispatch = dispatch;
-                                    gameManager.onPhaseEnd();
-                                }
-                            }
-                        }
-                        try {
-                            gameManager.taskOnNextPhase();
-                        } catch (err) {
-                            if (err instanceof NullPointerError) {
-                                if (
-                                    err.errorCode ===
-                                    ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER
-                                ) {
-                                    gameManager.dispatch = dispatch;
-                                    gameManager.taskOnNextPhase();
-                                }
-                            }
-                        }
+                        postprocessOfPhase(currentRoomInfo);
+                        break;
+                    case "PHASE_RESULT":
+                        processPhaseResult(dispatch);
+                        startNewPhase(dispatch);
                         break;
                 }
             }
@@ -212,4 +191,45 @@ async function onCharacterAllocationResponse(
         userId: thisUser.userId
     };
     sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
+}
+
+function postprocessOfPhase(currentRoomInfo: CurrentRoomInfoInitialState) {
+    try {
+        gameManager.postPhase();
+    } catch (err) {
+        if (err instanceof NotAssignedError) {
+            if (
+                err.errorCode === ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER
+            ) {
+                gameManager.gameId = currentRoomInfo.roomInfo.roomId;
+                gameManager.postPhase();
+            }
+        }
+    }
+}
+
+function processPhaseResult(dispatch: any) {
+    try {
+        gameManager.moveToNextPhase();
+    } catch (err) {
+        if (err instanceof NullPointerError) {
+            if (err.errorCode === ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER) {
+                gameManager.dispatch = dispatch;
+                gameManager.moveToNextPhase();
+            }
+        }
+    }
+}
+
+function startNewPhase(dispatch: any) {
+    try {
+        gameManager.taskOnNewPhase();
+    } catch (err) {
+        if (err instanceof NullPointerError) {
+            if (err.errorCode === ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER) {
+                gameManager.dispatch = dispatch;
+                gameManager.taskOnNewPhase();
+            }
+        }
+    }
 }
