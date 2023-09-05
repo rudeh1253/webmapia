@@ -68,7 +68,6 @@ export default class GameManager {
         }
         const nextPhase = this.getNextPhase(this._currentGamePhase);
         this._dispatch(setCurrentGamePhase(nextPhase));
-        this.taskOnNextPhase(nextPhase);
     }
 
     private getNextPhase(currentGamePhase: GamePhase) {
@@ -77,10 +76,16 @@ export default class GameManager {
         return GAME_PHASE_ORDER[nextIdx];
     }
 
-    private taskOnNextPhase(nextPhase: GamePhase) {
+    public taskOnNextPhase() {
+        if (this._dispatch === null) {
+            throw new NullPointerError(
+                ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER
+            );
+        }
+        const currentPhase = this._currentGamePhase;
         const gameConfig = this._gameSetting;
         let howMany;
-        switch (nextPhase) {
+        switch (currentPhase) {
             case GamePhase.DAYTIME:
                 howMany = gameConfig.discussionTimeSeconds;
                 this._dispatch(setTimeCount(howMany));

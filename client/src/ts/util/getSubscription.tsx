@@ -75,6 +75,19 @@ export function getSubscription(
                                 }
                             }
                         }
+                        try {
+                            gameManager.taskOnNextPhase();
+                        } catch (err) {
+                            if (err instanceof NullPointerError) {
+                                if (
+                                    err.errorCode ===
+                                    ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER
+                                ) {
+                                    gameManager.dispatch = dispatch;
+                                    gameManager.taskOnNextPhase();
+                                }
+                            }
+                        }
                         break;
                 }
             }
