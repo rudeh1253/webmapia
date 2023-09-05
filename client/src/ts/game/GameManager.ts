@@ -1,14 +1,18 @@
 import {ErrorCode} from "../error/ErrorCode";
+import NotAssignedError from "../error/NotAssignedError";
 import NullPointerError from "../error/NullPointerError";
 import {setCurrentGamePhase} from "../redux/slice/currentGamePhaseSlice";
 import {setTimeCount} from "../redux/slice/timeCountSlice";
 import SocketClient from "../sockjs/SocketClient";
 import {GamePhase, GameSetting} from "../type/gameDomainType";
+import {PostPhaseRequest} from "../type/requestType";
 import {
     DEFAULT_TIME_CONFIGURATION,
     GAME_PHASE_ORDER,
-    SECOND_IN_MILLIS
+    SOCKET_SEND_POST_PHASE
 } from "../util/const";
+
+var sockClient: SocketClient;
 
 export default class GameManager {
     private static singleton: GameManager;
@@ -60,7 +64,23 @@ export default class GameManager {
         this._gameId = gameId;
     }
 
-    public onPhaseEnd() {
+    public async postPhase() {
+        if (!sockClient) {
+            sockClient = await SocketClient.getInstance();
+        }
+        if (this.gameId === 0) {
+            throw new NotAssignedError(
+                ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER
+            );
+        }
+        const body: PostPhaseRequest = {
+            notificationType: "PHASE_RESULT",
+            gameId: this._gameId
+        };
+        sockClient.sendMessage(SOCKET_SEND_POST_PHASE, {}, body);
+    }
+
+    public moveToNextPhase() {
         if (this._dispatch === null) {
             throw new NullPointerError(
                 ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER
@@ -76,7 +96,7 @@ export default class GameManager {
         return GAME_PHASE_ORDER[nextIdx];
     }
 
-    public taskOnNextPhase() {
+    public taskOnNewPhase() {
         if (this._dispatch === null) {
             throw new NullPointerError(
                 ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER
