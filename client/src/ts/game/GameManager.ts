@@ -1,6 +1,6 @@
 import SocketClient from "../sockjs/SocketClient";
 import {GamePhase, GameSetting} from "../type/gameDomainType";
-import {SECOND_IN_MILLIS} from "../util/const";
+import {DEFAULT_TIME_CONFIGURATION, SECOND_IN_MILLIS} from "../util/const";
 
 export default class GameManager {
     private static singleton: GameManager;
@@ -11,11 +11,7 @@ export default class GameManager {
 
     private constructor() {
         this._gameId = 0;
-        this._gameSetting = {
-            discussionTimeSeconds: 90,
-            voteTimeSeconds: 30,
-            nightTimeSeconds: 90
-        };
+        this._gameSetting = DEFAULT_TIME_CONFIGURATION;
         this._currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
     }
 

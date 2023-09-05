@@ -1,11 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {GameSetting} from "../../type/gameDomainType";
+import { DEFAULT_TIME_CONFIGURATION } from "../../util/const";
 
-const initialState: GameSetting = {
-    discussionTimeSeconds: 90,
-    voteTimeSeconds: 30,
-    nightTimeSeconds: 90
-};
+const initialState: GameSetting = DEFAULT_TIME_CONFIGURATION
 
 export const gameConfiguration = createSlice({
     name: "gameConfiguration",
