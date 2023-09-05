@@ -28,9 +28,10 @@ import GameManager from "../game/GameManager";
 import SocketClient from "../sockjs/SocketClient";
 import {PhaseEndRequest} from "../type/requestType";
 import {NotificationType} from "../type/notificationType";
-import {onPhaseEnd} from "./onPhaseEnd";
+import NullPointerError from "../error/NullPointerError";
+import {ErrorCode} from "../error/ErrorCode";
 
-export var gameManager = GameManager.getInstance();
+var gameManager = GameManager.getInstance();
 
 export function getSubscription(
     currentRoomInfo: CurrentRoomInfoInitialState,
@@ -60,11 +61,20 @@ export function getSubscription(
                         onGameStart(payloadData, dispatch);
                         break;
                     case "PHASE_END":
-                        onPhaseEnd(
-                            currentGamePhase.value,
-                            dispatch,
-                            gameConfiguration
-                        );
+                        gameManager.currentGamePhase = currentGamePhase.value;
+                        try {
+                            gameManager.onPhaseEnd();
+                        } catch (err) {
+                            if (err instanceof NullPointerError) {
+                                if (
+                                    err.errorCode ===
+                                    ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER
+                                ) {
+                                    gameManager.dispatch = dispatch;
+                                    gameManager.onPhaseEnd();
+                                }
+                            }
+                        }
                         break;
                 }
             }

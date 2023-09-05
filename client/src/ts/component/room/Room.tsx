@@ -61,7 +61,7 @@ export default function Room() {
         (state) => state.characterDistribution
     );
     const gameStarted = useAppSelector((state) => state.gameSwitch);
-    const currentGamePhase = useAppSelector(state => state.currentGamePhase);
+    const currentGamePhase = useAppSelector((state) => state.currentGamePhase);
 
     const dispatch = useAppDispatch();
 

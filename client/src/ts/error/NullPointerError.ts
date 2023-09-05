@@ -2,8 +2,8 @@ import {ErrorCode} from "./ErrorCode";
 
 export default class NullPointerError extends Error {
     private _errorCode: ErrorCode;
-    constructor(message: string, errCode: ErrorCode) {
-        super(message);
+    constructor(errCode: ErrorCode) {
+        super();
         this._errorCode = errCode;
     }
 

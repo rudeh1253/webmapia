@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 import GameManager from "../../game/GameManager";
-import {useAppSelector} from "../../redux/hook";
+import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import {GamePhase} from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import DistributionPhase from "./game/DistributionPhase";
@@ -22,6 +22,8 @@ export default function GameComponent() {
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const timeCount = useAppSelector((state) => state.timeCount);
 
+    const dispatch = useAppDispatch();
+
     const characterCodeOfUser = thisUser.characterCode as
         | "BETRAYER"
         | "CITIZEN"
@@ -42,6 +44,8 @@ export default function GameComponent() {
     useEffect(() => {
         if (!gameManager) {
             gameManager = GameManager.getInstance();
+            gameManager.dispatch = dispatch;
+            gameManager.gameId = roomInfo.roomInfo.roomId;
         }
     }, []);
 
@@ -76,10 +80,6 @@ export default function GameComponent() {
         }
     }, [gameStarted]);
 
-    // TODO: Temporary test code, should be deleted
-    useEffect(() => {
-        console.log(timeCount);
-    }, [timeCount]);
     return (
         <div className="game-container">
             <p className="character-p">
