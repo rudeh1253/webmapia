@@ -29,6 +29,7 @@ import {
 import ChatComponent from "./ChatComponent";
 import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
 import GameManager from "../../game/GameManager";
+import { sumCharacterDistribution } from "../../util/utilFunction";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
@@ -51,6 +52,8 @@ export default function Room() {
     const [delayStateForNewChat, setDelayStateForNewChat] = useState<Chat>(
         iDelayStateForNewChat
     );
+    const [sumOfCharacterDistribution, setSumOfCharacterDistribution] = useState<number>(0);
+
     const gameConfigurationModal = useAppSelector(
         (state) => state.gameConfigurationModal
     );
@@ -137,6 +140,11 @@ export default function Room() {
         gameManager.userId = thisUser.userId;
     }, [thisUser]);
 
+    useEffect(() => {
+        const sum = sumCharacterDistribution(characterDistribution);
+        setSumOfCharacterDistribution(sum);
+    }, [characterDistribution])
+
     return (
         <div className="room-container">
             <p>User ID: {thisUser.userId}</p>
@@ -175,6 +183,7 @@ export default function Room() {
                                 characterDistributionRequestBody
                             );
                         }}
+                        disabled={usersInRoom.length !== sumOfCharacterDistribution}
                     >
                         {strResource.room.gameStart}
                     </button>

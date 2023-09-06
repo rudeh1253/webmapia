@@ -6,6 +6,7 @@ import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModa
 import {Chat, UserInfo} from "../../type/gameDomainType";
 import {setCharacterDistribution} from "../../redux/slice/characterDistributionSlice";
 import GameManager from "../../game/GameManager";
+import { sumCharacterDistribution } from "../../util/utilFunction";
 
 var gameManager = GameManager.getInstance();
 
@@ -201,26 +202,7 @@ function CharacterConfiguration({usersInRoom}: CharacterConfigurationProps) {
         "WOLF"
     ];
     useEffect(() => {
-        let sum = 0;
-        for (let key of characters) {
-            const k = key as
-                | "BETRAYER"
-                | "CITIZEN"
-                | "DETECTIVE"
-                | "FOLLOWER"
-                | "GUARD"
-                | "HUMAN_MOUSE"
-                | "MEDIUMSHIP"
-                | "MURDERER"
-                | "NOBILITY"
-                | "PREDICTOR"
-                | "SECRET_SOCIETY"
-                | "SOLDIER"
-                | "SUCCESSOR"
-                | "TEMPLAR"
-                | "WOLF";
-            sum += characterDistribution[k];
-        }
+        const sum = sumCharacterDistribution(characterDistribution);
         setSumOfCharacterDistribution(sum);
     }, [characterDistribution]);
     return (
