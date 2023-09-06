@@ -1,6 +1,5 @@
-package com.nsl.webmapia.user.dto;
+package com.nsl.webmapia.chat.dto;
 
-import com.nsl.webmapia.common.NotificationType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,8 +9,8 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class UserRequestDTO {
+public class NewParticipantRequestDTO {
     private Long gameId;
+    private Long containerId;
     private Long userId;
-    private String username;
 }

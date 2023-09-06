@@ -8,14 +8,14 @@ import lombok.*;
 @Setter
 @Builder(access = AccessLevel.PRIVATE)
 @ToString
-public class PhaseResultDTO {
+public class PhaseResultResponseDTO {
     private NotificationType notificationType;
     private Long gameId;
     private boolean isGameEnd;
     private Faction winner;
 
-    public static PhaseResultDTO of(Long gameId, boolean isGameEnd, Faction winner) {
-        return PhaseResultDTO.builder()
+    public static PhaseResultResponseDTO of(Long gameId, boolean isGameEnd, Faction winner) {
+        return PhaseResultResponseDTO.builder()
                 .notificationType(NotificationType.PHASE_RESULT)
                 .gameId(gameId)
                 .isGameEnd(isGameEnd)

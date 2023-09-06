@@ -14,7 +14,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @ToString
 public class CharacterGenerationRequestDTO {
-    private final NotificationType notificationType;
     private final Long gameId;
     private final Map<CharacterCode, Integer> characterDistribution;
 }

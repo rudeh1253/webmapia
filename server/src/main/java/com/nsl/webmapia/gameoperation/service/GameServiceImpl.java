@@ -3,8 +3,8 @@ package com.nsl.webmapia.gameoperation.service;
 import com.nsl.webmapia.character.*;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.gameoperation.domain.GamePhase;
-import com.nsl.webmapia.gameoperation.dto.PhaseEndNotificationDTO;
-import com.nsl.webmapia.gameoperation.dto.PhaseResultDTO;
+import com.nsl.webmapia.gameoperation.dto.PhaseEndResponseDTO;
+import com.nsl.webmapia.gameoperation.dto.PhaseResultResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.common.NotificationType;
@@ -42,11 +42,11 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public PhaseResultDTO postPhase(Long gameId) {
+    public PhaseResultResponseDTO postPhase(Long gameId) {
         GameManager game = findGameManager(gameId);
         Faction winner = game.postPhase();
         game.getAllUsers().forEach(user -> user.setPhaseEnd(false));
-        return PhaseResultDTO.of(gameId, winner != null, winner);
+        return PhaseResultResponseDTO.of(gameId, winner != null, winner);
     }
 
     @Override
@@ -65,10 +65,10 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public PhaseEndNotificationDTO phaseEnd(Long gameId, Long userId) {
+    public PhaseEndResponseDTO phaseEnd(Long gameId, Long userId) {
         GameManager game = findGameManager(gameId);
         boolean isEnd = game.endPhase(userId);
-        return PhaseEndNotificationDTO.from(gameId, isEnd);
+        return PhaseEndResponseDTO.from(gameId, isEnd);
     }
 
     private GameManager findGameManager(Long gameId) {

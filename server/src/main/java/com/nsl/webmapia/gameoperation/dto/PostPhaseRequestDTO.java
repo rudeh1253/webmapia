@@ -11,7 +11,6 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @ToString
 public class PostPhaseRequestDTO {
-    private final NotificationType notificationType;
     private final Long gameId;
     private final Long userId;
 }

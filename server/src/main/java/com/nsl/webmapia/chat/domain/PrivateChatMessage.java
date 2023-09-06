@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class PrivateChatMessage extends PublicChatMessage {
-    List<Long> receiverUserIds;
+    Long containerId;
 }

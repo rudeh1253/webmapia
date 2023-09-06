@@ -28,10 +28,6 @@ public class UserMessageController {
 
     @MessageMapping("/game/user-enter")
     public void addUser(@Payload UserRequestDTO request) {
-        System.out.println("request = " + request);
-        if (request.getNotificationType() != NotificationType.USER_ENTERED) {
-            throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
-        }
         final Long gameId = request.getGameId();
         userService.addUser(gameId, request.getUserId(), request.getUsername());
         UserResponseDTO dto = userService.getUser(gameId, request.getUserId());
@@ -41,7 +37,6 @@ public class UserMessageController {
 
     @MessageMapping("/game/user-exit")
     public void removeUser(@Payload UserRequestDTO request) {
-        System.out.println("request = " + request);
         Long gameId = request.getGameId();
         Long userId = request.getUserId();
         UserResponseDTO dto = userService.removeUser(gameId, userId);

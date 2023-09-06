@@ -12,4 +12,7 @@ export type NotificationType =
     | "PHASE_END"
     | "GAME_START"
     | "CHARACTER_GENERATION"
-    | "PHASE_RESULT";
+    | "PHASE_RESULT"
+    | "CREATE_NEW_CHAT_CONTAINER"
+    | "NEW_PARTICIPANT_IN_CHAT_CONTAINER"
+    | "REMOVE_CHAT_CONTAINER";

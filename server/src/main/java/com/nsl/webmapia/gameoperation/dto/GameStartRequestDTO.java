@@ -10,14 +10,12 @@ import lombok.ToString;
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @ToString
-public class GameStartNotificationDTO {
-    private final NotificationType notificationType;
+public class GameStartRequestDTO {
     private final GameSetting gameSetting;
     private final Long gameId;
 
-    public GameStartNotificationDTO from(GameSetting gameSetting, Long gameId) {
-        return GameStartNotificationDTO.builder()
-                .notificationType(NotificationType.GAME_START)
+    public GameStartRequestDTO from(GameSetting gameSetting, Long gameId) {
+        return GameStartRequestDTO.builder()
                 .gameSetting(gameSetting)
                 .gameId(gameId)
                 .build();

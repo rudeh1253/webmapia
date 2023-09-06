@@ -24,7 +24,6 @@ public class GameRoomRestController {
 
     @PostMapping("/game/room")
     public ResponseEntity<CommonResponse> createRoom(@RequestBody RoomCreationRequestDTO request) {
-        System.out.println(request);
         Long newGameId = roomService.createNewRoom(request.getGameName(), request.getHostId(), request.getHostName());
         RoomInfoResponseDTO gameInfo = roomService.getRoomInfo(newGameId);
         return CommonResponse.ok(gameInfo, LocalDateTime.now());

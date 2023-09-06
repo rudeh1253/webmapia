@@ -1,16 +1,12 @@
 package com.nsl.webmapia.gameoperation.controller;
 
 import com.nsl.webmapia.common.CommonResponse;
-import com.nsl.webmapia.common.NotificationType;
-import com.nsl.webmapia.common.exception.ErrorCode;
-import com.nsl.webmapia.common.exception.UnsupportedNotificationTypeException;
 import com.nsl.webmapia.gameoperation.dto.*;
 import com.nsl.webmapia.gameoperation.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,16 +26,12 @@ public class GameController {
     }
 
     @MessageMapping("/game/start")
-    public void gameStart(@Payload GameStartNotificationDTO request) {
-        System.out.println("request = " + request);
+    public void gameStart(@Payload GameStartRequestDTO request) {
         messagingTemplate.convertAndSend("/notification/public/" + request.getGameId(), CommonResponse.ok(request, LocalDateTime.now()));
     }
 
     @MessageMapping("/game/distribute-character")
     public void generateCharacters(@Payload CharacterGenerationRequestDTO request) {
-        if (request.getNotificationType() != NotificationType.CHARACTER_GENERATION) {
-            throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
-        }
         List<CharacterGenerationResponseDTO> result =
                 gameService.generateCharacters(request.getGameId(), request.getCharacterDistribution());
         result.forEach(dto -> {
@@ -50,7 +42,7 @@ public class GameController {
 
     @MessageMapping("/game/end-phase")
     public void endPhase(@Payload PhaseEndRequestDTO request) {
-        PhaseEndNotificationDTO result = gameService.phaseEnd(request.getGameId(), request.getUserId());
+        PhaseEndResponseDTO result = gameService.phaseEnd(request.getGameId(), request.getUserId());
         System.out.println("PhaseEnd = " + result);
         if (result.isEnd()) {
             System.out.println("Phase ended");
@@ -60,16 +52,13 @@ public class GameController {
 
     @MessageMapping("/game/post-phase")
     public void postPhase(@Payload PostPhaseRequestDTO request) {
-        PhaseResultDTO phaseResultDTO = gameService.postPhase(request.getGameId());
-        System.out.println("phaseResultDTO = " + phaseResultDTO);
-        messagingTemplate.convertAndSend("/notification/private/" + phaseResultDTO.getGameId() + "/" + request.getUserId(), CommonResponse.ok(phaseResultDTO, LocalDateTime.now()));
+        PhaseResultResponseDTO phaseResultResponseDTO = gameService.postPhase(request.getGameId());
+        System.out.println("phaseResultDTO = " + phaseResultResponseDTO);
+        messagingTemplate.convertAndSend("/notification/private/" + phaseResultResponseDTO.getGameId() + "/" + request.getUserId(), CommonResponse.ok(phaseResultResponseDTO, LocalDateTime.now()));
     }
 
     @MessageMapping("/game/vote")
     public void vote(@Payload VoteRequestDTO request) {
-        if (request.getNotificationType() != NotificationType.VOTE) {
-            throw new UnsupportedNotificationTypeException(ErrorCode.INVALID_INPUT_TYPE);
-        }
         gameService.acceptVote(request.getGameId(), request.getVoterId(), request.getSubjectId());
     }
 

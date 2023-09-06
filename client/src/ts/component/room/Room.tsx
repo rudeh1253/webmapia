@@ -8,7 +8,7 @@ import {GameConfigurationModal, UserItem} from "./RoomSubcomponent";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
 import {
     CharacterGenerationRequest,
-    GameStartNotificationRequest,
+    GameStartRequest,
     UserRequest
 } from "../../type/requestType";
 import {Subscription} from "stompjs";
@@ -87,7 +87,6 @@ export default function Room() {
         return () => {
             if (sockClient) {
                 const exitRequestBody: UserRequest = {
-                    notificationType: "USER_REMOVED",
                     gameId: currentRoomInfo.roomInfo.roomId,
                     userId: thisUser.userId,
                     username: thisUser.username
@@ -154,9 +153,8 @@ export default function Room() {
                     <button
                         type="button"
                         onClick={() => {
-                            const gameStartNotificationRequestBody: GameStartNotificationRequest =
+                            const gameStartNotificationRequestBody: GameStartRequest =
                                 {
-                                    notificationType: "GAME_START",
                                     gameSetting: gameConfiguration,
                                     gameId: currentRoomInfo.roomInfo.roomId
                                 };
@@ -173,7 +171,6 @@ export default function Room() {
                             );
                             const characterDistributionRequestBody: CharacterGenerationRequest =
                                 {
-                                    notificationType: "CHARACTER_GENERATION",
                                     gameId: currentRoomInfo.roomInfo.roomId,
                                     characterDistribution
                                 };
@@ -254,7 +251,6 @@ async function init(
     // Later, I wish make this logic more reasonable.
     if (thisUser.userId !== currentRoomInfo.roomInfo.hostId) {
         const body: UserRequest = {
-            notificationType: "USER_ENTERED",
             gameId: currentRoomInfo.roomInfo.roomId,
             userId: thisUser.userId,
             username: thisUser.username

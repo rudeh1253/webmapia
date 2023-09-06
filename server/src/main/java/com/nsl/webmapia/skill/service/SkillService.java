@@ -1,6 +1,6 @@
 package com.nsl.webmapia.skill.service;
 
-import com.nsl.webmapia.skill.dto.SkillResultDTO;
+import com.nsl.webmapia.skill.dto.SkillResultResponseDTO;
 import com.nsl.webmapia.skill.domain.SkillType;
 
 import java.util.List;
@@ -24,5 +24,5 @@ public interface SkillService {
      * @return a list of DTO representing skill result. If the notification is for public broadcast,
      *         the receiver id is set to null.
      */
-    List<SkillResultDTO> processSkills(Long gameId);
+    List<SkillResultResponseDTO> processSkills(Long gameId);
 }

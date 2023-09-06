@@ -107,7 +107,6 @@ export default class GameManager {
             );
         }
         const body: PostPhaseRequest = {
-            notificationType: "PHASE_RESULT",
             gameId: this._gameId,
             userId: this._userId
         };
@@ -201,7 +200,6 @@ export default class GameManager {
         }
         const sockClient = await SocketClient.getInstance();
         const body: PhaseEndRequest = {
-            notificationType: "PHASE_END",
             gameId: this._gameId,
             userId: this._userId
         };

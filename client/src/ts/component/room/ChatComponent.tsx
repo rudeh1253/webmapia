@@ -55,6 +55,7 @@ export default function ChatComponent({users}: ChatComponentProp) {
             try {
                 const gameId = currentRoomInfo.roomInfo.roomId;
                 chatManager = ChatManager.getInstance(gameId, thisUser);
+                chatManager.dispatch = dispatch;
             } catch (err) {
                 if (err instanceof InvalidArgumentError) {
                     switch (err.errorCode) {

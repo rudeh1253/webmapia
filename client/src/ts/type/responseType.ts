@@ -1,4 +1,4 @@
-import { CharacterCode, GameSetting } from "./gameDomainType";
+import {CharacterCode, GameSetting} from "./gameDomainType";
 import {NotificationType} from "./notificationType";
 
 export interface CommonResponse<D> {
@@ -71,4 +71,27 @@ export type GameStartNotificationResponse = {
     notificationType: NotificationType;
     gameSetting: GameSetting;
     gameId: number;
+};
+
+export type CreationNewChatContainerResponse = {
+    notificationType: NotificationType;
+    gameId: number;
+    participants: number[];
+    containerId: number;
+    containerName: string;
+};
+
+export type NewParticipantResponse = {
+    notificationType: NotificationType;
+    gameId: number;
+    containerId: number;
+    userId: number;
+    receiverIds: number[];
+};
+
+export type RemoveChatContainerResponse = {
+    notificationType: NotificationType;
+    gameId: number;
+    containerId: number;
+    participants: number[];
 };

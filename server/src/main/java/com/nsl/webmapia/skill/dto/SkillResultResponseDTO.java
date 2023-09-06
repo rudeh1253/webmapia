@@ -12,7 +12,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @Builder(access = PRIVATE)
 @ToString
-public class SkillResultDTO {
+public class SkillResultResponseDTO {
     private final Long gameId;
     private final Long skillTargetId;
     private final Long skillActivatorId;
@@ -21,11 +21,11 @@ public class SkillResultDTO {
     private final NotificationType notificationType;
     private final CharacterEffectAfterNightType characterEffectAfterNightType;
 
-    public static SkillResultDTO from(Long gameId, SkillEffect skillEffect, NotificationType notificationType) {
+    public static SkillResultResponseDTO from(Long gameId, SkillEffect skillEffect, NotificationType notificationType) {
         Long receiverId = notificationType == NotificationType.SKILL_PRIVATE
                 ? skillEffect.getReceiverUser().getID()
                 : null;
-        return SkillResultDTO.builder()
+        return SkillResultResponseDTO.builder()
                 .gameId(gameId)
                 .skillTargetId(skillEffect.getSkillTargetUser().getID())
                 .skillActivatorId(skillEffect.getSkillActivatorUser().getID())

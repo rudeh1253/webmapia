@@ -1,7 +1,5 @@
 import {
     Chat,
-    GamePhase,
-    GameSetting,
     PrivateChatMessage,
     PublicChatMessage,
     UserInfo
@@ -23,8 +21,6 @@ import {
 } from "./const";
 import {UserState} from "../component/room/Room";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
-import {setGameSwitch} from "../redux/slice/GameSwitchSlice";
-import {setGameConfiguration} from "../redux/slice/gameConfiguration";
 import GameManager from "../game/GameManager";
 import SocketClient from "../sockjs/SocketClient";
 import {PhaseEndRequest} from "../type/requestType";
@@ -185,7 +181,6 @@ async function onCharacterAllocationResponse(
     );
     const sockClient = await SocketClient.getInstance();
     const body: PhaseEndRequest = {
-        notificationType: "PHASE_END",
         gameId: currentRoomInfo.roomInfo.roomId,
         userId: thisUser.userId
     };
