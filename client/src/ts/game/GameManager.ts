@@ -8,6 +8,7 @@ import {setTimeCount} from "../redux/slice/timeCountSlice";
 import SocketClient from "../sockjs/SocketClient";
 import {GamePhase, GameSetting} from "../type/gameDomainType";
 import {PhaseEndRequest, PostPhaseRequest} from "../type/requestType";
+import {PhaseResultResponse} from "../type/responseType";
 import {
     DEFAULT_TIME_CONFIGURATION,
     GAME_PHASE_ORDER,
@@ -113,6 +114,14 @@ export default class GameManager {
         sockClient.sendMessage(SOCKET_SEND_POST_PHASE, {}, body);
     }
 
+    public processPhaseResult(data: PhaseResultResponse) {
+        console.log(data);
+        if (data.gameEnd) {
+            this._dispatch(setCurrentGamePhase(GamePhase.GAME_END));
+        }
+        return data.gameEnd;
+    }
+
     public moveToNextPhase() {
         if (this._dispatch === null) {
             throw new NullPointerError(
@@ -142,19 +151,16 @@ export default class GameManager {
         let howMany;
         switch (currentPhase) {
             case GamePhase.DAYTIME:
-                console.log("DAYTIME");
                 howMany = gameConfig.discussionTimeSeconds;
                 this._dispatch(setTimeCount(howMany));
                 this.startCountDown(howMany);
                 break;
             case GamePhase.VOTE:
-                console.log("VOTE");
                 howMany = gameConfig.voteTimeSeconds;
                 this._dispatch(setTimeCount(howMany));
                 this.startCountDown(howMany);
                 break;
             case GamePhase.NIGHT:
-                console.log("NIGHT");
                 howMany = gameConfig.nightTimeSeconds;
                 this._dispatch(setTimeCount(howMany));
                 this.startCountDown(howMany);
@@ -162,7 +168,6 @@ export default class GameManager {
             case GamePhase.EXECUTION:
                 break;
             default:
-                console.log("DEFAULT");
                 const DEFAULT_COUNT = 90;
                 this._dispatch(setTimeCount(DEFAULT_COUNT));
                 this.startCountDown(DEFAULT_COUNT);
@@ -185,10 +190,14 @@ export default class GameManager {
 
     private async endPhase() {
         if (this._gameId === 0) {
-            throw new NotAssignedError(ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER);
+            throw new NotAssignedError(
+                ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER
+            );
         }
         if (this._userId === 0) {
-            throw new NotAssignedError(ErrorCode.USER_ID_NOT_ASSIGNED_IN_GAME_MANAGER);
+            throw new NotAssignedError(
+                ErrorCode.USER_ID_NOT_ASSIGNED_IN_GAME_MANAGER
+            );
         }
         const sockClient = await SocketClient.getInstance();
         const body: PhaseEndRequest = {

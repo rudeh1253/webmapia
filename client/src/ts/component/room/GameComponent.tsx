@@ -9,6 +9,7 @@ import ExecutionPhase from "./game/ExecutionPhase";
 import NightPhase from "./game/NightPhase";
 import VotePhase from "./game/VotePhase";
 import {CHARACTER_NAME_MAP} from "../../util/const";
+import EndPhase from "./game/EndPhase";
 
 var gameManager: GameManager;
 
@@ -66,6 +67,9 @@ export default function GameComponent() {
                 break;
             case GamePhase.VOTE:
                 setCurrentView(<VotePhase />);
+                break;
+            case GamePhase.GAME_END:
+                setCurrentView(<EndPhase />);
                 break;
             default:
                 setCurrentView(<>{strResource.common.error}</>);

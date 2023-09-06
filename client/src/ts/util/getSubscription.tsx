@@ -10,6 +10,7 @@ import {
     CharacterGenerationResponse,
     CommonResponse,
     GameStartNotificationResponse,
+    PhaseResultResponse,
     UserResponse
 } from "../type/responseType";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
@@ -109,7 +110,7 @@ export function getSubscription(
             )}`,
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
-                    .body as CommonResponse<CharacterGenerationResponse>;
+                    .body as CommonResponse<any>;
                 switch (payloadData.data.notificationType) {
                     case "NOTIFY_WHICH_CHARACTER_ALLOCATED":
                         onCharacterAllocationResponse(
@@ -120,8 +121,10 @@ export function getSubscription(
                         );
                         break;
                     case "PHASE_RESULT":
-                        processPhaseResult(dispatch);
-                        startNewPhase(dispatch);
+                        const gameEnded = processPhaseResult(payloadData.data);
+                        if (!gameEnded) {
+                            startNewPhase(dispatch);
+                        }
                         break;
                 }
             }
@@ -204,7 +207,11 @@ function postprocessOfPhase(currentRoomInfo: CurrentRoomInfoInitialState) {
     }
 }
 
-function processPhaseResult(dispatch: any) {
+function processPhaseResult(response: PhaseResultResponse) {
+    return gameManager.processPhaseResult(response);
+}
+
+function startNewPhase(dispatch: any) {
     try {
         gameManager.moveToNextPhase();
     } catch (err) {
@@ -215,9 +222,6 @@ function processPhaseResult(dispatch: any) {
             }
         }
     }
-}
-
-function startNewPhase(dispatch: any) {
     try {
         gameManager.taskOnNewPhase();
     } catch (err) {

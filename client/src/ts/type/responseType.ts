@@ -30,7 +30,7 @@ export type PhaseResultResponse = {
     notificationType: NotificationType;
     gameId: number;
     targetUserId: number;
-    isGameEnd: boolean;
+    gameEnd: boolean;
     winner: string;
 };
 

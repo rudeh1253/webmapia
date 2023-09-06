@@ -61,7 +61,8 @@ export enum GamePhase {
     DAYTIME = "DAYTIME",
     VOTE = "VOTE",
     EXECUTION = "EXECUTION",
-    CHARACTER_DISTRIBUTION = "CHARACTER_DISTRIBUTION"
+    CHARACTER_DISTRIBUTION = "CHARACTER_DISTRIBUTION",
+    GAME_END = "GAME_END"
 }
 
 export type CharacterDistribution = {
