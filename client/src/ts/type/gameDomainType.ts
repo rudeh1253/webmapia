@@ -42,14 +42,6 @@ export type CharacterCode =
     | "GOOD_MAN"
     | null;
 
-export type Chat = {
-    senderId: number;
-    message: string;
-    timestamp: number;
-    isPublic: boolean;
-    isMe: boolean;
-};
-
 export type GameSetting = {
     discussionTimeSeconds: number;
     voteTimeSeconds: number;
@@ -88,4 +80,12 @@ export type ChatStorage = {
     participants: UserInfo[];
     name: string;
     chatLogs: Chat[];
+};
+
+export type Chat = {
+    senderId: number;
+    message: string;
+    timestamp: number;
+    isPublic: boolean;
+    isMe: boolean;
 };
