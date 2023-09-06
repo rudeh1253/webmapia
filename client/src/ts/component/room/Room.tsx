@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react";
-import {Chat, GamePhase, UserInfo} from "../../type/gameDomainType";
+import {GamePhase, UserInfo} from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import SocketClient from "../../sockjs/SocketClient";
@@ -21,15 +21,13 @@ import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
 import {getSubscription} from "../../util/getSubscription";
 import {
-    iDelayStateForNewChat,
     iDelayStateForNewUser,
-    iNewChat,
     iNewUserState
 } from "../../util/initialState";
 import ChatComponent from "./ChatComponent";
 import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
 import GameManager from "../../game/GameManager";
-import { sumCharacterDistribution } from "../../util/utilFunction";
+import {sumCharacterDistribution} from "../../util/utilFunction";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
@@ -47,12 +45,8 @@ export default function Room() {
     const [delayStateForNewUser, setDelayStateForNewUser] = useState<UserState>(
         iDelayStateForNewUser
     );
-    const [chatLogs, setChatLogs] = useState<Array<Chat>>([]);
-    const [newChat, setNewChat] = useState<Chat>(iNewChat);
-    const [delayStateForNewChat, setDelayStateForNewChat] = useState<Chat>(
-        iDelayStateForNewChat
-    );
-    const [sumOfCharacterDistribution, setSumOfCharacterDistribution] = useState<number>(0);
+    const [sumOfCharacterDistribution, setSumOfCharacterDistribution] =
+        useState<number>(0);
 
     const gameConfigurationModal = useAppSelector(
         (state) => state.gameConfigurationModal
@@ -73,7 +67,6 @@ export default function Room() {
         currentRoomInfo,
         setNewUserState,
         thisUser,
-        setNewChat,
         dispatch
     );
 
@@ -126,15 +119,6 @@ export default function Room() {
     }, [newUserState]);
 
     useEffect(() => {
-        if (newChat.senderId !== -1) {
-            if (delayStateForNewChat.senderId !== newChat.senderId) {
-                setChatLogs([...chatLogs, newChat]);
-                setDelayStateForNewChat({...newChat});
-            }
-        }
-    }, [newChat]);
-
-    useEffect(() => {
         const gameManager = GameManager.getInstance();
         gameManager.userId = thisUser.userId;
     }, [thisUser]);
@@ -142,7 +126,7 @@ export default function Room() {
     useEffect(() => {
         const sum = sumCharacterDistribution(characterDistribution);
         setSumOfCharacterDistribution(sum);
-    }, [characterDistribution])
+    }, [characterDistribution]);
 
     return (
         <div className="room-container">
@@ -180,7 +164,9 @@ export default function Room() {
                                 characterDistributionRequestBody
                             );
                         }}
-                        disabled={usersInRoom.length !== sumOfCharacterDistribution}
+                        disabled={
+                            usersInRoom.length !== sumOfCharacterDistribution
+                        }
                     >
                         {strResource.room.gameStart}
                     </button>

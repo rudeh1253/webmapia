@@ -19,7 +19,7 @@ export type PublicChatMessage = {
 };
 
 export type PrivateChatMessage = PublicChatMessage & {
-    receiverUserIds: number[];
+    containerId: number;
 };
 
 export type CharacterCode =
@@ -86,6 +86,6 @@ export type Chat = {
     senderId: number;
     message: string;
     timestamp: number;
-    isPublic: boolean;
+    containerId: number;
     isMe: boolean;
 };

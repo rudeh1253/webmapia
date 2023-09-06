@@ -13,6 +13,7 @@ import {
 } from "../type/responseType";
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {
+    ID_OF_PUBLIC_CHAT,
     SOCKET_SEND_PHASE_END,
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
@@ -28,6 +29,7 @@ import {NotificationType} from "../type/notificationType";
 import NullPointerError from "../error/NullPointerError";
 import {ErrorCode} from "../error/ErrorCode";
 import NotAssignedError from "../error/NotAssignedError";
+import {setNewChat} from "../redux/slice/newChatSlice";
 
 var gameManager = GameManager.getInstance();
 
@@ -35,7 +37,6 @@ export function getSubscription(
     currentRoomInfo: CurrentRoomInfoInitialState,
     setNewUserState: React.Dispatch<React.SetStateAction<UserState>>,
     thisUser: UserInfo,
-    setNewChat: React.Dispatch<React.SetStateAction<Chat>>,
     dispatch: any
 ): {endpoint: string; callback: (payload: any) => void}[] {
     return [
@@ -74,10 +75,10 @@ export function getSubscription(
                     senderId: payloadData.data.senderId,
                     message: payloadData.data.message,
                     timestamp: new Date(payloadData.dateTime).getTime(),
-                    isPublic: true,
+                    containerId: ID_OF_PUBLIC_CHAT,
                     isMe: thisUser.userId === payloadData.data.senderId
                 };
-                setNewChat(chat);
+                dispatch(setNewChat(chat));
             }
         },
         {
@@ -93,10 +94,10 @@ export function getSubscription(
                     senderId: payloadData.data.senderId,
                     message: payloadData.data.message,
                     timestamp: new Date(payloadData.dateTime).getTime(),
-                    isPublic: false,
+                    containerId: payloadData.data.containerId,
                     isMe: thisUser.userId === payloadData.data.senderId
                 };
-                setNewChat(chat);
+                dispatch(setNewChat(chat));
             }
         },
         {

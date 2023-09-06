@@ -7,7 +7,7 @@ import {
     RemoveChatContainerRequest
 } from "../type/requestType";
 import {
-    SOCKET_SEND_CHATROOM_PUBLIC_MESSAGE,
+    SOCKET_SEND_CHAT_PUBLIC,
     SOCKET_SEND_NEW_CHAT_CONTAINER,
     SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT,
     SOCKET_SEND_REMOVE_CHAT_CONTAINER
@@ -15,7 +15,7 @@ import {
 
 var sockClient: SocketClient;
 
-export async function sendChat(
+export async function sendPublicChat(
     message: string,
     currentRoomInfo: CurrentRoomInfoInitialState,
     thisUser: UserInfo
@@ -28,8 +28,15 @@ export async function sendChat(
     if (!sockClient) {
         sockClient = await SocketClient.getInstance();
     }
-    sockClient.sendMessage(SOCKET_SEND_CHATROOM_PUBLIC_MESSAGE, {}, messageObj);
+    sockClient.sendMessage(SOCKET_SEND_CHAT_PUBLIC, {}, messageObj);
 }
+
+export async function sendPrivateChat(
+    message: string,
+    currentRoomInfo: CurrentRoomInfoInitialState,
+    thisUser: UserInfo,
+    containerId: number
+) {}
 
 export async function createChatContainer(
     gameId: number,

@@ -21,22 +21,6 @@ export const iDelayStateForNewUser: UserState = {
     }
 };
 
-export const iNewChat: Chat = {
-    senderId: -1,
-    message: "",
-    timestamp: -1,
-    isPublic: false,
-    isMe: false
-};
-
-export const iDelayStateForNewChat: Chat = {
-    senderId: -1,
-    message: "",
-    timestamp: -1,
-    isPublic: false,
-    isMe: false
-};
-
 export const iChatStorage: ChatStorage = {
     id: -1,
     participants: [],

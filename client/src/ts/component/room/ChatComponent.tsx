@@ -1,16 +1,17 @@
 import {useState, useRef, useEffect} from "react";
-import {ChatStorage, GamePhase, UserInfo} from "../../type/gameDomainType";
-import {iChatStorage} from "../../util/initialState";
-import {ChatItem} from "./RoomSubcomponent";
+import {
+    Chat,
+    ChatStorage,
+    GamePhase,
+    UserInfo
+} from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
-import ChatManager from "../../chat/ChatManager";
 import InvalidArgumentError from "../../error/InvalidArgumentError";
 import {ErrorCode} from "../../error/ErrorCode";
-
-var chatManager: ChatManager;
-
-const ID_OF_PUBLIC_CHAT = 1;
+import {ID_OF_PUBLIC_CHAT} from "../../util/const";
+import {iChatStorage} from "../../util/initialState";
+import {sendPrivateChat, sendPublicChat} from "../../util/chat";
 
 export type ChatComponentProp = {
     users: UserInfo[];
@@ -26,6 +27,7 @@ export default function ChatComponent({users}: ChatComponentProp) {
     const currentGamePhase = useAppSelector(
         (state) => state.currentGamePhase
     ).value;
+    const newChat = useAppSelector((state) => state.newChat);
 
     const chatInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,37 +53,26 @@ export default function ChatComponent({users}: ChatComponentProp) {
     }, []);
 
     useEffect(() => {
-        if (!chatManager) {
-            try {
-                const gameId = currentRoomInfo.roomInfo.roomId;
-                chatManager = ChatManager.getInstance(gameId, thisUser);
-                chatManager.dispatch = dispatch;
-            } catch (err) {
-                if (err instanceof InvalidArgumentError) {
-                    switch (err.errorCode) {
-                        case ErrorCode.GAME_ID_IS_DEFAULT:
-                            console.error(
-                                "Game id is invalid. Maybe currentRoomInfo of redux hook is not set because the latency of communication with the server"
-                            );
-                            break;
-                        case ErrorCode.USER_INFO_IS_DEFAULT:
-                            console.error(
-                                "User info is invalid. Maybe thisUserInfo of redux hook is not set because the latency of communication with the server"
-                            );
-                            break;
-                        default:
-                            console.error("Something problem");
-                    }
-                }
-            }
-        }
-    }, [thisUser, currentRoomInfo]);
-
-    useEffect(() => {
         if (currentGamePhase === GamePhase.GAME_END) {
             resetChatStorage();
         }
     }, [currentGamePhase]);
+
+    useEffect(() => {
+        let chatStorage;
+        for (let i of chatStorages) {
+            if (i.id === newChat.containerId) {
+                chatStorage = i;
+            }
+        }
+        if (chatStorage) {
+            const chatLogs = chatStorage.chatLogs;
+            if (chatLogs.length === 0 || newChat.timestamp !== chatLogs[chatLogs.length - 1].timestamp) {
+                chatLogs.push(newChat);
+                setChatStorages([...chatStorages]);
+            }
+        }
+    }, [newChat]);
 
     return (
         <div className="chat-container">
@@ -103,7 +94,7 @@ export default function ChatComponent({users}: ChatComponentProp) {
                         senderId={chat.senderId}
                         message={chat.message}
                         timestamp={chat.timestamp}
-                        isPublic={chat.isPublic}
+                        containerId={chat.containerId}
                         isMe={chat.isMe}
                     />
                 ))}
@@ -119,17 +110,35 @@ export default function ChatComponent({users}: ChatComponentProp) {
                         className="send-message"
                         type="button"
                         onClick={() =>
-                            chatManager.sendChat(
-                                currentChatStorage.participants,
-                                chatInputRef.current!.value,
-                                currentChatStorage.id === ID_OF_PUBLIC_CHAT
-                            )
+                            currentChatStorage.id === ID_OF_PUBLIC_CHAT
+                                ? sendPublicChat(
+                                      chatInputRef.current!.value,
+                                      currentRoomInfo,
+                                      thisUser
+                                  )
+                                : sendPrivateChat(
+                                      chatInputRef.current!.value,
+                                      currentRoomInfo,
+                                      thisUser,
+                                      currentChatStorage.id
+                                  )
                         }
                     >
                         {strResource.room.send}
                     </button>
                 </div>
             </div>
+        </div>
+    );
+}
+
+function ChatItem({senderId, message, timestamp, containerId, isMe}: Chat) {
+    const time = new Date(timestamp);
+    return (
+        <div>
+            <p>{senderId}</p>
+            <p>{message}</p>
+            <p>{`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`}</p>
         </div>
     );
 }

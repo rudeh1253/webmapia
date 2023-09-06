@@ -13,10 +13,6 @@ export const SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER =
     "/app/game/distribute-character";
 export const SOCKET_SEND_PHASE_END = "/app/game/end-phase";
 export const SOCKET_SEND_POST_PHASE = "/app/game/post-phase";
-export const SOCKET_SEND_CHATROOM_PUBLIC_MESSAGE =
-    "/app/chatroom/public-message";
-export const SOCKET_SEND_CHATROOM_PRIVATE_MESSAGE =
-    "/app/chatroom/private-message";
 export const SOCKET_SEND_NEW_CHAT_CONTAINER =
     "/app/chatroom/new-chat-container";
 export const SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT =
@@ -75,3 +71,5 @@ export const DEFAULT_TIME_CONFIGURATION = {
     voteTimeSeconds: 5,
     nightTimeSeconds: 5
 };
+
+export const ID_OF_PUBLIC_CHAT = 1;
