@@ -39,8 +39,6 @@ export function getSubscription(
     setNewUserState: React.Dispatch<React.SetStateAction<UserState>>,
     thisUser: UserInfo,
     setNewChat: React.Dispatch<React.SetStateAction<Chat>>,
-    currentGamePhase: {value: GamePhase},
-    gameConfiguration: GameSetting,
     dispatch: any
 ): {endpoint: string; callback: (payload: any) => void}[] {
     return [
@@ -63,10 +61,6 @@ export function getSubscription(
                         break;
                     case "PHASE_END":
                         postprocessOfPhase(currentRoomInfo);
-                        break;
-                    case "PHASE_RESULT":
-                        processPhaseResult(dispatch);
-                        startNewPhase(dispatch);
                         break;
                 }
             }
@@ -125,6 +119,10 @@ export function getSubscription(
                             payloadData
                         );
                         break;
+                    case "PHASE_RESULT":
+                        processPhaseResult(dispatch);
+                        startNewPhase(dispatch);
+                        break;
                 }
             }
         }
@@ -156,20 +154,18 @@ function onGameStart(
     payloadData: CommonResponse<GameStartNotificationResponse>,
     dispatch: any
 ) {
-    const gameSetting = payloadData.data.gameSetting;
-
     const gameManager = GameManager.getInstance();
-    gameManager.gameSetting = gameSetting;
-    gameManager.currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
-    dispatch(setGameSwitch(true));
-
-    dispatch(
-        setGameConfiguration({
-            discussionTimeSeconds: gameSetting.discussionTimeSeconds,
-            voteTimeSeconds: gameSetting.voteTimeSeconds,
-            nightTimeSeconds: gameSetting.nightTimeSeconds
-        })
-    );
+    const gameSetting = payloadData.data.gameSetting;
+    try {
+        gameManager.gameStart(gameSetting);
+    } catch (err) {
+        if (err instanceof NullPointerError) {
+            if (err.errorCode === ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER) {
+                gameManager.dispatch = dispatch;
+                gameManager.gameStart(gameSetting);
+            }
+        }
+    }
 }
 
 async function onCharacterAllocationResponse(

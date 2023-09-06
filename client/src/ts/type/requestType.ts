@@ -22,6 +22,7 @@ export type PhaseEndRequest = {
 export type PostPhaseRequest = {
     notificationType: NotificationType;
     gameId: number;
+    userId: number;
 };
 
 export type VoteRequest = {

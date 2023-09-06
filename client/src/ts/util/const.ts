@@ -61,7 +61,7 @@ export const GAME_PHASE_ORDER = [
 ];
 
 export const DEFAULT_TIME_CONFIGURATION = {
-    discussionTimeSeconds: 90,
-    voteTimeSeconds: 30,
-    nightTimeSeconds: 90
+    discussionTimeSeconds: 5,
+    voteTimeSeconds: 5,
+    nightTimeSeconds: 5
 };

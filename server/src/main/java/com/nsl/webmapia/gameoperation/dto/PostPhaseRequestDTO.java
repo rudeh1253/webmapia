@@ -11,4 +11,5 @@ import lombok.Setter;
 public class PostPhaseRequestDTO {
     private final NotificationType notificationType;
     private final Long gameId;
+    private final Long userId;
 }

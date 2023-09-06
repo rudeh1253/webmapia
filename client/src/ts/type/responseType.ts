@@ -29,6 +29,7 @@ export type PhaseEndNotificationResponse = {
 export type PhaseResultResponse = {
     notificationType: NotificationType;
     gameId: number;
+    targetUserId: number;
     isGameEnd: boolean;
     winner: string;
 };

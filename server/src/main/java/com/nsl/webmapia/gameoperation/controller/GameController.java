@@ -51,7 +51,9 @@ public class GameController {
     @MessageMapping("/game/end-phase")
     public void endPhase(@Payload PhaseEndRequestDTO request) {
         PhaseEndNotificationDTO result = gameService.phaseEnd(request.getGameId(), request.getUserId());
+        System.out.println("PhaseEnd = " + result);
         if (result.isEnd()) {
+            System.out.println("Phase ended");
             messagingTemplate.convertAndSend("/notification/public/" + result.getGameId(), CommonResponse.ok(result, LocalDateTime.now()));
         }
     }
@@ -59,7 +61,8 @@ public class GameController {
     @MessageMapping("/game/post-phase")
     public void postPhase(@Payload PostPhaseRequestDTO request) {
         PhaseResultDTO phaseResultDTO = gameService.postPhase(request.getGameId());
-        messagingTemplate.convertAndSend("/notification/public/" + phaseResultDTO.getGameId(), CommonResponse.ok(phaseResultDTO, LocalDateTime.now()));
+        System.out.println("phaseResultDTO = " + phaseResultDTO);
+        messagingTemplate.convertAndSend("/notification/private/" + phaseResultDTO.getGameId() + "/" + request.getUserId(), CommonResponse.ok(phaseResultDTO, LocalDateTime.now()));
     }
 
     @MessageMapping("/game/vote")

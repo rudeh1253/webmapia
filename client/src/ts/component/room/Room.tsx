@@ -28,6 +28,7 @@ import {
 } from "../../util/initialState";
 import ChatComponent from "./ChatComponent";
 import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
+import GameManager from "../../game/GameManager";
 
 var sockClient: SocketClient;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
@@ -70,14 +71,15 @@ export default function Room() {
         setNewUserState,
         thisUser,
         setNewChat,
-        currentGamePhase,
-        gameConfiguration,
         dispatch
     );
 
     useEffect(() => {
         if (!sockClient) {
             init(currentRoomInfo, thisUser, setUsersInRoom, toSubscribe);
+            const gameManager = GameManager.getInstance();
+            gameManager.gameId = currentRoomInfo.roomInfo.roomId;
+            gameManager.dispatch = dispatch;
         }
         return () => {
             if (sockClient) {
@@ -129,6 +131,11 @@ export default function Room() {
             }
         }
     }, [newChat]);
+
+    useEffect(() => {
+        const gameManager = GameManager.getInstance();
+        gameManager.userId = thisUser.userId;
+    }, [thisUser]);
 
     return (
         <div className="room-container">
