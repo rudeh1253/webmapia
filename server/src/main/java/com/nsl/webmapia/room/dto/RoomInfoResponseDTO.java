@@ -6,6 +6,7 @@ import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @Builder(access = PRIVATE)
+@ToString
 public class RoomInfoResponseDTO {
     private final NotificationType notificationType;
     private final Long roomId;

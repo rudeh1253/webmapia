@@ -4,11 +4,13 @@ import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.common.NotificationType;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @Builder(access = PRIVATE)
+@ToString
 public class CharacterGenerationResponseDTO {
     private final NotificationType notificationType;
     private final Long receiverId;

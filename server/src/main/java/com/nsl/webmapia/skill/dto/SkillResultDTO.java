@@ -5,11 +5,13 @@ import com.nsl.webmapia.skill.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.skill.domain.SkillEffect;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @Builder(access = PRIVATE)
+@ToString
 public class SkillResultDTO {
     private final Long gameId;
     private final Long skillTargetId;

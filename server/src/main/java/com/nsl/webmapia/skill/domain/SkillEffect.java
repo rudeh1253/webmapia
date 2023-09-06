@@ -2,14 +2,12 @@ package com.nsl.webmapia.skill.domain;
 
 import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.character.CharacterCode;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class SkillEffect {
     private CharacterEffectAfterNightType characterEffectAfterNightType = null;
     private User receiverUser = null;

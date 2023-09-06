@@ -3,9 +3,11 @@ package com.nsl.webmapia.skill.domain;
 import com.nsl.webmapia.user.domain.User;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ActivatedSkillInfo {
     private User activator;
     private User target;

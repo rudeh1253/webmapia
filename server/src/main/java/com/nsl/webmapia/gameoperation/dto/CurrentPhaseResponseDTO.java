@@ -1,14 +1,12 @@
 package com.nsl.webmapia.gameoperation.dto;
 
 import com.nsl.webmapia.gameoperation.domain.GamePhase;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder(access = AccessLevel.PRIVATE)
+@ToString
 public class CurrentPhaseResponseDTO {
     private Long gameId;
     private GamePhase gamePhase;
