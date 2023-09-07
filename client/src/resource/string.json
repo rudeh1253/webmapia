@@ -48,5 +48,9 @@
     },
     "common": {
         "error": "Something problem"
+    },
+    "notificationMessage": {
+        "someoneEntered": "님이 입장하셨습니다.",
+        "someoneExited": "님이 퇴장하셨습니다."
     }
 }

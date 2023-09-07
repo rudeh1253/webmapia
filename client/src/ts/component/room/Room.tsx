@@ -15,21 +15,20 @@ import {Subscription} from "stompjs";
 import {
     SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
     SOCKET_SEND_GAME_START,
-    SOCKET_SEND_USER_EXIT
+    SOCKET_SEND_USER_EXIT,
+    SYSTEM_MESSAGE_ID
 } from "../../util/const";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
 import {getSubscription} from "../../sockjs/getSubscription";
-import {
-    iDelayStateForNewUser,
-    iNewUserState
-} from "../../util/initialState";
+import {iDelayStateForNewUser, iNewUserState} from "../../util/initialState";
 import ChatComponent from "./ChatComponent";
 import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
 import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
+import {sendPublicChat} from "../../sockjs/chat";
 
-var sockClient: SocketClient;
+var sockClient: SocketClient | undefined;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
 
 const EMPTY_NEW_USER = -1;
@@ -79,6 +78,17 @@ export default function Room() {
         }
         return () => {
             if (sockClient) {
+                sendPublicChat(
+                    thisUser.username +
+                        strResource.notificationMessage.someoneExited,
+                    currentRoomInfo,
+                    {
+                        userId: SYSTEM_MESSAGE_ID,
+                        username: "",
+                        characterCode: null,
+                        isDead: false
+                    }
+                );
                 const exitRequestBody: UserRequest = {
                     gameId: currentRoomInfo.roomInfo.roomId,
                     userId: thisUser.userId,
@@ -95,6 +105,7 @@ export default function Room() {
                     });
                     subscriptions = undefined;
                 }
+                sockClient = undefined;
             }
         };
     }, []);
@@ -136,12 +147,15 @@ export default function Room() {
                 <div className="host-bar">
                     <button
                         type="button"
-                        onClick={() => {
+                        onClick={async () => {
                             const gameStartNotificationRequestBody: GameStartRequest =
                                 {
                                     gameSetting: gameConfiguration,
                                     gameId: currentRoomInfo.roomInfo.roomId
                                 };
+                            if (!sockClient) {
+                                sockClient = await SocketClient.getInstance();
+                            }
                             sockClient.sendMessage(
                                 SOCKET_SEND_GAME_START,
                                 {},
@@ -247,4 +261,15 @@ async function init(
             console.error(err);
         }
     }
+
+    sendPublicChat(
+        thisUser.username + strResource.notificationMessage.someoneEntered,
+        currentRoomInfo,
+        {
+            userId: SYSTEM_MESSAGE_ID,
+            username: "",
+            characterCode: null,
+            isDead: false
+        }
+    );
 }

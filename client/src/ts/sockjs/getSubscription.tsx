@@ -18,7 +18,8 @@ import {
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE,
-    SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
+    SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC,
+    SYSTEM_MESSAGE_ID
 } from "../util/const";
 import {UserState} from "../component/room/Room";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
@@ -30,7 +31,8 @@ import NullPointerError from "../error/NullPointerError";
 import {ErrorCode} from "../error/ErrorCode";
 import NotAssignedError from "../error/NotAssignedError";
 import {setNewChat} from "../redux/slice/newChatSlice";
-import {onNewChatContainerCreated} from "./chat";
+import {onNewChatContainerCreated, sendPublicChat} from "./chat";
+import strResource from "../../resource/string.json";
 
 var gameManager = GameManager.getInstance();
 
@@ -53,7 +55,11 @@ export function getSubscription(
                 switch (notificationType) {
                     case "USER_ENTERED":
                     case "USER_REMOVED":
-                        onUserEnterOrExit(payloadData, setNewUserState);
+                        onUserEnterOrExit(
+                            payloadData,
+                            setNewUserState,
+                            currentRoomInfo
+                        );
                         break;
                     case "GAME_START":
                         onGameStart(payloadData, dispatch);
@@ -135,7 +141,8 @@ export function getSubscription(
 
 function onUserEnterOrExit(
     payloadData: CommonResponse<UserResponse>,
-    setNewUserState: React.Dispatch<React.SetStateAction<UserState>>
+    setNewUserState: React.Dispatch<React.SetStateAction<UserState>>,
+    currentRoomInfo: CurrentRoomInfoInitialState
 ) {
     const userInfo: UserInfo = {
         userId: payloadData.data.userId,
@@ -143,13 +150,14 @@ function onUserEnterOrExit(
         characterCode: null,
         isDead: false
     };
+    const stateType =
+        payloadData.data.notificationType === "USER_ENTERED"
+            ? "USER_ENTERED"
+            : payloadData.data.notificationType === "USER_REMOVED"
+            ? "USER_EXITED"
+            : null;
     setNewUserState({
-        stateType:
-            payloadData.data.notificationType === "USER_ENTERED"
-                ? "USER_ENTERED"
-                : payloadData.data.notificationType === "USER_REMOVED"
-                ? "USER_EXITED"
-                : null,
+        stateType,
         userInfo
     });
 }

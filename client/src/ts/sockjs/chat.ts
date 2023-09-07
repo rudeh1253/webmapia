@@ -36,6 +36,7 @@ export async function sendPublicChat(
     if (!sockClient) {
         sockClient = await SocketClient.getInstance();
     }
+    console.log("Send Public Message");
     sockClient.sendMessage(SOCKET_SEND_CHAT_PUBLIC, {}, messageObj);
 }
 

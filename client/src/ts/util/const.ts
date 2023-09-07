@@ -73,3 +73,5 @@ export const DEFAULT_TIME_CONFIGURATION = {
 };
 
 export const ID_OF_PUBLIC_CHAT = 1;
+
+export const SYSTEM_MESSAGE_ID = -41825;
