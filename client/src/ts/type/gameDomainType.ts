@@ -75,7 +75,7 @@ export type CharacterDistribution = {
     HUMAN_MOUSE: number;
 };
 
-export type ChatStorage = {
+export type ChatContainer = {
     id: number;
     participants: UserInfo[];
     name: string;

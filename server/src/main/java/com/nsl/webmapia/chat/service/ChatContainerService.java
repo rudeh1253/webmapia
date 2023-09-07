@@ -25,7 +25,7 @@ public class ChatContainerService {
 
     public CreationNewChatContainerResponseDTO createContainer(Long gameId, String containerName, List<Long> participants) {
         Random random = new Random();
-        Long containerId = Math.abs(random.nextLong()) + 2;
+        Long containerId = (Math.abs(random.nextLong()) % 1000000) + 2;
         ChatContainer newContainer = new ChatContainer(gameId, containerId, containerName, participants);
         containerRepository.save(newContainer);
         return CreationNewChatContainerResponseDTO.from(newContainer);

@@ -6,7 +6,8 @@ import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModa
 import {Chat, UserInfo} from "../../type/gameDomainType";
 import {setCharacterDistribution} from "../../redux/slice/characterDistributionSlice";
 import GameManager from "../../game/GameManager";
-import { sumCharacterDistribution } from "../../util/utilFunction";
+import {sumCharacterDistribution} from "../../util/utilFunction";
+import {createChatContainer} from "../../util/chat";
 
 var gameManager = GameManager.getInstance();
 
@@ -259,12 +260,27 @@ function CharacterConfiguration({usersInRoom}: CharacterConfigurationProps) {
 }
 
 export function UserItem({userId, username, characterCode, isDead}: UserInfo) {
+    const roomInfo = useAppSelector((state) => state.currentRoomInfo);
+    const thisUser = useAppSelector((state) => state.thisUserInfo);
     return (
         <div>
             <p>{userId}</p>
             <p>{username}</p>
             <p>{characterCode}</p>
             <p>{isDead.toString()}</p>
+            {/* TODO: Below is just for testing, should be removed */}
+            <button
+                type="button"
+                onClick={() => {
+                    createChatContainer(
+                        roomInfo.roomInfo.roomId,
+                        `With ${username}`,
+                        [thisUser.userId, userId]
+                    );
+                }}
+            >
+                PRIVATE CHAT
+            </button>
         </div>
     );
 }

@@ -28,6 +28,7 @@ public class ChatService {
         Optional<ChatContainer> chatContainerOptional =
                 containerRepository.findByGameIdAndContainerId(chat.getGameId(), chat.getContainerId());
         if (chatContainerOptional.isEmpty()) {
+            System.out.println("ChatContainer is empty");
             return new HashMap<>();
         } else {
             ChatContainer chatContainer = chatContainerOptional.get();

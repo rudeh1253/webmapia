@@ -44,7 +44,7 @@ public class ChatController {
     public void receivePrivateMessage(@Payload PrivateChatMessage privateChatMessage) {
         Map<Long, PrivateChatMessage> messages = chatService.sendPrivateChatMessage(privateChatMessage);
         for (Long receiverId : messages.keySet()) {
-            messagingTemplate.convertAndSend("/chatroom/" + privateChatMessage.getGameId() + "/" + receiverId,
+            messagingTemplate.convertAndSend("/chatroom/" + privateChatMessage.getGameId() + "/private/" + receiverId,
                     CommonResponse.ok(privateChatMessage, LocalDateTime.now()));
         }
     }

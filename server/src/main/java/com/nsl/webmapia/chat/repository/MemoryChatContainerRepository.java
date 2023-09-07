@@ -56,6 +56,9 @@ public class MemoryChatContainerRepository implements ChatContainerRepository {
     @Override
     public Optional<ChatContainer> findByGameIdAndContainerId(Long gameId, Long containerId) {
         Map<Long, ChatContainer> containerMap = this.store.get(gameId);
+        System.out.println("gameId: " + gameId);
+        System.out.println("containerId: " + containerId);
+        System.out.println("Store: " + store);
         if (containerMap != null) {
             ChatContainer chatContainer = containerMap.get(containerId);
             return Optional.ofNullable(chatContainer);

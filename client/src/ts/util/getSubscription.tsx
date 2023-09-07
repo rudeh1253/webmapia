@@ -30,6 +30,7 @@ import NullPointerError from "../error/NullPointerError";
 import {ErrorCode} from "../error/ErrorCode";
 import NotAssignedError from "../error/NotAssignedError";
 import {setNewChat} from "../redux/slice/newChatSlice";
+import {onNewChatContainerCreated} from "./chat";
 
 var gameManager = GameManager.getInstance();
 
@@ -108,7 +109,7 @@ export function getSubscription(
             callback: (payload: any) => {
                 const payloadData = JSON.parse(payload.body)
                     .body as CommonResponse<any>;
-                switch (payloadData.data.notificationType) {
+                switch (payloadData.data.notificationType as NotificationType) {
                     case "NOTIFY_WHICH_CHARACTER_ALLOCATED":
                         onCharacterAllocationResponse(
                             dispatch,
@@ -122,6 +123,9 @@ export function getSubscription(
                         if (!gameEnded) {
                             startNewPhase(dispatch);
                         }
+                        break;
+                    case "CREATE_NEW_CHAT_CONTAINER":
+                        onNewChatContainerCreated(payloadData.data, dispatch);
                         break;
                 }
             }

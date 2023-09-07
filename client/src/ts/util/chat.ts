@@ -1,12 +1,20 @@
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
+import {setNewChatContainer} from "../redux/slice/newChatContainerSlice";
 import SocketClient from "../sockjs/SocketClient";
-import {PublicChatMessage, UserInfo} from "../type/gameDomainType";
+import {
+    ChatContainer,
+    PrivateChatMessage,
+    PublicChatMessage,
+    UserInfo
+} from "../type/gameDomainType";
 import {
     CreationNewChatContainerRequest,
     NewParticipantRequest,
     RemoveChatContainerRequest
 } from "../type/requestType";
+import {CreationNewChatContainerResponse} from "../type/responseType";
 import {
+    SOCKET_SEND_CHAT_PRIVATE,
     SOCKET_SEND_CHAT_PUBLIC,
     SOCKET_SEND_NEW_CHAT_CONTAINER,
     SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT,
@@ -36,7 +44,18 @@ export async function sendPrivateChat(
     currentRoomInfo: CurrentRoomInfoInitialState,
     thisUser: UserInfo,
     containerId: number
-) {}
+) {
+    const messageObj: PrivateChatMessage = {
+        gameId: currentRoomInfo.roomInfo.roomId,
+        senderId: thisUser.userId,
+        message,
+        containerId
+    };
+    if (!sockClient) {
+        sockClient = await SocketClient.getInstance();
+    }
+    sockClient.sendMessage(SOCKET_SEND_CHAT_PRIVATE, {}, messageObj);
+}
 
 export async function createChatContainer(
     gameId: number,
@@ -79,4 +98,26 @@ export async function removeChatContainer(gameId: number, containerId: number) {
         containerId
     };
     sockClient.sendMessage(SOCKET_SEND_REMOVE_CHAT_CONTAINER, {}, body);
+}
+
+export async function onNewChatContainerCreated(
+    chatContainer: CreationNewChatContainerResponse,
+    dispatch: any
+) {
+    const p: UserInfo[] = [];
+    for (let i of chatContainer.participants) {
+        p.push({
+            userId: i,
+            username: "",
+            characterCode: null,
+            isDead: false
+        });
+    }
+    const container: ChatContainer = {
+        id: chatContainer.containerId,
+        participants: p,
+        name: chatContainer.containerName,
+        chatLogs: []
+    };
+    dispatch(setNewChatContainer(container));
 }

@@ -9,6 +9,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PrivateChatMessage extends PublicChatMessage {
-    Long containerId;
+public class PrivateChatMessage {
+    private Long gameId;
+    private Long senderId;
+    private String message;
+    private Long containerId;
 }
