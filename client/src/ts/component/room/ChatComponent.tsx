@@ -10,7 +10,7 @@ import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import {ID_OF_PUBLIC_CHAT} from "../../util/const";
 import {iChatStorage} from "../../util/initialState";
-import {sendPrivateChat, sendPublicChat} from "../../util/chat";
+import {sendPrivateChat, sendPublicChat} from "../../sockjs/chat";
 
 export type ChatComponentProp = {
     users: UserInfo[];
@@ -74,8 +74,6 @@ export default function ChatComponent({users}: ChatComponentProp) {
             ) {
                 return;
             }
-            console.log(chatContainerMap);
-            console.log(newChat);
             const origChatLogs = chatContainer.chatLogs;
             chatContainer.chatLogs = [...origChatLogs, newChat];
             setChatContainerTabs(extractKeysAndNames(chatContainerMap));

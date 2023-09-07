@@ -19,11 +19,11 @@ import {
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE,
     SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
-} from "./const";
+} from "../util/const";
 import {UserState} from "../component/room/Room";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import GameManager from "../game/GameManager";
-import SocketClient from "../sockjs/SocketClient";
+import SocketClient from "./SocketClient";
 import {PhaseEndRequest} from "../type/requestType";
 import {NotificationType} from "../type/notificationType";
 import NullPointerError from "../error/NullPointerError";

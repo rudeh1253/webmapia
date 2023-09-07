@@ -19,7 +19,7 @@ import {
 } from "../../util/const";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
-import {getSubscription} from "../../util/getSubscription";
+import {getSubscription} from "../../sockjs/getSubscription";
 import {
     iDelayStateForNewUser,
     iNewUserState

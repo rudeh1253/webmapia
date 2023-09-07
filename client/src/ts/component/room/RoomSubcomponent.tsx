@@ -7,7 +7,7 @@ import {Chat, UserInfo} from "../../type/gameDomainType";
 import {setCharacterDistribution} from "../../redux/slice/characterDistributionSlice";
 import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
-import {createChatContainer} from "../../util/chat";
+import {createChatContainer} from "../../sockjs/chat";
 
 var gameManager = GameManager.getInstance();
 

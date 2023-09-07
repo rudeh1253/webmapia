@@ -1,6 +1,6 @@
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {setNewChatContainer} from "../redux/slice/newChatContainerSlice";
-import SocketClient from "../sockjs/SocketClient";
+import SocketClient from "./SocketClient";
 import {
     ChatContainer,
     PrivateChatMessage,
@@ -19,7 +19,7 @@ import {
     SOCKET_SEND_NEW_CHAT_CONTAINER,
     SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT,
     SOCKET_SEND_REMOVE_CHAT_CONTAINER
-} from "./const";
+} from "../util/const";
 
 var sockClient: SocketClient;
 
