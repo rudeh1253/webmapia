@@ -89,3 +89,8 @@ export type Chat = {
     containerId: number;
     isMe: boolean;
 };
+
+export type ChatContainerTab = {
+    key: number;
+    name: string;
+}

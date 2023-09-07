@@ -2,6 +2,7 @@ import {useState, useRef, useEffect} from "react";
 import {
     Chat,
     ChatContainer,
+    ChatContainerTab,
     GamePhase,
     UserInfo
 } from "../../type/gameDomainType";
@@ -15,15 +16,14 @@ export type ChatComponentProp = {
     users: UserInfo[];
 };
 
+const chatContainerMap = new Map<number, ChatContainer>();
+
 export default function ChatComponent({users}: ChatComponentProp) {
     const [currentChatContainer, setCurrentChatContainer] =
         useState<ChatContainer>(iChatStorage);
-    const [chatContainerMap, setChatContainerMap] = useState<
-        Map<number, ChatContainer>
-    >(new Map<number, ChatContainer>());
-    const [chatContainerMapKeys, setChatContainerMapKeys] = useState<number[]>(
-        []
-    );
+    const [chatContainerTabs, setChatContainerTabs] = useState<
+        ChatContainerTab[]
+    >([]);
 
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
@@ -44,11 +44,9 @@ export default function ChatComponent({users}: ChatComponentProp) {
             name: strResource.game.publicChat,
             chatLogs: []
         };
-        const map = new Map<number, ChatContainer>();
-        map.set(initialElement.id, initialElement);
-        setChatContainerMap(map);
-        setChatContainerMapKeys(getKeys(map));
-        const publicChatContainer = map.get(ID_OF_PUBLIC_CHAT);
+        chatContainerMap.set(initialElement.id, initialElement);
+        setChatContainerTabs(extractKeysAndNames(chatContainerMap));
+        const publicChatContainer = chatContainerMap.get(ID_OF_PUBLIC_CHAT);
         if (publicChatContainer) {
             setCurrentChatContainer(publicChatContainer);
         }
@@ -76,21 +74,13 @@ export default function ChatComponent({users}: ChatComponentProp) {
             ) {
                 return;
             }
-            chatContainerMap.delete(chatContainer.id);
-            const chatLogs = [...chatContainer.chatLogs, newChat];
-            const ncc = {
-                ...chatContainer,
-                chatLogs
-            };
-            chatContainerMap.set(ncc.id, ncc);
-
-            const newChatContainerMap = new Map<number, ChatContainer>(
-                chatContainerMap
-            );
-            setChatContainerMap(newChatContainerMap);
-            setChatContainerMapKeys(getKeys(newChatContainerMap));
-            if (ncc.id === currentChatContainer.id) {
-                setCurrentChatContainer(ncc);
+            console.log(chatContainerMap);
+            console.log(newChat);
+            const origChatLogs = chatContainer.chatLogs;
+            chatContainer.chatLogs = [...origChatLogs, newChat];
+            setChatContainerTabs(extractKeysAndNames(chatContainerMap));
+            if (chatContainer.id === currentChatContainer.id) {
+                setCurrentChatContainer({...chatContainer});
             }
         }
     }, [newChat]);
@@ -108,34 +98,29 @@ export default function ChatComponent({users}: ChatComponentProp) {
                     }
                 }
             }
-            const newChatContainerMap = new Map<number, ChatContainer>(
-                chatContainerMap
-            );
-            const cc: ChatContainer = {
+            chatContainerMap.set(newChatContainer.id, {
                 ...newChatContainer,
                 participants: participantUsers
-            };
-            newChatContainerMap.set(cc.id, cc);
-            setChatContainerMap(newChatContainerMap);
-            setChatContainerMapKeys(getKeys(newChatContainerMap));
+            });
+            setChatContainerTabs(extractKeysAndNames(chatContainerMap));
         }
     }, [newChatContainer]);
 
     return (
         <div className="chat-container">
             <div className="tab-container">
-                {chatContainerMapKeys.map((key) => {
+                {chatContainerTabs.map((e) => {
                     return (
                         <button
                             className="tab"
                             type="button"
                             onClick={() => {
                                 setCurrentChatContainer({
-                                    ...chatContainerMap.get(key)!
+                                    ...chatContainerMap.get(e.key)!
                                 });
                             }}
                         >
-                            {chatContainerMap.get(key)?.name}
+                            {e.name}
                         </button>
                     );
                 })}
@@ -196,15 +181,18 @@ function ChatItem({senderId, message, timestamp, containerId, isMe}: Chat) {
     );
 }
 
-function getKeys(map: Map<any, any>) {
-    const keys = [];
+function extractKeysAndNames(map: Map<number, ChatContainer>) {
+    const tabInfos: ChatContainerTab[] = [];
     const keyIterator = map.keys();
     while (true) {
         const k = keyIterator.next();
         if (k.done) {
             break;
         }
-        keys.push(k.value);
+        tabInfos.push({
+            key: k.value,
+            name: map.has(k.value) ? map.get(k.value)!.name : ""
+        });
     }
-    return keys;
+    return tabInfos;
 }
