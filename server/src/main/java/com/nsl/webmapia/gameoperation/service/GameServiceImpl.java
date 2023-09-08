@@ -6,6 +6,9 @@ import com.nsl.webmapia.gameoperation.domain.GamePhase;
 import com.nsl.webmapia.gameoperation.dto.PhaseEndResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.PhaseResultResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
+import com.nsl.webmapia.skill.domain.SkillType;
+import com.nsl.webmapia.skill.dto.SkillResultResponseDTO;
+import com.nsl.webmapia.skill.service.SkillService;
 import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
@@ -20,10 +23,12 @@ import java.util.Map;
 @Service
 public class GameServiceImpl implements  GameService {
     private final GameRepository gameRepository;
+    private final SkillService skillService;
 
     @Autowired
-    public GameServiceImpl(GameRepository gameRepository) {
+    public GameServiceImpl(GameRepository gameRepository, SkillService skillService) {
         this.gameRepository = gameRepository;
+        this.skillService = skillService;
     }
 
     @Override
@@ -62,6 +67,17 @@ public class GameServiceImpl implements  GameService {
         return mostUser == null
                 ? VoteResultResponseDTO.from(NotificationType.INVALID_VOTE, gameId, null)
                 : VoteResultResponseDTO.from(NotificationType.EXECUTE_BY_VOTE, gameId, mostUser.getID());
+    }
+
+    @Override
+    public void activateSkill(Long gameId, Long activatorId, Long targetId, SkillType skillType) {
+        skillService.activateSkill(gameId, activatorId, targetId, skillType);
+    }
+
+    @Override
+    public List<SkillResultResponseDTO> processSkills(Long gameId) {
+        List<SkillResultResponseDTO> result = skillService.processSkills(gameId);
+        return result;
     }
 
     @Override

@@ -18,9 +18,7 @@ import {
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE,
-    SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC,
-    SYSTEM_MESSAGE_ID
-} from "../util/const";
+    SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC} from "../util/const";
 import {UserState} from "../component/room/Room";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import GameManager from "../game/GameManager";
@@ -31,8 +29,7 @@ import NullPointerError from "../error/NullPointerError";
 import {ErrorCode} from "../error/ErrorCode";
 import NotAssignedError from "../error/NotAssignedError";
 import {setNewChat} from "../redux/slice/newChatSlice";
-import {onNewChatContainerCreated, sendPublicChat} from "./chat";
-import strResource from "../../resource/string.json";
+import {onNewChatContainerCreated} from "./chat";
 
 var gameManager = GameManager.getInstance();
 
@@ -52,6 +49,7 @@ export function getSubscription(
                     .body as CommonResponse<any>;
                 const notificationType = payloadData.data
                     .notificationType as NotificationType;
+                console.log(notificationType);
                 switch (notificationType) {
                     case "USER_ENTERED":
                     case "USER_REMOVED":
@@ -166,6 +164,7 @@ function onGameStart(
     payloadData: CommonResponse<GameStartNotificationResponse>,
     dispatch: any
 ) {
+    console.log("Game started");
     const gameManager = GameManager.getInstance();
     const gameSetting = payloadData.data.gameSetting;
     try {
@@ -192,6 +191,10 @@ async function onCharacterAllocationResponse(
             characterCode: payloadData.data.characterCode
         })
     );
+    if (!gameManager) {
+        gameManager = GameManager.getInstance();
+    }
+    gameManager.characterCode = payloadData.data.characterCode;
     const sockClient = await SocketClient.getInstance();
     const body: PhaseEndRequest = {
         gameId: currentRoomInfo.roomInfo.roomId,

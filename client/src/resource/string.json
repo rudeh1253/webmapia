@@ -46,6 +46,18 @@
         "murderer": "살인자",
         "humanMouse": "쥐인간"
     },
+    "skill": {
+        "kill": "킬",
+        "exterminate": "참살",
+        "investigationAlive": "살아 있는 유저 조사",
+        "insight": "통찰",
+        "prediction": "예언",
+        "guard": "방어",
+        "investigationDead": "죽은 유저 조사",
+        "reasoning": "추리",
+        "sucessing": "계승",
+        "murder": "살인"
+    },
     "common": {
         "error": "Something problem"
     },

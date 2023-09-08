@@ -6,7 +6,12 @@ import {setCurrentGamePhase} from "../redux/slice/currentGamePhaseSlice";
 import {setGameConfiguration} from "../redux/slice/gameConfiguration";
 import {setTimeCount} from "../redux/slice/timeCountSlice";
 import SocketClient from "../sockjs/SocketClient";
-import {GamePhase, GameSetting} from "../type/gameDomainType";
+import {
+    CharacterCode,
+    GamePhase,
+    GameSetting,
+    UserInfo
+} from "../type/gameDomainType";
 import {PhaseEndRequest, PostPhaseRequest} from "../type/requestType";
 import {PhaseResultResponse} from "../type/responseType";
 import {
@@ -21,14 +26,19 @@ var sockClient: SocketClient;
 export default class GameManager {
     private static singleton: GameManager;
 
-    private _userId: number;
+    private _thisUser: UserInfo;
     private _gameId: number;
     private _gameSetting: GameSetting;
     private _currentGamePhase: GamePhase;
     private _dispatch: any;
 
     private constructor() {
-        this._userId = 0;
+        this._thisUser = {
+            userId: -1,
+            username: "",
+            characterCode: null,
+            isDead: false
+        };
         this._gameId = 0;
         this._gameSetting = DEFAULT_TIME_CONFIGURATION;
         this._currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
@@ -71,11 +81,38 @@ export default class GameManager {
     }
 
     public get userId() {
-        return this._userId;
+        return this._thisUser.userId;
     }
 
     public set userId(userId: number) {
-        this._userId = userId;
+        this._thisUser = {
+            ...this._thisUser,
+            userId
+        };
+    }
+
+    public get isDead() {
+        return this._thisUser.isDead;
+    }
+
+    public set isDead(isDead: boolean) {
+        this._thisUser.isDead = isDead;
+    }
+
+    public get characterCode() {
+        return this._thisUser.characterCode;
+    }
+
+    public set characterCode(characterCode: CharacterCode) {
+        this._thisUser.characterCode = characterCode;
+    }
+
+    public get username() {
+        return this._thisUser.username;
+    }
+
+    public set username(username: string) {
+        this._thisUser.username = username;
     }
 
     public gameStart(gameSetting: GameSetting) {
@@ -108,7 +145,7 @@ export default class GameManager {
         }
         const body: PostPhaseRequest = {
             gameId: this._gameId,
-            userId: this._userId
+            userId: this._thisUser.userId
         };
         sockClient.sendMessage(SOCKET_SEND_POST_PHASE, {}, body);
     }
@@ -147,30 +184,23 @@ export default class GameManager {
         const currentPhase = this._currentGamePhase;
         const gameConfig = this._gameSetting;
         console.log("GameConfig:", gameConfig);
-        let howMany;
+        const DEFAULT_COUNT = 90;
+        let howMany: number = DEFAULT_COUNT;
         switch (currentPhase) {
             case GamePhase.DAYTIME:
                 howMany = gameConfig.discussionTimeSeconds;
-                this._dispatch(setTimeCount(howMany));
-                this.startCountDown(howMany);
                 break;
             case GamePhase.VOTE:
                 howMany = gameConfig.voteTimeSeconds;
-                this._dispatch(setTimeCount(howMany));
-                this.startCountDown(howMany);
                 break;
             case GamePhase.NIGHT:
                 howMany = gameConfig.nightTimeSeconds;
-                this._dispatch(setTimeCount(howMany));
-                this.startCountDown(howMany);
                 break;
             case GamePhase.EXECUTION:
                 break;
-            default:
-                const DEFAULT_COUNT = 90;
-                this._dispatch(setTimeCount(DEFAULT_COUNT));
-                this.startCountDown(DEFAULT_COUNT);
         }
+        this._dispatch(setTimeCount(howMany));
+        this.startCountDown(howMany);
     }
 
     private startCountDown(count: number) {
@@ -193,7 +223,7 @@ export default class GameManager {
                 ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER
             );
         }
-        if (this._userId === 0) {
+        if (this._thisUser.userId === -1) {
             throw new NotAssignedError(
                 ErrorCode.USER_ID_NOT_ASSIGNED_IN_GAME_MANAGER
             );
@@ -201,7 +231,7 @@ export default class GameManager {
         const sockClient = await SocketClient.getInstance();
         const body: PhaseEndRequest = {
             gameId: this._gameId,
-            userId: this._userId
+            userId: this._thisUser.userId
         };
         sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
     }

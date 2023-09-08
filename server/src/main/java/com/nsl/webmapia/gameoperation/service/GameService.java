@@ -6,6 +6,8 @@ import com.nsl.webmapia.gameoperation.dto.PhaseEndResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.PhaseResultResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.skill.domain.SkillType;
+import com.nsl.webmapia.skill.dto.SkillResultResponseDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -48,7 +50,9 @@ public interface GameService {
      */
     VoteResultResponseDTO processVotes(Long gameId);
 
+    void activateSkill(Long gameId, Long activatorId, Long targetId, SkillType skillType);
 
+    List<SkillResultResponseDTO> processSkills(Long gameId);
 
     PhaseEndResponseDTO phaseEnd(Long gameId, Long userId);
 

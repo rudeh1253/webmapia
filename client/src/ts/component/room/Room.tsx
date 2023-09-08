@@ -15,9 +15,7 @@ import {Subscription} from "stompjs";
 import {
     SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
     SOCKET_SEND_GAME_START,
-    SOCKET_SEND_USER_EXIT,
-    SYSTEM_MESSAGE_ID
-} from "../../util/const";
+    SOCKET_SEND_USER_EXIT} from "../../util/const";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
 import {getSubscription} from "../../sockjs/getSubscription";
@@ -26,8 +24,8 @@ import ChatComponent from "./ChatComponent";
 import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
 import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
-import {sendPublicChat, sendSystemMessage} from "../../sockjs/chat";
-import {SystemId} from "../../sockjs/SystemId";
+import {sendSystemMessage} from "../../sockjs/chat";
+import {SystemMessengerId} from "../../sockjs/SystemMessengerId";
 
 var inited = false;
 var sockClient: SocketClient | undefined;
@@ -86,7 +84,7 @@ export default function Room() {
                 sendSystemMessage(
                     thisUser.username +
                         strResource.notificationMessage.someoneExited,
-                    SystemId.USER_EXITED,
+                    SystemMessengerId.USER_EXITED,
                     currentRoomInfo
                 );
                 const exitRequestBody: UserRequest = {
@@ -265,7 +263,7 @@ async function init(
 
     sendSystemMessage(
         thisUser.username + strResource.notificationMessage.someoneEntered,
-        SystemId.USER_ENTERED,
+        SystemMessengerId.USER_ENTERED,
         currentRoomInfo
     );
 }

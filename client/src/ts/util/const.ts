@@ -1,5 +1,4 @@
 import serverSpec from "../../resource/secret/server-spec.json";
-import strResource from "../../resource/string.json";
 import {GamePhase} from "../type/gameDomainType";
 
 export const SOCKET_URL = serverSpec.socketUrl;
@@ -39,24 +38,6 @@ export const REST_GAME_USER = (roomId: number) =>
     `${REST_API_URL}/game/${roomId}/user`;
 
 export const SECOND_IN_MILLIS = 1000;
-
-export const CHARACTER_NAME_MAP = {
-    WOLF: strResource.game.wolf,
-    BETRAYER: strResource.game.betrayer,
-    FOLLOWER: strResource.game.follower,
-    PREDICTOR: strResource.game.predictor,
-    GUARD: strResource.game.guard,
-    MEDIUMSHIP: strResource.game.mediumship,
-    DETECTIVE: strResource.game.detective,
-    SUCCESSOR: strResource.game.successor,
-    SECRET_SOCIETY: strResource.game.secretSociety,
-    NOBILITY: strResource.game.nobility,
-    SOLDIER: strResource.game.soldier,
-    TEMPLAR: strResource.game.templar,
-    CITIZEN: strResource.game.citizen,
-    MURDERER: strResource.game.murderer,
-    HUMAN_MOUSE: strResource.game.humanMouse
-};
 
 export const GAME_PHASE_ORDER = [
     GamePhase.CHARACTER_DISTRIBUTION,

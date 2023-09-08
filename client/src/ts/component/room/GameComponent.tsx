@@ -8,7 +8,7 @@ import DaytimePhase from "./game/DaytimePhase";
 import ExecutionPhase from "./game/ExecutionPhase";
 import NightPhase from "./game/NightPhase";
 import VotePhase from "./game/VotePhase";
-import {CHARACTER_NAME_MAP} from "../../util/const";
+import { characterNameMap } from "../../game/characterNameMap";
 import EndPhase from "./game/EndPhase";
 
 var gameManager: GameManager;
@@ -89,7 +89,7 @@ export default function GameComponent() {
             <p className="character-p">
                 {thisUser.characterCode === null
                     ? strResource.game.abscence
-                    : CHARACTER_NAME_MAP[characterCodeOfUser]}
+                    : characterNameMap[characterCodeOfUser]}
             </p>
             <p className="present-current-phase">{currentGamePhase.value}</p>
             <p className="time-counter">{timeCount}</p>

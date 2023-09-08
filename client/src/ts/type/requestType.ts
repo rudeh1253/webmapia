@@ -1,4 +1,4 @@
-import {CharacterDistribution, GameSetting} from "./gameDomainType";
+import {CharacterDistribution, GameSetting, SkillType} from "./gameDomainType";
 
 export type CharacterGenerationRequest = {
     gameId: number;
@@ -53,4 +53,15 @@ export type NewParticipantRequest = {
 export type RemoveChatContainerRequest = {
     gameId: number;
     containerId: number;
+};
+
+export type SkillActivationRequest = {
+    gameId: number;
+    activatorId: number;
+    targetId: number;
+    skillType: SkillType;
+};
+
+export type ProcessSkillsRequestDTO = {
+    gameId: number;
 };

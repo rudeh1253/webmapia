@@ -21,7 +21,7 @@ import {
     SOCKET_SEND_REMOVE_CHAT_CONTAINER,
     SYSTEM_MESSAGE_ID
 } from "../util/const";
-import {SystemId} from "./SystemId";
+import {SystemMessengerId} from "./SystemMessengerId";
 
 var sockClient: SocketClient;
 
@@ -44,7 +44,7 @@ export async function sendPublicChat(
 
 export async function sendSystemMessage(
     message: string,
-    systemId: SystemId,
+    systemId: SystemMessengerId,
     currentRoomInfo: CurrentRoomInfoInitialState
 ) {
     const messageObj: PublicChatMessage = {

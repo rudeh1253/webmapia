@@ -93,4 +93,26 @@ export type Chat = {
 export type ChatContainerTab = {
     key: number;
     name: string;
-}
+};
+
+export type CharacterEffectAfterNightType =
+    | "KILL"
+    | "INVESTIGATE"
+    | "GUARD"
+    | "EXTERMINATE"
+    | "FAIL_TO_KILL"
+    | "FAIL_TO_INVESTIGATE"
+    | "FAIL_TO_GUARD"
+    | "FAIL_TO_EXTERMINATE"
+    | "ENTER_WOLF_CHAT"
+    | "NOTIFY"
+    | "NONE";
+
+export type SkillType =
+    | "KILL"
+    | "EXTERMINATE"
+    | "INVESTIGATE_DEAD_CHARACTER"
+    | "INVESTIGATE_ALIVE_CHARACTER"
+    | "GUARD"
+    | "ENTER_WOLF_CHAT"
+    | "NONE";

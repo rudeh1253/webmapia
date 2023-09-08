@@ -1,4 +1,4 @@
-import {CharacterCode, GameSetting} from "./gameDomainType";
+import {CharacterCode, CharacterEffectAfterNightType, GameSetting} from "./gameDomainType";
 import {NotificationType} from "./notificationType";
 
 export interface CommonResponse<D> {
@@ -64,7 +64,7 @@ export type SkillResultResponse = {
     skillActivatorId: number;
     receiverId: number;
     message: string;
-    characterEffectAfterNightType: string;
+    characterEffectAfterNightType: CharacterEffectAfterNightType;
 };
 
 export type GameStartNotificationResponse = {

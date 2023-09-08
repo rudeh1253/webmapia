@@ -1,8 +1,12 @@
 package com.nsl.webmapia.gameoperation.controller;
 
 import com.nsl.webmapia.common.CommonResponse;
+import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.gameoperation.dto.*;
 import com.nsl.webmapia.gameoperation.service.GameService;
+import com.nsl.webmapia.skill.dto.ProcessSkillsRequestDTO;
+import com.nsl.webmapia.skill.dto.SkillActivationRequestDTO;
+import com.nsl.webmapia.skill.dto.SkillResultResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -16,18 +20,23 @@ import java.util.List;
 
 @RestController
 public class GameController {
+    // TODO: This should be fixed. This is the result of my laziness
+    private boolean skillProcessing;
+
     private GameService gameService;
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate) {
+        this.skillProcessing = false;
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
     }
 
     @MessageMapping("/game/start")
     public void gameStart(@Payload GameStartRequestDTO request) {
-        messagingTemplate.convertAndSend("/notification/public/" + request.getGameId(), CommonResponse.ok(request, LocalDateTime.now()));
+        messagingTemplate.convertAndSend("/notification/public/" + request.getGameId(),
+                CommonResponse.ok(GameStartResponseDTO.from(request.getGameSetting(), request.getGameId()), LocalDateTime.now()));
     }
 
     @MessageMapping("/game/distribute-character")
@@ -45,7 +54,7 @@ public class GameController {
         PhaseEndResponseDTO result = gameService.phaseEnd(request.getGameId(), request.getUserId());
         System.out.println("PhaseEnd = " + result);
         if (result.isEnd()) {
-            System.out.println("Phase ended");
+            this.skillProcessing = false;
             messagingTemplate.convertAndSend("/notification/public/" + result.getGameId(), CommonResponse.ok(result, LocalDateTime.now()));
         }
     }
@@ -60,6 +69,30 @@ public class GameController {
     @MessageMapping("/game/vote")
     public void vote(@Payload VoteRequestDTO request) {
         gameService.acceptVote(request.getGameId(), request.getVoterId(), request.getSubjectId());
+    }
+
+    @MessageMapping("/game/activate-skill")
+    public void activateSkill(@Payload SkillActivationRequestDTO request) {
+        gameService.activateSkill(request.getGameId(), request.getActivatorId(), request.getTargetId(), request.getSkillType());
+    }
+
+    @MessageMapping("/game/process-skill")
+    public void processSkill(@Payload ProcessSkillsRequestDTO request) {
+        if (!skillProcessing) {
+            skillProcessing = true;
+            List<SkillResultResponseDTO> skillResults = gameService.processSkills(request.getGameId());
+            for (SkillResultResponseDTO note : skillResults) {
+                switch (note.getNotificationType()) {
+                    case SKILL_PUBLIC:
+                        messagingTemplate.convertAndSend("/notification/public/" + note.getGameId(), CommonResponse.ok(note, LocalDateTime.now()));
+                        break;
+                    case SKILL_PRIVATE:
+                        messagingTemplate.convertAndSend("/notification/private/" + note.getGameId() + "/" + note.getReceiverId(),
+                                CommonResponse.ok(note, LocalDateTime.now()));
+                        break;
+                }
+            }
+        }
     }
 
     @GetMapping("/game/current-phase/{gameId}")
