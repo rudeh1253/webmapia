@@ -16,7 +16,7 @@ export type ChatComponentProp = {
     users: UserInfo[];
 };
 
-const chatContainerMap = new Map<number, ChatContainer>();
+var chatContainerMap = new Map<number, ChatContainer>();
 
 export default function ChatComponent({users}: ChatComponentProp) {
     const [currentChatContainer, setCurrentChatContainer] =
@@ -56,6 +56,11 @@ export default function ChatComponent({users}: ChatComponentProp) {
         if (chatContainerMap.size === 0) {
             resetChatStorage();
         }
+        return () => {
+            setCurrentChatContainer(iChatStorage);
+            setChatContainerTabs([]);
+            chatContainerMap.clear();
+        };
     }, []);
 
     useEffect(() => {

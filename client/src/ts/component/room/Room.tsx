@@ -26,8 +26,10 @@ import ChatComponent from "./ChatComponent";
 import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
 import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
-import {sendPublicChat} from "../../sockjs/chat";
+import {sendPublicChat, sendSystemMessage} from "../../sockjs/chat";
+import {SystemId} from "../../sockjs/SystemId";
 
+var inited = false;
 var sockClient: SocketClient | undefined;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
 
@@ -70,24 +72,22 @@ export default function Room() {
     );
 
     useEffect(() => {
-        if (!sockClient) {
-            init(currentRoomInfo, thisUser, setUsersInRoom, toSubscribe);
-            const gameManager = GameManager.getInstance();
-            gameManager.gameId = currentRoomInfo.roomInfo.roomId;
-            gameManager.dispatch = dispatch;
+        if (!inited) {
+            inited = true;
+            if (!sockClient) {
+                init(currentRoomInfo, thisUser, setUsersInRoom, toSubscribe);
+                const gameManager = GameManager.getInstance();
+                gameManager.gameId = currentRoomInfo.roomInfo.roomId;
+                gameManager.dispatch = dispatch;
+            }
         }
         return () => {
             if (sockClient) {
-                sendPublicChat(
+                sendSystemMessage(
                     thisUser.username +
                         strResource.notificationMessage.someoneExited,
-                    currentRoomInfo,
-                    {
-                        userId: SYSTEM_MESSAGE_ID,
-                        username: "",
-                        characterCode: null,
-                        isDead: false
-                    }
+                    SystemId.USER_EXITED,
+                    currentRoomInfo
                 );
                 const exitRequestBody: UserRequest = {
                     gameId: currentRoomInfo.roomInfo.roomId,
@@ -106,6 +106,7 @@ export default function Room() {
                     subscriptions = undefined;
                 }
                 sockClient = undefined;
+                inited = false;
             }
         };
     }, []);
@@ -262,14 +263,9 @@ async function init(
         }
     }
 
-    sendPublicChat(
+    sendSystemMessage(
         thisUser.username + strResource.notificationMessage.someoneEntered,
-        currentRoomInfo,
-        {
-            userId: SYSTEM_MESSAGE_ID,
-            username: "",
-            characterCode: null,
-            isDead: false
-        }
+        SystemId.USER_ENTERED,
+        currentRoomInfo
     );
 }

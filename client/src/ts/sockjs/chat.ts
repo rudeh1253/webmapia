@@ -18,8 +18,10 @@ import {
     SOCKET_SEND_CHAT_PUBLIC,
     SOCKET_SEND_NEW_CHAT_CONTAINER,
     SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT,
-    SOCKET_SEND_REMOVE_CHAT_CONTAINER
+    SOCKET_SEND_REMOVE_CHAT_CONTAINER,
+    SYSTEM_MESSAGE_ID
 } from "../util/const";
+import {SystemId} from "./SystemId";
 
 var sockClient: SocketClient;
 
@@ -37,6 +39,22 @@ export async function sendPublicChat(
         sockClient = await SocketClient.getInstance();
     }
     console.log("Send Public Message");
+    sockClient.sendMessage(SOCKET_SEND_CHAT_PUBLIC, {}, messageObj);
+}
+
+export async function sendSystemMessage(
+    message: string,
+    systemId: SystemId,
+    currentRoomInfo: CurrentRoomInfoInitialState
+) {
+    const messageObj: PublicChatMessage = {
+        gameId: currentRoomInfo.roomInfo.roomId,
+        senderId: systemId,
+        message
+    };
+    if (!sockClient) {
+        sockClient = await SocketClient.getInstance();
+    }
     sockClient.sendMessage(SOCKET_SEND_CHAT_PUBLIC, {}, messageObj);
 }
 
