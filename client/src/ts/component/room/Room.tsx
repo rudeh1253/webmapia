@@ -15,7 +15,8 @@ import {Subscription} from "stompjs";
 import {
     SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
     SOCKET_SEND_GAME_START,
-    SOCKET_SEND_USER_EXIT} from "../../util/const";
+    SOCKET_SEND_USER_EXIT
+} from "../../util/const";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
 import {getSubscription} from "../../sockjs/getSubscription";
@@ -26,6 +27,7 @@ import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
 import {sendSystemMessage} from "../../sockjs/chat";
 import {SystemMessengerId} from "../../sockjs/SystemMessengerId";
+import {setUsersInRoom} from "../../redux/slice/usersInRoomSlice";
 
 var inited = false;
 var sockClient: SocketClient | undefined;
@@ -39,7 +41,6 @@ export type UserState = {
 };
 
 export default function Room() {
-    const [usersInRoom, setUsersInRoom] = useState<UserInfo[]>([]);
     const [newUserState, setNewUserState] = useState<UserState>(iNewUserState);
     const [delayStateForNewUser, setDelayStateForNewUser] = useState<UserState>(
         iDelayStateForNewUser
@@ -51,6 +52,7 @@ export default function Room() {
         (state) => state.gameConfigurationModal
     );
 
+    const usersInRoom = useAppSelector((state) => state.usersInRoom);
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
@@ -73,7 +75,7 @@ export default function Room() {
         if (!inited) {
             inited = true;
             if (!sockClient) {
-                init(currentRoomInfo, thisUser, setUsersInRoom, toSubscribe);
+                init(currentRoomInfo, thisUser, dispatch, toSubscribe);
                 const gameManager = GameManager.getInstance();
                 gameManager.gameId = currentRoomInfo.roomInfo.roomId;
                 gameManager.dispatch = dispatch;
@@ -115,13 +117,15 @@ export default function Room() {
                 const mUsersInRoom = usersInRoom.filter(
                     (val) => val.userId !== newUserState.userInfo.userId
                 );
-                setUsersInRoom([...mUsersInRoom]);
+                dispatch(setUsersInRoom([...mUsersInRoom]));
             } else if (
                 delayStateForNewUser.userInfo.userId !==
                 newUserState.userInfo.userId
             ) {
                 if (newUserState.stateType === "USER_ENTERED") {
-                    setUsersInRoom([...usersInRoom, newUserState.userInfo]);
+                    dispatch(
+                        setUsersInRoom([...usersInRoom, newUserState.userInfo])
+                    );
                 }
                 setDelayStateForNewUser({...newUserState});
             }
@@ -219,14 +223,14 @@ export default function Room() {
 async function init(
     currentRoomInfo: CurrentRoomInfoInitialState,
     thisUser: UserInfo,
-    setUsersInRoom: React.Dispatch<React.SetStateAction<UserInfo[]>>,
+    dispatch: any,
     toSubscribe: {endpoint: string; callback: (payload: any) => void}[]
 ) {
     const sock = await SocketClient.getInstance();
     sockClient = sock;
 
     const u: UserInfo[] = await fetchUsers(currentRoomInfo);
-    setUsersInRoom(u);
+    dispatch(setUsersInRoom(u));
 
     if (!subscriptions) {
         subscriptions = [];

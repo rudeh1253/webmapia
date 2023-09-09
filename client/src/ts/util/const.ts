@@ -50,9 +50,11 @@ export const GAME_PHASE_ORDER = [
 export const DEFAULT_TIME_CONFIGURATION = {
     discussionTimeSeconds: 5,
     voteTimeSeconds: 5,
-    nightTimeSeconds: 5
+    nightTimeSeconds: 15
 };
 
 export const ID_OF_PUBLIC_CHAT = 1;
+export const ID_OF_WOLF_CHAT = 101;
+export const ID_OF_SECRET_SOCIETY_CHAT = 201;
 
 export const SYSTEM_MESSAGE_ID = -41825;
