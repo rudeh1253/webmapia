@@ -18,6 +18,8 @@ export const SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT =
     "/app/chatroom/new-participant-in-chat";
 export const SOCKET_SEND_REMOVE_CHAT_CONTAINER =
     "/app/chatroom/remove-chat-container";
+export const SOCKET_SEND_ACTIVATE_SKILL = "/app/game/activate-skill";
+export const SOCKET_SEND_PROCESS_SKILL = "/app/game/process-skill";
 
 export const SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC = (roomId: number) =>
     `/notification/public/${roomId}`;

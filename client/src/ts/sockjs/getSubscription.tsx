@@ -49,7 +49,6 @@ export function getSubscription(
                     .body as CommonResponse<any>;
                 const notificationType = payloadData.data
                     .notificationType as NotificationType;
-                console.log(notificationType);
                 switch (notificationType) {
                     case "USER_ENTERED":
                     case "USER_REMOVED":
@@ -164,7 +163,6 @@ function onGameStart(
     payloadData: CommonResponse<GameStartNotificationResponse>,
     dispatch: any
 ) {
-    console.log("Game started");
     const gameManager = GameManager.getInstance();
     const gameSetting = payloadData.data.gameSetting;
     try {

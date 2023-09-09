@@ -62,6 +62,6 @@ export type SkillActivationRequest = {
     skillType: SkillType;
 };
 
-export type ProcessSkillsRequestDTO = {
+export type ProcessSkillsRequest = {
     gameId: number;
 };
