@@ -13,15 +13,9 @@ import org.springframework.stereotype.Component;
 public class Mediumship implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.MEDIUMSHIP;
     private static final Faction FACTION = Faction.HUMAN;
-    private SkillManager skillManager;
-
-    @Autowired
-    public Mediumship(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         if (skillType != SkillType.INVESTIGATE_DEAD_CHARACTER) {
             throw new CharacterNotSupportSkillTypeException("Mediumship doesn't support given skill type:"
                     + "SkillType code: " + skillType);

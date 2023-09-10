@@ -22,21 +22,21 @@ class RoomServiceImplTest {
     @BeforeEach
     public void initialize() {
         SkillManager skillManager = new SkillManager();
-        Wolf wolf = new Wolf(skillManager);
-        Betrayer betrayer = new Betrayer(skillManager);
-        Citizen citizen = new Citizen(skillManager);
-        Detective detective = new Detective(skillManager);
-        Follower follower = new Follower(skillManager);
-        Guard guard = new Guard(skillManager);
-        HumanMouse humanMouse = new HumanMouse(skillManager);
-        Mediumship mediumship = new Mediumship(skillManager);
-        Murderer murderer = new Murderer(skillManager);
-        Nobility nobility = new Nobility(skillManager);
-        Predictor predictor = new Predictor(skillManager);
-        SecretSociety secretSociety = new SecretSociety(skillManager);
-        Soldier soldier = new Soldier(skillManager);
-        Templar templar = new Templar(skillManager);
-        Successor successor = new Successor(skillManager);
+        Wolf wolf = new Wolf();
+        Betrayer betrayer = new Betrayer();
+        Citizen citizen = new Citizen();
+        Detective detective = new Detective();
+        Follower follower = new Follower();
+        Guard guard = new Guard();
+        HumanMouse humanMouse = new HumanMouse();
+        Mediumship mediumship = new Mediumship();
+        Murderer murderer = new Murderer();
+        Nobility nobility = new Nobility();
+        Predictor predictor = new Predictor();
+        SecretSociety secretSociety = new SecretSociety();
+        Soldier soldier = new Soldier();
+        Templar templar = new Templar();
+        Successor successor = new Successor();
 
         Characters characters = new Characters(wolf, betrayer, citizen, detective, follower, guard, humanMouse, mediumship,
                 murderer, nobility, predictor, secretSociety, soldier, successor, templar);

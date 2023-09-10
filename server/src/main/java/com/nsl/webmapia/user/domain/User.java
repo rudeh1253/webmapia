@@ -4,6 +4,7 @@ import com.nsl.webmapia.character.Character;
 import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.gameoperation.domain.Vote;
 import com.nsl.webmapia.skill.domain.ActivatedSkillInfo;
+import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.skill.domain.SkillType;
 import lombok.*;
 
@@ -37,8 +38,8 @@ public class User {
      * @return information of expected result of the skill. The result may vary by the other skill used by
      *         other user.
      */
-    public ActivatedSkillInfo activateSkill(User targetUser, SkillType skillType) {
-        ActivatedSkillInfo result = character.activateSkill(skillType);
+    public ActivatedSkillInfo activateSkill(User targetUser, SkillManager skillManager, SkillType skillType) {
+        ActivatedSkillInfo result = character.activateSkill(skillManager, skillType);
         result.setActivator(this);
         result.setTarget(targetUser);
         return result;

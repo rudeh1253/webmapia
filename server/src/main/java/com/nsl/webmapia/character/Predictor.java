@@ -12,15 +12,9 @@ import org.springframework.stereotype.Component;
 public class Predictor implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.PREDICTOR;
     private static final Faction FACTION = Faction.HUMAN;
-    SkillManager skillManager;
-
-    @Autowired
-    public Predictor(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(skillType);
         result.setSkillCondition((src, tar, type) -> true);

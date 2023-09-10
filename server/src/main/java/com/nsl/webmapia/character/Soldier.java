@@ -14,15 +14,9 @@ public class Soldier implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.SOLDIER;
     private static final Faction FACTION = Faction.HUMAN;
     private int life = 1;
-    private SkillManager skillManager;
-
-    @Autowired
-    public Soldier(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         if (skillType != SkillType.GUARD) {
             throw new CharacterNotSupportSkillTypeException("Soldier doesn't support given skill type: SkillType code " + skillType);
         }

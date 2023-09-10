@@ -10,15 +10,9 @@ import org.springframework.stereotype.Component;
 public class Nobility implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.NOBILITY;
     private static final Faction FACTION = Faction.HUMAN;
-    private SkillManager skillManager;
-
-    @Autowired
-    public Nobility(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(SkillType.NONE);
         result.setSkillCondition((src, tar, type) -> false);

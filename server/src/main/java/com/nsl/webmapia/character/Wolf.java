@@ -14,12 +14,10 @@ public class Wolf implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.WOLF;
     private static final Faction FACTION = Faction.WOLF;
     private int leftExtermination;
-    private final SkillManager skillManager;
 
     @Autowired
-    public Wolf(SkillManager skillManager) {
+    public Wolf() {
         leftExtermination = 1;
-        this.skillManager = skillManager;
     }
 
     /**
@@ -32,7 +30,7 @@ public class Wolf implements Character {
      *         other user.
      */
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
         switch (skillType) {

@@ -14,15 +14,9 @@ public class Murderer implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.MURDERER;
     private static final Faction FACTION = Faction.HUMAN;
     private boolean canKill = true;
-    private SkillManager skillManager;
-
-    @Autowired
-    public Murderer(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         if (skillType != SkillType.EXTERMINATE) {
             throw new CharacterNotSupportSkillTypeException("Murderer doesn't support given skill type: SkillType code"
                     + skillType);

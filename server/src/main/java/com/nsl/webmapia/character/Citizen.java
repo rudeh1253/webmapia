@@ -10,12 +10,6 @@ import org.springframework.stereotype.Component;
 public class Citizen implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.CITIZEN;
     private static final Faction FACTION = Faction.HUMAN;
-    private SkillManager skillManager;
-
-    @Autowired
-    public Citizen(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     /**
      * Citizen doesn't have any skill.
@@ -26,7 +20,7 @@ public class Citizen implements Character {
      *         ActivatedSkillInfo.onSkillFail: No effect
      */
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(SkillType.NONE);
         result.setSkillCondition((src, tar, type) -> false);

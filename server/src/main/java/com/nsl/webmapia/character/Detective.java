@@ -13,15 +13,9 @@ import org.springframework.stereotype.Component;
 public class Detective implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.DETECTIVE;
     private static final Faction FACTION = Faction.HUMAN;
-    private SkillManager skillManager;
-
-    @Autowired
-    public Detective(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         if (skillType != SkillType.INVESTIGATE_ALIVE_CHARACTER) {
             throw new CharacterNotSupportSkillTypeException("Detective doesn't support given skill type: SkillType code"
                     + skillType);

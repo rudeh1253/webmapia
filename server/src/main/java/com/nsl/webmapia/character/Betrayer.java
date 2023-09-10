@@ -13,12 +13,6 @@ import org.springframework.stereotype.Component;
 public class Betrayer implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.BETRAYER;
     private static final Faction FACTION = Faction.WOLF;
-    private final SkillManager skillManager;
-
-    @Autowired
-    public Betrayer(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     /**
      * Activate one of skill of type, either SkillType.ENTER_WOLF_CHAT or SkillType.INVESTIGATE_DEAD_CHARACTER.
@@ -40,19 +34,19 @@ public class Betrayer implements Character {
      *         SkillEffect.skillTargetCharacterCode: CharacterCode of target character
      */
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         switch (skillType) {
             case ENTER_WOLF_CHAT:
-                return enterWolfChat(skillType);
+                return enterWolfChat(skillManager, skillType);
             case INVESTIGATE_DEAD_CHARACTER:
-                return getCharacterInfoFromDeadCharacter(skillType);
+                return getCharacterInfoFromDeadCharacter(skillManager, skillType);
             default:
                 throw new CharacterNotSupportSkillTypeException("Betrayer doesn't support given skill type: SkillType code "
                         + skillType);
         }
     }
 
-    private ActivatedSkillInfo enterWolfChat(SkillType skillType) {
+    private ActivatedSkillInfo enterWolfChat(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo effect = new ActivatedSkillInfo();
         effect.setSkillType(skillType);
         effect.setOnSkillSucceed((src, tar, type) -> {
@@ -89,7 +83,7 @@ public class Betrayer implements Character {
         return effect;
     }
 
-    private ActivatedSkillInfo getCharacterInfoFromDeadCharacter(SkillType skillType) {
+    private ActivatedSkillInfo getCharacterInfoFromDeadCharacter(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo effect = new ActivatedSkillInfo();
         effect.setSkillType(skillType);
         effect.setSkillCondition((src, tar, type) -> tar.isDead());

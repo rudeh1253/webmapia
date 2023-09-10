@@ -205,7 +205,7 @@ public class GameManagerImpl implements GameManager {
         // TODO if activatorId doesn't exist in userRepository as a key, throw an exception.
         activator.ifPresent(act ->
                 target.ifPresent(tar ->
-                        activatedSkills.add(act.activateSkill(tar, skillType))));
+                        activatedSkills.add(act.activateSkill(tar, this.skillManager, skillType))));
     }
 
     @Override

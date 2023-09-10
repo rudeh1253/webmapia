@@ -27,25 +27,25 @@ class GameManagerImplTest {
     private UserRepository userRepository;
 
     @BeforeEach
-    public void intialize() {
-        skillManager = new SkillManager();
+    public void initialize() {
+        this.skillManager = new SkillManager();
         userRepository = new MemoryUserRepository();
         Map<CharacterCode, Character> characters = Map.ofEntries(
-                Map.entry(CharacterCode.WOLF, new Wolf(skillManager)),
-                Map.entry(CharacterCode.BETRAYER, new Betrayer(skillManager)),
-                Map.entry(CharacterCode.DETECTIVE, new Detective(skillManager)),
-                Map.entry(CharacterCode.FOLLOWER, new Follower(skillManager)),
-                Map.entry(CharacterCode.CITIZEN, new Citizen(skillManager)),
-                Map.entry(CharacterCode.GUARD, new Guard(skillManager)),
-                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse(skillManager)),
-                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship(skillManager)),
-                Map.entry(CharacterCode.MURDERER, new Murderer(skillManager)),
-                Map.entry(CharacterCode.NOBILITY, new Nobility(skillManager)),
-                Map.entry(CharacterCode.PREDICTOR, new Predictor(skillManager)),
-                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety(skillManager)),
-                Map.entry(CharacterCode.SOLDIER, new Soldier(skillManager)),
-                Map.entry(CharacterCode.SUCCESSOR, new Successor(skillManager)),
-                Map.entry(CharacterCode.TEMPLAR, new Templar(skillManager)));
+                Map.entry(CharacterCode.WOLF, new Wolf()),
+                Map.entry(CharacterCode.BETRAYER, new Betrayer()),
+                Map.entry(CharacterCode.DETECTIVE, new Detective()),
+                Map.entry(CharacterCode.FOLLOWER, new Follower()),
+                Map.entry(CharacterCode.CITIZEN, new Citizen()),
+                Map.entry(CharacterCode.GUARD, new Guard()),
+                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse()),
+                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship()),
+                Map.entry(CharacterCode.MURDERER, new Murderer()),
+                Map.entry(CharacterCode.NOBILITY, new Nobility()),
+                Map.entry(CharacterCode.PREDICTOR, new Predictor()),
+                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety()),
+                Map.entry(CharacterCode.SOLDIER, new Soldier()),
+                Map.entry(CharacterCode.SUCCESSOR, new Successor()),
+                Map.entry(CharacterCode.TEMPLAR, new Templar()));
         gameManager = new GameManagerImpl(
                 1L,
                 characters,
@@ -100,21 +100,21 @@ class GameManagerImplTest {
     @Test
     public void randomnessOfAllocateCharacterToEachUser() {
         Map<CharacterCode, Character> characters = Map.ofEntries(
-                Map.entry(CharacterCode.WOLF, new Wolf(skillManager)),
-                Map.entry(CharacterCode.BETRAYER, new Betrayer(skillManager)),
-                Map.entry(CharacterCode.DETECTIVE, new Detective(skillManager)),
-                Map.entry(CharacterCode.FOLLOWER, new Follower(skillManager)),
-                Map.entry(CharacterCode.CITIZEN, new Citizen(skillManager)),
-                Map.entry(CharacterCode.GUARD, new Guard(skillManager)),
-                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse(skillManager)),
-                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship(skillManager)),
-                Map.entry(CharacterCode.MURDERER, new Murderer(skillManager)),
-                Map.entry(CharacterCode.NOBILITY, new Nobility(skillManager)),
-                Map.entry(CharacterCode.PREDICTOR, new Predictor(skillManager)),
-                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety(skillManager)),
-                Map.entry(CharacterCode.SOLDIER, new Soldier(skillManager)),
-                Map.entry(CharacterCode.SUCCESSOR, new Successor(skillManager)),
-                Map.entry(CharacterCode.TEMPLAR, new Templar(skillManager)));
+                Map.entry(CharacterCode.WOLF, new Wolf()),
+                Map.entry(CharacterCode.BETRAYER, new Betrayer()),
+                Map.entry(CharacterCode.DETECTIVE, new Detective()),
+                Map.entry(CharacterCode.FOLLOWER, new Follower()),
+                Map.entry(CharacterCode.CITIZEN, new Citizen()),
+                Map.entry(CharacterCode.GUARD, new Guard()),
+                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse()),
+                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship()),
+                Map.entry(CharacterCode.MURDERER, new Murderer()),
+                Map.entry(CharacterCode.NOBILITY, new Nobility()),
+                Map.entry(CharacterCode.PREDICTOR, new Predictor()),
+                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety()),
+                Map.entry(CharacterCode.SOLDIER, new Soldier()),
+                Map.entry(CharacterCode.SUCCESSOR, new Successor()),
+                Map.entry(CharacterCode.TEMPLAR, new Templar()));
 
         Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
         characterDistribution.put(CharacterCode.WOLF, 1);

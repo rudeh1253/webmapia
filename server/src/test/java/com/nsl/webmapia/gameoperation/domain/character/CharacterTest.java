@@ -58,21 +58,21 @@ public class CharacterTest {
     @BeforeEach
     public void initialize() {
         skillManager.clearSkillEffects();
-        wolf = new Wolf(skillManager);
-        betrayer = new Betrayer(skillManager);
-        follower = new Follower(skillManager);
-        predictor = new Predictor(skillManager);
-        guard = new Guard(skillManager);
-        mediumship = new Mediumship(skillManager);
-        detective = new Detective(skillManager);
-        successor = new Successor(skillManager);
-        nobility = new Nobility(skillManager);
-        soldier = new Soldier(skillManager);
-        secretSociety = new SecretSociety(skillManager);
-        templar = new Templar(skillManager);
-        citizen = new Citizen(skillManager);
-        murderer = new Murderer(skillManager);
-        humanMouse = new HumanMouse(skillManager);
+        wolf = new Wolf();
+        betrayer = new Betrayer();
+        follower = new Follower();
+        predictor = new Predictor();
+        guard = new Guard();
+        mediumship = new Mediumship();
+        detective = new Detective();
+        successor = new Successor();
+        nobility = new Nobility();
+        soldier = new Soldier();
+        secretSociety = new SecretSociety();
+        templar = new Templar();
+        citizen = new Citizen();
+        murderer = new Murderer();
+        humanMouse = new HumanMouse();
         userRepository = new MemoryUserRepository();
         wolfUser = new User(1L);
         wolfUser.setCharacter(wolf);
@@ -123,8 +123,8 @@ public class CharacterTest {
 
     @Test
     public void betrayerAndFollowerFoundWolf() {
-        ActivatedSkillInfo betrayerFoundWolf = betrayerUser.activateSkill(wolfUser, SkillType.ENTER_WOLF_CHAT);
-        ActivatedSkillInfo followerFoundWolf = followerUser.activateSkill(wolfUser, SkillType.ENTER_WOLF_CHAT);
+        ActivatedSkillInfo betrayerFoundWolf = betrayerUser.activateSkill(wolfUser, this.skillManager, SkillType.ENTER_WOLF_CHAT);
+        ActivatedSkillInfo followerFoundWolf = followerUser.activateSkill(wolfUser, this.skillManager, SkillType.ENTER_WOLF_CHAT);
 
         assertTrue(betrayerFoundWolf.getSkillCondition().isSuccess(betrayerUser, wolfUser, SkillType.ENTER_WOLF_CHAT));
         assertTrue(followerFoundWolf.getSkillCondition().isSuccess(followerUser, wolfUser, SkillType.ENTER_WOLF_CHAT));
@@ -173,8 +173,8 @@ public class CharacterTest {
 
     @Test
     public void betrayerAndFollowerFailedToFindWolf() {
-        ActivatedSkillInfo betrayerFoundWolf = betrayerUser.activateSkill(predictorUser, SkillType.ENTER_WOLF_CHAT);
-        ActivatedSkillInfo followerFoundWolf = followerUser.activateSkill(humanMouseUser, SkillType.ENTER_WOLF_CHAT);
+        ActivatedSkillInfo betrayerFoundWolf = betrayerUser.activateSkill(predictorUser, this.skillManager, SkillType.ENTER_WOLF_CHAT);
+        ActivatedSkillInfo followerFoundWolf = followerUser.activateSkill(humanMouseUser, this.skillManager, SkillType.ENTER_WOLF_CHAT);
 
         assertFalse(betrayerFoundWolf.getSkillCondition().isSuccess(betrayerUser, predictorUser, SkillType.ENTER_WOLF_CHAT));
         assertFalse(followerFoundWolf.getSkillCondition().isSuccess(followerUser, humanMouseUser, SkillType.ENTER_WOLF_CHAT));
@@ -207,7 +207,7 @@ public class CharacterTest {
 
     @Test
     public void wolfExterminateOnce() {
-        ActivatedSkillInfo result = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo result = wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
         assertTrue(result.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
         result.getOnSkillSucceed().onSkillSucceed(result.getActivator(), result.getTarget(), result.getSkillType());
         assertEquals(1, skillManager.getSkillEffects().size());
@@ -216,20 +216,20 @@ public class CharacterTest {
 
     @Test
     public void wolfExterminateMoreThanOnce() {
-        ActivatedSkillInfo result1 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo result1 = wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
         assertEquals(SkillType.EXTERMINATE, result1.getSkillType());
-        ActivatedSkillInfo result2 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo result2 = wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
         assertEquals(SkillType.NONE, result2.getSkillType());
-        ActivatedSkillInfo result3 = wolfUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo result3 = wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
         assertEquals(SkillType.NONE, result3.getSkillType());
     }
 
     @Test
     public void predictorInvestigation() {
         List<ActivatedSkillInfo> activatedSkills = new ArrayList<>();
-        activatedSkills.add(predictorUser.activateSkill(mediumshipUser, SkillType.INVESTIGATE_ALIVE_CHARACTER));
-        activatedSkills.add(predictorUser.activateSkill(guardUser, SkillType.INVESTIGATE_ALIVE_CHARACTER));
-        activatedSkills.add(predictorUser.activateSkill(templarUser, SkillType.INVESTIGATE_ALIVE_CHARACTER));
+        activatedSkills.add(predictorUser.activateSkill(mediumshipUser, this.skillManager, SkillType.INVESTIGATE_ALIVE_CHARACTER));
+        activatedSkills.add(predictorUser.activateSkill(guardUser, this.skillManager, SkillType.INVESTIGATE_ALIVE_CHARACTER));
+        activatedSkills.add(predictorUser.activateSkill(templarUser, this.skillManager, SkillType.INVESTIGATE_ALIVE_CHARACTER));
         activatedSkills.forEach(e -> {
             if (e.getSkillCondition().isSuccess(e.getActivator(), e.getTarget(), e.getSkillType())) {
                 e.getOnSkillSucceed().onSkillSucceed(e.getActivator(), e.getTarget(), e.getSkillType());
@@ -248,7 +248,7 @@ public class CharacterTest {
 
     @Test
     public void predictorKillHumanMouse() {
-        ActivatedSkillInfo activatedSkillInfo = predictorUser.activateSkill(humanMouseUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        ActivatedSkillInfo activatedSkillInfo = predictorUser.activateSkill(humanMouseUser, this.skillManager, SkillType.INVESTIGATE_ALIVE_CHARACTER);
         if (activatedSkillInfo.getSkillCondition().isSuccess(predictorUser, humanMouseUser, SkillType.INVESTIGATE_ALIVE_CHARACTER)) {
             activatedSkillInfo.getOnSkillSucceed().onSkillSucceed(predictorUser, humanMouseUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
         }
@@ -260,11 +260,11 @@ public class CharacterTest {
 
     @Test
     public void guardSucceedToGuard_KillFirst() {
-        wolfUser.activateSkill(citizenUser, SkillType.KILL)
+        wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.KILL)
                 .getOnSkillSucceed()
                 .onSkillSucceed(wolfUser, citizenUser, SkillType.KILL);
 
-        ActivatedSkillInfo guardEffect = guardUser.activateSkill(citizenUser, SkillType.GUARD);
+        ActivatedSkillInfo guardEffect = guardUser.activateSkill(citizenUser, this.skillManager, SkillType.GUARD);
 
         assertTrue(guardEffect.getSkillCondition().isSuccess(guardUser, citizenUser, SkillType.GUARD));
         guardEffect.getOnSkillSucceed().onSkillSucceed(guardUser, citizenUser, SkillType.GUARD);
@@ -275,11 +275,11 @@ public class CharacterTest {
 
     @Test
     public void guardSucceedToGuard_GuardFirst() {
-        wolfUser.activateSkill(citizenUser, SkillType.KILL)
+        wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.KILL)
                 .getOnSkillSucceed()
                 .onSkillSucceed(wolfUser, citizenUser, SkillType.KILL);
 
-        ActivatedSkillInfo guardEffect = guardUser.activateSkill(citizenUser, SkillType.GUARD);
+        ActivatedSkillInfo guardEffect = guardUser.activateSkill(citizenUser, this.skillManager, SkillType.GUARD);
 
         assertTrue(guardEffect.getSkillCondition().isSuccess(guardUser, citizenUser, SkillType.GUARD));
         guardEffect.getOnSkillSucceed().onSkillSucceed(guardUser, citizenUser, SkillType.GUARD);
@@ -290,11 +290,11 @@ public class CharacterTest {
 
     @Test
     public void guardFailToGuard() {
-        wolfUser.activateSkill(citizenUser, SkillType.KILL)
+        wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.KILL)
                 .getOnSkillSucceed()
                 .onSkillSucceed(wolfUser, citizenUser, SkillType.KILL);
 
-        ActivatedSkillInfo guardEffect = guardUser.activateSkill(mediumshipUser, SkillType.GUARD);
+        ActivatedSkillInfo guardEffect = guardUser.activateSkill(mediumshipUser, this.skillManager, SkillType.GUARD);
 
         assertFalse(guardEffect.getSkillCondition().isSuccess(guardEffect.getActivator(), guardEffect.getTarget(), SkillType.GUARD));
         guardEffect.getOnSkillFail()
@@ -311,11 +311,11 @@ public class CharacterTest {
         wolfUser.setDead(true);
         predictorUser.setDead(true);
         guardUser.setDead(true);
-        ActivatedSkillInfo investigateAlive = mediumshipUser.activateSkill(humanMouseUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
-        ActivatedSkillInfo investigateWolf = mediumshipUser.activateSkill(wolfUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
-        ActivatedSkillInfo investigatePredictor = mediumshipUser.activateSkill(predictorUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
-        ActivatedSkillInfo investigateGuard = mediumshipUser.activateSkill(guardUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
-        ActivatedSkillInfo investigateOther = mediumshipUser.activateSkill(citizenUser, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigateAlive = mediumshipUser.activateSkill(humanMouseUser, this.skillManager, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigateWolf = mediumshipUser.activateSkill(wolfUser, this.skillManager, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigatePredictor = mediumshipUser.activateSkill(predictorUser, this.skillManager, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigateGuard = mediumshipUser.activateSkill(guardUser, this.skillManager, SkillType.INVESTIGATE_DEAD_CHARACTER);
+        ActivatedSkillInfo investigateOther = mediumshipUser.activateSkill(citizenUser, this.skillManager, SkillType.INVESTIGATE_DEAD_CHARACTER);
 
         assertFalse(investigateAlive.getSkillCondition()
                 .isSuccess(investigateAlive.getActivator(), investigateAlive.getTarget(), investigateAlive.getSkillType()));
@@ -364,7 +364,7 @@ public class CharacterTest {
 
     @Test
     public void detectiveFindBetrayer() {
-        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(betrayerUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(betrayerUser, this.skillManager, SkillType.INVESTIGATE_ALIVE_CHARACTER);
 
         assertTrue(activatedSkillInfo
                 .getSkillCondition()
@@ -383,7 +383,7 @@ public class CharacterTest {
 
     @Test
     public void detectiveFindFollower() {
-        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(followerUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(followerUser, this.skillManager, SkillType.INVESTIGATE_ALIVE_CHARACTER);
 
         assertTrue(activatedSkillInfo
                 .getSkillCondition()
@@ -402,7 +402,7 @@ public class CharacterTest {
 
     @Test
     public void detectiveFailToFind() {
-        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(wolfUser, SkillType.INVESTIGATE_ALIVE_CHARACTER);
+        ActivatedSkillInfo activatedSkillInfo = detectiveUser.activateSkill(wolfUser, this.skillManager, SkillType.INVESTIGATE_ALIVE_CHARACTER);
 
         assertFalse(activatedSkillInfo
                 .getSkillCondition()
@@ -421,7 +421,7 @@ public class CharacterTest {
 
     @Test
     public void soldier() {
-        ActivatedSkillInfo soldierSelfGuard = soldierUser.activateSkill(soldierUser, SkillType.GUARD);
+        ActivatedSkillInfo soldierSelfGuard = soldierUser.activateSkill(soldierUser, this.skillManager, SkillType.GUARD);
 
         assertTrue(soldierSelfGuard
                 .getSkillCondition()
@@ -434,7 +434,7 @@ public class CharacterTest {
         assertEquals(1, skillManager.getSkillEffects().size());
         assertEquals(CharacterEffectAfterNightType.GUARD, skillManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
 
-        ActivatedSkillInfo soldierSelfGuard2 = soldierUser.activateSkill(soldierUser, SkillType.GUARD);
+        ActivatedSkillInfo soldierSelfGuard2 = soldierUser.activateSkill(soldierUser, this.skillManager, SkillType.GUARD);
 
         assertFalse(soldierSelfGuard2
                 .getSkillCondition()
@@ -443,7 +443,7 @@ public class CharacterTest {
 
     @Test
     public void murderer() {
-        ActivatedSkillInfo murder = murdererUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo murder = murdererUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
 
         assertTrue(murder.getSkillCondition().isSuccess(murder.getActivator(), murder.getTarget(), murder.getSkillType()));
 
@@ -452,14 +452,14 @@ public class CharacterTest {
         assertEquals(1, skillManager.getSkillEffects().size());
         assertEquals(CharacterEffectAfterNightType.EXTERMINATE, skillManager.getSkillEffects().get(0).getCharacterEffectAfterNightType());
 
-        ActivatedSkillInfo murder2 = murdererUser.activateSkill(citizenUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo murder2 = murdererUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
 
         assertFalse(murder2.getSkillCondition().isSuccess(murder2.getActivator(), murder2.getTarget(), murder2.getSkillType()));
     }
 
     @Test
     public void murdererKillHumanMouse() {
-        ActivatedSkillInfo murder = murdererUser.activateSkill(humanMouseUser, SkillType.EXTERMINATE);
+        ActivatedSkillInfo murder = murdererUser.activateSkill(humanMouseUser, this.skillManager, SkillType.EXTERMINATE);
 
         assertFalse(murder.getSkillCondition().isSuccess(murder.getActivator(), murder.getTarget(), murder.getSkillType()));
     }

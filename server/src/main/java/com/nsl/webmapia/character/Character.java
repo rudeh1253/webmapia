@@ -1,6 +1,7 @@
 package com.nsl.webmapia.character;
 
 import com.nsl.webmapia.skill.domain.ActivatedSkillInfo;
+import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.skill.domain.SkillType;
 
 public interface Character {
@@ -10,7 +11,7 @@ public interface Character {
      * @param skillType type of skill to use
      * @return information of activated skill.
      */
-    ActivatedSkillInfo activateSkill(SkillType skillType);
+    ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType);
 
     /**
      * Return code of the character.

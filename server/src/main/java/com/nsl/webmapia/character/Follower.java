@@ -14,23 +14,17 @@ public class Follower implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.FOLLOWER;
     private static final Faction FACTION = Faction.WOLF;
     private boolean isAvailableInsight = true;
-    private SkillManager skillManager;
-
-    @Autowired
-    public Follower(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo result = new ActivatedSkillInfo();
         result.setSkillType(skillType);
         switch (skillType) {
             case INVESTIGATE_ALIVE_CHARACTER:
-                insight(result);
+                insight(skillManager, result);
                 break;
             case ENTER_WOLF_CHAT:
-                enterChat(result);
+                enterChat(skillManager, result);
                 break;
             default:
                 throw new CharacterNotSupportSkillTypeException("Follower doesn't support given skill type: SkillType code "
@@ -39,7 +33,7 @@ public class Follower implements Character {
         return result;
     }
 
-    private void insight(ActivatedSkillInfo result) {
+    private void insight(SkillManager skillManager, ActivatedSkillInfo result) {
         result.setSkillCondition((src, tar, type) -> isAvailableInsight);
         result.setOnSkillSucceed((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
@@ -53,7 +47,7 @@ public class Follower implements Character {
         });
     }
 
-    private void enterChat(ActivatedSkillInfo result) {
+    private void enterChat(SkillManager skillManager, ActivatedSkillInfo result) {
         result.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.WOLF);
         result.setOnSkillSucceed((src, tar, type) -> {
             SkillEffect srcBody = SkillEffect.builder()

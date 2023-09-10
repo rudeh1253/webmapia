@@ -10,15 +10,9 @@ import org.springframework.stereotype.Component;
 public class HumanMouse implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.HUMAN_MOUSE;
     private static final Faction FACTION = Faction.HUMAN_MOUSE;
-    private SkillManager skillManager;
-
-    @Autowired
-    public HumanMouse(SkillManager skillManager) {
-        this.skillManager = skillManager;
-    }
 
     @Override
-    public ActivatedSkillInfo activateSkill(SkillType skillType) {
+    public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo activatedSkillInfo = new ActivatedSkillInfo();
         activatedSkillInfo.setSkillType(SkillType.NONE);
         activatedSkillInfo.setSkillCondition((src, tar, type) -> false);
