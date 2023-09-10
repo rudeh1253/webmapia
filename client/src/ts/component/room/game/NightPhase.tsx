@@ -49,11 +49,18 @@ function SkillSelection({
 }: SkillSelectionProps) {
     const [targetSelection, setTargetSelection] = useState<boolean>(false);
     const [target, setTarget] = useState<UserInfo>();
+    const [used, setUsed] = useState<boolean>(false);
 
     const currentRoomInfo = useAppSelector(
         (state) => state.currentRoomInfo
     ).roomInfo;
     const thisUser = useAppSelector((state) => state.thisUserInfo);
+    const currentGamePhase = useAppSelector((state) => state.currentGamePhase);
+
+    useEffect(() => {
+        setUsed(false);
+    }, [currentGamePhase]);
+    
     return (
         <div className="selection-container">
             <button
@@ -81,8 +88,10 @@ function SkillSelection({
                                     {},
                                     body
                                 );
+                                setUsed(true);
                             }
                         }}
+                        disabled={used}
                     >
                         Use
                     </button>
