@@ -8,7 +8,7 @@ import {
 } from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
-import {ID_OF_PUBLIC_CHAT} from "../../util/const";
+import {ID_OF_CHAT_FOR_DEAD, ID_OF_PUBLIC_CHAT} from "../../util/const";
 import {iChatStorage} from "../../util/initialState";
 import {sendPrivateChat, sendPublicChat} from "../../sockjs/chat";
 
@@ -70,22 +70,24 @@ export default function ChatComponent({users}: ChatComponentProp) {
     }, [currentGamePhase]);
 
     useEffect(() => {
-        const chatContainer = chatContainerMap.get(newChat.containerId);
-        if (chatContainer) {
-            if (
-                chatContainer.chatLogs.length > 0 &&
-                chatContainer.chatLogs[chatContainer.chatLogs.length - 1]
-                    .timestamp === newChat.timestamp
-            ) {
-                return;
+        newChat.forEach((c) => {
+            const chatContainer = chatContainerMap.get(c.containerId);
+            if (chatContainer) {
+                if (
+                    chatContainer.chatLogs.length > 0 &&
+                    chatContainer.chatLogs[chatContainer.chatLogs.length - 1]
+                        .timestamp === c.timestamp
+                ) {
+                    return;
+                }
+                const origChatLogs = chatContainer.chatLogs;
+                chatContainer.chatLogs = [...origChatLogs, c];
+                setChatContainerTabs(extractKeysAndNames(chatContainerMap));
+                if (chatContainer.id === currentChatContainer.id) {
+                    setCurrentChatContainer({...chatContainer});
+                }
             }
-            const origChatLogs = chatContainer.chatLogs;
-            chatContainer.chatLogs = [...origChatLogs, newChat];
-            setChatContainerTabs(extractKeysAndNames(chatContainerMap));
-            if (chatContainer.id === currentChatContainer.id) {
-                setCurrentChatContainer({...chatContainer});
-            }
-        }
+        });
     }, [newChat]);
 
     useEffect(() => {
@@ -163,6 +165,10 @@ export default function ChatComponent({users}: ChatComponentProp) {
                                       thisUser,
                                       currentChatContainer.id
                                   )
+                        }
+                        disabled={
+                            thisUser.isDead &&
+                            currentChatContainer.id !== ID_OF_CHAT_FOR_DEAD
                         }
                     >
                         {strResource.room.send}

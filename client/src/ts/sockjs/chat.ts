@@ -18,9 +18,7 @@ import {
     SOCKET_SEND_CHAT_PUBLIC,
     SOCKET_SEND_NEW_CHAT_CONTAINER,
     SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT,
-    SOCKET_SEND_REMOVE_CHAT_CONTAINER,
-    SYSTEM_MESSAGE_ID
-} from "../util/const";
+    SOCKET_SEND_REMOVE_CHAT_CONTAINER} from "../util/const";
 import {SystemMessengerId} from "./SystemMessengerId";
 
 var sockClient: SocketClient;

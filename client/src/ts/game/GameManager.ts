@@ -12,14 +12,12 @@ import {
     GameSetting,
     UserInfo
 } from "../type/gameDomainType";
-import {PhaseEndRequest, PostPhaseRequest} from "../type/requestType";
+import {PhaseEndRequest} from "../type/requestType";
 import {PhaseResultResponse} from "../type/responseType";
 import {
     DEFAULT_TIME_CONFIGURATION,
     GAME_PHASE_ORDER,
-    SOCKET_SEND_PHASE_END,
-    SOCKET_SEND_POST_PHASE
-} from "../util/const";
+    SOCKET_SEND_PHASE_END} from "../util/const";
 
 var sockClient: SocketClient;
 
@@ -135,9 +133,18 @@ export default class GameManager {
     }
 
     public processPhaseResult(data: PhaseResultResponse) {
-        console.log(data);
         if (data.gameEnd) {
             this._dispatch(setCurrentGamePhase(GamePhase.GAME_END));
+        }
+        switch (data.endedPhase) {
+            case GamePhase.VOTE:
+                
+                break;
+            case GamePhase.NIGHT:
+                data.skillResults.forEach(result => {
+                    
+                })
+                break;
         }
         return data.gameEnd;
     }
@@ -211,7 +218,9 @@ export default class GameManager {
                 ErrorCode.USER_ID_NOT_ASSIGNED_IN_GAME_MANAGER
             );
         }
-        const sockClient = await SocketClient.getInstance();
+        if (!sockClient) {
+            sockClient = await SocketClient.getInstance();
+        }
         const body: PhaseEndRequest = {
             gameId: this._gameId,
             userId: this._thisUser.userId,

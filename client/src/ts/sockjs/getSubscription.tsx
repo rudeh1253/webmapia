@@ -29,7 +29,6 @@ import {PhaseEndRequest} from "../type/requestType";
 import {NotificationType} from "../type/notificationType";
 import NullPointerError from "../error/NullPointerError";
 import {ErrorCode} from "../error/ErrorCode";
-import NotAssignedError from "../error/NotAssignedError";
 import {setNewChat} from "../redux/slice/newChatSlice";
 import {onNewChatContainerCreated} from "./chat";
 
@@ -81,7 +80,8 @@ export function getSubscription(
                     containerId: ID_OF_PUBLIC_CHAT,
                     isMe: thisUser.userId === payloadData.data.senderId
                 };
-                dispatch(setNewChat(chat));
+                const chatArr = [chat];
+                dispatch(setNewChat(chatArr));
             }
         },
         {
@@ -100,7 +100,8 @@ export function getSubscription(
                     containerId: payloadData.data.containerId,
                     isMe: thisUser.userId === payloadData.data.senderId
                 };
-                dispatch(setNewChat(chat));
+                const chatArr = [chat];
+                dispatch(setNewChat(chatArr));
             }
         },
         {

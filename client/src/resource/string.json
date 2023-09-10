@@ -63,6 +63,9 @@
     },
     "notificationMessage": {
         "someoneEntered": "님이 입장하셨습니다.",
-        "someoneExited": "님이 퇴장하셨습니다."
+        "someoneExited": "님이 퇴장하셨습니다.",
+        "someoneKilled": "님이 죽었습니다.",
+        "someoneExterminated": "님이 참살당했습니다.",
+        "someoneExecuted": "님이 처형당했습니다."
     }
 }
