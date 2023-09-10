@@ -2,7 +2,7 @@ package com.nsl.webmapia.gameoperation.service;
 
 import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.gameoperation.domain.GamePhase;
-import com.nsl.webmapia.gameoperation.dto.PhaseEndResponseDTO;
+import com.nsl.webmapia.gameoperation.dto.PhaseEndRequestDTO;
 import com.nsl.webmapia.gameoperation.dto.PhaseResultResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
@@ -30,7 +30,7 @@ public interface GameService {
      * The phase of game steps forward.
      * @param gameId id of game.
      */
-    PhaseResultResponseDTO postPhase(Long gameId);
+    Map<Long, PhaseResultResponseDTO> postPhase(PhaseEndRequestDTO endInfo);
 
     /**
      * Accept vote of each user for execution.
@@ -54,7 +54,7 @@ public interface GameService {
 
     List<SkillResultResponseDTO> processSkills(Long gameId);
 
-    PhaseEndResponseDTO phaseEnd(Long gameId, Long userId);
+    boolean phaseEnd(Long gameId, Long userId);
 
     GamePhase getCurrentPhase(Long gameId);
 }

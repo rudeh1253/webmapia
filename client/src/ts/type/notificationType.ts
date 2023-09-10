@@ -9,7 +9,6 @@ export type NotificationType =
     | "USER_ENTERED"
     | "QUERY_USER"
     | "GAME_INFO"
-    | "PHASE_END"
     | "GAME_START"
     | "CHARACTER_GENERATION"
     | "PHASE_RESULT"

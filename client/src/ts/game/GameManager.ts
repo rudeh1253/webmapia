@@ -134,22 +134,6 @@ export default class GameManager {
         );
     }
 
-    public async postPhase() {
-        if (!sockClient) {
-            sockClient = await SocketClient.getInstance();
-        }
-        if (this.gameId === 0) {
-            throw new NotAssignedError(
-                ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER
-            );
-        }
-        const body: PostPhaseRequest = {
-            gameId: this._gameId,
-            userId: this._thisUser.userId
-        };
-        sockClient.sendMessage(SOCKET_SEND_POST_PHASE, {}, body);
-    }
-
     public processPhaseResult(data: PhaseResultResponse) {
         console.log(data);
         if (data.gameEnd) {
@@ -183,7 +167,6 @@ export default class GameManager {
         }
         const currentPhase = this._currentGamePhase;
         const gameConfig = this._gameSetting;
-        console.log("GameConfig:", gameConfig);
         const DEFAULT_COUNT = 90;
         let howMany: number = DEFAULT_COUNT;
         switch (currentPhase) {
@@ -231,7 +214,8 @@ export default class GameManager {
         const sockClient = await SocketClient.getInstance();
         const body: PhaseEndRequest = {
             gameId: this._gameId,
-            userId: this._thisUser.userId
+            userId: this._thisUser.userId,
+            gamePhase: this._currentGamePhase
         };
         sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
     }

@@ -1,4 +1,9 @@
-import {CharacterDistribution, GameSetting, SkillType} from "./gameDomainType";
+import {
+    CharacterDistribution,
+    GamePhase,
+    GameSetting,
+    SkillType
+} from "./gameDomainType";
 
 export type CharacterGenerationRequest = {
     gameId: number;
@@ -13,6 +18,7 @@ export type GameStartRequest = {
 export type PhaseEndRequest = {
     gameId: number;
     userId: number;
+    gamePhase: GamePhase;
 };
 
 export type PostPhaseRequest = {

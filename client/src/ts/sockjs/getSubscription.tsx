@@ -1,5 +1,6 @@
 import {
     Chat,
+    GamePhase,
     PrivateChatMessage,
     PublicChatMessage,
     UserInfo
@@ -18,7 +19,8 @@ import {
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE,
-    SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC} from "../util/const";
+    SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
+} from "../util/const";
 import {UserState} from "../component/room/Room";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import GameManager from "../game/GameManager";
@@ -60,9 +62,6 @@ export function getSubscription(
                         break;
                     case "GAME_START":
                         onGameStart(payloadData, dispatch);
-                        break;
-                    case "PHASE_END":
-                        postprocessOfPhase(currentRoomInfo);
                         break;
                 }
             }
@@ -196,24 +195,10 @@ async function onCharacterAllocationResponse(
     const sockClient = await SocketClient.getInstance();
     const body: PhaseEndRequest = {
         gameId: currentRoomInfo.roomInfo.roomId,
-        userId: thisUser.userId
+        userId: thisUser.userId,
+        gamePhase: GamePhase.CHARACTER_DISTRIBUTION
     };
     sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
-}
-
-function postprocessOfPhase(currentRoomInfo: CurrentRoomInfoInitialState) {
-    try {
-        gameManager.postPhase();
-    } catch (err) {
-        if (err instanceof NotAssignedError) {
-            if (
-                err.errorCode === ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER
-            ) {
-                gameManager.gameId = currentRoomInfo.roomInfo.roomId;
-                gameManager.postPhase();
-            }
-        }
-    }
 }
 
 function processPhaseResult(response: PhaseResultResponse) {

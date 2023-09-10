@@ -74,7 +74,7 @@ function SkillSelection({
                                     gameId: currentRoomInfo.roomId,
                                     activatorId: thisUser.userId,
                                     targetId: target.userId,
-                                    skillType: skillType
+                                    skillType
                                 };
                                 sockClient.sendMessage(
                                     SOCKET_SEND_ACTIVATE_SKILL,

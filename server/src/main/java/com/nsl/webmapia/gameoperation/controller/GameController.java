@@ -2,11 +2,14 @@ package com.nsl.webmapia.gameoperation.controller;
 
 import com.nsl.webmapia.common.CommonResponse;
 import com.nsl.webmapia.common.NotificationType;
+import com.nsl.webmapia.gameoperation.domain.GamePhase;
 import com.nsl.webmapia.gameoperation.dto.*;
 import com.nsl.webmapia.gameoperation.service.GameService;
 import com.nsl.webmapia.skill.dto.ProcessSkillsRequestDTO;
 import com.nsl.webmapia.skill.dto.SkillActivationRequestDTO;
 import com.nsl.webmapia.skill.dto.SkillResultResponseDTO;
+import com.nsl.webmapia.user.dto.UserResponseDTO;
+import com.nsl.webmapia.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -17,20 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class GameController {
-    // TODO: This should be fixed. This is the result of my laziness
-    private boolean skillProcessing;
 
     private GameService gameService;
     private SimpMessagingTemplate messagingTemplate;
+    private UserService userService;
 
     @Autowired
-    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate) {
-        this.skillProcessing = false;
+    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate, UserService userService) {
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
+        this.userService = userService;
     }
 
     @MessageMapping("/game/start")
@@ -51,19 +54,15 @@ public class GameController {
 
     @MessageMapping("/game/end-phase")
     public void endPhase(@Payload PhaseEndRequestDTO request) {
-        PhaseEndResponseDTO result = gameService.phaseEnd(request.getGameId(), request.getUserId());
-        System.out.println("PhaseEnd = " + result);
-        if (result.isEnd()) {
-            this.skillProcessing = false;
-            messagingTemplate.convertAndSend("/notification/public/" + result.getGameId(), CommonResponse.ok(result, LocalDateTime.now()));
+        boolean hasEnded = gameService.phaseEnd(request.getGameId(), request.getUserId());
+        System.out.println("PhaseEnd = " + hasEnded);
+        if (hasEnded) {
+            Map<Long, PhaseResultResponseDTO> response = gameService.postPhase(request);
+            response.keySet().forEach(receiverId -> {
+                messagingTemplate.convertAndSend("/notification/private/"
+                        + request.getGameId() + "/" + receiverId, CommonResponse.ok(response.get(receiverId), LocalDateTime.now()));
+            });
         }
-    }
-
-    @MessageMapping("/game/post-phase")
-    public void postPhase(@Payload PostPhaseRequestDTO request) {
-        PhaseResultResponseDTO phaseResultResponseDTO = gameService.postPhase(request.getGameId());
-        System.out.println("phaseResultDTO = " + phaseResultResponseDTO);
-        messagingTemplate.convertAndSend("/notification/private/" + phaseResultResponseDTO.getGameId() + "/" + request.getUserId(), CommonResponse.ok(phaseResultResponseDTO, LocalDateTime.now()));
     }
 
     @MessageMapping("/game/vote")
@@ -74,25 +73,6 @@ public class GameController {
     @MessageMapping("/game/activate-skill")
     public void activateSkill(@Payload SkillActivationRequestDTO request) {
         gameService.activateSkill(request.getGameId(), request.getActivatorId(), request.getTargetId(), request.getSkillType());
-    }
-
-    @MessageMapping("/game/process-skill")
-    public void processSkill(@Payload ProcessSkillsRequestDTO request) {
-        if (!skillProcessing) {
-            skillProcessing = true;
-            List<SkillResultResponseDTO> skillResults = gameService.processSkills(request.getGameId());
-            for (SkillResultResponseDTO note : skillResults) {
-                switch (note.getNotificationType()) {
-                    case SKILL_PUBLIC:
-                        messagingTemplate.convertAndSend("/notification/public/" + note.getGameId(), CommonResponse.ok(note, LocalDateTime.now()));
-                        break;
-                    case SKILL_PRIVATE:
-                        messagingTemplate.convertAndSend("/notification/private/" + note.getGameId() + "/" + note.getReceiverId(),
-                                CommonResponse.ok(note, LocalDateTime.now()));
-                        break;
-                }
-            }
-        }
     }
 
     @GetMapping("/game/current-phase/{gameId}")

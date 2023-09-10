@@ -4,5 +4,7 @@ public enum GamePhase {
     NIGHT,
     DAYTIME,
     VOTE,
-    EXECUTION
+    EXECUTION,
+    CHARACTER_DISTRIBUTION,
+    GAME_END
 }

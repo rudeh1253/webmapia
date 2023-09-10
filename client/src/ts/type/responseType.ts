@@ -1,4 +1,4 @@
-import {CharacterCode, CharacterEffectAfterNightType, GameSetting} from "./gameDomainType";
+import {CharacterCode, CharacterEffectAfterNightType, GamePhase, GameSetting} from "./gameDomainType";
 import {NotificationType} from "./notificationType";
 
 export interface CommonResponse<D> {
@@ -32,6 +32,9 @@ export type PhaseResultResponse = {
     targetUserId: number;
     gameEnd: boolean;
     winner: string;
+    endedPhase: GamePhase;
+    skillResults: SkillResultResponse[];
+    voteResult: VoteResultResponse;
 };
 
 export type VoteResultResponse = {

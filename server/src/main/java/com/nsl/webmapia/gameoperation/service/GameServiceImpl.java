@@ -3,7 +3,7 @@ package com.nsl.webmapia.gameoperation.service;
 import com.nsl.webmapia.character.*;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.gameoperation.domain.GamePhase;
-import com.nsl.webmapia.gameoperation.dto.PhaseEndResponseDTO;
+import com.nsl.webmapia.gameoperation.dto.PhaseEndRequestDTO;
 import com.nsl.webmapia.gameoperation.dto.PhaseResultResponseDTO;
 import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
 import com.nsl.webmapia.skill.domain.SkillType;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,11 +48,36 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public PhaseResultResponseDTO postPhase(Long gameId) {
+    public Map<Long, PhaseResultResponseDTO> postPhase(PhaseEndRequestDTO endInfo) {
+        Long gameId = endInfo.getGameId();
         GameManager game = findGameManager(gameId);
+        List<User> users = game.getAllUsers();
+        GamePhase endedPhase = endInfo.getGamePhase();
+
         Faction winner = game.postPhase();
-        game.getAllUsers().forEach(user -> user.setPhaseEnd(false));
-        return PhaseResultResponseDTO.of(gameId, winner != null, winner);
+        Map<Long, PhaseResultResponseDTO> response = new HashMap<>();
+        for (User user : users) {
+            user.setPhaseEnd(false);
+            response.put(user.getID(), PhaseResultResponseDTO.of(gameId, winner != null, winner, endedPhase));
+        }
+
+        switch (endInfo.getGamePhase()) {
+            case NIGHT:
+                List<SkillResultResponseDTO> skillResultDTOs = skillService.processSkills(gameId);
+                for (SkillResultResponseDTO skillResult : skillResultDTOs) {
+                    if (skillResult.getNotificationType().equals(NotificationType.SKILL_PUBLIC)) {
+                        response.values().forEach(dto -> dto.addSkillResult(skillResult));
+                    } else {
+                        response.get(skillResult.getReceiverId()).addSkillResult(skillResult);
+                    }
+                }
+                break;
+            case VOTE:
+                VoteResultResponseDTO voteResultResponseDTO = processVotes(gameId);
+                response.values().forEach(dto -> dto.setVoteResult(voteResultResponseDTO));
+                break;
+        }
+        return response;
     }
 
     @Override
@@ -81,10 +107,10 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public PhaseEndResponseDTO phaseEnd(Long gameId, Long userId) {
+    public boolean phaseEnd(Long gameId, Long userId) {
         GameManager game = findGameManager(gameId);
         boolean isEnd = game.endPhase(userId);
-        return PhaseEndResponseDTO.from(gameId, isEnd);
+        return isEnd;
     }
 
     private GameManager findGameManager(Long gameId) {
