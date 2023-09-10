@@ -54,11 +54,10 @@ public class GameServiceImpl implements  GameService {
         List<User> users = game.getAllUsers();
         GamePhase endedPhase = endInfo.getGamePhase();
 
-        Faction winner = game.postPhase();
         Map<Long, PhaseResultResponseDTO> response = new HashMap<>();
         for (User user : users) {
             user.setPhaseEnd(false);
-            response.put(user.getID(), PhaseResultResponseDTO.of(gameId, winner != null, winner, endedPhase));
+            response.put(user.getID(), PhaseResultResponseDTO.of(gameId, false, null, endedPhase));
         }
 
         switch (endInfo.getGamePhase()) {
@@ -77,6 +76,11 @@ public class GameServiceImpl implements  GameService {
                 response.values().forEach(dto -> dto.setVoteResult(voteResultResponseDTO));
                 break;
         }
+        Faction winner = game.postPhase();
+        response.values().forEach(dto -> {
+            dto.setGameEnd(winner != null);
+            dto.setWinner(winner);
+        });
         return response;
     }
 

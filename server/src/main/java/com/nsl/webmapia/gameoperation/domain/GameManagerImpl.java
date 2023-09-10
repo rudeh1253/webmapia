@@ -210,6 +210,7 @@ public class GameManagerImpl implements GameManager {
 
     @Override
     public List<SkillEffect> processSkills() {
+        System.out.println("activatedSkills = " + activatedSkills);
         activatedSkills.sort((left, right) -> {
             if (left.getSkillType() == SkillType.EXTERMINATE) {
                 return -1;
@@ -233,8 +234,10 @@ public class GameManagerImpl implements GameManager {
             User tar = activatedSkill.getTarget();
             SkillType type = activatedSkill.getSkillType();
             if (activatedSkill.getSkillCondition().isSuccess(src, tar, type)) {
+                System.out.println(activatedSkill.getSkillType() + " Success");
                 activatedSkill.getOnSkillSucceed().onSkillSucceed(src, tar, type);
             } else {
+                System.out.println(activatedSkill.getSkillType() + " Fail");
                 activatedSkill.getOnSkillFail().onSkillFail(src, tar, type);
             }
         }
@@ -242,7 +245,7 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public boolean endPhase(Long userId) {
+    public synchronized boolean endPhase(Long userId) {
         User sentUser = userRepository.findById(userId).orElseThrow();
         sentUser.setPhaseEnd(true);
         List<User> users = userRepository.findAll();

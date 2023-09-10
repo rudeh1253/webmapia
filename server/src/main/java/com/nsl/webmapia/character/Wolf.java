@@ -14,7 +14,7 @@ public class Wolf implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.WOLF;
     private static final Faction FACTION = Faction.WOLF;
     private int leftExtermination;
-    private SkillManager skillManager;
+    private final SkillManager skillManager;
 
     @Autowired
     public Wolf(SkillManager skillManager) {

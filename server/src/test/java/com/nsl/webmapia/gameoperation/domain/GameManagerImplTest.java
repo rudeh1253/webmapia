@@ -200,6 +200,7 @@ class GameManagerImplTest {
     public void testProcessSkills() {
         setting();
         List<SkillEffect> skillEffects = gameManager.processSkills();
+        System.out.println(skillEffects);
         User predictor = userRepository.findByCharacterCode(CharacterCode.PREDICTOR).get(0);
         User murderer = userRepository.findByCharacterCode(CharacterCode.MURDERER).get(0);
         User wolf = userRepository.findByCharacterCode(CharacterCode.WOLF).get(0);

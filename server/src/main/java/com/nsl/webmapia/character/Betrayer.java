@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class Betrayer implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.BETRAYER;
     private static final Faction FACTION = Faction.WOLF;
-    private SkillManager skillManager;
+    private final SkillManager skillManager;
 
     @Autowired
     public Betrayer(SkillManager skillManager) {
