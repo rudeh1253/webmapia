@@ -55,7 +55,6 @@ public class GameController {
     @MessageMapping("/game/end-phase")
     public void endPhase(@Payload PhaseEndRequestDTO request) {
         boolean hasEnded = gameService.phaseEnd(request.getGameId(), request.getUserId());
-        System.out.println("PhaseEnd = " + hasEnded);
         if (hasEnded) {
             Map<Long, PhaseResultResponseDTO> response = gameService.postPhase(request);
             response.keySet().forEach(receiverId -> {
