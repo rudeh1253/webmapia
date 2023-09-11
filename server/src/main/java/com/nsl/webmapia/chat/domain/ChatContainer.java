@@ -12,7 +12,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @ToString
 public class ChatContainer {
     private final Long gameId;
@@ -20,9 +19,28 @@ public class ChatContainer {
     private final String containerName;
     private final List<Long> participantIds;
 
+    public ChatContainer(Long gameId, Long containerId, String containerName) {
+        this.gameId = gameId;
+        this.containerId = containerId;
+        this.containerName = containerName;
+        this.participantIds = new ArrayList<>();
+    }
+
+    public ChatContainer(Long gameId, Long containerId, String containerName, Long participantId) {
+        this.gameId = gameId;
+        this.containerId = containerId;
+        this.containerName = containerName;
+        this.participantIds = new ArrayList<>();
+        this.participantIds.add(participantId);
+    }
+
     public List<Long> getParticipantIds() {
         List<Long> toReturn = new ArrayList<>();
         toReturn.addAll(participantIds);
         return toReturn;
+    }
+
+    public void addParticipant(Long newParticipantId) {
+        this.participantIds.add(newParticipantId);
     }
 }

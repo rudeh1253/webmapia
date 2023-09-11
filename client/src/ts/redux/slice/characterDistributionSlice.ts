@@ -2,11 +2,12 @@ import {PayloadAction, createSlice} from "@reduxjs/toolkit";
 import {CharacterDistribution} from "../../type/gameDomainType";
 
 const initialState: CharacterDistribution = {
-    BETRAYER: 0,
-    CITIZEN: 0,
-    DETECTIVE: 0,
+    // TODO: Later, all values must be set to 0.
+    BETRAYER: 1,
+    CITIZEN: 1,
+    DETECTIVE: 1,
     FOLLOWER: 0,
-    GUARD: 0,
+    GUARD: 1,
     HUMAN_MOUSE: 0,
     MEDIUMSHIP: 0,
     MURDERER: 0,
@@ -16,7 +17,7 @@ const initialState: CharacterDistribution = {
     SOLDIER: 0,
     SUCCESSOR: 0,
     TEMPLAR: 0,
-    WOLF: 0
+    WOLF: 1
 };
 
 export const characterDistributionSlice = createSlice({

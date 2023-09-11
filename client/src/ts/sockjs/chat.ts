@@ -8,18 +8,26 @@ import {
     UserInfo
 } from "../type/gameDomainType";
 import {
-    CreationNewChatContainerRequest,
-    NewParticipantRequest,
+    ParticipateChatContainerRequest,
     RemoveChatContainerRequest
 } from "../type/requestType";
-import {CreationNewChatContainerResponse} from "../type/responseType";
 import {
+    ParticipateChatContainerResponse,
+    NewParticipantResponse,
+    CommonResponse,
+    UserResponse
+} from "../type/responseType";
+import {
+    REST_GAME_USER,
+    REST_ONE_GAME_USER,
     SOCKET_SEND_CHAT_PRIVATE,
     SOCKET_SEND_CHAT_PUBLIC,
-    SOCKET_SEND_NEW_CHAT_CONTAINER,
-    SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT,
-    SOCKET_SEND_REMOVE_CHAT_CONTAINER} from "../util/const";
+    SOCKET_SEND_PARTICIPATE_CHAT_CONTAINER,
+    SOCKET_SEND_REMOVE_CHAT_CONTAINER
+} from "../util/const";
 import {SystemMessengerId} from "./SystemMessengerId";
+import {chatContainerMap} from "../component/room/ChatComponent";
+import axios from "axios";
 
 var sockClient: SocketClient;
 
@@ -74,36 +82,22 @@ export async function sendPrivateChat(
     sockClient.sendMessage(SOCKET_SEND_CHAT_PRIVATE, {}, messageObj);
 }
 
-export async function createChatContainer(
-    gameId: number,
-    containerName: string,
-    usersToGetIn: number[]
-) {
-    if (!sockClient) {
-        sockClient = await SocketClient.getInstance();
-    }
-    const body: CreationNewChatContainerRequest = {
-        gameId,
-        containerName,
-        usersToGetIn
-    };
-    sockClient.sendMessage(SOCKET_SEND_NEW_CHAT_CONTAINER, {}, body);
-}
-
-export async function addNewParticipant(
+export async function participateChatContainer(
     gameId: number,
     containerId: number,
-    userId: number
+    containerName: string,
+    participant: number
 ) {
     if (!sockClient) {
         sockClient = await SocketClient.getInstance();
     }
-    const body: NewParticipantRequest = {
+    const body: ParticipateChatContainerRequest = {
         gameId,
         containerId,
-        userId
+        containerName,
+        participant
     };
-    sockClient.sendMessage(SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT, {}, body);
+    sockClient.sendMessage(SOCKET_SEND_PARTICIPATE_CHAT_CONTAINER, {}, body);
 }
 
 export async function removeChatContainer(gameId: number, containerId: number) {
@@ -117,12 +111,93 @@ export async function removeChatContainer(gameId: number, containerId: number) {
     sockClient.sendMessage(SOCKET_SEND_REMOVE_CHAT_CONTAINER, {}, body);
 }
 
-export async function onNewChatContainerCreated(
-    chatContainer: CreationNewChatContainerResponse,
+export async function onNewParticipantEntered(
+    data: ParticipateChatContainerResponse,
+    dispatch: any
+) {
+    const chatContainer = chatContainerMap.get(data.containerId);
+    console.log(chatContainer);
+    if (chatContainer) {
+        console.log("chatContainer exists");
+        const newParticipantCommonResponse = await axios.get<
+            CommonResponse<UserResponse>
+        >(REST_ONE_GAME_USER(data.gameId, data.newParticipant));
+        const newParticipantResponse = newParticipantCommonResponse.data.data;
+        const newParticipantUserInfo: UserInfo = {
+            userId: newParticipantResponse.userId,
+            username: newParticipantResponse.username,
+            characterCode: newParticipantResponse.characterCode,
+            isDead: newParticipantResponse.isDead
+        };
+        const toDispatch = {
+            ...chatContainer,
+            participants: [
+                ...chatContainer.participants,
+                newParticipantUserInfo
+            ]
+        };
+        console.log(toDispatch);
+        dispatch(setNewChatContainer(toDispatch));
+    } else {
+        console.log("chatContainer doesn't exist");
+        const userArrCommonResponse = await axios.get<
+            CommonResponse<UserResponse[]>
+        >(REST_GAME_USER(data.gameId));
+        const userArrResponse = userArrCommonResponse.data.data;
+        const participantArrResponse = userArrResponse.filter(
+            (ur) =>
+                data.previousParticipants.includes(ur.userId) ||
+                ur.userId === data.newParticipant
+        );
+
+        const participants = participantArrResponse.map((resp) => {
+            const userInfo: UserInfo = {
+                userId: resp.userId,
+                username: resp.username,
+                characterCode: resp.characterCode,
+                isDead: resp.isDead
+            };
+            return userInfo;
+        });
+
+        const toDispatch = {
+            id: data.containerId,
+            participants: participants,
+            name: data.containerName,
+            chatLogs: []
+        };
+        console.log(toDispatch);
+        dispatch(setNewChatContainer(toDispatch));
+    }
+}
+
+export async function onNewParticipantInChatContainer(
+    data: NewParticipantResponse,
+    dispatch: any
+) {
+    const chatContainer = chatContainerMap.get(data.containerId);
+    dispatch(
+        setNewChatContainer({
+            ...chatContainer!,
+            participants: [
+                ...chatContainer!.participants,
+                {
+                    userId: data.newUserId,
+                    username: "",
+                    characterCode: null,
+                    isDead: false
+                }
+            ]
+        })
+    );
+}
+
+export async function onEnterChatContainer(
+    data: NewParticipantResponse,
     dispatch: any
 ) {
     const p: UserInfo[] = [];
-    for (let i of chatContainer.participants) {
+    for (let i of data.userIdsParticipatingAlready) {
         p.push({
             userId: i,
             username: "",
@@ -130,10 +205,16 @@ export async function onNewChatContainerCreated(
             isDead: false
         });
     }
+    p.push({
+        userId: data.newUserId,
+        username: "",
+        characterCode: null,
+        isDead: false
+    });
     const container: ChatContainer = {
-        id: chatContainer.containerId,
+        id: data.containerId,
         participants: p,
-        name: chatContainer.containerName,
+        name: data.containerName,
         chatLogs: []
     };
     dispatch(setNewChatContainer(container));

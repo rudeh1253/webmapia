@@ -32,16 +32,18 @@ public class MemoryChatContainerRepository implements ChatContainerRepository {
     }
 
     @Override
-    public void deleteByGameIdAndContainerId(Long gameId, Long containerId) {
+    public ChatContainer deleteByGameIdAndContainerId(Long gameId, Long containerId) {
         Map<Long, ChatContainer> containerMap = store.get(gameId);
         if (containerMap != null) {
-            containerMap.remove(containerId);
+            return containerMap.remove(containerId);
+        } else {
+            return null;
         }
     }
 
     @Override
-    public void deleteAllByGameId(Long gameId) {
-        store.remove(gameId);
+    public Map<Long, ChatContainer> deleteAllByGameId(Long gameId) {
+        return store.remove(gameId);
     }
 
     @Override

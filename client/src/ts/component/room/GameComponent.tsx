@@ -89,7 +89,7 @@ export default function GameComponent() {
             <p className="character-p">
                 {thisUser.characterCode === null
                     ? strResource.game.abscence
-                    : characterNameMap[characterCodeOfUser]}
+                    : characterNameMap.get(characterCodeOfUser)}
             </p>
             <p className="present-current-phase">{currentGamePhase.value}</p>
             <p className="time-counter">{timeCount}</p>

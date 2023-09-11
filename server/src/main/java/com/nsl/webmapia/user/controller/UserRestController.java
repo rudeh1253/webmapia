@@ -27,6 +27,13 @@ public class UserRestController {
         return CommonResponse.ok(users, LocalDateTime.now());
     }
 
+    @GetMapping("/game/{gameId}/user/{userId}")
+    public ResponseEntity<CommonResponse> getUser(@PathVariable("gameId") Long gameId,
+                                                  @PathVariable("userId") Long userId) {
+        UserResponseDTO userDTO = userService.getUser(gameId, userId);
+        return CommonResponse.ok(userDTO, LocalDateTime.now());
+    }
+
     @PostMapping("/user/id")
     public ResponseEntity<CommonResponse> generateId() {
         Long id = userService.generateId();

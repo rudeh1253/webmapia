@@ -26,7 +26,12 @@ const skillsPerChars = new Map<
             {
                 skillName: strResource.skill.investigationAlive,
                 skillDesc: "",
-                skillType: "INVESTIGATE_ALIVE_CHARACTER"
+                skillType: "INVESTIGATE_DEAD_CHARACTER"
+            },
+            {
+                skillName: strResource.skill.enterWolfChat,
+                skillDesc: "",
+                skillType: "ENTER_WOLF_CHAT"
             }
         ]
     ],

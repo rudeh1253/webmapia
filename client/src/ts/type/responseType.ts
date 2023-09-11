@@ -1,4 +1,9 @@
-import {CharacterCode, CharacterEffectAfterNightType, GamePhase, GameSetting} from "./gameDomainType";
+import {
+    CharacterCode,
+    CharacterEffectAfterNightType,
+    GamePhase,
+    GameSetting
+} from "./gameDomainType";
 import {NotificationType} from "./notificationType";
 
 export interface CommonResponse<D> {
@@ -56,7 +61,7 @@ export type UserResponse = {
     gameId: number;
     userId: number;
     username: string;
-    characterCode: string;
+    characterCode: CharacterCode;
     isDead: boolean;
 };
 
@@ -76,10 +81,11 @@ export type GameStartNotificationResponse = {
     gameId: number;
 };
 
-export type CreationNewChatContainerResponse = {
+export type ParticipateChatContainerResponse = {
     notificationType: NotificationType;
     gameId: number;
-    participants: number[];
+    newParticipant: number;
+    previousParticipants: number[];
     containerId: number;
     containerName: string;
 };
@@ -88,8 +94,9 @@ export type NewParticipantResponse = {
     notificationType: NotificationType;
     gameId: number;
     containerId: number;
-    userId: number;
-    receiverIds: number[];
+    containerName: string;
+    newUserId: number;
+    userIdsParticipatingAlready: number[];
 };
 
 export type RemoveChatContainerResponse = {

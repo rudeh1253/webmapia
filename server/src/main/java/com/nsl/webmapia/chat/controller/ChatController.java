@@ -49,22 +49,17 @@ public class ChatController {
         }
     }
 
-    @MessageMapping("/chatroom/new-chat-container")
-    public void createNewChatContainer(@Payload CreationNewChatContainerRequestDTO request) {
-        CreationNewChatContainerResponseDTO response =
-                containerService.createContainer(request.getGameId(), request.getContainerName(), request.getUsersToGetIn());
-        List<Long> receiverIds = response.getParticipants();
-        receiverIds.forEach(id -> messagingTemplate.convertAndSend("/notification/private/" + response.getGameId() + "/" + id,
-                        CommonResponse.ok(response, LocalDateTime.now())));
-    }
-
-    @MessageMapping("/chatroom/new-participant-in-chat")
-    public void addNewParticipant(@Payload NewParticipantRequestDTO request) {
-        NewParticipantResponseDTO response =
-                containerService.addNewParticipant(request.getGameId(), request.getContainerId(), request.getUserId());
-        response.getReceiverIds()
-                .forEach(id -> messagingTemplate.convertAndSend("/notification/private/" + response.getGameId() + "/" + id,
-                        CommonResponse.ok(response, LocalDateTime.now())));
+    @MessageMapping("/chatroom/participate-chat-container")
+    public void participateChatContainer(@Payload ParticipateChatContainerRequestDTO request) {
+        ParticipateChatContainerResponseDTO response =
+                containerService.participateChatContainer(request);
+        List<Long> receiverIds = response.getPreviousParticipants();
+        synchronized (this) {
+            receiverIds.forEach(id -> messagingTemplate.convertAndSend("/notification/private/" + response.getGameId() + "/" + id,
+                    CommonResponse.ok(response, LocalDateTime.now())));
+            messagingTemplate.convertAndSend("/notification/private/" + response.getGameId() + "/" + response.getNewParticipant(),
+                    CommonResponse.ok(response, LocalDateTime.now()));
+        }
     }
 
     @MessageMapping("/chatroom/remove-chat-container")

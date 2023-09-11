@@ -5,12 +5,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class NewParticipantRequestDTO {
+public class ParticipateChatContainerRequestDTO {
     private Long gameId;
     private Long containerId;
-    private Long userId;
+    private String containerName;
+    private Long participant;
 }

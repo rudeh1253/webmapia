@@ -44,10 +44,11 @@ export type UserRequest = {
     username: string;
 };
 
-export type CreationNewChatContainerRequest = {
+export type ParticipateChatContainerRequest = {
     gameId: number;
+    containerId: number
     containerName: string;
-    usersToGetIn: number[];
+    participant: number;
 };
 
 export type NewParticipantRequest = {

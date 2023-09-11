@@ -7,7 +7,7 @@ import {Chat, UserInfo} from "../../type/gameDomainType";
 import {setCharacterDistribution} from "../../redux/slice/characterDistributionSlice";
 import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
-import {createChatContainer} from "../../sockjs/chat";
+import {participateChatContainer} from "../../sockjs/chat";
 
 var gameManager = GameManager.getInstance();
 
@@ -268,19 +268,6 @@ export function UserItem({userId, username, characterCode, isDead}: UserInfo) {
             <p>{username}</p>
             <p>{characterCode}</p>
             <p>{isDead.toString()}</p>
-            {/* TODO: Below is just for testing, should be removed */}
-            <button
-                type="button"
-                onClick={() => {
-                    createChatContainer(
-                        roomInfo.roomInfo.roomId,
-                        `With ${username}`,
-                        [thisUser.userId, userId]
-                    );
-                }}
-            >
-                PRIVATE CHAT
-            </button>
         </div>
     );
 }

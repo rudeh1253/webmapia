@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long generateId() {
         Random random = new Random();
-        Long id = Math.abs(random.nextLong());
+        Long id = Math.abs(random.nextLong()) % 1000000;
         if (userIdRepository.exist(id)) {
             return generateId();
         }

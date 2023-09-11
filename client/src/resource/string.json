@@ -44,7 +44,8 @@
         "templar": "템플러",
         "citizen": "시민",
         "murderer": "살인자",
-        "humanMouse": "쥐인간"
+        "humanMouse": "쥐인간",
+        "wolfChat": "늑대 채팅"
     },
     "skill": {
         "kill": "킬",
@@ -56,7 +57,8 @@
         "investigationDead": "죽은 유저 조사",
         "reasoning": "추리",
         "sucessing": "계승",
-        "murder": "살인"
+        "murder": "살인",
+        "enterWolfChat": "늑대 채팅 합류"
     },
     "common": {
         "error": "Something problem"
@@ -66,6 +68,15 @@
         "someoneExited": "님이 퇴장하셨습니다.",
         "someoneKilled": "님이 죽었습니다.",
         "someoneExterminated": "님이 참살당했습니다.",
-        "someoneExecuted": "님이 처형당했습니다."
+        "someoneExecuted": "님이 처형당했습니다.",
+        "youWereKilled": "당신은 죽었습니다.",
+        "youWereExterminated": "당신은 참살당했습니다",
+        "failedToKill": "살해하는 데 실패했습니다.",
+        "failedToInvestigate": "조사에 실패했습니다.",
+        "heIs": "님은",
+        "wasHe": "(였)이었습니다.",
+        "succeededToGuard": "경비병이 방어에 성공했습니다.",
+        "failedToGuard": "경비병이 방어에 실패했습니다.",
+        "heEnteredTheWolfChat": "님이 늑대 채팅에 참가했습니다."
     }
 }

@@ -16,12 +16,12 @@ public class RemoveChatContainerResponseDTO {
     private Long containerId;
     private List<Long> participants;
 
-    public static RemoveChatContainerResponseDTO from(ChatContainer chatContainer) {
+    public static RemoveChatContainerResponseDTO from(Long gameId, Long containerId, List<Long> participants) {
         return RemoveChatContainerResponseDTO.builder()
                 .notificationType(NotificationType.REMOVE_CHAT_CONTAINER)
-                .gameId(chatContainer.getGameId())
-                .containerId(chatContainer.getContainerId())
-                .participants(chatContainer.getParticipantIds())
+                .gameId(gameId)
+                .containerId(containerId)
+                .participants(participants)
                 .build();
     }
 }

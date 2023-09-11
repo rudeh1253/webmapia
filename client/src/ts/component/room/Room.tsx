@@ -32,6 +32,7 @@ import {setUsersInRoom} from "../../redux/slice/usersInRoomSlice";
 var inited = false;
 var sockClient: SocketClient | undefined;
 var subscriptions: {endpoint: string; subscription: Subscription}[] | undefined;
+var gameManager = GameManager.getInstance();
 
 const EMPTY_NEW_USER = -1;
 
@@ -76,7 +77,6 @@ export default function Room() {
             inited = true;
             if (!sockClient) {
                 init(currentRoomInfo, thisUser, dispatch, toSubscribe);
-                const gameManager = GameManager.getInstance();
                 gameManager.gameId = currentRoomInfo.roomInfo.roomId;
                 gameManager.dispatch = dispatch;
             }
@@ -117,15 +117,17 @@ export default function Room() {
                 const mUsersInRoom = usersInRoom.filter(
                     (val) => val.userId !== newUserState.userInfo.userId
                 );
-                dispatch(setUsersInRoom([...mUsersInRoom]));
+                const newUserList = [...mUsersInRoom];
+                dispatch(setUsersInRoom(newUserList));
+                gameManager.usersInRoom = newUserList;
             } else if (
                 delayStateForNewUser.userInfo.userId !==
                 newUserState.userInfo.userId
             ) {
                 if (newUserState.stateType === "USER_ENTERED") {
-                    dispatch(
-                        setUsersInRoom([...usersInRoom, newUserState.userInfo])
-                    );
+                    const newUserList = [...usersInRoom, newUserState.userInfo];
+                    dispatch(setUsersInRoom(newUserList));
+                    gameManager.usersInRoom = newUserList;
                 }
                 setDelayStateForNewUser({...newUserState});
             }
@@ -133,8 +135,8 @@ export default function Room() {
     }, [newUserState]);
 
     useEffect(() => {
-        const gameManager = GameManager.getInstance();
         gameManager.userId = thisUser.userId;
+        gameManager.username = thisUser.username;
     }, [thisUser]);
 
     useEffect(() => {
@@ -145,6 +147,7 @@ export default function Room() {
     return (
         <div className="room-container">
             <p>User ID: {thisUser.userId}</p>
+            <p>Username: {thisUser.username}</p>
             {thisUser.userId === currentRoomInfo.roomInfo.hostId &&
             !gameStarted ? (
                 <div className="host-bar">
@@ -202,6 +205,8 @@ export default function Room() {
                     characterConfigurationProps={{usersInRoom}}
                 />
             ) : null}
+            {gameStarted ? <GameComponent /> : null}
+            <ChatComponent users={usersInRoom} />
             <ul className="user-list">
                 {usersInRoom.map((user, idx) => (
                     <li key={`user-item-${idx}`}>
@@ -214,8 +219,6 @@ export default function Room() {
                     </li>
                 ))}
             </ul>
-            {gameStarted ? <GameComponent /> : null}
-            <ChatComponent users={usersInRoom} />
         </div>
     );
 }

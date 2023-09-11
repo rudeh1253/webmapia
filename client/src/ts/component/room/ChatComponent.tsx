@@ -16,7 +16,7 @@ export type ChatComponentProp = {
     users: UserInfo[];
 };
 
-var chatContainerMap = new Map<number, ChatContainer>();
+export var chatContainerMap = new Map<number, ChatContainer>();
 
 export default function ChatComponent({users}: ChatComponentProp) {
     const [currentChatContainer, setCurrentChatContainer] =
@@ -91,23 +91,26 @@ export default function ChatComponent({users}: ChatComponentProp) {
     }, [newChat]);
 
     useEffect(() => {
-        if (
-            newChatContainer.id !== -1 &&
-            !chatContainerMap.has(newChatContainer.id)
-        ) {
-            const participantUsers: UserInfo[] = [];
-            for (let id of newChatContainer.participants) {
-                for (let user of users) {
-                    if (id.userId === user.userId) {
-                        participantUsers.push(user);
+        if (newChatContainer.id !== -1) {
+            if (!chatContainerMap.has(newChatContainer.id)) {
+                chatContainerMap.set(newChatContainer.id, {
+                    ...newChatContainer
+                });
+                setChatContainerTabs(extractKeysAndNames(chatContainerMap));
+            } else {
+                const previousChatContainer = chatContainerMap.get(
+                    newChatContainer.id
+                );
+                if (
+                    newChatContainer.participants.length !==
+                    previousChatContainer!.participants.length
+                ) {
+                    chatContainerMap.set(newChatContainer.id, newChatContainer);
+                    if (newChatContainer.id === currentChatContainer.id) {
+                        setCurrentChatContainer(newChatContainer);
                     }
                 }
             }
-            chatContainerMap.set(newChatContainer.id, {
-                ...newChatContainer,
-                participants: participantUsers
-            });
-            setChatContainerTabs(extractKeysAndNames(chatContainerMap));
         }
     }, [newChatContainer]);
 

@@ -9,19 +9,23 @@ import java.util.List;
 @Setter
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
-public class CreationNewChatContainerResponseDTO {
+public class ParticipateChatContainerResponseDTO {
     private NotificationType notificationType;
     private Long gameId;
-    private List<Long> participants;
+    private Long newParticipant;
+    private List<Long> previousParticipants;
     private Long containerId;
     private String containerName;
 
-    public static CreationNewChatContainerResponseDTO from(ChatContainer chatContainer) {
-        return CreationNewChatContainerResponseDTO.builder()
-                .notificationType(NotificationType.CREATE_NEW_CHAT_CONTAINER)
+    public static ParticipateChatContainerResponseDTO from(ChatContainer chatContainer, List<Long> previousParticipants, Long newParticipant) {
+        return ParticipateChatContainerResponseDTO.builder()
+                .notificationType(NotificationType.PARTICIPATE_CHAT_CONTAINER)
                 .gameId(chatContainer.getGameId())
-                .participants(chatContainer.getParticipantIds())
+                .newParticipant(newParticipant)
+                .previousParticipants(previousParticipants)
                 .containerId(chatContainer.getContainerId())
                 .containerName(chatContainer.getContainerName())
                 .build();

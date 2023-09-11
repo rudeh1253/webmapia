@@ -30,7 +30,11 @@ import {NotificationType} from "../type/notificationType";
 import NullPointerError from "../error/NullPointerError";
 import {ErrorCode} from "../error/ErrorCode";
 import {setNewChat} from "../redux/slice/newChatSlice";
-import {onNewChatContainerCreated} from "./chat";
+import {
+    onEnterChatContainer,
+    onNewParticipantEntered,
+    onNewParticipantInChatContainer
+} from "./chat";
 
 var gameManager = GameManager.getInstance();
 
@@ -122,13 +126,24 @@ export function getSubscription(
                         );
                         break;
                     case "PHASE_RESULT":
-                        const gameEnded = processPhaseResult(payloadData.data);
-                        if (!gameEnded) {
-                            startNewPhase(dispatch);
-                        }
+                        const processed = processPhaseResult(payloadData.data);
+                        processed.then((gameEnded) => {
+                            if (!gameEnded) {
+                                startNewPhase(dispatch);
+                            }
+                        });
                         break;
-                    case "CREATE_NEW_CHAT_CONTAINER":
-                        onNewChatContainerCreated(payloadData.data, dispatch);
+                    case "PARTICIPATE_CHAT_CONTAINER":
+                        onNewParticipantEntered(payloadData.data, dispatch);
+                        break;
+                    case "NEW_PARTICIPANT_IN_CHAT_CONTAINER":
+                        onNewParticipantInChatContainer(
+                            payloadData.data,
+                            dispatch
+                        );
+                        break;
+                    case "ENTER_CHAT_CONTAINER":
+                        onEnterChatContainer(payloadData.data, dispatch);
                         break;
                 }
             }
@@ -207,6 +222,7 @@ function processPhaseResult(response: PhaseResultResponse) {
 }
 
 function startNewPhase(dispatch: any) {
+    console.log("startNewPhase");
     try {
         gameManager.moveToNextPhase();
     } catch (err) {
@@ -216,6 +232,7 @@ function startNewPhase(dispatch: any) {
                 gameManager.moveToNextPhase();
             }
         }
+        console.error(err);
     }
     try {
         gameManager.taskOnNewPhase();
@@ -226,5 +243,6 @@ function startNewPhase(dispatch: any) {
                 gameManager.taskOnNewPhase();
             }
         }
+        console.error(err);
     }
 }
