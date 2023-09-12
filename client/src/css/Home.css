@@ -6,10 +6,14 @@
 
 .info-container {
     margin-top: 32px;
-    width: 320px;
+    width: 400px;
+    padding: 80px;
     display: flex;
     flex-direction: column;
     gap: 36px;
+    border: 1px solid #343a40;
+    border-radius: 30px;
+    height: 320px;
 }
 
 .input-container {
@@ -40,7 +44,41 @@
 
 .info-container .button-container {
     display: flex;
-    gap: 12px;
+    justify-content: space-between;
+    margin: 0px 12px;
+}
+
+.info-container .button-container button {
+    border: none;
+    background-color: #b2f2bb;
+    font-size: 24px;
+    padding: 12px 18px;
+}
+
+.info-container .button-container button:hover {
+    cursor: pointer;
+    background-color: #2f9e44;
+    color: #fff;
+}
+
+.reload-btn {
+    background-color: #ffec99;
+}
+
+.reload-btn:hover {
+    background-color: #f08c00;
+}
+
+.search-btn {
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.search-btn:hover {
+    border: 3px solid #343a40;
+    cursor: pointer;
 }
 
 .room-search {
@@ -121,5 +159,34 @@
 
 .btn--room-creation:hover {
     background-color: #a5d8ff;
+    cursor: pointer;
+}
+
+.room-item-container {
+    padding: 16px;
+    margin-top: 12px;
+    overflow: scroll;
+    width: 600px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.room-item {
+    width: 85%;
+    border: 1px solid #343a40;
+    border-radius: 18px;
+    padding: 16px 28px;
+}
+
+.room-name {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.btn--enter {
+    font-size: 16px;
+    padding: 8px 12px;
     cursor: pointer;
 }

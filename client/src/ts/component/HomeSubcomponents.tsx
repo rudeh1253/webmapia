@@ -107,9 +107,12 @@ export function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
 
     return (
         <div className="room-item">
-            <p>{roomName}</p>
-            <p>{numOfUsers}</p>
-            <button type="button" onClick={onClickEnterBtn}>
+            <p className="room-name">{roomName}</p>
+            <button
+                className="btn--enter"
+                type="button"
+                onClick={onClickEnterBtn}
+            >
                 {strResource.home.enter}
             </button>
         </div>
