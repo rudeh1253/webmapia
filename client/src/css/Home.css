@@ -7,12 +7,8 @@
     top: 40%;
     left: 40%;
     background-color: #f7f7f7;
-    border: 2px solid #1098ad;
+    border: 3px solid #1098ad;
     border-radius: 10px;
-}
-
-.modal {
-    position: relative;
 }
 
 .modal-content {
@@ -30,4 +26,44 @@
     margin-left: 95%;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.btn--close-modal:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.room-name-input-container {
+    display: flex;
+    gap: 13px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 18px;
+}
+
+.room-name-input-container label {
+    font-weight: 700;
+}
+
+.room-name-input-container input {
+    padding: 8px 12px;
+    border: 2px solid #99e9f2;
+    border-radius: 5px;
+}
+
+.btn--room-creation {
+    font-size: 24px;
+    margin-left: 12px;
+    border: none;
+    font-weight: bold;
+    background-color: #1971c2;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.btn--room-creation:hover {
+    background-color: #a5d8ff;
+    cursor: pointer;
 }
