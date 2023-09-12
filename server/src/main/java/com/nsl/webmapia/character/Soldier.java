@@ -31,6 +31,13 @@ public class Soldier implements Character {
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .receiverUser(tar)
                     .build());
+            for (SkillEffect e : skillManager.getSkillEffects()) {
+                if (e.getCharacterEffectAfterNightType() == CharacterEffectAfterNightType.KILL
+                && e.getSkillTargetUser().equals(tar)) {
+                    e.setCharacterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_KILL);
+                }
+            }
+            tar.setDead(false);
         });
         activatedSkillInfo.setSkillType(SkillType.GUARD);
         return activatedSkillInfo;

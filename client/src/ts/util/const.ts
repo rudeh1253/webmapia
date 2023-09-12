@@ -21,6 +21,7 @@ export const SOCKET_SEND_REMOVE_CHAT_CONTAINER =
     "/app/chatroom/remove-chat-container";
 export const SOCKET_SEND_ACTIVATE_SKILL = "/app/game/activate-skill";
 export const SOCKET_SEND_PROCESS_SKILL = "/app/game/process-skill";
+export const SOCKET_SEND_VOTE = "/app/game/vote"
 
 export const SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC = (roomId: number) =>
     `/notification/public/${roomId}`;
@@ -53,9 +54,9 @@ export const GAME_PHASE_ORDER = [
 ];
 
 export const DEFAULT_TIME_CONFIGURATION = {
-    discussionTimeSeconds: 5,
-    voteTimeSeconds: 5,
-    nightTimeSeconds: 15
+    discussionTimeSeconds: 60,
+    voteTimeSeconds: 60,
+    nightTimeSeconds: 60
 };
 
 export const ID_OF_PUBLIC_CHAT = 1;
@@ -75,5 +76,7 @@ export enum SystemMessageType {
     INVESTIGATION_RESULT,
     GUARD_SUCCESS,
     SKILL_FAIL,
+    SOMEONE_WAS_EXECUTED,
+    NONE_WAS_EXECUTED,
     DUMMY
 }

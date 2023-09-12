@@ -58,7 +58,8 @@
         "reasoning": "추리",
         "sucessing": "계승",
         "murder": "살인",
-        "enterWolfChat": "늑대 채팅 합류"
+        "enterWolfChat": "늑대 채팅 합류",
+        "selfGuard": "자힐"
     },
     "common": {
         "error": "Something problem"
@@ -74,9 +75,10 @@
         "failedToKill": "살해하는 데 실패했습니다.",
         "failedToInvestigate": "조사에 실패했습니다.",
         "heIs": "님은",
-        "wasHe": "(였)이었습니다.",
+        "wasHe": "입니다.",
         "succeededToGuard": "경비병이 방어에 성공했습니다.",
         "failedToGuard": "경비병이 방어에 실패했습니다.",
-        "heEnteredTheWolfChat": "님이 늑대 채팅에 참가했습니다."
+        "heEnteredTheWolfChat": "님이 늑대 채팅에 참가했습니다.",
+        "noneWasExecuted": "아무도 처형당하지 않았습니다."
     }
 }

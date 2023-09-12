@@ -72,6 +72,8 @@ export type SkillResultResponse = {
     skillActivatorId: number;
     receiverId: number;
     message: string;
+    skillTargetCharacterCode: CharacterCode;
+    skillTargetUsername: string;
     characterEffectAfterNightType: CharacterEffectAfterNightType;
 };
 

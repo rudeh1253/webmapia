@@ -60,7 +60,7 @@ function SkillSelection({
     useEffect(() => {
         setUsed(false);
     }, [currentGamePhase]);
-    
+
     return (
         <div className="selection-container">
             <button
@@ -108,10 +108,13 @@ type TargetSelectionProps = {
 
 function TargetSelection({setTarget}: TargetSelectionProps) {
     const usersInRoom = useAppSelector((state) => state.usersInRoom);
+    const thisUser = useAppSelector((state) => state.thisUserInfo);
     return (
         <div>
             {usersInRoom.map((user) => {
-                return user.isDead ? null : (
+                return user.isDead ===
+                    (thisUser.characterCode !== "MEDIUMSHIP" &&
+                        thisUser.characterCode !== "BETRAYER") ? null : (
                     <button type="button" onClick={() => setTarget(user)}>
                         {user.username}
                     </button>

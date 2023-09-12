@@ -51,6 +51,7 @@ export default class GameManager {
     private _currentGamePhase: GamePhase;
     private _dispatch: any;
     private _usersInRoom: UserInfo[];
+    private _zero: number;
 
     private constructor() {
         this._thisUser = {
@@ -64,6 +65,7 @@ export default class GameManager {
         this._currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
         this._dispatch = null;
         this._usersInRoom = [];
+        this._zero = 0;
     }
 
     public static getInstance(): GameManager {
@@ -169,6 +171,61 @@ export default class GameManager {
         const newChatList: Chat[] = [];
         switch (data.endedPhase) {
             case GamePhase.VOTE:
+                const voteResult = data.voteResult;
+                if (voteResult.notificationType === "EXECUTE_BY_VOTE") {
+                    this._usersInRoom = this._usersInRoom.map((user) => {
+                        if (user.userId === voteResult.idOfUserToBeExecuted) {
+                            return {
+                                ...user,
+                                isDead: true
+                            };
+                        }
+                        return user;
+                    });
+                    this._dispatch(setUsersInRoom([...this._usersInRoom]));
+                    if (
+                        this._thisUser.userId ===
+                        voteResult.idOfUserToBeExecuted
+                    ) {
+                        this._thisUser.isDead = true;
+                        this._dispatch(
+                            setThisUserInfo({
+                                ...this._thisUser
+                            })
+                        );
+                    }
+                    const userRequestResult = await axios.get<
+                        CommonResponse<UserResponse>
+                    >(
+                        REST_ONE_GAME_USER(
+                            this._gameId,
+                            voteResult.idOfUserToBeExecuted
+                        )
+                    );
+                    const userResponse = userRequestResult.data.data;
+                    const userToExecuted: UserInfo = {
+                        userId: userResponse.userId,
+                        username: userResponse.username,
+                        characterCode: userResponse.characterCode,
+                        isDead: userResponse.isDead
+                    };
+                    newChatList.push({
+                        senderId: SystemMessageType.SOMEONE_WAS_EXECUTED,
+                        message: `${userToExecuted.username}${strResource.notificationMessage.someoneExecuted}`,
+                        timestamp: new Date().getTime(),
+                        containerId: ID_OF_PUBLIC_CHAT,
+                        isMe: false
+                    });
+                } else {
+                    newChatList.push({
+                        senderId: SystemMessageType.NONE_WAS_EXECUTED,
+                        message:
+                            strResource.notificationMessage.noneWasExecuted,
+                        timestamp: new Date().getTime(),
+                        containerId: ID_OF_PUBLIC_CHAT,
+                        isMe: false
+                    });
+                }
                 break;
             case GamePhase.NIGHT:
                 console.log("data:", data);
@@ -177,6 +234,7 @@ export default class GameManager {
                     let senderId;
                     let message;
                     switch (result.characterEffectAfterNightType) {
+                        case "EXTERMINATE":
                         case "KILL":
                             const deadUserCommonResponse = await axios.get<
                                 CommonResponse<UserResponse>
@@ -236,16 +294,74 @@ export default class GameManager {
                             });
                             break;
                         case "INVESTIGATE":
+                            if (
+                                this._thisUser.userId ===
+                                result.skillActivatorId
+                            ) {
+                                const targetUser: UserInfo = {
+                                    userId: result.skillTargetId,
+                                    username: result.skillTargetUsername,
+                                    characterCode:
+                                        result.skillTargetCharacterCode,
+                                    isDead: false
+                                };
+                                newChatList.push({
+                                    senderId:
+                                        SystemMessageType.INVESTIGATION_RESULT,
+                                    message: `${targetUser.username}${
+                                        strResource.notificationMessage.heIs
+                                    } ${characterNameMap.get(
+                                        targetUser.characterCode
+                                    )}${strResource.notificationMessage.wasHe}`,
+                                    timestamp: new Date().getTime(),
+                                    containerId: ID_OF_PUBLIC_CHAT,
+                                    isMe: false
+                                });
+                            }
                             break;
                         case "GUARD":
-                            break;
-                        case "EXTERMINATE":
+                            newChatList.push({
+                                senderId: SystemMessageType.GUARD_SUCCESS,
+                                message:
+                                    strResource.notificationMessage
+                                        .succeededToGuard,
+                                timestamp: new Date().getTime(),
+                                containerId: ID_OF_PUBLIC_CHAT,
+                                isMe: false
+                            });
                             break;
                         case "FAIL_TO_KILL":
+                            newChatList.push({
+                                senderId: SystemMessageType.SKILL_FAIL,
+                                message:
+                                    strResource.notificationMessage
+                                        .failedToKill,
+                                timestamp: new Date().getTime(),
+                                containerId: ID_OF_PUBLIC_CHAT,
+                                isMe: false
+                            });
                             break;
                         case "FAIL_TO_INVESTIGATE":
+                            newChatList.push({
+                                senderId: SystemMessageType.SKILL_FAIL,
+                                message:
+                                    strResource.notificationMessage
+                                        .failedToInvestigate,
+                                timestamp: new Date().getTime(),
+                                containerId: ID_OF_PUBLIC_CHAT,
+                                isMe: false
+                            });
                             break;
                         case "FAIL_TO_GUARD":
+                            newChatList.push({
+                                senderId: SystemMessageType.SKILL_FAIL,
+                                message:
+                                    strResource.notificationMessage
+                                        .failedToGuard,
+                                timestamp: new Date().getTime(),
+                                containerId: ID_OF_PUBLIC_CHAT,
+                                isMe: false
+                            });
                             break;
                         case "ENTER_WOLF_CHAT":
                         case "NOTIFY":
@@ -312,8 +428,13 @@ export default class GameManager {
         this.startCountDown(howMany);
     }
 
+    // TODO: Temporary method for testing
+    public manualEnd() {
+        this._zero = 1000;
+    }
+
     private startCountDown(count: number) {
-        if (count <= 0) {
+        if (count <= this._zero) {
             this.endPhase();
             return;
         }
@@ -327,6 +448,7 @@ export default class GameManager {
     }
 
     private async endPhase() {
+        this._zero = 0;
         if (this._gameId === 0) {
             throw new NotAssignedError(
                 ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER

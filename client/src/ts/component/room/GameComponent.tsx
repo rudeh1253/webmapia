@@ -86,6 +86,7 @@ export default function GameComponent() {
 
     return (
         <div className="game-container">
+            <button type="button" onClick={() => gameManager.manualEnd()}>Phase end</button>
             <p className="character-p">
                 {thisUser.characterCode === null
                     ? strResource.game.abscence

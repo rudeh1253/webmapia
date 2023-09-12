@@ -28,7 +28,7 @@ public class Guard implements Character {
         });
         result.setOnSkillSucceed((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
-                    .receiverUser(src)
+                    .receiverUser(null)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .skillActivatorUser(src)
@@ -40,9 +40,10 @@ public class Guard implements Character {
                     e.setCharacterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_KILL);
                 }
             }
+            tar.setDead(false);
         });
         result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
-                .receiverUser(src)
+                .receiverUser(null)
                 .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_GUARD)
                 .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                 .skillActivatorUser(src)

@@ -52,8 +52,8 @@ class GameServiceImplTest {
                 murderer, nobility, predictor, secretSociety, soldier, successor, templar);
         GameRepository gameRepository = new MemoryGameRepository();
         roomService = new RoomServiceImpl(characters, gameRepository);
-        gameService = new GameServiceImpl(gameRepository, null);
         userService = new UserServiceImpl(gameRepository);
+        gameService = new GameServiceImpl(gameRepository, null);
         gameId = roomService.createNewRoom("asdf", 1L);
         userService.addUser(gameId, 1L);
     }

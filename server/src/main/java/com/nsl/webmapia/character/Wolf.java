@@ -37,13 +37,16 @@ public class Wolf implements Character {
             case EXTERMINATE:
                 if (leftExtermination == 1) {
                     result.setSkillType(SkillType.EXTERMINATE);
-                    result.setOnSkillSucceed((a, t, s) -> skillManager.addSkillEffect(SkillEffect.builder()
-                            .receiverUser(null)
-                            .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
-                            .skillTargetUser(t)
-                            .skillActivatorUser(t)
-                            .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
-                            .build()));
+                    result.setOnSkillSucceed((a, t, s) -> {
+                        skillManager.addSkillEffect(SkillEffect.builder()
+                                .receiverUser(null)
+                                .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
+                                .skillTargetUser(t)
+                                .skillActivatorUser(t)
+                                .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
+                                .build());
+                        t.setDead(true);
+                    });
                     result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
                             .receiverUser(src)
                             .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
@@ -58,13 +61,16 @@ public class Wolf implements Character {
                 return result;
             case KILL:
                 result.setSkillType(SkillType.KILL);
-                result.setOnSkillSucceed((a, t, s) -> skillManager.addSkillEffect(SkillEffect.builder()
-                        .receiverUser(null)
-                        .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
-                        .skillTargetUser(t)
-                        .skillActivatorUser(a)
-                        .characterEffectAfterNightType(CharacterEffectAfterNightType.KILL)
-                        .build()));
+                result.setOnSkillSucceed((a, t, s) -> {
+                    skillManager.addSkillEffect(SkillEffect.builder()
+                            .receiverUser(null)
+                            .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
+                            .skillTargetUser(t)
+                            .skillActivatorUser(a)
+                            .characterEffectAfterNightType(CharacterEffectAfterNightType.KILL)
+                            .build());
+                    t.setDead(true);
+                });
                 result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
                         .receiverUser(src)
                         .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())

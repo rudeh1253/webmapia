@@ -33,6 +33,7 @@ public class Predictor implements Character {
                 case HUMAN_MOUSE:
                     skillEffect.setReceiverUser(null);
                     skillEffect.setCharacterEffectAfterNightType(CharacterEffectAfterNightType.KILL);
+                    tar.setDead(true);
                     break;
                 default:
                     skillEffect.setSkillTargetCharacterCode(CharacterCode.GOOD_MAN);

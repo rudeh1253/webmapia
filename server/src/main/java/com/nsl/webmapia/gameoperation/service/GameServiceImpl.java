@@ -13,6 +13,8 @@ import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.user.dto.UserResponseDTO;
+import com.nsl.webmapia.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +75,10 @@ public class GameServiceImpl implements  GameService {
                 break;
             case VOTE:
                 VoteResultResponseDTO voteResultResponseDTO = processVotes(gameId);
+                if (voteResultResponseDTO.getNotificationType().equals(NotificationType.EXECUTE_BY_VOTE)) {
+                    game.getOneUser(voteResultResponseDTO.getIdOfUserToBeExecuted())
+                            .ifPresent(user -> user.setDead(true));
+                }
                 response.values().forEach(dto -> dto.setVoteResult(voteResultResponseDTO));
                 break;
         }

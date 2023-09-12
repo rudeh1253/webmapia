@@ -1,5 +1,6 @@
 package com.nsl.webmapia.skill.dto;
 
+import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.skill.domain.CharacterEffectAfterNightType;
 import com.nsl.webmapia.skill.domain.SkillEffect;
@@ -19,6 +20,8 @@ public class SkillResultResponseDTO {
     private final Long receiverId;
     private final String message;
     private final NotificationType notificationType;
+    private final CharacterCode skillTargetCharacterCode;
+    private final String skillTargetUsername;
     private final CharacterEffectAfterNightType characterEffectAfterNightType;
 
     public static SkillResultResponseDTO from(Long gameId, SkillEffect skillEffect, NotificationType notificationType) {
@@ -31,6 +34,8 @@ public class SkillResultResponseDTO {
                 .skillActivatorId(skillEffect.getSkillActivatorUser().getID())
                 .receiverId(receiverId)
                 .notificationType(notificationType)
+                .skillTargetCharacterCode(skillEffect.getSkillTargetCharacterCode())
+                .skillTargetUsername(skillEffect.getSkillTargetUser().getName())
                 .characterEffectAfterNightType(skillEffect.getCharacterEffectAfterNightType())
                 .build();
     }

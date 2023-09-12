@@ -33,6 +33,7 @@ public class Murderer implements Character {
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
                     .build());
             canKill = false;
+            tar.setDead(true);
         });
         return result;
     }

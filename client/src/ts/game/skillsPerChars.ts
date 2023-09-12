@@ -42,6 +42,11 @@ const skillsPerChars = new Map<
                 skillName: strResource.skill.insight,
                 skillDesc: "",
                 skillType: "INVESTIGATE_ALIVE_CHARACTER"
+            },
+            {
+                skillName: strResource.skill.enterWolfChat,
+                skillDesc: "",
+                skillType: "ENTER_WOLF_CHAT"
             }
         ]
     ],
@@ -88,7 +93,16 @@ const skillsPerChars = new Map<
     ["SUCCESSOR", []],
     ["SECRET_SOCIETY", []],
     ["NOBILITY", []],
-    ["SOLDIER", []],
+    [
+        "SOLDIER",
+        [
+            {
+                skillName: strResource.skill.selfGuard,
+                skillDesc: "",
+                skillType: "GUARD"
+            }
+        ]
+    ],
     ["TEMPLAR", []],
     ["CITIZEN", []],
     [
