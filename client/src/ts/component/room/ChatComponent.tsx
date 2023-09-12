@@ -80,9 +80,10 @@ export default function ChatComponent({users}: ChatComponentProp) {
                 ) {
                     return;
                 }
-                const origChatLogs = chatContainer.chatLogs;
-                chatContainer.chatLogs = [...origChatLogs, c];
-                setChatContainerTabs(extractKeysAndNames(chatContainerMap));
+                chatContainer.chatLogs = [...chatContainer.chatLogs, c];
+                chatContainerMap.set(chatContainer.id, {
+                    ...chatContainer
+                });
                 if (chatContainer.id === currentChatContainer.id) {
                     setCurrentChatContainer({...chatContainer});
                 }

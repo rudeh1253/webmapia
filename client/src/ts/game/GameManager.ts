@@ -37,7 +37,7 @@ import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import {setNewChat} from "../redux/slice/newChatSlice";
 import axios from "axios";
 import {characterNameMap} from "./characterNameMap";
-import { participateChatContainer } from "../sockjs/chat";
+import {participateChatContainer} from "../sockjs/chat";
 
 var sockClient: SocketClient;
 
@@ -149,7 +149,6 @@ export default class GameManager {
                 ErrorCode.DISPATCH_IS_NULL_IN_GAME_MANAGER
             );
         }
-        console.log(gameSetting);
         this._gameSetting = gameSetting;
         this._currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
         this._dispatch(setGameSwitch(true));
@@ -166,263 +165,81 @@ export default class GameManager {
         if (data.gameEnd) {
             this._dispatch(setCurrentGamePhase(GamePhase.GAME_END));
         }
-        const newChatList = [];
+        const newChatList: Chat[] = [];
         switch (data.endedPhase) {
             case GamePhase.VOTE:
                 break;
             case GamePhase.NIGHT:
-                console.log("processPhaseResult:", "NIGHT");
                 console.log("data:", data);
                 for (let result of data.skillResults) {
-                    console.log("data:", result);
-                    console.log("thisUser:", this._thisUser);
-                    console.log(
-                        "thisUser.userId === result.skillTargetId:",
-                        result.skillActivatorId === this._thisUser.userId
-                    );
-                    if (result.skillActivatorId === this._thisUser.userId) {
-                        const newChat = await this.processSkillEffectForMe(
-                            result
-                        );
-                        newChatList.push(newChat);
-                    } else {
-                        const newChat = await this.processSkillEffectForOther(
-                            result
-                        );
-                        newChatList.push(newChat);
+                    let deadUser;
+                    switch (result.characterEffectAfterNightType) {
+                        case "KILL":
+                            if (
+                                this._thisUser.userId === result.skillTargetId
+                            ) {
+                                this._thisUser.isDead = true;
+                                this._dispatch(
+                                    setThisUserInfo({
+                                        ...this._thisUser
+                                    })
+                                );
+                                newChatList.push({
+                                    senderId: SystemMessageType.YOU_WERE_KILLED,
+                                    message:
+                                        strResource.notificationMessage
+                                            .youWereKilled,
+                                    timestamp: new Date().getTime(),
+                                    containerId: ID_OF_PUBLIC_CHAT,
+                                    isMe: false
+                                });
+                            } else {
+                                for (let user of this._usersInRoom) {
+                                    if (user.userId === result.skillTargetId) {
+                                        deadUser = user;
+                                        user.isDead = true;
+                                    }
+                                }
+                                newChatList.push({
+                                    senderId:
+                                        SystemMessageType.SOMEONE_WAS_KILLED,
+                                    message: `${deadUser?.username}${strResource.notificationMessage.someoneKilled}`,
+                                    timestamp: new Date().getTime(),
+                                    containerId: ID_OF_PUBLIC_CHAT,
+                                    isMe: false
+                                });
+                            }
+                            break;
+                        case "INVESTIGATE":
+                            break;
+                        case "GUARD":
+                            break;
+                        case "EXTERMINATE":
+                            break;
+                        case "FAIL_TO_KILL":
+                            break;
+                        case "FAIL_TO_INVESTIGATE":
+                            break;
+                        case "FAIL_TO_GUARD":
+                            break;
+                        case "ENTER_WOLF_CHAT":
+                        case "NOTIFY":
+                            await participateChatContainer(
+                                this._gameId,
+                                ID_OF_WOLF_CHAT,
+                                NAME_OF_WOLF_CHAT,
+                                result.receiverId
+                            );
+                            break;
+                        case "NONE":
+                            break;
+                        default:
                     }
                 }
                 break;
         }
         this._dispatch(setNewChat(newChatList));
-        console.log("here");
         return data.gameEnd;
-    }
-
-    private async processSkillEffectForMe(
-        result: SkillResultResponse
-    ): Promise<Chat> {
-        console.log(result);
-        switch (result.characterEffectAfterNightType) {
-            case "KILL":
-                this._thisUser.isDead = true;
-                this._dispatch(
-                    setThisUserInfo({
-                        ...this._thisUser
-                    })
-                );
-                return {
-                    senderId: SystemMessageType.YOU_WERE_KILLED,
-                    message: strResource.notificationMessage.youWereKilled,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "INVESTIGATE":
-                const data = await axios.get<CommonResponse<UserResponse>>(
-                    REST_ONE_GAME_USER(this._gameId, result.skillTargetId)
-                );
-                const userResponse = data.data.data;
-                return {
-                    senderId: SystemMessageType.INVESTIGATION_RESULT,
-                    message: `${userResponse.username}${
-                        strResource.notificationMessage.heIs
-                    } ${characterNameMap.get(
-                        userResponse.characterCode as CharacterCode
-                    )}${strResource.notificationMessage.wasHe}`,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "GUARD":
-                return {
-                    senderId: SystemMessageType.GUARD_SUCCESS,
-                    message: strResource.notificationMessage.succeededToGuard,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "EXTERMINATE":
-                this._thisUser.isDead = true;
-                this._dispatch(setThisUserInfo({...this._thisUser}));
-                return {
-                    senderId: SystemMessageType.YOU_WERE_EXTERMINATED,
-                    message:
-                        strResource.notificationMessage.youWereExterminated,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "FAIL_TO_KILL":
-                return {
-                    senderId: SystemMessageType.SKILL_FAIL,
-                    message: strResource.notificationMessage.failedToKill,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "FAIL_TO_INVESTIGATE":
-                return {
-                    senderId: SystemMessageType.SKILL_FAIL,
-                    message:
-                        strResource.notificationMessage.failedToInvestigate,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "FAIL_TO_GUARD":
-                return {
-                    senderId: SystemMessageType.SKILL_FAIL,
-                    message: strResource.notificationMessage.failedToGuard,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "ENTER_WOLF_CHAT":
-                console.log("ENTER_WOLF_CHAT");
-                await participateChatContainer(this._gameId, ID_OF_WOLF_CHAT, NAME_OF_WOLF_CHAT, this._thisUser.userId)
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "NOTIFY":
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "NONE":
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            default:
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-        }
-    }
-
-    private processSkillEffectForOther(result: SkillResultResponse): Chat {
-        let deadUser;
-        switch (result.characterEffectAfterNightType) {
-            case "KILL":
-                for (let user of this._usersInRoom) {
-                    if (user.userId === result.skillTargetId) {
-                        deadUser = user;
-                        user.isDead = true;
-                    }
-                }
-                return {
-                    senderId:
-                        SYSTEM_MESSAGE_ID +
-                        SystemMessageType.SOMEONE_WAS_KILLED,
-                    message: `${deadUser?.username}${strResource.notificationMessage.someoneKilled}`,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "INVESTIGATE":
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "GUARD":
-                return {
-                    senderId: SystemMessageType.GUARD_SUCCESS,
-                    message: strResource.notificationMessage.succeededToGuard,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "EXTERMINATE":
-                for (let user of this._usersInRoom) {
-                    if (user.userId === result.skillTargetId) {
-                        deadUser = user;
-                        user.isDead = true;
-                    }
-                }
-                return {
-                    senderId: SystemMessageType.SOMEONE_WAS_EXTERMINATED,
-                    message:
-                        strResource.notificationMessage.someoneExterminated,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "FAIL_TO_KILL":
-                return {
-                    senderId: SystemMessageType.SKILL_FAIL,
-                    message: strResource.notificationMessage.failedToKill,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "FAIL_TO_INVESTIGATE":
-                return {
-                    senderId: SystemMessageType.SKILL_FAIL,
-                    message:
-                        strResource.notificationMessage.failedToInvestigate,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "FAIL_TO_GUARD":
-                return {
-                    senderId: SystemMessageType.SKILL_FAIL,
-                    message: strResource.notificationMessage.failedToGuard,
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "ENTER_WOLF_CHAT":
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "NOTIFY":
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            case "NONE":
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-            default:
-                return {
-                    senderId: SystemMessageType.DUMMY,
-                    message: "",
-                    timestamp: new Date().getTime(),
-                    containerId: ID_OF_PUBLIC_CHAT,
-                    isMe: false
-                };
-        }
     }
 
     public moveToNextPhase() {
@@ -451,7 +268,7 @@ export default class GameManager {
         }
         const currentPhase = this._currentGamePhase;
         const gameConfig = this._gameSetting;
-        const DEFAULT_COUNT = 90;
+        const DEFAULT_COUNT = 10;
         let howMany: number = DEFAULT_COUNT;
         switch (currentPhase) {
             case GamePhase.DAYTIME:

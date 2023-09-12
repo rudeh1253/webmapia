@@ -116,9 +116,7 @@ export async function onNewParticipantEntered(
     dispatch: any
 ) {
     const chatContainer = chatContainerMap.get(data.containerId);
-    console.log(chatContainer);
     if (chatContainer) {
-        console.log("chatContainer exists");
         const newParticipantCommonResponse = await axios.get<
             CommonResponse<UserResponse>
         >(REST_ONE_GAME_USER(data.gameId, data.newParticipant));
@@ -139,7 +137,6 @@ export async function onNewParticipantEntered(
         console.log(toDispatch);
         dispatch(setNewChatContainer(toDispatch));
     } else {
-        console.log("chatContainer doesn't exist");
         const userArrCommonResponse = await axios.get<
             CommonResponse<UserResponse[]>
         >(REST_GAME_USER(data.gameId));
