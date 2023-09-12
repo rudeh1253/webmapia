@@ -22,49 +22,60 @@ export function RoomCreationModal({setModalState}: ModalProps) {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     return (
-        <div className="modal">
-            <button type="button" onClick={() => setModalState(false)}>
-                {strResource.home.close}
-            </button>
-            <div className="room-name-input-container">
-                <label htmlFor="room-name-input">
-                    {strResource.home.inputRoomName}
-                </label>
-                <input
-                    type="text"
-                    id="room-name-input"
-                    ref={roomNameInputRef}
-                />
+        <div className="modal-container">
+            <div className="modal">
+                <div className="modal-content">
+                    <img
+                        className="btn--close-modal"
+                        src={process.env.PUBLIC_URL + "/close.png"}
+                        alt={strResource.home.close}
+                        onClick={() => setModalState(false)}
+                    />
+                    <div className="room-name-input-container">
+                        <label htmlFor="room-name-input">
+                            {strResource.home.inputRoomName}
+                        </label>
+                        <input
+                            type="text"
+                            id="room-name-input"
+                            ref={roomNameInputRef}
+                        />
+                    </div>
+                    <button
+                        type="button"
+                        onClick={async () => {
+                            const roomName = roomNameInputRef.current?.value!;
+                            const hostId = await generateId();
+                            dispatch(
+                                setThisUserInfo({
+                                    ...thisUserInfo,
+                                    userId: hostId
+                                })
+                            );
+                            const roomCreationRequestBody: RoomCreationRequest =
+                                {
+                                    gameName: roomName,
+                                    hostId,
+                                    hostName: thisUserInfo.username
+                                };
+                            const roomInfo = await axios.post<
+                                CommonResponse<RoomInfoResponse>
+                            >(REST_GAME_ROOM, roomCreationRequestBody);
+                            dispatch(
+                                setCurrentRoomInfo({
+                                    roomId: roomInfo.data.data.roomId,
+                                    roomName: roomInfo.data.data.roomName,
+                                    hostId: roomInfo.data.data.hostId,
+                                    numOfUsers: roomInfo.data.data.users.length
+                                })
+                            );
+                            navigate("/room");
+                        }}
+                    >
+                        {strResource.home.createRoom}
+                    </button>
+                </div>
             </div>
-            <button
-                type="button"
-                onClick={async () => {
-                    const roomName = roomNameInputRef.current?.value!;
-                    const hostId = await generateId();
-                    dispatch(
-                        setThisUserInfo({...thisUserInfo, userId: hostId})
-                    );
-                    const roomCreationRequestBody: RoomCreationRequest = {
-                        gameName: roomName,
-                        hostId,
-                        hostName: thisUserInfo.username
-                    };
-                    const roomInfo = await axios.post<
-                        CommonResponse<RoomInfoResponse>
-                    >(REST_GAME_ROOM, roomCreationRequestBody);
-                    dispatch(
-                        setCurrentRoomInfo({
-                            roomId: roomInfo.data.data.roomId,
-                            roomName: roomInfo.data.data.roomName,
-                            hostId: roomInfo.data.data.hostId,
-                            numOfUsers: roomInfo.data.data.users.length
-                        })
-                    );
-                    navigate("/room");
-                }}
-            >
-                {strResource.home.createRoom}
-            </button>
         </div>
     );
 }

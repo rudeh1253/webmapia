@@ -43,7 +43,7 @@ public class Guard implements Character {
             tar.setDead(false);
         });
         result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
-                .receiverUser(null)
+                .receiverUser(src)
                 .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_GUARD)
                 .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                 .skillActivatorUser(src)

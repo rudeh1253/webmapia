@@ -8,6 +8,7 @@ import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import SocketClient from "../sockjs/SocketClient";
 import {REST_GAME_ROOM} from "../util/const";
 import {RoomCreationModal, RoomItem} from "./HomeSubcomponents";
+import "../../css/Home.css";
 
 var sockClient: SocketClient;
 
@@ -76,6 +77,7 @@ export default function Home() {
                                 })
                             )
                         }
+                        disabled={roomCreationModal}
                     />
                 </div>
             </div>
@@ -86,6 +88,7 @@ export default function Home() {
                             className="search-keyword-input"
                             type="text"
                             ref={searchKeywordInput}
+                            disabled={roomCreationModal}
                         />
                         <button
                             className="search-btn"
@@ -95,6 +98,7 @@ export default function Home() {
                                     searchKeywordInput.current?.value;
                                 getRoomList(searchKeyword);
                             }}
+                            disabled={roomCreationModal}
                         >
                             {strResource.home.search}
                         </button>
@@ -103,6 +107,7 @@ export default function Home() {
                         className="room-create-btn"
                         type="button"
                         onClick={() => setRoomCreationModal(true)}
+                        disabled={roomCreationModal}
                     >
                         {strResource.home.createRoom}
                     </button>
@@ -110,6 +115,7 @@ export default function Home() {
                         className="reload-btn"
                         type="button"
                         onClick={() => getRoomList()}
+                        disabled={roomCreationModal}
                     >
                         {strResource.home.reload}
                     </button>
