@@ -38,6 +38,7 @@ import {setNewChat} from "../redux/slice/newChatSlice";
 import axios from "axios";
 import {characterNameMap} from "./characterNameMap";
 import {participateChatContainer} from "../sockjs/chat";
+import {setUsersInRoom} from "../redux/slice/usersInRoomSlice";
 
 var sockClient: SocketClient;
 
@@ -172,9 +173,42 @@ export default class GameManager {
             case GamePhase.NIGHT:
                 console.log("data:", data);
                 for (let result of data.skillResults) {
-                    let deadUser;
+                    let deadUser: UserInfo;
+                    let senderId;
+                    let message;
                     switch (result.characterEffectAfterNightType) {
                         case "KILL":
+                            const deadUserCommonResponse = await axios.get<
+                                CommonResponse<UserResponse>
+                            >(
+                                REST_ONE_GAME_USER(
+                                    this._gameId,
+                                    result.skillTargetId
+                                )
+                            );
+                            deadUser = {
+                                userId: deadUserCommonResponse.data.data.userId,
+                                username:
+                                    deadUserCommonResponse.data.data.username,
+                                characterCode:
+                                    deadUserCommonResponse.data.data
+                                        .characterCode,
+                                isDead: deadUserCommonResponse.data.data.isDead
+                            };
+                            this._usersInRoom = this._usersInRoom.map(
+                                (user) => {
+                                    if (user.userId === result.skillTargetId) {
+                                        return {
+                                            ...user,
+                                            isDead: true
+                                        };
+                                    }
+                                    return user;
+                                }
+                            );
+                            this._dispatch(
+                                setUsersInRoom([...this._usersInRoom])
+                            );
                             if (
                                 this._thisUser.userId === result.skillTargetId
                             ) {
@@ -184,31 +218,22 @@ export default class GameManager {
                                         ...this._thisUser
                                     })
                                 );
-                                newChatList.push({
-                                    senderId: SystemMessageType.YOU_WERE_KILLED,
-                                    message:
-                                        strResource.notificationMessage
-                                            .youWereKilled,
-                                    timestamp: new Date().getTime(),
-                                    containerId: ID_OF_PUBLIC_CHAT,
-                                    isMe: false
-                                });
+                                senderId = SystemMessageType.YOU_WERE_KILLED;
+                                message =
+                                    strResource.notificationMessage
+                                        .youWereKilled;
                             } else {
-                                for (let user of this._usersInRoom) {
-                                    if (user.userId === result.skillTargetId) {
-                                        deadUser = user;
-                                        user.isDead = true;
-                                    }
-                                }
-                                newChatList.push({
-                                    senderId:
-                                        SystemMessageType.SOMEONE_WAS_KILLED,
-                                    message: `${deadUser?.username}${strResource.notificationMessage.someoneKilled}`,
-                                    timestamp: new Date().getTime(),
-                                    containerId: ID_OF_PUBLIC_CHAT,
-                                    isMe: false
-                                });
+                                senderId =
+                                    SystemMessageType.SOMEONE_WAS_EXTERMINATED;
+                                message = `${deadUser.username}${strResource.notificationMessage.someoneKilled}`;
                             }
+                            newChatList.push({
+                                senderId,
+                                message,
+                                timestamp: new Date().getTime(),
+                                containerId: ID_OF_PUBLIC_CHAT,
+                                isMe: false
+                            });
                             break;
                         case "INVESTIGATE":
                             break;

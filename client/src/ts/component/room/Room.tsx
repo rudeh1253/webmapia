@@ -148,6 +148,7 @@ export default function Room() {
         <div className="room-container">
             <p>User ID: {thisUser.userId}</p>
             <p>Username: {thisUser.username}</p>
+            <p>People: {usersInRoom.length}</p>
             {thisUser.userId === currentRoomInfo.roomInfo.hostId &&
             !gameStarted ? (
                 <div className="host-bar">
