@@ -54,73 +54,78 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="container">
+        <div className="home-container">
             {roomCreationModal ? (
                 <RoomCreationModal setModalState={setRoomCreationModal} />
             ) : null}
-            <div className="user-info">
-                <div className="input-container">
-                    <label
-                        className="username-input-label"
-                        htmlFor="username-input"
-                    >
-                        {strResource.home.usernameInputLabel}
-                    </label>
-                    <input
-                        id="username-input"
-                        type="text"
-                        onChange={(e) =>
-                            dispatch(
-                                setThisUserInfo({
-                                    ...thisUserInfo,
-                                    username: e.target.value
-                                })
-                            )
-                        }
-                        disabled={roomCreationModal}
-                    />
-                </div>
-            </div>
-            <div className="game-container">
-                <div className="function-container">
-                    <div className="room-search-container">
+
+            <div className="info-container">
+                <div className="user-info">
+                    <div className="input-container">
+                        <label
+                            className="username-input-label"
+                            htmlFor="username-input"
+                        >
+                            {strResource.home.usernameInputLabel}
+                        </label>
                         <input
-                            className="search-keyword-input"
+                            id="username-input"
                             type="text"
-                            ref={searchKeywordInput}
+                            onChange={(e) =>
+                                dispatch(
+                                    setThisUserInfo({
+                                        ...thisUserInfo,
+                                        username: e.target.value
+                                    })
+                                )
+                            }
                             disabled={roomCreationModal}
                         />
+                    </div>
+                </div>
+                <div className="function-container">
+                    <div className="button-container">
                         <button
-                            className="search-btn"
+                            className="room-create-btn"
                             type="button"
-                            onClick={() => {
-                                const searchKeyword =
-                                    searchKeywordInput.current?.value;
-                                getRoomList(searchKeyword);
-                            }}
+                            onClick={() => setRoomCreationModal(true)}
                             disabled={roomCreationModal}
                         >
-                            {strResource.home.search}
+                            {strResource.home.createRoom}
+                        </button>
+                        <button
+                            className="reload-btn"
+                            type="button"
+                            onClick={() => getRoomList()}
+                            disabled={roomCreationModal}
+                        >
+                            {strResource.home.reload}
                         </button>
                     </div>
+                </div>
+            </div>
+            <div className="room-container">
+                <div className="input-container room-search">
+                    <input
+                        className="search-keyword-input"
+                        type="text"
+                        ref={searchKeywordInput}
+                        disabled={roomCreationModal}
+                    />
                     <button
-                        className="room-create-btn"
+                        className="search-btn"
                         type="button"
-                        onClick={() => setRoomCreationModal(true)}
+                        onClick={() => {
+                            const searchKeyword =
+                                searchKeywordInput.current?.value;
+                            getRoomList(searchKeyword);
+                        }}
                         disabled={roomCreationModal}
                     >
-                        {strResource.home.createRoom}
-                    </button>
-                    <button
-                        className="reload-btn"
-                        type="button"
-                        onClick={() => getRoomList()}
-                        disabled={roomCreationModal}
-                    >
-                        {strResource.home.reload}
+                        {strResource.home.search}
                     </button>
                 </div>
-                <div className="room-container">
+                <div className="room-item-container">
                     {roomList.map((item) => (
                         <RoomItem
                             key={item.roomId}
