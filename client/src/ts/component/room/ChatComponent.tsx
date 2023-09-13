@@ -107,14 +107,13 @@ export default function ChatComponent({users}: ChatComponentProp) {
             if (chatContainer) {
                 if (
                     chatContainer.chatLogs.length > 0 &&
-                    chatContainer.chatLogs[chatContainer.chatLogs.length - 1]
-                        .timestamp === c.timestamp
+                    chatContainer.chatLogs[0].timestamp === c.timestamp
                 ) {
                     return;
                 }
                 const newChatContainer: ChatContainer = {
                     ...chatContainer,
-                    chatLogs: [...chatContainer.chatLogs, c]
+                    chatLogs: [c, ...chatContainer.chatLogs]
                 };
                 chatContainerMap.set(chatContainer.id, newChatContainer);
                 if (chatContainer.id === currentChatContainer.id) {

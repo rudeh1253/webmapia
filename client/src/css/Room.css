@@ -87,6 +87,8 @@
     flex: 1;
     border: 2px solid #343a40;
     padding: 12px;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .message-input-container {
