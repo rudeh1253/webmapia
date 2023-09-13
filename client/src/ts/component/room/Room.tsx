@@ -28,7 +28,7 @@ import {sumCharacterDistribution} from "../../util/utilFunction";
 import {sendSystemMessage} from "../../sockjs/chat";
 import {SystemMessengerId} from "../../sockjs/SystemMessengerId";
 import {setUsersInRoom} from "../../redux/slice/usersInRoomSlice";
-import "../../../css/Rome.css";
+import "../../../css/Room.css";
 
 var inited = false;
 var sockClient: SocketClient | undefined;

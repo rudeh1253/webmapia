@@ -72,7 +72,10 @@ function SkillSelection({
             </button>
             {targetSelection ? (
                 <div>
-                    <TargetSelection setTarget={setTarget} />
+                    <TargetSelection
+                        skillType={skillType}
+                        setTarget={setTarget}
+                    />
                     <button
                         type="button"
                         onClick={() => {
@@ -103,22 +106,26 @@ function SkillSelection({
 }
 
 type TargetSelectionProps = {
+    skillType: SkillType;
     setTarget: React.Dispatch<React.SetStateAction<UserInfo | undefined>>;
 };
 
-function TargetSelection({setTarget}: TargetSelectionProps) {
+function TargetSelection({skillType, setTarget}: TargetSelectionProps) {
     const usersInRoom = useAppSelector((state) => state.usersInRoom);
-    const thisUser = useAppSelector((state) => state.thisUserInfo);
     return (
         <div>
             {usersInRoom.map((user) => {
-                return user.isDead ===
-                    (thisUser.characterCode !== "MEDIUMSHIP" &&
-                        thisUser.characterCode !== "BETRAYER") ? null : (
+                return skillType === "INVESTIGATE_DEAD_CHARACTER" ? (
+                    user.isDead ? (
+                        <button type="button" onClick={() => setTarget(user)}>
+                            {user.username}
+                        </button>
+                    ) : null
+                ) : !user.isDead ? (
                     <button type="button" onClick={() => setTarget(user)}>
                         {user.username}
                     </button>
-                );
+                ) : null;
             })}
         </div>
     );
