@@ -18,6 +18,14 @@ export type ChatComponentProp = {
 
 export var chatContainerMap = new Map<number, ChatContainer>();
 
+var messageSender: {
+    chatContainerId: number;
+    sendMessage: (msg: string) => void;
+} = {
+    chatContainerId: -1,
+    sendMessage: (msg: string) => {}
+};
+
 export default function ChatComponent({users}: ChatComponentProp) {
     const [currentChatContainer, setCurrentChatContainer] =
         useState<ChatContainer>(iChatStorage);
@@ -49,6 +57,25 @@ export default function ChatComponent({users}: ChatComponentProp) {
         const publicChatContainer = chatContainerMap.get(ID_OF_PUBLIC_CHAT);
         if (publicChatContainer) {
             setCurrentChatContainer(publicChatContainer);
+            messageSender.chatContainerId = publicChatContainer.id;
+        }
+    };
+
+    messageSender.sendMessage = (msg: string) => {
+        messageSender.chatContainerId === ID_OF_PUBLIC_CHAT
+            ? sendPublicChat(msg, currentRoomInfo, thisUser)
+            : sendPrivateChat(
+                  msg,
+                  currentRoomInfo,
+                  thisUser,
+                  messageSender.chatContainerId
+              );
+    };
+
+    const keyEventListener = (ev: KeyboardEvent) => {
+        if (ev.key === "Enter") {
+            messageSender.sendMessage(chatInputRef.current!.value);
+            chatInputRef.current!.value = "";
         }
     };
 
@@ -56,10 +83,15 @@ export default function ChatComponent({users}: ChatComponentProp) {
         if (chatContainerMap.size === 0) {
             resetChatStorage();
         }
+        if (chatInputRef.current) {
+            document.addEventListener("keydown", keyEventListener);
+        }
         return () => {
             setCurrentChatContainer(iChatStorage);
+            messageSender.chatContainerId = iChatStorage.id;
             setChatContainerTabs([]);
             chatContainerMap.clear();
+            document.removeEventListener("keydown", keyEventListener, true);
         };
     }, []);
 
@@ -83,10 +115,11 @@ export default function ChatComponent({users}: ChatComponentProp) {
                 const newChatContainer: ChatContainer = {
                     ...chatContainer,
                     chatLogs: [...chatContainer.chatLogs, c]
-                }
+                };
                 chatContainerMap.set(chatContainer.id, newChatContainer);
                 if (chatContainer.id === currentChatContainer.id) {
                     setCurrentChatContainer(newChatContainer);
+                    messageSender.chatContainerId = newChatContainer.id;
                 }
             }
         });
@@ -110,6 +143,7 @@ export default function ChatComponent({users}: ChatComponentProp) {
                     chatContainerMap.set(newChatContainer.id, newChatContainer);
                     if (newChatContainer.id === currentChatContainer.id) {
                         setCurrentChatContainer(newChatContainer);
+                        messageSender.chatContainerId = newChatContainer.id;
                     }
                 }
             }
@@ -130,9 +164,12 @@ export default function ChatComponent({users}: ChatComponentProp) {
                             className={classNameForBtn}
                             type="button"
                             onClick={() => {
-                                setCurrentChatContainer({
-                                    ...chatContainerMap.get(e.key)!
-                                });
+                                const container = chatContainerMap.get(e.key);
+                                if (container) {
+                                    setCurrentChatContainer({...container});
+                                    messageSender.chatContainerId =
+                                        container.id;
+                                }
                             }}
                         >
                             {e.name}
@@ -155,26 +192,17 @@ export default function ChatComponent({users}: ChatComponentProp) {
             <div className="message-input-container">
                 <input
                     className="message-input"
+                    id="message-in"
                     type="text"
                     ref={chatInputRef}
                 />
                 <button
                     className="btn--send-message"
                     type="button"
-                    onClick={() =>
-                        currentChatContainer.id === ID_OF_PUBLIC_CHAT
-                            ? sendPublicChat(
-                                  chatInputRef.current!.value,
-                                  currentRoomInfo,
-                                  thisUser
-                              )
-                            : sendPrivateChat(
-                                  chatInputRef.current!.value,
-                                  currentRoomInfo,
-                                  thisUser,
-                                  currentChatContainer.id
-                              )
-                    }
+                    onClick={() => {
+                        messageSender.sendMessage(chatInputRef.current!.value);
+                        chatInputRef.current!.value = "";
+                    }}
                     disabled={
                         thisUser.isDead &&
                         currentChatContainer.id !== ID_OF_CHAT_FOR_DEAD
