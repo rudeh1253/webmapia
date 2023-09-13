@@ -147,80 +147,84 @@ export default function Room() {
 
     return (
         <div className="room-container">
-            <ul className="user-list">
-                {usersInRoom.map((user, idx) => (
-                    <li key={`user-item-${idx}`}>
+            <p className="room-name">{currentRoomInfo.roomInfo.roomName}</p>
+            <div className="room-content">
+                <ul className="user-list">
+                    {usersInRoom.map((user, idx) => (
                         <UserItem
+                            key={`user-item-${idx}`}
                             userId={user.userId}
                             username={user.username}
                             characterCode={user.characterCode}
                             isDead={user.isDead}
                         />
-                    </li>
-                ))}
-            </ul>
-            <ChatComponent users={usersInRoom} />
-            <div className="game-container">
-                {thisUser.userId === currentRoomInfo.roomInfo.hostId &&
-                !gameStarted ? (
-                    <div className="host-bar">
-                        <button
-                            type="button"
-                            onClick={async () => {
-                                const gameStartNotificationRequestBody: GameStartRequest =
-                                    {
-                                        gameSetting: gameConfiguration,
-                                        gameId: currentRoomInfo.roomInfo.roomId
-                                    };
-                                if (!sockClient) {
-                                    sockClient =
-                                        await SocketClient.getInstance();
-                                }
-                                sockClient.sendMessage(
-                                    SOCKET_SEND_GAME_START,
-                                    {},
-                                    gameStartNotificationRequestBody
-                                );
+                    ))}
+                </ul>
+                <ChatComponent users={usersInRoom} />
+                <div className="game-container">
+                    {thisUser.userId === currentRoomInfo.roomInfo.hostId &&
+                    !gameStarted ? (
+                        <div className="host-bar">
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    const gameStartNotificationRequestBody: GameStartRequest =
+                                        {
+                                            gameSetting: gameConfiguration,
+                                            gameId: currentRoomInfo.roomInfo
+                                                .roomId
+                                        };
+                                    if (!sockClient) {
+                                        sockClient =
+                                            await SocketClient.getInstance();
+                                    }
+                                    sockClient.sendMessage(
+                                        SOCKET_SEND_GAME_START,
+                                        {},
+                                        gameStartNotificationRequestBody
+                                    );
 
-                                dispatch(
-                                    setCurrentGamePhase(
-                                        GamePhase.CHARACTER_DISTRIBUTION
-                                    )
-                                );
-                                const characterDistributionRequestBody: CharacterGenerationRequest =
-                                    {
-                                        gameId: currentRoomInfo.roomInfo.roomId,
-                                        characterDistribution
-                                    };
-                                sockClient.sendMessage(
-                                    SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
-                                    {},
-                                    characterDistributionRequestBody
-                                );
-                            }}
-                            disabled={
-                                usersInRoom.length !==
-                                sumOfCharacterDistribution
-                            }
-                        >
-                            {strResource.room.gameStart}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() =>
-                                dispatch(setGameConfigurationModal(true))
-                            }
-                        >
-                            {strResource.room.gameConfiguration}
-                        </button>
-                    </div>
-                ) : null}
-                {gameConfigurationModal && !gameStarted ? (
-                    <GameConfigurationModal
-                        characterConfigurationProps={{usersInRoom}}
-                    />
-                ) : null}
-                {gameStarted ? <GameComponent /> : null}
+                                    dispatch(
+                                        setCurrentGamePhase(
+                                            GamePhase.CHARACTER_DISTRIBUTION
+                                        )
+                                    );
+                                    const characterDistributionRequestBody: CharacterGenerationRequest =
+                                        {
+                                            gameId: currentRoomInfo.roomInfo
+                                                .roomId,
+                                            characterDistribution
+                                        };
+                                    sockClient.sendMessage(
+                                        SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
+                                        {},
+                                        characterDistributionRequestBody
+                                    );
+                                }}
+                                disabled={
+                                    usersInRoom.length !==
+                                    sumOfCharacterDistribution
+                                }
+                            >
+                                {strResource.room.gameStart}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    dispatch(setGameConfigurationModal(true))
+                                }
+                            >
+                                {strResource.room.gameConfiguration}
+                            </button>
+                        </div>
+                    ) : null}
+                    {gameConfigurationModal && !gameStarted ? (
+                        <GameConfigurationModal
+                            characterConfigurationProps={{usersInRoom}}
+                        />
+                    ) : null}
+                    {gameStarted ? <GameComponent /> : null}
+                </div>
             </div>
         </div>
     );

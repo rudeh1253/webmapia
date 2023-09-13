@@ -261,12 +261,14 @@ function CharacterConfiguration({usersInRoom}: CharacterConfigurationProps) {
 export function UserItem({userId, username, characterCode, isDead}: UserInfo) {
     const roomInfo = useAppSelector((state) => state.currentRoomInfo);
     const thisUser = useAppSelector((state) => state.thisUserInfo);
+
+    const classNameOfItem =
+        "user-item" +
+        (isDead ? " dead-user" : "");
     return (
-        <div>
-            <p>{userId}</p>
+        <li className={classNameOfItem}>
             <p>{username}</p>
-            <p>{characterCode}</p>
-            <p>{isDead.toString()}</p>
-        </div>
+            {userId === thisUser.userId ? <p className="self">me</p> : null}
+        </li>
     );
 }
