@@ -6,6 +6,7 @@ import {SkillType, UserInfo} from "../../../type/gameDomainType";
 import {useState, useEffect} from "react";
 import {SOCKET_SEND_ACTIVATE_SKILL} from "../../../util/const";
 import {SkillActivationRequest} from "../../../type/requestType";
+import GameManager from "../../../game/GameManager";
 
 var sockClient: SocketClient;
 
@@ -111,19 +112,21 @@ type TargetSelectionProps = {
 };
 
 function TargetSelection({skillType, setTarget}: TargetSelectionProps) {
-    const usersInRoom = useAppSelector((state) => state.usersInRoom);
+    const gameManager = GameManager.getInstance();
+    const userIdsInRoom = useAppSelector((state) => state.userIdsInRoom);
     return (
         <div>
-            {usersInRoom.map((user) => {
+            {userIdsInRoom.map((id) => {
+                const user = gameManager.getUser(id);
                 return skillType === "INVESTIGATE_DEAD_CHARACTER" ? (
-                    user.isDead ? (
+                    user?.isDead ? (
                         <button type="button" onClick={() => setTarget(user)}>
                             {user.username}
                         </button>
                     ) : null
-                ) : !user.isDead ? (
+                ) : !user?.isDead ? (
                     <button type="button" onClick={() => setTarget(user)}>
-                        {user.username}
+                        {user?.username}
                     </button>
                 ) : null;
             })}

@@ -77,7 +77,7 @@ export type CharacterDistribution = {
 
 export type ChatContainer = {
     id: number;
-    participants: UserInfo[];
+    participants: number[];
     name: string;
     chatLogs: Chat[];
 };

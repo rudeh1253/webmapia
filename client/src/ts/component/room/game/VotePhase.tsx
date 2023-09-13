@@ -5,14 +5,17 @@ import {UserInfo} from "../../../type/gameDomainType";
 import SocketClient from "../../../sockjs/SocketClient";
 import {SOCKET_SEND_VOTE} from "../../../util/const";
 import {VoteRequest} from "../../../type/requestType";
+import GameManager from "../../../game/GameManager";
 
 var sockClient: SocketClient;
 
 export default function VotePhase() {
     const [selectedUser, setSelectedUser] = useState<UserInfo>();
-    const usersInRoom = useAppSelector((state) => state.usersInRoom);
+    const userIdsInRoom = useAppSelector((state) => state.userIdsInRoom);
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const roomInfo = useAppSelector((state) => state.currentRoomInfo).roomInfo;
+
+    const gameManager = GameManager.getInstance();
 
     useEffect(() => {
         if (!sockClient) {
@@ -25,13 +28,14 @@ export default function VotePhase() {
     return (
         <div className="game-container vote-phase">
             <p>{strResource.game.vote}</p>
-            {usersInRoom.map((user) =>
-                user.isDead ? null : (
+            {userIdsInRoom.map((id) => {
+                const user = gameManager.getUser(id);
+                return user!.isDead ? null : (
                     <button type="button" onClick={() => setSelectedUser(user)}>
-                        {user.username}
+                        {user!.username}
                     </button>
-                )
-            )}
+                );
+            })}
             <button
                 type="button"
                 onClick={() => {

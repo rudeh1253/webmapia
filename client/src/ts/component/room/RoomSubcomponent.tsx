@@ -21,7 +21,7 @@ export function GameConfigurationModal({
         <div className="configuration-modal-container">
             <TimeConfiguration />
             <CharacterConfiguration
-                usersInRoom={characterConfigurationProps.usersInRoom}
+                userIdsInRoom={characterConfigurationProps.userIdsInRoom}
             />
         </div>
     );
@@ -173,10 +173,10 @@ function TimeConfiguration() {
 }
 
 type CharacterConfigurationProps = {
-    usersInRoom: UserInfo[];
+    userIdsInRoom: number[];
 };
 
-function CharacterConfiguration({usersInRoom}: CharacterConfigurationProps) {
+function CharacterConfiguration({userIdsInRoom: usersInRoom}: CharacterConfigurationProps) {
     const [sumOfCharacterDistribution, setSumOfCharacterDistribution] =
         useState<number>(0);
     const characterDistribution = useAppSelector(

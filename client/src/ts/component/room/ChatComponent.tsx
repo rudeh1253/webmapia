@@ -13,7 +13,7 @@ import {iChatStorage} from "../../util/initialState";
 import {sendPrivateChat, sendPublicChat} from "../../sockjs/chat";
 
 export type ChatComponentProp = {
-    users: UserInfo[];
+    userIds: number[];
 };
 
 export var chatContainerMap = new Map<number, ChatContainer>();
@@ -26,7 +26,7 @@ var messageSender: {
     sendMessage: (msg: string) => {}
 };
 
-export default function ChatComponent({users}: ChatComponentProp) {
+export default function ChatComponent({userIds}: ChatComponentProp) {
     const [currentChatContainer, setCurrentChatContainer] =
         useState<ChatContainer>(iChatStorage);
     const [chatContainerTabs, setChatContainerTabs] = useState<
@@ -48,7 +48,7 @@ export default function ChatComponent({users}: ChatComponentProp) {
     const resetChatStorage = () => {
         const initialElement: ChatContainer = {
             id: ID_OF_PUBLIC_CHAT,
-            participants: users,
+            participants: userIds,
             name: strResource.game.publicChat,
             chatLogs: []
         };

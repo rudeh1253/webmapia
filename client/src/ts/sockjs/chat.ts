@@ -117,22 +117,9 @@ export async function onNewParticipantEntered(
 ) {
     const chatContainer = chatContainerMap.get(data.containerId);
     if (chatContainer) {
-        const newParticipantCommonResponse = await axios.get<
-            CommonResponse<UserResponse>
-        >(REST_ONE_GAME_USER(data.gameId, data.newParticipant));
-        const newParticipantResponse = newParticipantCommonResponse.data.data;
-        const newParticipantUserInfo: UserInfo = {
-            userId: newParticipantResponse.userId,
-            username: newParticipantResponse.username,
-            characterCode: newParticipantResponse.characterCode,
-            isDead: newParticipantResponse.isDead
-        };
         const toDispatch = {
             ...chatContainer,
-            participants: [
-                ...chatContainer.participants,
-                newParticipantUserInfo
-            ]
+            participants: [...chatContainer.participants, data.newParticipant]
         };
         console.log(toDispatch);
         dispatch(setNewChatContainer(toDispatch));
@@ -157,9 +144,11 @@ export async function onNewParticipantEntered(
             return userInfo;
         });
 
+        const participantIds = participants.map((user) => user.userId);
+
         const toDispatch = {
             id: data.containerId,
-            participants: participants,
+            participants: participantIds,
             name: data.containerName,
             chatLogs: []
         };
@@ -176,15 +165,7 @@ export async function onNewParticipantInChatContainer(
     dispatch(
         setNewChatContainer({
             ...chatContainer!,
-            participants: [
-                ...chatContainer!.participants,
-                {
-                    userId: data.newUserId,
-                    username: "",
-                    characterCode: null,
-                    isDead: false
-                }
-            ]
+            participants: [...chatContainer!.participants, data.newUserId]
         })
     );
 }
@@ -193,24 +174,9 @@ export async function onEnterChatContainer(
     data: NewParticipantResponse,
     dispatch: any
 ) {
-    const p: UserInfo[] = [];
-    for (let i of data.userIdsParticipatingAlready) {
-        p.push({
-            userId: i,
-            username: "",
-            characterCode: null,
-            isDead: false
-        });
-    }
-    p.push({
-        userId: data.newUserId,
-        username: "",
-        characterCode: null,
-        isDead: false
-    });
     const container: ChatContainer = {
         id: data.containerId,
-        participants: p,
+        participants: [...data.userIdsParticipatingAlready, data.newUserId],
         name: data.containerName,
         chatLogs: []
     };

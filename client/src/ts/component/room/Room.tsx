@@ -27,8 +27,8 @@ import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
 import {sendSystemMessage} from "../../sockjs/chat";
 import {SystemMessengerId} from "../../sockjs/SystemMessengerId";
-import {setUsersInRoom} from "../../redux/slice/usersInRoomSlice";
 import "../../../css/Room.css";
+import {setUserIdsInRoom} from "../../redux/slice/userIdsInRoomSlice";
 
 var inited = false;
 var sockClient: SocketClient | undefined;
@@ -54,7 +54,7 @@ export default function Room() {
         (state) => state.gameConfigurationModal
     );
 
-    const usersInRoom = useAppSelector((state) => state.usersInRoom);
+    const userIdsInRoom = useAppSelector((state) => state.userIdsInRoom);
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const currentRoomInfo = useAppSelector((state) => state.currentRoomInfo);
     const gameConfiguration = useAppSelector((state) => state.gameConfiugraion);
@@ -115,20 +115,25 @@ export default function Room() {
     useEffect(() => {
         if (newUserState.userInfo.userId !== EMPTY_NEW_USER) {
             if (newUserState.stateType === "USER_EXITED") {
-                const mUsersInRoom = usersInRoom.filter(
-                    (val) => val.userId !== newUserState.userInfo.userId
+                const modifiedUserIdsInRoom = userIdsInRoom.filter(
+                    (userId) => userId !== newUserState.userInfo.userId
                 );
-                const newUserList = [...mUsersInRoom];
-                dispatch(setUsersInRoom(newUserList));
-                gameManager.usersInRoom = newUserList;
+                const newUserIdList = [...modifiedUserIdsInRoom];
+                dispatch(setUserIdsInRoom(newUserIdList));
+                gameManager.userIdsInRoom = newUserIdList;
+                gameManager.removeUser(newUserState.userInfo.userId);
             } else if (
                 delayStateForNewUser.userInfo.userId !==
                 newUserState.userInfo.userId
             ) {
                 if (newUserState.stateType === "USER_ENTERED") {
-                    const newUserList = [...usersInRoom, newUserState.userInfo];
-                    dispatch(setUsersInRoom(newUserList));
-                    gameManager.usersInRoom = newUserList;
+                    const newUserIdList = [
+                        ...userIdsInRoom,
+                        newUserState.userInfo.userId
+                    ];
+                    dispatch(setUserIdsInRoom(newUserIdList));
+                    gameManager.userIdsInRoom = newUserIdList;
+                    gameManager.setUser(newUserState.userInfo);
                 }
                 setDelayStateForNewUser({...newUserState});
             }
@@ -150,17 +155,20 @@ export default function Room() {
             <p className="room-name">{currentRoomInfo.roomInfo.roomName}</p>
             <div className="room-content">
                 <ul className="user-list">
-                    {usersInRoom.map((user, idx) => (
-                        <UserItem
-                            key={`user-item-${idx}`}
-                            userId={user.userId}
-                            username={user.username}
-                            characterCode={user.characterCode}
-                            isDead={user.isDead}
-                        />
-                    ))}
+                    {userIdsInRoom.map((id, idx) => {
+                        const user = gameManager.getUser(id)!;
+                        return (
+                            <UserItem
+                                key={`user-item-${idx}`}
+                                userId={user.userId}
+                                username={user.username}
+                                characterCode={user.characterCode}
+                                isDead={user.isDead}
+                            />
+                        );
+                    })}
                 </ul>
-                <ChatComponent users={usersInRoom} />
+                <ChatComponent userIds={userIdsInRoom} />
                 <div className="game-container">
                     {thisUser.userId === currentRoomInfo.roomInfo.hostId &&
                     !gameStarted ? (
@@ -202,7 +210,7 @@ export default function Room() {
                                     );
                                 }}
                                 disabled={
-                                    usersInRoom.length !==
+                                    userIdsInRoom.length !==
                                     sumOfCharacterDistribution
                                 }
                             >
@@ -220,7 +228,7 @@ export default function Room() {
                     ) : null}
                     {gameConfigurationModal && !gameStarted ? (
                         <GameConfigurationModal
-                            characterConfigurationProps={{usersInRoom}}
+                            characterConfigurationProps={{userIdsInRoom}}
                         />
                     ) : null}
                     {gameStarted ? <GameComponent /> : null}
@@ -240,7 +248,11 @@ async function init(
     sockClient = sock;
 
     const u: UserInfo[] = await fetchUsers(currentRoomInfo);
-    dispatch(setUsersInRoom(u));
+    const userIds = u.map((user) => user.userId);
+    const users = new Map<number, UserInfo>();
+    u.forEach((user) => users.set(user.userId, user));
+    dispatch(setUserIdsInRoom(userIds));
+    gameManager.usersInRoom = users;
 
     if (!subscriptions) {
         subscriptions = [];

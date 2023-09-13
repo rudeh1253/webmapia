@@ -13,11 +13,10 @@ import {
     GameSetting,
     UserInfo
 } from "../type/gameDomainType";
-import {NewParticipantRequest, PhaseEndRequest} from "../type/requestType";
+import {PhaseEndRequest} from "../type/requestType";
 import {
     CommonResponse,
     PhaseResultResponse,
-    SkillResultResponse,
     UserResponse
 } from "../type/responseType";
 import {
@@ -26,10 +25,8 @@ import {
     ID_OF_PUBLIC_CHAT,
     SystemMessageType,
     SOCKET_SEND_PHASE_END,
-    SYSTEM_MESSAGE_ID,
     REST_ONE_GAME_USER,
     ID_OF_WOLF_CHAT,
-    SOCKET_SEND_NEW_PARTICIPANT_IN_CHAT,
     NAME_OF_WOLF_CHAT
 } from "../util/const";
 import strResource from "../../resource/string.json";
@@ -38,7 +35,7 @@ import {setNewChat} from "../redux/slice/newChatSlice";
 import axios from "axios";
 import {characterNameMap} from "./characterNameMap";
 import {participateChatContainer} from "../sockjs/chat";
-import {setUsersInRoom} from "../redux/slice/usersInRoomSlice";
+import { setUserIdsInRoom } from "../redux/slice/userIdsInRoomSlice";
 
 var sockClient: SocketClient;
 
@@ -50,7 +47,8 @@ export default class GameManager {
     private _gameSetting: GameSetting;
     private _currentGamePhase: GamePhase;
     private _dispatch: any;
-    private _usersInRoom: UserInfo[];
+    private _usersInRoom: Map<number, UserInfo>;
+    private _userIdsInRoom: number[];
     private _zero: number;
 
     private constructor() {
@@ -64,7 +62,8 @@ export default class GameManager {
         this._gameSetting = DEFAULT_TIME_CONFIGURATION;
         this._currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
         this._dispatch = null;
-        this._usersInRoom = [];
+        this._usersInRoom = new Map<number, UserInfo>();
+        this._userIdsInRoom = [];
         this._zero = 0;
     }
 
@@ -138,12 +137,32 @@ export default class GameManager {
         this._thisUser.username = username;
     }
 
-    public set usersInRoom(usersInRoom: UserInfo[]) {
+    public set usersInRoom(usersInRoom: Map<number, UserInfo>) {
         this._usersInRoom = usersInRoom;
     }
 
     public get usersInRoom() {
         return this._usersInRoom;
+    }
+
+    public get userIdsInRoom() {
+        return this._userIdsInRoom;
+    }
+
+    public set userIdsInRoom(userIdsInRoom: number[]) {
+        this._userIdsInRoom = userIdsInRoom;
+    }
+
+    public setUser(user: UserInfo) {
+        this._usersInRoom.set(user.userId, user);
+    }
+
+    public removeUser(key: number) {
+        return this._usersInRoom.delete(key);
+    }
+
+    public getUser(key: number) {
+        return this._usersInRoom.get(key);
     }
 
     public gameStart(gameSetting: GameSetting) {
@@ -173,16 +192,14 @@ export default class GameManager {
             case GamePhase.VOTE:
                 const voteResult = data.voteResult;
                 if (voteResult.notificationType === "EXECUTE_BY_VOTE") {
-                    this._usersInRoom = this._usersInRoom.map((user) => {
-                        if (user.userId === voteResult.idOfUserToBeExecuted) {
-                            return {
-                                ...user,
-                                isDead: true
-                            };
-                        }
-                        return user;
+                    const user = this._usersInRoom.get(
+                        voteResult.idOfUserToBeExecuted
+                    );
+                    this._usersInRoom.set(voteResult.idOfUserToBeExecuted, {
+                        ...user!,
+                        isDead: true
                     });
-                    this._dispatch(setUsersInRoom([...this._usersInRoom]));
+                    this._dispatch(setUserIdsInRoom([...this._userIdsInRoom]));
                     if (
                         this._thisUser.userId ===
                         voteResult.idOfUserToBeExecuted
@@ -253,20 +270,14 @@ export default class GameManager {
                                         .characterCode,
                                 isDead: deadUserCommonResponse.data.data.isDead
                             };
-                            this._usersInRoom = this._usersInRoom.map(
-                                (user) => {
-                                    if (user.userId === result.skillTargetId) {
-                                        return {
-                                            ...user,
-                                            isDead: true
-                                        };
-                                    }
-                                    return user;
-                                }
+                            const user = this._usersInRoom.get(
+                                result.skillTargetId
                             );
-                            this._dispatch(
-                                setUsersInRoom([...this._usersInRoom])
-                            );
+                            this._usersInRoom.set(user!.userId, {
+                                ...user!,
+                                isDead: true
+                            });
+                            this._dispatch(setUserIdsInRoom(this._userIdsInRoom));
                             if (
                                 this._thisUser.userId === result.skillTargetId
                             ) {
