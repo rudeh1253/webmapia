@@ -3,11 +3,10 @@ import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import {setGameConfiguration} from "../../redux/slice/gameConfiguration";
 import strResource from "../../../resource/string.json";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
-import {Chat, UserInfo} from "../../type/gameDomainType";
+import {UserInfo} from "../../type/gameDomainType";
 import {setCharacterDistribution} from "../../redux/slice/characterDistributionSlice";
 import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
-import {participateChatContainer} from "../../sockjs/chat";
 
 var gameManager = GameManager.getInstance();
 
