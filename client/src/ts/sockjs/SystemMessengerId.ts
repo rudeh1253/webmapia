@@ -1,8 +1,0 @@
-export enum SystemMessengerId {
-    USER_ENTERED = -14821,
-    USER_EXITED = -4712,
-    NIGHT_STARTED = -415,
-    DAYTIME_STARTED = -1372,
-    VOTE_STARTED = -66137,
-    EXECUTION_STARTED = -887
-}

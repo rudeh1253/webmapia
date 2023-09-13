@@ -21,7 +21,7 @@ export const SOCKET_SEND_REMOVE_CHAT_CONTAINER =
     "/app/chatroom/remove-chat-container";
 export const SOCKET_SEND_ACTIVATE_SKILL = "/app/game/activate-skill";
 export const SOCKET_SEND_PROCESS_SKILL = "/app/game/process-skill";
-export const SOCKET_SEND_VOTE = "/app/game/vote"
+export const SOCKET_SEND_VOTE = "/app/game/vote";
 
 export const SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC = (roomId: number) =>
     `/notification/public/${roomId}`;
@@ -68,8 +68,14 @@ export const NAME_OF_WOLF_CHAT = strResource.game.wolfChat;
 
 // SYSTEM_MESSAGE_ID + MESSAGE_TYPE = senderId of system message
 export const SYSTEM_MESSAGE_ID = -41825;
-export enum SystemMessageType {
-    YOU_WERE_KILLED = -130,
+export enum SystemMessengerId {
+    USER_ENTERED = -1300,
+    USER_EXITED,
+    NIGHT_STARTED,
+    DAYTIME_STARTED,
+    VOTE_STARTED,
+    EXECUTION_STARTED,
+    YOU_WERE_KILLED,
     YOU_WERE_EXTERMINATED,
     SOMEONE_WAS_KILLED,
     SOMEONE_WAS_EXTERMINATED,
@@ -80,3 +86,74 @@ export enum SystemMessageType {
     NONE_WAS_EXECUTED,
     DUMMY
 }
+
+export type SystemMessageInfo = {
+    className: string;
+};
+
+export const systemMessageTypeMap = new Map<
+    SystemMessengerId,
+    SystemMessageInfo
+>([
+    [
+        SystemMessengerId.USER_ENTERED,
+        {className: strResource.classNames.userEnter}
+    ],
+    [
+        SystemMessengerId.USER_EXITED,
+        {className: strResource.classNames.userExit}
+    ],
+    [
+        SystemMessengerId.NIGHT_STARTED,
+        {className: strResource.classNames.normal}
+    ],
+    [
+        SystemMessengerId.DAYTIME_STARTED,
+        {className: strResource.classNames.normal}
+    ],
+    [
+        SystemMessengerId.VOTE_STARTED,
+        {className: strResource.classNames.normal}
+    ],
+    [
+        SystemMessengerId.EXECUTION_STARTED,
+        {className: strResource.classNames.normal}
+    ],
+    [
+        SystemMessengerId.YOU_WERE_KILLED,
+        {className: strResource.classNames.killed}
+    ],
+    [
+        SystemMessengerId.YOU_WERE_EXTERMINATED,
+        {className: strResource.classNames.killed}
+    ],
+    [
+        SystemMessengerId.SOMEONE_WAS_KILLED,
+        {className: strResource.classNames.killed}
+    ],
+    [
+        SystemMessengerId.SOMEONE_WAS_EXTERMINATED,
+        {className: strResource.classNames.killed}
+    ],
+    [
+        SystemMessengerId.INVESTIGATION_RESULT,
+        {className: strResource.classNames.investigation}
+    ],
+    [
+        SystemMessengerId.GUARD_SUCCESS,
+        {className: strResource.classNames.guard}
+    ],
+    [
+        SystemMessengerId.SKILL_FAIL,
+        {className: strResource.classNames.skillFail}
+    ],
+    [
+        SystemMessengerId.SOMEONE_WAS_EXECUTED,
+        {className: strResource.classNames.killed}
+    ],
+    [
+        SystemMessengerId.NONE_WAS_EXECUTED,
+        {className: strResource.classNames.normal}
+    ],
+    [SystemMessengerId.DUMMY, {className: strResource.classNames.normal}]
+]);

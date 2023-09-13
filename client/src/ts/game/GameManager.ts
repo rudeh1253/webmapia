@@ -23,7 +23,7 @@ import {
     DEFAULT_TIME_CONFIGURATION,
     GAME_PHASE_ORDER,
     ID_OF_PUBLIC_CHAT,
-    SystemMessageType,
+    SystemMessengerId,
     SOCKET_SEND_PHASE_END,
     REST_ONE_GAME_USER,
     ID_OF_WOLF_CHAT,
@@ -227,7 +227,7 @@ export default class GameManager {
                         isDead: userResponse.isDead
                     };
                     newChatList.push({
-                        senderId: SystemMessageType.SOMEONE_WAS_EXECUTED,
+                        senderId: SystemMessengerId.SOMEONE_WAS_EXECUTED,
                         message: `${userToExecuted.username}${strResource.notificationMessage.someoneExecuted}`,
                         timestamp: new Date().getTime(),
                         containerId: ID_OF_PUBLIC_CHAT,
@@ -235,7 +235,7 @@ export default class GameManager {
                     });
                 } else {
                     newChatList.push({
-                        senderId: SystemMessageType.NONE_WAS_EXECUTED,
+                        senderId: SystemMessengerId.NONE_WAS_EXECUTED,
                         message:
                             strResource.notificationMessage.noneWasExecuted,
                         timestamp: new Date().getTime(),
@@ -287,13 +287,13 @@ export default class GameManager {
                                         ...this._thisUser
                                     })
                                 );
-                                senderId = SystemMessageType.YOU_WERE_KILLED;
+                                senderId = SystemMessengerId.YOU_WERE_KILLED;
                                 message =
                                     strResource.notificationMessage
                                         .youWereKilled;
                             } else {
                                 senderId =
-                                    SystemMessageType.SOMEONE_WAS_EXTERMINATED;
+                                    SystemMessengerId.SOMEONE_WAS_EXTERMINATED;
                                 message = `${deadUser.username}${strResource.notificationMessage.someoneKilled}`;
                             }
                             newChatList.push({
@@ -318,7 +318,7 @@ export default class GameManager {
                                 };
                                 newChatList.push({
                                     senderId:
-                                        SystemMessageType.INVESTIGATION_RESULT,
+                                        SystemMessengerId.INVESTIGATION_RESULT,
                                     message: `${targetUser.username}${
                                         strResource.notificationMessage.heIs
                                     } ${characterNameMap.get(
@@ -332,7 +332,7 @@ export default class GameManager {
                             break;
                         case "GUARD":
                             newChatList.push({
-                                senderId: SystemMessageType.GUARD_SUCCESS,
+                                senderId: SystemMessengerId.GUARD_SUCCESS,
                                 message:
                                     strResource.notificationMessage
                                         .succeededToGuard,
@@ -343,7 +343,7 @@ export default class GameManager {
                             break;
                         case "FAIL_TO_KILL":
                             newChatList.push({
-                                senderId: SystemMessageType.SKILL_FAIL,
+                                senderId: SystemMessengerId.SKILL_FAIL,
                                 message:
                                     strResource.notificationMessage
                                         .failedToKill,
@@ -354,7 +354,7 @@ export default class GameManager {
                             break;
                         case "FAIL_TO_INVESTIGATE":
                             newChatList.push({
-                                senderId: SystemMessageType.SKILL_FAIL,
+                                senderId: SystemMessengerId.SKILL_FAIL,
                                 message:
                                     strResource.notificationMessage
                                         .failedToInvestigate,
@@ -365,7 +365,7 @@ export default class GameManager {
                             break;
                         case "FAIL_TO_GUARD":
                             newChatList.push({
-                                senderId: SystemMessageType.SKILL_FAIL,
+                                senderId: SystemMessengerId.SKILL_FAIL,
                                 message:
                                     strResource.notificationMessage
                                         .failedToGuard,

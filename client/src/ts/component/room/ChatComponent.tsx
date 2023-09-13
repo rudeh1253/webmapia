@@ -3,14 +3,19 @@ import {
     Chat,
     ChatContainer,
     ChatContainerTab,
-    GamePhase,
-    UserInfo
+    GamePhase
 } from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
-import {ID_OF_CHAT_FOR_DEAD, ID_OF_PUBLIC_CHAT} from "../../util/const";
+import {
+    ID_OF_CHAT_FOR_DEAD,
+    ID_OF_PUBLIC_CHAT,
+    SystemMessengerId,
+    systemMessageTypeMap
+} from "../../util/const";
 import {iChatStorage} from "../../util/initialState";
 import {sendPrivateChat, sendPublicChat} from "../../sockjs/chat";
+import GameManager from "../../game/GameManager";
 
 export type ChatComponentProp = {
     userIds: number[];
@@ -215,12 +220,35 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
 }
 
 function ChatItem({senderId, message, timestamp, containerId, isMe}: Chat) {
+    const gameManager = GameManager.getInstance();
     const time = new Date(timestamp);
+    const ts = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`;
+
+    const systemMessageClass =
+        senderId < 0
+            ? `system-message ${systemMessageTypeMap.get(
+                  senderId as SystemMessengerId
+              )?.className}`
+            : "";
+
+    const chatItemClass = "chat-item" + (isMe ? " my-message" : "");
     return (
-        <div>
+        <div className="chat-item-wrapper">
             <p>{senderId}</p>
-            <p>{message}</p>
-            <p>{`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`}</p>
+            {senderId < 0 ? (
+                <div className={systemMessageClass}>
+                    <p className="message">{message}</p>
+                    <p className="timestamp">{ts}</p>
+                </div>
+            ) : (
+                <div className={chatItemClass}>
+                    <p className="sender">
+                        {gameManager.getUser(senderId)!.username}
+                    </p>
+                    <p className="message">{message}</p>
+                    <p className="sended-time">{ts}</p>
+                </div>
+            )}
         </div>
     );
 }

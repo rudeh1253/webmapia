@@ -19,7 +19,8 @@
             "nightTime": "밤 시간",
             "close": "닫기",
             "up": "up",
-            "down": "down"
+            "down": "down",
+            "second": "초"
         }
     },
     "game": {
@@ -63,6 +64,15 @@
     },
     "common": {
         "error": "Something problem"
+    },
+    "classNames": {
+        "killed": "killed",
+        "investigation": "investigation",
+        "guard": "guard",
+        "skillFail": "skill-fail",
+        "userEnter": "user-enter",
+        "userExit": "user-exit",
+        "normal": "normal"
     },
     "notificationMessage": {
         "someoneEntered": "님이 입장하셨습니다.",

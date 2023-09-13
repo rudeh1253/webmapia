@@ -51,7 +51,6 @@ export default function GameComponent() {
     }, []);
 
     useEffect(() => {
-        console.log(currentGamePhase.value);
         switch (currentGamePhase.value) {
             case GamePhase.DAYTIME:
                 setCurrentView(<DaytimePhase />);

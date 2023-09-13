@@ -128,3 +128,162 @@
     color: #fff;
     background-color: #1864ab;
 }
+
+.cmodal-container {
+    position: fixed;
+    display: block;
+    left: 10px;
+    top: 20px;
+    border: none;
+    background-color: #ffffff00;
+    z-index: 1;
+}
+
+.modal-wrapper {
+    position: relative;
+}
+
+.btn--close-modals {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    cursor: pointer;
+    background-color: #e03131;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 4px;
+    font-size: 20px;
+    padding: 12px 24px;
+}
+
+.configuration-modal-container {
+    width: 720px;
+    height: 432px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 64px;
+    border: 10px solid #343a40;
+    border-radius: 18px;
+}
+
+.radio-container {
+    width: 128px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.radio-component p {
+    font-size: 18px;
+    margin: 0px;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.radio-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    gap: 8px;
+    border: 1px;
+    margin-bottom: 5px;
+}
+
+.character-config-container {
+    margin-top: 18px;
+    width: 50%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    overflow: scroll;
+}
+
+.character-config {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.character-config p {
+    margin: 0px;
+}
+
+.char-dist-btn-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.char-dist-btn {
+    cursor: pointer;
+    background-color: #339af0;
+    border: 1px solid #339af0;
+    padding: 6px 12px;
+    border-radius: 3px;
+    color: #fff;
+}
+
+.char-dist-btn:hover {
+    background-color: #74c0fc;
+}
+
+.char-dist-btn:active {
+    background-color: #1c7ed6;
+}
+
+.char-dist-btn:disabled {
+    background-color: #fff;
+    color: #343a40;
+    border: 1px solid #343a40;
+    cursor: default;
+}
+
+.host-bar {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.host-bar button {
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 8px;
+    color: #fff;
+    border: none;
+}
+
+.btn--game-start {
+    background-color: #fd7e14;
+}
+
+.btn--game-start:hover {
+    background-color: #ffa94d;
+}
+
+.btn--game-start:active {
+    background-color: #d9480f;
+}
+
+.btn--game-start:disabled {
+    cursor: default;
+    background-color: #ffffff00;
+    color: #343a40;
+}
+
+.btn--config-modal {
+    background-color: #82c91e;
+}
+
+.btn--config-modal:hover {
+    background-color: #a9e34b;
+}
+
+.btn--config-modal:active {
+    background-color: #66a80f;
+}

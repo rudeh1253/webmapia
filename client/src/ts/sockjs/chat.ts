@@ -19,13 +19,12 @@ import {
 } from "../type/responseType";
 import {
     REST_GAME_USER,
-    REST_ONE_GAME_USER,
     SOCKET_SEND_CHAT_PRIVATE,
     SOCKET_SEND_CHAT_PUBLIC,
     SOCKET_SEND_PARTICIPATE_CHAT_CONTAINER,
-    SOCKET_SEND_REMOVE_CHAT_CONTAINER
+    SOCKET_SEND_REMOVE_CHAT_CONTAINER,
+    SystemMessengerId
 } from "../util/const";
-import {SystemMessengerId} from "./SystemMessengerId";
 import {chatContainerMap} from "../component/room/ChatComponent";
 import axios from "axios";
 

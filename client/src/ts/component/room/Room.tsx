@@ -15,7 +15,8 @@ import {Subscription} from "stompjs";
 import {
     SOCKET_SEND_GAME_DISTRIBUTE_CHARACTER,
     SOCKET_SEND_GAME_START,
-    SOCKET_SEND_USER_EXIT
+    SOCKET_SEND_USER_EXIT,
+    SystemMessengerId
 } from "../../util/const";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
@@ -26,7 +27,6 @@ import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
 import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
 import {sendSystemMessage} from "../../sockjs/chat";
-import {SystemMessengerId} from "../../sockjs/SystemMessengerId";
 import "../../../css/Room.css";
 import {setUserIdsInRoom} from "../../redux/slice/userIdsInRoomSlice";
 
@@ -152,6 +152,11 @@ export default function Room() {
 
     return (
         <div className="room-container">
+            {gameConfigurationModal && !gameStarted ? (
+                <GameConfigurationModal
+                    characterConfigurationProps={{userIdsInRoom}}
+                />
+            ) : null}
             <p className="room-name">{currentRoomInfo.roomInfo.roomName}</p>
             <div className="room-content">
                 <ul className="user-list">
@@ -174,6 +179,7 @@ export default function Room() {
                     !gameStarted ? (
                         <div className="host-bar">
                             <button
+                                className="btn--game-start"
                                 type="button"
                                 onClick={async () => {
                                     const gameStartNotificationRequestBody: GameStartRequest =
@@ -217,6 +223,7 @@ export default function Room() {
                                 {strResource.room.gameStart}
                             </button>
                             <button
+                            className="btn--config-modal"
                                 type="button"
                                 onClick={() =>
                                     dispatch(setGameConfigurationModal(true))
@@ -225,11 +232,6 @@ export default function Room() {
                                 {strResource.room.gameConfiguration}
                             </button>
                         </div>
-                    ) : null}
-                    {gameConfigurationModal && !gameStarted ? (
-                        <GameConfigurationModal
-                            characterConfigurationProps={{userIdsInRoom}}
-                        />
                     ) : null}
                     {gameStarted ? <GameComponent /> : null}
                 </div>
