@@ -222,33 +222,44 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
 function ChatItem({senderId, message, timestamp, containerId, isMe}: Chat) {
     const gameManager = GameManager.getInstance();
     const time = new Date(timestamp);
-    const ts = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}/${time.getFullYear()}-${time.getMonth()}-${time.getDay()}`;
+    const ts = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
+
+    const wrapperClassName =
+        "chat-item-wrapper" +
+        (senderId < 0 ? " system-message" : "") +
+        (isMe ? " my-message" : "");
 
     const systemMessageClass =
         senderId < 0
-            ? `system-message ${systemMessageTypeMap.get(
-                  senderId as SystemMessengerId
-              )?.className}`
+            ? `chat-item ${
+                  systemMessageTypeMap.get(senderId as SystemMessengerId)
+                      ?.className
+              }`
             : "";
 
-    const chatItemClass = "chat-item" + (isMe ? " my-message" : "");
+    const chatItemClass = "chat-item";
     return (
-        <div className="chat-item-wrapper">
-            <p>{senderId}</p>
-            {senderId < 0 ? (
-                <div className={systemMessageClass}>
-                    <p className="message">{message}</p>
-                    <p className="timestamp">{ts}</p>
-                </div>
-            ) : (
-                <div className={chatItemClass}>
-                    <p className="sender">
-                        {gameManager.getUser(senderId)!.username}
-                    </p>
-                    <p className="message">{message}</p>
-                    <p className="sended-time">{ts}</p>
-                </div>
-            )}
+        <div className="chat-item-container">
+            <div className={wrapperClassName}>
+                {senderId < 0 ? (
+                    <div className={systemMessageClass}>
+                        <div className="chat-content">
+                            <p className="message">{message}</p>
+                            <p className="sended-time">{ts}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className={chatItemClass}>
+                        <p className="sender">
+                            {gameManager.getUser(senderId)!.username}
+                        </p>
+                        <div className="chat-content">
+                            <p className="message">{message}</p>
+                            <p className="sended-time">{ts}</p>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
