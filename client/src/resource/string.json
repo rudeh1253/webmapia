@@ -30,6 +30,8 @@
         "execution": "처형",
         "night": "밤",
         "vote": "투표",
+        "characterDistribution": "캐릭터 분배",
+        "gameEnd": "게임 종료",
         "publicChat": "전체 채팅",
         "wolf": "늑대",
         "betrayer": "배신자",

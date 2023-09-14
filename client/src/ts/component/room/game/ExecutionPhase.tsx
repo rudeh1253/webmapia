@@ -2,7 +2,7 @@ import strResource from "../../../../resource/string.json";
 
 export default function ExecutionPhase() {
     return (
-        <div className="game-container execution-phase">
+        <div className="phase-container execution-phase">
             <p>{strResource.game.execution}</p>
         </div>
     );

@@ -157,3 +157,12 @@ export const systemMessageTypeMap = new Map<
     ],
     [SystemMessengerId.DUMMY, {className: strResource.classNames.normal}]
 ]);
+
+export const phaseText = {
+    NIGHT: strResource.game.night,
+    DAYTIME: strResource.game.vote,
+    VOTE: strResource.game.vote,
+    EXECUTION: strResource.game.execution,
+    CHARACTER_DISTRIBUTION: strResource.game.characterDistribution,
+    GAME_END: strResource.game.gameEnd
+};

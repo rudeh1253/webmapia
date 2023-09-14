@@ -26,7 +26,7 @@ export default function VotePhase() {
     }, []);
 
     return (
-        <div className="game-container vote-phase">
+        <div className="phase-container vote-phase">
             <p>{strResource.game.vote}</p>
             {userIdsInRoom.map((id) => {
                 const user = gameManager.getUser(id);

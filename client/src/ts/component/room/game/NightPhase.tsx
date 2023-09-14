@@ -22,7 +22,7 @@ export default function NightPhase() {
         }
     }, []);
     return (
-        <div className="game-container night-phase">
+        <div className="phase-container night-phase">
             <p>{strResource.game.night}</p>
             {skills?.map((e, idx) => {
                 return (

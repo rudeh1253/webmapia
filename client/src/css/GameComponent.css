@@ -1,0 +1,14 @@
+.game-component-container p {
+    margin: 0px;
+}
+
+.util-container {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.character-p {
+    font-size: 18px;
+    color: #f59f00;
+}

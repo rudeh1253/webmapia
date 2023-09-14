@@ -8,13 +8,17 @@ import DaytimePhase from "./game/DaytimePhase";
 import ExecutionPhase from "./game/ExecutionPhase";
 import NightPhase from "./game/NightPhase";
 import VotePhase from "./game/VotePhase";
-import { characterNameMap } from "../../game/characterNameMap";
+import {characterNameMap} from "../../game/characterNameMap";
 import EndPhase from "./game/EndPhase";
+import "../../../css/GameComponent.css";
+import { phaseText } from "../../util/const";
 
 var gameManager: GameManager;
 
 export default function GameComponent() {
     const [currentView, setCurrentView] = useState<JSX.Element>(<></>);
+    const [characterShownColor, setCharacterShownColor] =
+        useState<string>("#343a40");
 
     const gameStarted = useAppSelector((state) => state.gameSwitch);
     const roomInfo = useAppSelector((state) => state.currentRoomInfo);
@@ -51,6 +55,34 @@ export default function GameComponent() {
     }, []);
 
     useEffect(() => {
+        switch (characterCodeOfUser) {
+            case "WOLF":
+            case "BETRAYER":
+            case "FOLLOWER":
+                setCharacterShownColor("#e03131");
+                break;
+            case "CITIZEN":
+            case "DETECTIVE":
+            case "GUARD":
+            case "MEDIUMSHIP":
+            case "MURDERER":
+            case "NOBILITY":
+            case "PREDICTOR":
+            case "SECRET_SOCIETY":
+            case "SOLDIER":
+            case "SUCCESSOR":
+            case "TEMPLAR":
+                setCharacterShownColor("#343a40");
+                break;
+            case "HUMAN_MOUSE":
+                setCharacterShownColor("#2f9e44");
+                break;
+            default:
+                setCharacterShownColor("#343a40");
+        }
+    }, [thisUser]);
+
+    useEffect(() => {
         switch (currentGamePhase.value) {
             case GamePhase.DAYTIME:
                 setCurrentView(<DaytimePhase />);
@@ -84,15 +116,21 @@ export default function GameComponent() {
     }, [gameStarted]);
 
     return (
-        <div className="game-container">
-            <button type="button" onClick={() => gameManager.manualEnd()}>Phase end</button>
-            <p className="character-p">
-                {thisUser.characterCode === null
-                    ? strResource.game.abscence
-                    : characterNameMap.get(characterCodeOfUser)}
-            </p>
-            <p className="present-current-phase">{currentGamePhase.value}</p>
-            <p className="time-counter">{timeCount}</p>
+        <div className="game-component-container">
+            <button type="button" onClick={() => gameManager.manualEnd()}>
+                Phase end
+            </button>
+            <div className="util-container">
+                <p className="character-p" style={{color: characterShownColor}}>
+                    {thisUser.characterCode === null
+                        ? strResource.game.abscence
+                        : characterNameMap.get(characterCodeOfUser)}
+                </p>
+                <p className="present-current-phase">
+                    {phaseText[currentGamePhase.value]}
+                </p>
+                <p className="time-counter">{timeCount}</p>
+            </div>
             {currentView}
         </div>
     );

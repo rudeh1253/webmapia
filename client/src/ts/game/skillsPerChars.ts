@@ -24,7 +24,7 @@ const skillsPerChars = new Map<
         "BETRAYER",
         [
             {
-                skillName: strResource.skill.investigationAlive,
+                skillName: strResource.skill.investigationDead,
                 skillDesc: "",
                 skillType: "INVESTIGATE_DEAD_CHARACTER"
             },

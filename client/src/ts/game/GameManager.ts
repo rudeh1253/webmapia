@@ -436,12 +436,14 @@ export default class GameManager {
                 break;
         }
         this._dispatch(setTimeCount(howMany));
-        this.startCountDown(howMany);
+        // TODO
+        // this.startCountDown(howMany);
     }
 
     // TODO: Temporary method for testing
     public manualEnd() {
-        this._zero = 1000;
+        // this._zero = 1000;
+        this.endPhase();
     }
 
     private startCountDown(count: number) {
