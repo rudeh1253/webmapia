@@ -27,16 +27,23 @@ export default function VotePhase() {
 
     return (
         <div className="phase-container vote-phase">
-            <p>{strResource.game.vote}</p>
-            {userIdsInRoom.map((id) => {
-                const user = gameManager.getUser(id);
-                return user!.isDead ? null : (
-                    <button type="button" onClick={() => setSelectedUser(user)}>
-                        {user!.username}
-                    </button>
-                );
-            })}
+            <div className="target-selection-btn-container">
+                {userIdsInRoom.map((id) => {
+                    const user = gameManager.getUser(id);
+                    return user!.isDead ? null : (
+                        <button
+                            className="target-selection-btn"
+                            type="button"
+                            onClick={() => setSelectedUser(user)}
+                            disabled={selectedUser?.userId === id}
+                        >
+                            {user!.username}
+                        </button>
+                    );
+                })}
+            </div>
             <button
+                className="btn--vote"
                 type="button"
                 onClick={() => {
                     if (sockClient) {

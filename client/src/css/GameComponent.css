@@ -5,7 +5,7 @@
 .game-component-container {
     display: flex;
     flex-direction: column;
-    
+
     gap: 30px;
 }
 
@@ -55,8 +55,12 @@
     cursor: pointer;
 }
 
+.btn--vote {
+    width: fit-content;
+    padding: 3px 36px;
+}
+
 .present-current-phase {
-    
 }
 
 .time-counter {
@@ -66,6 +70,7 @@
 }
 
 .daytime-phase {
+    font-size: 18px;
 }
 
 .distribution-phase {
@@ -78,4 +83,7 @@
 }
 
 .vote-phase {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
