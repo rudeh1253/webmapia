@@ -160,7 +160,7 @@ export const systemMessageTypeMap = new Map<
 
 export const phaseText = {
     NIGHT: strResource.game.night,
-    DAYTIME: strResource.game.vote,
+    DAYTIME: strResource.game.daytime,
     VOTE: strResource.game.vote,
     EXECUTION: strResource.game.execution,
     CHARACTER_DISTRIBUTION: strResource.game.characterDistribution,

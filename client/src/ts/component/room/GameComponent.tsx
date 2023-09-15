@@ -11,7 +11,7 @@ import VotePhase from "./game/VotePhase";
 import {characterNameMap} from "../../game/characterNameMap";
 import EndPhase from "./game/EndPhase";
 import "../../../css/GameComponent.css";
-import { phaseText } from "../../util/const";
+import {phaseText} from "../../util/const";
 
 var gameManager: GameManager;
 
@@ -19,6 +19,7 @@ export default function GameComponent() {
     const [currentView, setCurrentView] = useState<JSX.Element>(<></>);
     const [characterShownColor, setCharacterShownColor] =
         useState<string>("#343a40");
+    const [pressedPhaseEnd, setPressedPhaseEnd] = useState<boolean>(false);
 
     const gameStarted = useAppSelector((state) => state.gameSwitch);
     const roomInfo = useAppSelector((state) => state.currentRoomInfo);
@@ -105,6 +106,7 @@ export default function GameComponent() {
             default:
                 setCurrentView(<>{strResource.common.error}</>);
         }
+        setPressedPhaseEnd(false);
     }, [currentGamePhase]);
 
     useEffect(() => {
@@ -117,7 +119,15 @@ export default function GameComponent() {
 
     return (
         <div className="game-component-container">
-            <button type="button" onClick={() => gameManager.manualEnd()}>
+            <button
+                className="btn--phase-end"
+                type="button"
+                onClick={() => {
+                    gameManager.manualEnd();
+                    setPressedPhaseEnd(true);
+                }}
+                disabled={pressedPhaseEnd}
+            >
                 Phase end
             </button>
             <div className="util-container">

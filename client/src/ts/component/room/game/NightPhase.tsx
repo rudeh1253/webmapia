@@ -23,7 +23,6 @@ export default function NightPhase() {
     }, []);
     return (
         <div className="phase-container night-phase">
-            <p>{strResource.game.night}</p>
             {skills?.map((e, idx) => {
                 return (
                     <SkillSelection
@@ -63,21 +62,22 @@ function SkillSelection({
     }, [currentGamePhase]);
 
     return (
-        <div className="selection-container">
+        <div className="skill-selection-container">
             <button
-                className="selection-btn"
+                className="target-selection-toggle-btn"
                 type="button"
                 onClick={() => setTargetSelection(!targetSelection)}
             >
                 {skillName}
             </button>
             {targetSelection ? (
-                <div>
+                <div className="target-selection">
                     <TargetSelection
                         skillType={skillType}
                         setTarget={setTarget}
                     />
                     <button
+                        className="btn--skill-use"
                         type="button"
                         onClick={() => {
                             if (target) {
@@ -114,18 +114,35 @@ type TargetSelectionProps = {
 function TargetSelection({skillType, setTarget}: TargetSelectionProps) {
     const gameManager = GameManager.getInstance();
     const userIdsInRoom = useAppSelector((state) => state.userIdsInRoom);
+    const [selectedId, setSelectedId] = useState(-1);
     return (
-        <div>
+        <div className="target-selection-btn-container">
             {userIdsInRoom.map((id) => {
                 const user = gameManager.getUser(id);
                 return skillType === "INVESTIGATE_DEAD_CHARACTER" ? (
                     user?.isDead ? (
-                        <button type="button" onClick={() => setTarget(user)}>
+                        <button
+                            className="target-selection-btn"
+                            type="button"
+                            onClick={() => {
+                                setTarget(user);
+                                setSelectedId(id);
+                            }}
+                            disabled={selectedId === id}
+                        >
                             {user.username}
                         </button>
                     ) : null
                 ) : !user?.isDead ? (
-                    <button type="button" onClick={() => setTarget(user)}>
+                    <button
+                        className="target-selection-btn"
+                        type="button"
+                        onClick={() => {
+                            setTarget(user);
+                            setSelectedId(id);
+                        }}
+                        disabled={selectedId === id}
+                    >
                         {user?.username}
                     </button>
                 ) : null;

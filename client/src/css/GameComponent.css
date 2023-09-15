@@ -1,3 +1,14 @@
+.btn--phase-end {
+    width: fit-content;
+}
+
+.game-component-container {
+    display: flex;
+    flex-direction: column;
+    
+    gap: 30px;
+}
+
 .game-component-container p {
     margin: 0px;
 }
@@ -5,10 +16,66 @@
 .util-container {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    gap: 24px;
 }
 
 .character-p {
     font-size: 18px;
     color: #f59f00;
+}
+
+.skill-selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.target-selection-toggle-btn {
+    width: fit-content;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.target-selection-btn-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.target-selection-btn {
+    font-size: 14px;
+    padding: 4px 9px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn--skill-use {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.present-current-phase {
+    
+}
+
+.time-counter {
+}
+
+.phase-container {
+}
+
+.daytime-phase {
+}
+
+.distribution-phase {
+}
+
+.execution-phase {
+}
+
+.night-phase {
+}
+
+.vote-phase {
 }

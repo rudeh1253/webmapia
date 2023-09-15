@@ -48,7 +48,8 @@
         "citizen": "시민",
         "murderer": "살인자",
         "humanMouse": "쥐인간",
-        "wolfChat": "늑대 채팅"
+        "wolfChat": "늑대 채팅",
+        "letDiscussion": "늑대가 누구일지 토의하세요"
     },
     "skill": {
         "kill": "킬",
