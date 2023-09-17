@@ -83,6 +83,7 @@
 }
 
 .chat-log {
+    height: 512px;
     overflow: auto;
     flex: 1;
     border: 2px solid #343a40;
@@ -100,16 +101,20 @@
 
 .chat-item-wrapper {
     width: fit-content;
+    max-width: 100%;
 }
 
 .message {
     font-size: 16px;
+    max-width: 100%;
+    word-wrap: break-word;
 }
 
 .chat-item {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    align-items: end;
 }
 
 .sender {
@@ -126,6 +131,7 @@
 }
 
 .chat-content {
+    max-width: 300px;
     border: none;
     padding: 8px 12px;
     border-radius: 8px;
@@ -147,6 +153,10 @@
 
 .my-message {
     align-self: flex-end;
+}
+
+.my-message .chat-content {
+    background-color: #ffd43b;
 }
 
 .sended-time {

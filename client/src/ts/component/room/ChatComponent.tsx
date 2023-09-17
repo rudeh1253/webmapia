@@ -245,8 +245,8 @@ function ChatItem({senderId, message, timestamp, containerId, isMe}: Chat) {
                     <div className={systemMessageClass}>
                         <div className="chat-content">
                             <p className="message">{message}</p>
-                            <p className="sended-time">{ts}</p>
                         </div>
+                        <p className="sended-time">{ts}</p>
                     </div>
                 ) : (
                     <div className={chatItemClass}>
@@ -255,8 +255,8 @@ function ChatItem({senderId, message, timestamp, containerId, isMe}: Chat) {
                         </p>
                         <div className="chat-content">
                             <p className="message">{message}</p>
-                            <p className="sended-time">{ts}</p>
                         </div>
+                        <p className="sended-time">{ts}</p>
                     </div>
                 )}
             </div>
