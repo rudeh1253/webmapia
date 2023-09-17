@@ -35,7 +35,7 @@ import {setNewChat} from "../redux/slice/newChatSlice";
 import axios from "axios";
 import {characterNameMap} from "./characterNameMap";
 import {participateChatContainer} from "../sockjs/chat";
-import { setUserIdsInRoom } from "../redux/slice/userIdsInRoomSlice";
+import {setUserIdsInRoom} from "../redux/slice/userIdsInRoomSlice";
 
 var sockClient: SocketClient;
 
@@ -181,6 +181,14 @@ export default class GameManager {
                 nightTimeSeconds: gameSetting.nightTimeSeconds
             })
         );
+        const startMessage: Chat = {
+            senderId: SystemMessengerId.GAME_STARTED,
+            message: strResource.game.gameStarted,
+            timestamp: new Date().getTime(),
+            containerId: ID_OF_PUBLIC_CHAT,
+            isMe: false
+        };
+        this._dispatch(setNewChat([startMessage]));
     }
 
     public async processPhaseResult(data: PhaseResultResponse) {
@@ -277,7 +285,9 @@ export default class GameManager {
                                 ...user!,
                                 isDead: true
                             });
-                            this._dispatch(setUserIdsInRoom(this._userIdsInRoom));
+                            this._dispatch(
+                                setUserIdsInRoom(this._userIdsInRoom)
+                            );
                             if (
                                 this._thisUser.userId === result.skillTargetId
                             ) {
@@ -404,6 +414,48 @@ export default class GameManager {
         this._dispatch(setCurrentGamePhase(nextPhase));
         this._currentGamePhase = nextPhase;
         console.log(this._currentGamePhase);
+
+        switch (nextPhase) {
+            case GamePhase.NIGHT:
+                this._dispatch(
+                    setNewChat([
+                        {
+                            senderId: SystemMessengerId.NIGHT_STARTED,
+                            message: strResource.phaseMessage.nightStarted,
+                            timestamp: new Date().getTime(),
+                            containerId: ID_OF_PUBLIC_CHAT,
+                            isMe: false
+                        }
+                    ])
+                );
+                break;
+            case GamePhase.DAYTIME:
+                this._dispatch(
+                    setNewChat([
+                        {
+                            senderId: SystemMessengerId.DAYTIME_STARTED,
+                            message: strResource.phaseMessage.daytimeStarted,
+                            timestamp: new Date().getTime(),
+                            containerId: ID_OF_PUBLIC_CHAT,
+                            isMe: false
+                        }
+                    ])
+                );
+                break;
+            case GamePhase.VOTE:
+                this._dispatch(
+                    setNewChat([
+                        {
+                            senderId: SystemMessengerId.VOTE_STARTED,
+                            message: strResource.phaseMessage.voteStarted,
+                            timestamp: new Date().getTime(),
+                            containerId: ID_OF_PUBLIC_CHAT,
+                            isMe: false
+                        }
+                    ])
+                );
+                break;
+        }
     }
 
     private getNextPhase(currentGamePhase: GamePhase) {

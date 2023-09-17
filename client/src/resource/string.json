@@ -49,7 +49,13 @@
         "murderer": "살인자",
         "humanMouse": "쥐인간",
         "wolfChat": "늑대 채팅",
-        "letDiscussion": "늑대가 누구일지 토의하세요"
+        "letDiscussion": "늑대가 누구일지 토의하세요",
+        "gameStarted": "게임이 시작되었습니다."
+    },
+    "phaseMessage": {
+        "nightStarted": "밤이 되었습니다.",
+        "daytimeStarted": "낮이 되었습니다. 토의를 통해 늑대가 누구일지 추리하세요.",
+        "voteStarted": "투표가 시작되었습니다. 처형할 유저를 선택하세요."
     },
     "skill": {
         "kill": "킬",

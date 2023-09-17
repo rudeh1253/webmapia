@@ -10,6 +10,7 @@ import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import {
     ID_OF_CHAT_FOR_DEAD,
     ID_OF_PUBLIC_CHAT,
+    MESSAGE_SEPEARTION_ID,
     SystemMessengerId,
     systemMessageTypeMap
 } from "../../util/const";
@@ -114,6 +115,33 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
     }, []);
 
     useEffect(() => {
+        const chatContainer = chatContainerMap.get(ID_OF_PUBLIC_CHAT);
+        if (chatContainer) {
+            if (
+                chatContainer.chatLogs.length > 0 &&
+                chatContainer.chatLogs[0].senderId === MESSAGE_SEPEARTION_ID
+            ) {
+                return;
+            }
+            const newChatContainer: ChatContainer = {
+                ...chatContainer,
+                chatLogs: [
+                    {
+                        senderId: MESSAGE_SEPEARTION_ID,
+                        message: "",
+                        timestamp: new Date().getTime(),
+                        containerId: ID_OF_PUBLIC_CHAT,
+                        isMe: false
+                    },
+                    ...chatContainer.chatLogs
+                ]
+            };
+            chatContainerMap.set(chatContainer.id, newChatContainer);
+            if (chatContainer.id === currentChatContainer.id) {
+                setCurrentChatContainer(newChatContainer);
+                messageSender.chatContainerId = newChatContainer.id;
+            }
+        }
         if (currentGamePhase === GamePhase.GAME_END) {
             resetChatStorage();
         }
@@ -257,26 +285,33 @@ function ChatItem({senderId, message, timestamp, containerId, isMe}: Chat) {
     const chatItemClass = "chat-item";
     return (
         <div className="chat-item-container">
-            <div className={wrapperClassName}>
-                {senderId < 0 ? (
-                    <div className={systemMessageClass}>
-                        <div className="chat-content">
-                            <p className="message">{message}</p>
+            {senderId === MESSAGE_SEPEARTION_ID ? (
+                <div
+                    className={wrapperClassName}
+                    style={{height: "1px", backgroundColor: "#343a40", width: "100%"}}
+                />
+            ) : (
+                <div className={wrapperClassName}>
+                    {senderId < 0 ? (
+                        <div className={systemMessageClass}>
+                            <div className="chat-content">
+                                <p className="message">{message}</p>
+                            </div>
+                            <p className="sended-time">{ts}</p>
                         </div>
-                        <p className="sended-time">{ts}</p>
-                    </div>
-                ) : (
-                    <div className={chatItemClass}>
-                        <p className="sender">
-                            {gameManager.getUser(senderId)!.username}
-                        </p>
-                        <div className="chat-content">
-                            <p className="message">{message}</p>
+                    ) : (
+                        <div className={chatItemClass}>
+                            <p className="sender">
+                                {gameManager.getUser(senderId)!.username}
+                            </p>
+                            <div className="chat-content">
+                                <p className="message">{message}</p>
+                            </div>
+                            <p className="sended-time">{ts}</p>
                         </div>
-                        <p className="sended-time">{ts}</p>
-                    </div>
-                )}
-            </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

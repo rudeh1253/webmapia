@@ -65,11 +65,10 @@ export const ID_OF_CHAT_FOR_DEAD = 444;
 
 export const NAME_OF_WOLF_CHAT = strResource.game.wolfChat;
 
-// SYSTEM_MESSAGE_ID + MESSAGE_TYPE = senderId of system message
-export const SYSTEM_MESSAGE_ID = -41825;
 export enum SystemMessengerId {
     USER_ENTERED = -1300,
     USER_EXITED,
+    CHARACTER_DISTRIBUTION_STARTED,
     NIGHT_STARTED,
     DAYTIME_STARTED,
     VOTE_STARTED,
@@ -83,8 +82,11 @@ export enum SystemMessengerId {
     SKILL_FAIL,
     SOMEONE_WAS_EXECUTED,
     NONE_WAS_EXECUTED,
+    GAME_STARTED,
     DUMMY
 }
+
+export const MESSAGE_SEPEARTION_ID = -471;
 
 export type SystemMessageInfo = {
     className: string;
@@ -104,6 +106,10 @@ export const systemMessageTypeMap = new Map<
     ],
     [
         SystemMessengerId.NIGHT_STARTED,
+        {className: strResource.classNames.normal}
+    ],
+    [
+        SystemMessengerId.CHARACTER_DISTRIBUTION_STARTED,
         {className: strResource.classNames.normal}
     ],
     [
