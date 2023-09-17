@@ -49,8 +49,7 @@ export const GAME_PHASE_ORDER = [
     GamePhase.CHARACTER_DISTRIBUTION,
     GamePhase.NIGHT,
     GamePhase.DAYTIME,
-    GamePhase.VOTE,
-    GamePhase.EXECUTION
+    GamePhase.VOTE
 ];
 
 export const DEFAULT_TIME_CONFIGURATION = {
