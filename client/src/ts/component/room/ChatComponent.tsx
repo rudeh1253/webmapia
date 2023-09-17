@@ -67,14 +67,27 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
     };
 
     messageSender.sendMessage = (msg: string) => {
-        messageSender.chatContainerId === ID_OF_PUBLIC_CHAT
-            ? sendPublicChat(msg, currentRoomInfo, thisUser)
-            : sendPrivateChat(
-                  msg,
-                  currentRoomInfo,
-                  thisUser,
-                  messageSender.chatContainerId
-              );
+        if (thisUser.isDead) {
+            if (messageSender.chatContainerId === ID_OF_CHAT_FOR_DEAD) {
+                sendPrivateChat(
+                    msg,
+                    currentRoomInfo,
+                    thisUser,
+                    ID_OF_CHAT_FOR_DEAD
+                );
+            }
+        } else {
+            if (messageSender.chatContainerId === ID_OF_PUBLIC_CHAT) {
+                sendPublicChat(msg, currentRoomInfo, thisUser);
+            } else {
+                sendPrivateChat(
+                    msg,
+                    currentRoomInfo,
+                    thisUser,
+                    messageSender.chatContainerId
+                );
+            }
+        }
     };
 
     const keyEventListener = (ev: KeyboardEvent) => {
@@ -199,6 +212,10 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
                     id="message-in"
                     type="text"
                     ref={chatInputRef}
+                    disabled={
+                        thisUser.isDead &&
+                        currentChatContainer.id !== ID_OF_CHAT_FOR_DEAD
+                    }
                 />
                 <button
                     className="btn--send-message"

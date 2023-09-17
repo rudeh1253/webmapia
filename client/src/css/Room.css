@@ -201,6 +201,11 @@
     background-color: #1864ab;
 }
 
+.btn--send-message:disabled {
+    cursor: default;
+    background-color: #e7f5ff;
+}
+
 .cmodal-container {
     position: fixed;
     display: block;

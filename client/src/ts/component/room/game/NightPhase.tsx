@@ -23,15 +23,19 @@ export default function NightPhase() {
     }, []);
     return (
         <div className="phase-container night-phase">
-            {skills?.map((e, idx) => {
-                return (
-                    <SkillSelection
-                        skillName={e.skillName}
-                        skillDesc={e.skillDesc}
-                        skillType={e.skillType}
-                    />
-                );
-            })}
+            {thisUser.isDead ? (
+                <div></div>
+            ) : (
+                skills?.map((e, idx) => {
+                    return (
+                        <SkillSelection
+                            skillName={e.skillName}
+                            skillDesc={e.skillDesc}
+                            skillType={e.skillType}
+                        />
+                    );
+                })
+            )}
         </div>
     );
 }

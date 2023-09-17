@@ -11,7 +11,7 @@ const initialState: CharacterDistribution = {
     HUMAN_MOUSE: 0,
     MEDIUMSHIP: 0,
     MURDERER: 0,
-    NOBILITY: 0,
+    NOBILITY: 1,
     PREDICTOR: 0,
     SECRET_SOCIETY: 0,
     SOLDIER: 0,

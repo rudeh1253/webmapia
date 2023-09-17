@@ -55,7 +55,7 @@ export default function VotePhase() {
                         sockClient.sendMessage(SOCKET_SEND_VOTE, {}, body);
                     }
                 }}
-                disabled={!selectedUser}
+                disabled={!selectedUser || thisUser.isDead}
             >
                 {strResource.game.vote}
             </button>
