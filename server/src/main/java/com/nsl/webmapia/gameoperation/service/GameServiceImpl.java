@@ -100,7 +100,7 @@ public class GameServiceImpl implements  GameService {
     public VoteResultResponseDTO processVotes(Long gameId) {
         GameManager game = findGameManager(gameId);
         User mostUser = game.processVotes();
-        return mostUser == null
+        return mostUser == null || mostUser.getCharacter().getCharacterCode().equals(CharacterCode.NOBILITY)
                 ? VoteResultResponseDTO.from(NotificationType.INVALID_VOTE, gameId, null)
                 : VoteResultResponseDTO.from(NotificationType.EXECUTE_BY_VOTE, gameId, mostUser.getID());
     }
