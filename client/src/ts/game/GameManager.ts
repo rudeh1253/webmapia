@@ -29,7 +29,9 @@ import {
     ID_OF_WOLF_CHAT,
     NAME_OF_WOLF_CHAT,
     ID_OF_CHAT_FOR_DEAD,
-    NAME_OF_CHAT_FOR_DEAD
+    NAME_OF_CHAT_FOR_DEAD,
+    ID_OF_SECRET_SOCIETY_CHAT,
+    NAME_OF_SECRET_SOCIETY_CHAT
 } from "../util/const";
 import strResource from "../../resource/string.json";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";

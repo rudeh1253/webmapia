@@ -15,6 +15,8 @@ import {
 import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
 import {
     ID_OF_PUBLIC_CHAT,
+    ID_OF_SECRET_SOCIETY_CHAT,
+    NAME_OF_SECRET_SOCIETY_CHAT,
     SOCKET_SEND_PHASE_END,
     SOCKET_SUBSCRIBE_CHATROOM_PRIVATE,
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
@@ -33,7 +35,8 @@ import {setNewChat} from "../redux/slice/newChatSlice";
 import {
     onEnterChatContainer,
     onNewParticipantEntered,
-    onNewParticipantInChatContainer
+    onNewParticipantInChatContainer,
+    participateChatContainer
 } from "./chat";
 
 var gameManager = GameManager.getInstance();
@@ -209,6 +212,14 @@ async function onCharacterAllocationResponse(
     }
     gameManager.characterCode = payloadData.data.characterCode;
     const sockClient = await SocketClient.getInstance();
+    if (payloadData.data.characterCode === "SECRET_SOCIETY") {
+        participateChatContainer(
+            currentRoomInfo.roomInfo.roomId,
+            ID_OF_SECRET_SOCIETY_CHAT,
+            NAME_OF_SECRET_SOCIETY_CHAT,
+            thisUser.userId
+        );
+    }
     const body: PhaseEndRequest = {
         gameId: currentRoomInfo.roomInfo.roomId,
         userId: thisUser.userId,
