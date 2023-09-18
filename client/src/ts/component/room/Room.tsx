@@ -223,7 +223,7 @@ export default function Room() {
                                 {strResource.room.gameStart}
                             </button>
                             <button
-                            className="btn--config-modal"
+                                className="btn--config-modal"
                                 type="button"
                                 onClick={() =>
                                     dispatch(setGameConfigurationModal(true))
@@ -249,13 +249,6 @@ async function init(
     const sock = await SocketClient.getInstance();
     sockClient = sock;
 
-    const u: UserInfo[] = await fetchUsers(currentRoomInfo);
-    const userIds = u.map((user) => user.userId);
-    const users = new Map<number, UserInfo>();
-    u.forEach((user) => users.set(user.userId, user));
-    dispatch(setUserIdsInRoom(userIds));
-    gameManager.usersInRoom = users;
-
     if (!subscriptions) {
         subscriptions = [];
     }
@@ -268,6 +261,13 @@ async function init(
         );
         subscriptions.push({endpoint: sub.endpoint, subscription});
     }
+
+    const u: UserInfo[] = await fetchUsers(currentRoomInfo);
+    const userIds = u.map((user) => user.userId);
+    const users = new Map<number, UserInfo>();
+    u.forEach((user) => users.set(user.userId, user));
+    dispatch(setUserIdsInRoom(userIds));
+    gameManager.usersInRoom = users;
 
     // TODO: Logically, when the host create a room, the client
     // send a post request to the server. The server creates a room and add

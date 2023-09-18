@@ -64,6 +64,7 @@ export const ID_OF_SECRET_SOCIETY_CHAT = 201;
 export const ID_OF_CHAT_FOR_DEAD = 444;
 
 export const NAME_OF_WOLF_CHAT = strResource.game.wolfChat;
+export const NAME_OF_CHAT_FOR_DEAD = strResource.game.deadChat;
 
 export enum SystemMessengerId {
     USER_ENTERED = -1300,

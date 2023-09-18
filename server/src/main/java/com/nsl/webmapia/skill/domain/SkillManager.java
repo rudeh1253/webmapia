@@ -18,9 +18,7 @@ public class SkillManager {
     }
 
     public List<SkillEffect> getSkillEffects() {
-        List<SkillEffect> toReturn = new ArrayList<>();
-        toReturn.addAll(this.skillEffects);
-        return toReturn;
+        return new ArrayList<>(this.skillEffects);
     }
 
     public void clearSkillEffects() {

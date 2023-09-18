@@ -90,6 +90,7 @@ public class Betrayer implements Character {
         effect.setOnSkillSucceed((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
                     .receiverUser(src)
+                    .skillActivatorUser(src)
                     .skillTargetUser(tar)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())

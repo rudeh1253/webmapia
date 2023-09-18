@@ -119,17 +119,19 @@ export default function GameComponent() {
 
     return (
         <div className="game-component-container">
-            <button
-                className="btn--phase-end"
-                type="button"
-                onClick={() => {
-                    gameManager.manualEnd();
-                    setPressedPhaseEnd(true);
-                }}
-                disabled={pressedPhaseEnd}
-            >
-                Phase end
-            </button>
+            {thisUser.isDead ? null : (
+                <button
+                    className="btn--phase-end"
+                    type="button"
+                    onClick={() => {
+                        gameManager.manualEnd();
+                        setPressedPhaseEnd(true);
+                    }}
+                    disabled={pressedPhaseEnd}
+                >
+                    Phase end
+                </button>
+            )}
             <div className="util-container">
                 <p className="character-p" style={{color: characterShownColor}}>
                     {thisUser.characterCode === null

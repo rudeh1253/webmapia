@@ -27,7 +27,9 @@ import {
     SOCKET_SEND_PHASE_END,
     REST_ONE_GAME_USER,
     ID_OF_WOLF_CHAT,
-    NAME_OF_WOLF_CHAT
+    NAME_OF_WOLF_CHAT,
+    ID_OF_CHAT_FOR_DEAD,
+    NAME_OF_CHAT_FOR_DEAD
 } from "../util/const";
 import strResource from "../../resource/string.json";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
@@ -218,6 +220,12 @@ export default class GameManager {
                                 ...this._thisUser
                             })
                         );
+                        await participateChatContainer(
+                            this._gameId,
+                            ID_OF_CHAT_FOR_DEAD,
+                            NAME_OF_CHAT_FOR_DEAD,
+                            this._thisUser.userId
+                        );
                     }
                     const userRequestResult = await axios.get<
                         CommonResponse<UserResponse>
@@ -301,6 +309,12 @@ export default class GameManager {
                                 message =
                                     strResource.notificationMessage
                                         .youWereKilled;
+                                await participateChatContainer(
+                                    this._gameId,
+                                    ID_OF_CHAT_FOR_DEAD,
+                                    NAME_OF_CHAT_FOR_DEAD,
+                                    this._thisUser.userId
+                                );
                             } else {
                                 senderId =
                                     SystemMessengerId.SOMEONE_WAS_EXTERMINATED;
@@ -524,14 +538,16 @@ export default class GameManager {
                 ErrorCode.USER_ID_NOT_ASSIGNED_IN_GAME_MANAGER
             );
         }
-        if (!sockClient) {
-            sockClient = await SocketClient.getInstance();
+        if (!this._thisUser.isDead) {
+            if (!sockClient) {
+                sockClient = await SocketClient.getInstance();
+            }
+            const body: PhaseEndRequest = {
+                gameId: this._gameId,
+                userId: this._thisUser.userId,
+                gamePhase: this._currentGamePhase
+            };
+            sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
         }
-        const body: PhaseEndRequest = {
-            gameId: this._gameId,
-            userId: this._thisUser.userId,
-            gamePhase: this._currentGamePhase
-        };
-        sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
     }
 }

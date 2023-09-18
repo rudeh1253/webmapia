@@ -238,7 +238,10 @@ public class GameManagerImpl implements GameManager {
                 activatedSkill.getOnSkillFail().onSkillFail(src, tar, type);
             }
         }
-        return skillManager.getSkillEffects();
+        List<SkillEffect> skillEffects = skillManager.getSkillEffects();
+        skillManager.clearSkillEffects();
+        activatedSkills.clear();
+        return skillEffects;
     }
 
     @Override
@@ -246,7 +249,7 @@ public class GameManagerImpl implements GameManager {
         User sentUser = userRepository.findById(userId).orElseThrow();
         sentUser.setPhaseEnd(true);
         List<User> users = userRepository.findAll();
-        boolean hasPhaseEnded = users.stream().filter(user -> !user.isPhaseEnd()).toList().size() == 0;
+        boolean hasPhaseEnded = users.stream().filter(user -> !user.isPhaseEnd() && !user.isDead()).toList().size() == 0;
         if (hasPhaseEnded) {
             users.forEach((user) -> user.setPhaseEnd(false));
         }

@@ -11,9 +11,11 @@ var sockClient: SocketClient;
 
 export default function VotePhase() {
     const [selectedUser, setSelectedUser] = useState<UserInfo>();
+    const [voted, setVoted] = useState<boolean>();
     const userIdsInRoom = useAppSelector((state) => state.userIdsInRoom);
     const thisUser = useAppSelector((state) => state.thisUserInfo);
     const roomInfo = useAppSelector((state) => state.currentRoomInfo).roomInfo;
+    const currentGamePhase = useAppSelector(state => state.currentGamePhase);
 
     const gameManager = GameManager.getInstance();
 
@@ -24,6 +26,10 @@ export default function VotePhase() {
             );
         }
     }, []);
+
+    useEffect(() => {
+        setVoted(false);
+    }, [currentGamePhase])
 
     return (
         <div className="phase-container vote-phase">
@@ -54,8 +60,9 @@ export default function VotePhase() {
                         };
                         sockClient.sendMessage(SOCKET_SEND_VOTE, {}, body);
                     }
+                    setVoted(true);
                 }}
-                disabled={!selectedUser || thisUser.isDead}
+                disabled={!selectedUser || thisUser.isDead || voted}
             >
                 {strResource.game.vote}
             </button>
