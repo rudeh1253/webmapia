@@ -30,16 +30,21 @@ export default function EndPhase() {
         }
     }, [phaseResultInfo]);
     return (
-        <div>
-            <p>{strResource.game.gameEnd}</p>
-            <p>{winnerText}</p>
-            {users.map((user) => {
-                return (
-                    <p>{`${user!.username} ${characterNameMap.get(
-                        user!.characterCode
-                    )}`}</p>
-                );
-            })}
+        <div className="end-phase">
+            <p className="game-end-text">{strResource.game.gameEnd}</p>
+            <p className="winner-text">{winnerText}</p>
+            <div className="user-info-container">
+                {users.map((user) => {
+                    return (
+                        <div className="user-wrapper">
+                            <p className="username">{user.username}</p>
+                            <p className="character">
+                                {characterNameMap.get(user.characterCode)}
+                            </p>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 }

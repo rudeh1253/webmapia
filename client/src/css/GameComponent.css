@@ -69,8 +69,43 @@
 .phase-container {
 }
 
+.game-end-text {
+}
+
+.winner-text {
+    font-size: 24px;
+}
+
+.end-phase {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .daytime-phase {
     font-size: 18px;
+}
+
+.user-info-container {
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.user-info-container .user-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 192px;
+    justify-content: space-between;
+}
+
+.user-info-container .username {
+    font-size: 16px;
+}
+
+.user-info-container .character {
+    font-size: 20px;
 }
 
 .distribution-phase {
