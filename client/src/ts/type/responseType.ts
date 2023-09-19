@@ -1,6 +1,7 @@
 import {
     CharacterCode,
     CharacterEffectAfterNightType,
+    Faction,
     GamePhase,
     GameSetting
 } from "./gameDomainType";
@@ -36,7 +37,7 @@ export type PhaseResultResponse = {
     gameId: number;
     targetUserId: number;
     gameEnd: boolean;
-    winner: string;
+    winner: Faction;
     endedPhase: GamePhase;
     skillResults: SkillResultResponse[];
     voteResult: VoteResultResponse;

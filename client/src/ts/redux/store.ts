@@ -10,6 +10,7 @@ import timeCountSlice from "./slice/timeCountSlice";
 import newChatSlice from "./slice/newChatSlice";
 import newChatContainerSlice from "./slice/newChatContainerSlice";
 import userIdsInRoomSlice from "./slice/userIdsInRoomSlice";
+import phaseResultInfoSlice from "./slice/phaseResultInfoSlice";
 
 export const store = configureStore({
     reducer: {
@@ -23,7 +24,8 @@ export const store = configureStore({
         timeCount: timeCountSlice,
         newChat: newChatSlice,
         newChatContainer: newChatContainerSlice,
-        userIdsInRoom: userIdsInRoomSlice
+        userIdsInRoom: userIdsInRoomSlice,
+        phaseResultInfo: phaseResultInfoSlice
     }
 });
 

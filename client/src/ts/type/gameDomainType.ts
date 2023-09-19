@@ -116,3 +116,10 @@ export type SkillType =
     | "GUARD"
     | "ENTER_WOLF_CHAT"
     | "NONE";
+
+export type Faction = "WOLF" | "HUMAN" | "HUMAN_MOUSE" | null;
+
+export type PhaseResult = {
+    winner: Faction;
+    users: UserInfo[];
+};

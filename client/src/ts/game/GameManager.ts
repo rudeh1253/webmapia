@@ -31,7 +31,8 @@ import {
     ID_OF_CHAT_FOR_DEAD,
     NAME_OF_CHAT_FOR_DEAD,
     ID_OF_SECRET_SOCIETY_CHAT,
-    NAME_OF_SECRET_SOCIETY_CHAT
+    NAME_OF_SECRET_SOCIETY_CHAT,
+    REST_GAME_USER
 } from "../util/const";
 import strResource from "../../resource/string.json";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
@@ -40,6 +41,7 @@ import axios from "axios";
 import {characterNameMap} from "./characterNameMap";
 import {participateChatContainer} from "../sockjs/chat";
 import {setUserIdsInRoom} from "../redux/slice/userIdsInRoomSlice";
+import {setPhaseResultInfo} from "../redux/slice/phaseResultInfoSlice";
 
 var sockClient: SocketClient;
 
@@ -197,6 +199,15 @@ export default class GameManager {
 
     public async processPhaseResult(data: PhaseResultResponse) {
         if (data.gameEnd) {
+            const users = await axios.get<CommonResponse<UserResponse[]>>(
+                REST_GAME_USER(this._gameId)
+            );
+            this._dispatch(
+                setPhaseResultInfo({
+                    winner: data.winner,
+                    users: users.data.data
+                })
+            );
             this._dispatch(setCurrentGamePhase(GamePhase.GAME_END));
         }
         const newChatList: Chat[] = [];

@@ -6,8 +6,8 @@ const initialState: CharacterDistribution = {
     BETRAYER: 1,
     CITIZEN: 1,
     DETECTIVE: 1,
-    FOLLOWER: 1,
-    GUARD: 1,
+    FOLLOWER: 0,
+    GUARD: 0,
     HUMAN_MOUSE: 0,
     MEDIUMSHIP: 0,
     MURDERER: 0,
@@ -16,7 +16,7 @@ const initialState: CharacterDistribution = {
     SECRET_SOCIETY: 0,
     SOLDIER: 0,
     SUCCESSOR: 0,
-    TEMPLAR: 1,
+    TEMPLAR: 0,
     WOLF: 1
 };
 

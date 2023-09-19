@@ -33,6 +33,7 @@
         "characterDistribution": "캐릭터 분배",
         "gameEnd": "게임 종료",
         "publicChat": "전체 채팅",
+        "human": "인간",
         "wolf": "늑대",
         "betrayer": "배신자",
         "follower": "추종자",
@@ -52,7 +53,8 @@
         "deadChat": "죽은 자 채팅",
         "secretSocietyChat": "비밀결사 채팅",
         "letDiscussion": "늑대가 누구일지 토의하세요",
-        "gameStarted": "게임이 시작되었습니다."
+        "gameStarted": "게임이 시작되었습니다.",
+        "winnerFaction": "팀 승리"
     },
     "phaseMessage": {
         "nightStarted": "밤이 되었습니다.",
