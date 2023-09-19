@@ -108,3 +108,7 @@ export type RemoveChatContainerResponse = {
     containerId: number;
     participants: number[];
 };
+
+export type RoomAvailabilityResponse = {
+    available: boolean;
+};

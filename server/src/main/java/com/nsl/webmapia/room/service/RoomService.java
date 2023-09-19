@@ -1,5 +1,6 @@
 package com.nsl.webmapia.room.service;
 
+import com.nsl.webmapia.room.dto.RoomAvailabilityResponseDTO;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface RoomService {
      * @return gameId.
      */
     Long createNewRoom(String roomName, Long hostId, String hostName);
+
+    RoomAvailabilityResponseDTO isRoomAvailable(Long gameId);
 }

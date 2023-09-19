@@ -2,10 +2,7 @@ package com.nsl.webmapia.gameoperation.service;
 
 import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.gameoperation.domain.GamePhase;
-import com.nsl.webmapia.gameoperation.dto.PhaseEndRequestDTO;
-import com.nsl.webmapia.gameoperation.dto.PhaseResultResponseDTO;
-import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
-import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
+import com.nsl.webmapia.gameoperation.dto.*;
 import com.nsl.webmapia.skill.domain.SkillType;
 import com.nsl.webmapia.skill.dto.SkillResultResponseDTO;
 
@@ -13,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface GameService {
+
+    GameStartResponseDTO gameStart(GameStartRequestDTO request);
 
     /**
      * Generate characters and allocate each of the characters to each user in the game provided.
@@ -57,4 +56,8 @@ public interface GameService {
     boolean phaseEnd(Long gameId, Long userId);
 
     GamePhase getCurrentPhase(Long gameId);
+
+    boolean gameEnd(Long gameId, Long userId);
+
+    void clearCurrentGame(Long gameId);
 }

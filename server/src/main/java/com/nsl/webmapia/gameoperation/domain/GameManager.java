@@ -28,7 +28,7 @@ public interface GameManager {
         }
     }
 
-    void onGameStart(GameSetting gameSetting);
+    void onGameStart();
 
     void setGameName(String name);
 
@@ -37,6 +37,10 @@ public interface GameManager {
     void setHost(Long hostId);
 
     User getHost();
+
+    boolean hasGameStarted();
+
+    void clearGame();
 
     /**
      * @return id of this game.
@@ -120,4 +124,6 @@ public interface GameManager {
      * @return a list of notification body.
      */
     List<SkillEffect> processSkills();
+
+    boolean endGame(Long userId);
 }

@@ -5,6 +5,7 @@ import com.nsl.webmapia.character.CharacterCode;
 import com.nsl.webmapia.character.Characters;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
+import com.nsl.webmapia.room.dto.RoomAvailabilityResponseDTO;
 import com.nsl.webmapia.user.repository.MemoryUserRepository;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
 import com.nsl.webmapia.skill.domain.SkillManager;
@@ -58,6 +59,14 @@ public class RoomServiceImpl implements RoomService{
         GameManager gameManager = gameRepository.findById(roomId).orElse(null);
         return gameManager != null
                 ? RoomInfoResponseDTO.from(gameManager)
+                : null;
+    }
+
+    @Override
+    public RoomAvailabilityResponseDTO isRoomAvailable(Long gameId) {
+        GameManager gameManager = gameRepository.findById(gameId).orElse(null);
+        return gameManager != null
+                ? new RoomAvailabilityResponseDTO(!gameManager.hasGameStarted())
                 : null;
     }
 

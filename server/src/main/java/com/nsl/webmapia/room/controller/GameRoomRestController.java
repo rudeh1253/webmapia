@@ -1,6 +1,7 @@
 package com.nsl.webmapia.room.controller;
 
 import com.nsl.webmapia.common.CommonResponse;
+import com.nsl.webmapia.room.dto.RoomAvailabilityResponseDTO;
 import com.nsl.webmapia.room.dto.RoomCreationRequestDTO;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
 import com.nsl.webmapia.room.service.RoomService;
@@ -40,5 +41,11 @@ public class GameRoomRestController {
         // TODO: Error handling in case of absence of game of such gameId
         RoomInfoResponseDTO gameInfo = roomService.getRoomInfo(gameId);
         return CommonResponse.ok(gameInfo, LocalDateTime.now());
+    }
+
+    @GetMapping("/game/room/availability/{gameId}")
+    public ResponseEntity<CommonResponse> getRoomAvailability(@PathVariable("gameId") Long gameId) {
+        RoomAvailabilityResponseDTO dto = roomService.isRoomAvailable(gameId);
+        return CommonResponse.ok(dto, LocalDateTime.now());
     }
 }

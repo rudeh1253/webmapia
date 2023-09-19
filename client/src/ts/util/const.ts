@@ -42,6 +42,8 @@ export const REST_GAME_USER = (roomId: number) =>
     `${REST_API_URL}/game/${roomId}/user`;
 export const REST_ONE_GAME_USER = (roomId: number, userId: number) =>
     `${REST_API_URL}/game/${roomId}/user/${userId}`;
+export const REST_GAME_AVAILABILITY = (roomId: number) =>
+    `${REST_API_URL}/game/room/availability/${roomId}`;
 
 export const SECOND_IN_MILLIS = 1000;
 

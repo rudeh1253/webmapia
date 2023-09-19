@@ -376,7 +376,7 @@ class GameManagerImplTest {
 
     @Test
     void testStartPhase() {
-        gameManager.onGameStart(null);
+        gameManager.onGameStart();
         assertEquals(GamePhase.NIGHT, gameManager.currentPhase());
     }
 

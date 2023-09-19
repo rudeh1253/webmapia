@@ -4,8 +4,16 @@ import {useAppDispatch, useAppSelector} from "../redux/hook";
 import {useNavigate} from "react-router-dom";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import {RoomCreationRequest} from "../type/requestType";
-import {CommonResponse, RoomInfoResponse} from "../type/responseType";
-import {REST_GAME_ROOM, REST_USER_ID} from "../util/const";
+import {
+    CommonResponse,
+    RoomAvailabilityResponse,
+    RoomInfoResponse
+} from "../type/responseType";
+import {
+    REST_GAME_AVAILABILITY,
+    REST_GAME_ROOM,
+    REST_USER_ID
+} from "../util/const";
 import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
 import axios from "axios";
 import {RoomInfo} from "../type/gameDomainType";
@@ -91,18 +99,26 @@ export function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
     const navigate = useNavigate();
 
     const onClickEnterBtn = async () => {
-        dispatch(
-            setCurrentRoomInfo({
-                roomId,
-                roomName,
-                hostId,
-                numOfUsers
-            })
-        );
-        const userId = await generateId();
-        dispatch(setThisUserInfo({...thisUserInfo, userId}));
+        const availabilityRes = await axios.get<
+            CommonResponse<RoomAvailabilityResponse>
+        >(REST_GAME_AVAILABILITY(roomId));
+        console.log(availabilityRes.data);
+        const available = availabilityRes.data.data.available;
+        console.log(available);
+        if (available) {
+            dispatch(
+                setCurrentRoomInfo({
+                    roomId,
+                    roomName,
+                    hostId,
+                    numOfUsers
+                })
+            );
+            const userId = await generateId();
+            dispatch(setThisUserInfo({...thisUserInfo, userId}));
 
-        navigate("/room");
+            navigate("/room");
+        }
     };
 
     return (

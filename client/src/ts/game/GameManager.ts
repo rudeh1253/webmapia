@@ -30,8 +30,6 @@ import {
     NAME_OF_WOLF_CHAT,
     ID_OF_CHAT_FOR_DEAD,
     NAME_OF_CHAT_FOR_DEAD,
-    ID_OF_SECRET_SOCIETY_CHAT,
-    NAME_OF_SECRET_SOCIETY_CHAT,
     REST_GAME_USER
 } from "../util/const";
 import strResource from "../../resource/string.json";

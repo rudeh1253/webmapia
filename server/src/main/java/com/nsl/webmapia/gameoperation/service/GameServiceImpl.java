@@ -3,21 +3,19 @@ package com.nsl.webmapia.gameoperation.service;
 import com.nsl.webmapia.character.*;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.gameoperation.domain.GamePhase;
-import com.nsl.webmapia.gameoperation.dto.PhaseEndRequestDTO;
-import com.nsl.webmapia.gameoperation.dto.PhaseResultResponseDTO;
-import com.nsl.webmapia.gameoperation.dto.VoteResultResponseDTO;
+import com.nsl.webmapia.gameoperation.dto.*;
 import com.nsl.webmapia.skill.domain.SkillType;
 import com.nsl.webmapia.skill.dto.SkillResultResponseDTO;
 import com.nsl.webmapia.skill.service.SkillService;
 import com.nsl.webmapia.user.domain.User;
 import com.nsl.webmapia.common.NotificationType;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
-import com.nsl.webmapia.gameoperation.dto.CharacterGenerationResponseDTO;
 import com.nsl.webmapia.user.dto.UserResponseDTO;
 import com.nsl.webmapia.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +30,13 @@ public class GameServiceImpl implements  GameService {
     public GameServiceImpl(GameRepository gameRepository, SkillService skillService) {
         this.gameRepository = gameRepository;
         this.skillService = skillService;
+    }
+
+    @Override
+    public GameStartResponseDTO gameStart(GameStartRequestDTO request) {
+        GameManager gameManager = findGameManager(request.getGameId());
+        gameManager.onGameStart();
+        return GameStartResponseDTO.from(request.getGameSetting(), request.getGameId());
     }
 
     @Override
@@ -131,5 +136,18 @@ public class GameServiceImpl implements  GameService {
     public GamePhase getCurrentPhase(Long gameId) {
         GameManager game = findGameManager(gameId);
         return game.currentPhase();
+    }
+
+    @Override
+    public boolean gameEnd(Long gameId, Long userId) {
+        GameManager game = findGameManager(gameId);
+        boolean isEnd = game.endGame(userId);
+        return isEnd;
+    }
+
+    @Override
+    public void clearCurrentGame(Long gameId) {
+        GameManager game = findGameManager(gameId);
+        game.clearGame();
     }
 }

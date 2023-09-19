@@ -38,8 +38,9 @@ public class GameController {
 
     @MessageMapping("/game/start")
     public void gameStart(@Payload GameStartRequestDTO request) {
+        GameStartResponseDTO dto = this.gameService.gameStart(request);
         messagingTemplate.convertAndSend("/notification/public/" + request.getGameId(),
-                CommonResponse.ok(GameStartResponseDTO.from(request.getGameSetting(), request.getGameId()), LocalDateTime.now()));
+                CommonResponse.ok(dto, LocalDateTime.now()));
     }
 
     @MessageMapping("/game/distribute-character")
@@ -61,6 +62,16 @@ public class GameController {
                 messagingTemplate.convertAndSend("/notification/private/"
                         + request.getGameId() + "/" + receiverId, CommonResponse.ok(response.get(receiverId), LocalDateTime.now()));
             });
+        }
+    }
+
+    @MessageMapping("/game/end-game")
+    public void endGame(@Payload GameEndRequestDTO request) {
+        boolean hasEnded = gameService.gameEnd(request.getGameId(), request.getUserId());
+        if (hasEnded) {
+            gameService.clearCurrentGame(request.getGameId());
+            messagingTemplate.convertAndSend("/notification/public/" + request.getGameId(),
+                    CommonResponse.ok(new GameEndResponseDTO(request.getGameId()), LocalDateTime.now()));
         }
     }
 

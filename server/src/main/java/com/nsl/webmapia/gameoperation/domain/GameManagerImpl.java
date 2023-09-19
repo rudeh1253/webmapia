@@ -31,6 +31,7 @@ public class GameManagerImpl implements GameManager {
     private Long hostId;
     private GameSetting gameSetting;
     private int currentPhase;
+    private boolean gameStarted;
 
     public GameManagerImpl(Long gameId,
                            Map<CharacterCode, Character> characters,
@@ -42,12 +43,18 @@ public class GameManagerImpl implements GameManager {
         this.userRepository = userRepository;
         this.votes = new ArrayList<>();
         this.activatedSkills = new ArrayList<>();
+        this.gameStarted = false;
         currentPhase = 0;
     }
 
     @Override
-    public void onGameStart(GameSetting gameSetting) {
-        this.gameSetting = gameSetting;
+    public void onGameStart() {
+        this.gameStarted = true;
+    }
+
+    @Override
+    public boolean hasGameStarted() {
+        return this.gameStarted;
     }
 
     @Override
@@ -254,6 +261,30 @@ public class GameManagerImpl implements GameManager {
             users.forEach((user) -> user.setPhaseEnd(false));
         }
         return hasPhaseEnded;
+    }
+
+    @Override
+    public synchronized boolean endGame(Long userId) {
+        User sentUser = userRepository.findById(userId).orElseThrow();
+        sentUser.setPhaseEnd(true);
+        List<User> users = userRepository.findAll();
+        boolean hasGameEnded = users.stream().filter(user -> !user.isPhaseEnd()).toList().size() == 0;
+        return hasGameEnded;
+    }
+
+    @Override
+    public void clearGame() {
+        this.gameStarted = false;
+        this.skillManager.clearSkillEffects();
+        this.votes.clear();
+        this.activatedSkills.clear();
+        this.gameStarted = false;
+        this.currentPhase = 0;
+        this.userRepository.findAll().stream().forEach(user -> {
+            user.setDead(false);
+            user.setPhaseEnd(false);
+            user.setCharacter(null);
+        });
     }
 
     public List<ActivatedSkillInfo> getActivatedSkills() {
