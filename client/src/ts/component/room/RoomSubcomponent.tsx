@@ -139,8 +139,8 @@ function CharacterConfiguration({
         "NOBILITY",
         "PREDICTOR",
         "SECRET_SOCIETY",
-        "SOLDIER",
-        "SUCCESSOR",
+        // "SOLDIER", TODO: Soldier logic not yet implemented
+        // "SUCCESSOR", TODO: Successor logic not yet implemented
         "TEMPLAR",
         "WOLF"
     ];

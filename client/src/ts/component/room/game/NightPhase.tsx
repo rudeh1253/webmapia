@@ -119,38 +119,60 @@ function TargetSelection({skillType, setTarget}: TargetSelectionProps) {
     const gameManager = GameManager.getInstance();
     const userIdsInRoom = useAppSelector((state) => state.userIdsInRoom);
     const [selectedId, setSelectedId] = useState(-1);
+    const thisUser = useAppSelector((state) => state.thisUserInfo);
+    let skillTargets: UserInfo[] = [];
+    switch (skillType) {
+        case "INVESTIGATE_DEAD_CHARACTER":
+            skillTargets = userIdsInRoom
+                .filter((id) => {
+                    const user = gameManager.getUser(id)!;
+                    return user.isDead;
+                })
+                .map((id) => {
+                    const user = gameManager.getUser(id)!;
+                    return user;
+                });
+            break;
+        case "GUARD":
+            if (thisUser.characterCode === "GUARD") {
+                skillTargets = userIdsInRoom
+                    .filter((id) => {
+                        const user = gameManager.getUser(id)!;
+                        return !user.isDead && id !== thisUser.userId;
+                    })
+                    .map((id) => {
+                        const user = gameManager.getUser(id)!;
+                        return user;
+                    });
+            } else if (thisUser.characterCode === "SOLDIER") {
+                skillTargets = [thisUser];
+            }
+            break;
+        default:
+            skillTargets = userIdsInRoom
+                .filter((id) => {
+                    const user = gameManager.getUser(id);
+                    return !user?.isDead;
+                })
+                .map((id) => {
+                    const user = gameManager.getUser(id)!;
+                    return user;
+                });
+    }
+    console.log(skillTargets);
     return (
         <div className="target-selection-btn-container">
-            {userIdsInRoom.map((id) => {
-                const user = gameManager.getUser(id);
-                return skillType === "INVESTIGATE_DEAD_CHARACTER" ? (
-                    user?.isDead ? (
-                        <button
-                            className="target-selection-btn"
-                            type="button"
-                            onClick={() => {
-                                setTarget(user);
-                                setSelectedId(id);
-                            }}
-                            disabled={selectedId === id}
-                        >
-                            {user.username}
-                        </button>
-                    ) : null
-                ) : !user?.isDead ? (
-                    <button
-                        className="target-selection-btn"
-                        type="button"
-                        onClick={() => {
-                            setTarget(user);
-                            setSelectedId(id);
-                        }}
-                        disabled={selectedId === id}
-                    >
-                        {user?.username}
-                    </button>
-                ) : null;
-            })}
+            {skillTargets.map((user) => (
+                <button
+                    className="target-selection-btn"
+                    type="button"
+                    onClick={() => {
+                        setTarget(user);
+                        setSelectedId(user.userId);
+                    }}
+                    disabled={selectedId === user.userId}
+                >{user.username}</button>
+            ))}
         </div>
     );
 }

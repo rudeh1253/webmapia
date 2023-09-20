@@ -75,9 +75,10 @@ export default function Room() {
 
     useEffect(() => {
         if (!inited) {
-            inited = true;
             if (!sockClient) {
-                init(currentRoomInfo, thisUser, dispatch, toSubscribe);
+                init(currentRoomInfo, thisUser, dispatch, toSubscribe).then(
+                    (result) => (inited = true)
+                );
                 gameManager.gameId = currentRoomInfo.roomInfo.roomId;
                 gameManager.dispatch = dispatch;
             }
@@ -173,7 +174,7 @@ export default function Room() {
                         );
                     })}
                 </ul>
-                <ChatComponent userIds={userIdsInRoom} />
+                <ChatComponent userIds={userIdsInRoom} inited={inited} />
                 <div className="game-container">
                     {thisUser.userId === currentRoomInfo.roomInfo.hostId &&
                     !gameStarted ? (

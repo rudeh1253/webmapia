@@ -13,7 +13,7 @@ import {
     GameSetting,
     UserInfo
 } from "../type/gameDomainType";
-import {PhaseEndRequest} from "../type/requestType";
+import {GameEndRequest, PhaseEndRequest} from "../type/requestType";
 import {
     CommonResponse,
     PhaseResultResponse,
@@ -30,7 +30,9 @@ import {
     NAME_OF_WOLF_CHAT,
     ID_OF_CHAT_FOR_DEAD,
     NAME_OF_CHAT_FOR_DEAD,
-    REST_GAME_USER
+    REST_GAME_USER,
+    SOCKET_SEND_GAME_END,
+    ID_OF_CLEAR_CHAT_CONTAINER
 } from "../util/const";
 import strResource from "../../resource/string.json";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
@@ -40,6 +42,7 @@ import {characterNameMap} from "./characterNameMap";
 import {participateChatContainer} from "../sockjs/chat";
 import {setUserIdsInRoom} from "../redux/slice/userIdsInRoomSlice";
 import {setPhaseResultInfo} from "../redux/slice/phaseResultInfoSlice";
+import {setNewChatContainer} from "../redux/slice/newChatContainerSlice";
 
 var sockClient: SocketClient;
 
@@ -523,6 +526,32 @@ export default class GameManager {
         this.endPhase();
     }
 
+    public manualGameEnd() {
+        this.endGame();
+    }
+
+    private async endGame() {
+        this._zero = 0;
+        if (this._gameId === 0) {
+            throw new NotAssignedError(
+                ErrorCode.GAME_ID_NOT_ASSIGNED_IN_GAME_MANAGER
+            );
+        }
+        if (this._thisUser.userId === -1) {
+            throw new NotAssignedError(
+                ErrorCode.USER_ID_NOT_ASSIGNED_IN_GAME_MANAGER
+            );
+        }
+        if (!sockClient) {
+            sockClient = await SocketClient.getInstance();
+        }
+        const body: GameEndRequest = {
+            gameId: this._gameId,
+            userId: this._thisUser.userId
+        };
+        sockClient.sendMessage(SOCKET_SEND_GAME_END, {}, body);
+    }
+
     private startCountDown(count: number) {
         if (count <= this._zero) {
             this.endPhase();
@@ -549,16 +578,41 @@ export default class GameManager {
                 ErrorCode.USER_ID_NOT_ASSIGNED_IN_GAME_MANAGER
             );
         }
-        if (!this._thisUser.isDead) {
-            if (!sockClient) {
-                sockClient = await SocketClient.getInstance();
-            }
-            const body: PhaseEndRequest = {
-                gameId: this._gameId,
-                userId: this._thisUser.userId,
-                gamePhase: this._currentGamePhase
-            };
-            sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
+        if (!sockClient) {
+            sockClient = await SocketClient.getInstance();
         }
+        const body: PhaseEndRequest = {
+            gameId: this._gameId,
+            userId: this._thisUser.userId,
+            gamePhase: this._currentGamePhase
+        };
+        sockClient.sendMessage(SOCKET_SEND_PHASE_END, {}, body);
+    }
+
+    public onGameEnd() {
+        this._dispatch(setGameSwitch(false));
+        this._dispatch(
+            setNewChatContainer({
+                id: ID_OF_CLEAR_CHAT_CONTAINER,
+                participants: [],
+                name: "",
+                chatLogs: []
+            })
+        );
+        for (let id of this._userIdsInRoom) {
+            const user = this._usersInRoom.get(id)!;
+            const newState: UserInfo = {
+                userId: user.userId,
+                username: user.username,
+                characterCode: null,
+                isDead: false
+            };
+            this._usersInRoom.set(id, newState);
+        }
+        this._dispatch(setCurrentGamePhase(GamePhase.CHARACTER_DISTRIBUTION));
+        this._thisUser.isDead = false;
+        this._thisUser.characterCode = null;
+        this._dispatch(setThisUserInfo({...this._thisUser}));
+        this._currentGamePhase = GamePhase.CHARACTER_DISTRIBUTION;
     }
 }

@@ -9,14 +9,14 @@ const initialState: CharacterDistribution = {
     FOLLOWER: 0,
     GUARD: 0,
     HUMAN_MOUSE: 1,
-    MEDIUMSHIP: 0,
+    MEDIUMSHIP: 1,
     MURDERER: 0,
     NOBILITY: 0,
-    PREDICTOR: 0,
+    PREDICTOR: 1,
     SECRET_SOCIETY: 0,
     SOLDIER: 0,
     SUCCESSOR: 0,
-    TEMPLAR: 0,
+    TEMPLAR: 1,
     WOLF: 1
 };
 

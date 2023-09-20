@@ -22,6 +22,7 @@ export const SOCKET_SEND_REMOVE_CHAT_CONTAINER =
 export const SOCKET_SEND_ACTIVATE_SKILL = "/app/game/activate-skill";
 export const SOCKET_SEND_PROCESS_SKILL = "/app/game/process-skill";
 export const SOCKET_SEND_VOTE = "/app/game/vote";
+export const SOCKET_SEND_GAME_END = "/app/game/end-game";
 
 export const SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC = (roomId: number) =>
     `/notification/public/${roomId}`;
@@ -64,6 +65,7 @@ export const ID_OF_PUBLIC_CHAT = 1;
 export const ID_OF_WOLF_CHAT = 101;
 export const ID_OF_SECRET_SOCIETY_CHAT = 201;
 export const ID_OF_CHAT_FOR_DEAD = 444;
+export const ID_OF_CLEAR_CHAT_CONTAINER = -143;
 
 export const NAME_OF_WOLF_CHAT = strResource.game.wolfChat;
 export const NAME_OF_CHAT_FOR_DEAD = strResource.game.deadChat;

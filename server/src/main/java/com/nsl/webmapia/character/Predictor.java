@@ -29,6 +29,8 @@ public class Predictor implements Character {
             switch (tar.getCharacter().getCharacterCode()) {
                 case MEDIUMSHIP:
                 case GUARD:
+                case WOLF:
+                    skillEffect.setSkillTargetCharacterCode(tar.getCharacter().getCharacterCode());
                     break;
                 case HUMAN_MOUSE:
                     skillEffect.setReceiverUser(null);

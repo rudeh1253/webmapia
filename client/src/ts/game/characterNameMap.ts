@@ -16,5 +16,6 @@ export const characterNameMap = new Map<CharacterCode, string>([
     ["TEMPLAR", strResource.game.templar],
     ["CITIZEN", strResource.game.citizen],
     ["MURDERER", strResource.game.murderer],
-    ["HUMAN_MOUSE", strResource.game.humanMouse]
+    ["HUMAN_MOUSE", strResource.game.humanMouse],
+    ["GOOD_MAN", strResource.game.goodMan]
 ]);

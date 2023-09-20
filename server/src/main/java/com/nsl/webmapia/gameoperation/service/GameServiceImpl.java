@@ -139,7 +139,7 @@ public class GameServiceImpl implements  GameService {
     }
 
     @Override
-    public boolean gameEnd(Long gameId, Long userId) {
+    public synchronized boolean gameEnd(Long gameId, Long userId) {
         GameManager game = findGameManager(gameId);
         boolean isEnd = game.endGame(userId);
         return isEnd;

@@ -112,3 +112,8 @@ export type RemoveChatContainerResponse = {
 export type RoomAvailabilityResponse = {
     available: boolean;
 };
+
+export type GameEndResponse = {
+    notificationType: NotificationType;
+    gameId: number;
+};

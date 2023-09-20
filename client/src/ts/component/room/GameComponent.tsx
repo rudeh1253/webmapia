@@ -117,9 +117,23 @@ export default function GameComponent() {
         }
     }, [gameStarted]);
 
+    const clearGame = () => {};
+
     return (
         <div className="game-component-container">
-            {thisUser.isDead ? null : (
+            {currentGamePhase.value === GamePhase.GAME_END ? (
+                <button
+                    className="btn--phase-end"
+                    type="button"
+                    onClick={() => {
+                        gameManager.manualGameEnd();
+                        setPressedPhaseEnd(true);
+                    }}
+                    disabled={pressedPhaseEnd}
+                >
+                    {strResource.game.gameEnd}
+                </button>
+            ) : thisUser.isDead ? null : (
                 <button
                     className="btn--phase-end"
                     type="button"
@@ -129,7 +143,7 @@ export default function GameComponent() {
                     }}
                     disabled={pressedPhaseEnd}
                 >
-                    Phase end
+                    Phase End
                 </button>
             )}
             <div className="util-container">

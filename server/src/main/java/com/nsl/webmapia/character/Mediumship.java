@@ -28,7 +28,7 @@ public class Mediumship implements Character {
                     .skillTargetUser(tar)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.INVESTIGATE)
                     .receiverUser(src)
-                    .skillActivatorUser(tar)
+                    .skillActivatorUser(src)
                     .build();
             CharacterCode targetCharacterCode = tar.getCharacter().getCharacterCode();
             if (targetCharacterCode == CharacterCode.WOLF

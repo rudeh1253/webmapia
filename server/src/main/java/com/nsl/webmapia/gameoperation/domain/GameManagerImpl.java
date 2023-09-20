@@ -257,6 +257,7 @@ public class GameManagerImpl implements GameManager {
         sentUser.setPhaseEnd(true);
         List<User> users = userRepository.findAll();
         boolean hasPhaseEnded = users.stream().filter(user -> !user.isPhaseEnd() && !user.isDead()).toList().size() == 0;
+        users.forEach(user -> System.out.println(user));
         if (hasPhaseEnded) {
             users.forEach((user) -> user.setPhaseEnd(false));
         }
@@ -268,6 +269,9 @@ public class GameManagerImpl implements GameManager {
         User sentUser = userRepository.findById(userId).orElseThrow();
         sentUser.setPhaseEnd(true);
         List<User> users = userRepository.findAll();
+        for (User user : users) {
+            System.out.println(user);
+        }
         boolean hasGameEnded = users.stream().filter(user -> !user.isPhaseEnd()).toList().size() == 0;
         return hasGameEnded;
     }

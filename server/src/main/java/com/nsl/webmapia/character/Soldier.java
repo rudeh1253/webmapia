@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 public class Soldier implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.SOLDIER;
     private static final Faction FACTION = Faction.HUMAN;
-    private int life = 1;
 
     @Override
     public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
@@ -21,9 +20,8 @@ public class Soldier implements Character {
             throw new CharacterNotSupportSkillTypeException("Soldier doesn't support given skill type: SkillType code " + skillType);
         }
         ActivatedSkillInfo activatedSkillInfo = new ActivatedSkillInfo();
-        activatedSkillInfo.setSkillCondition((src, tar, type) -> life > 0);
+        activatedSkillInfo.setSkillCondition((src, tar, type) -> true);
         activatedSkillInfo.setOnSkillSucceed((src, tar, type) -> {
-            life--;
             skillManager.addSkillEffect(SkillEffect.builder()
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                     .skillActivatorUser(src)

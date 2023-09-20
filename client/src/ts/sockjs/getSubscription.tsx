@@ -69,6 +69,9 @@ export function getSubscription(
                     case "GAME_START":
                         onGameStart(payloadData, dispatch);
                         break;
+                    case "GAME_END":
+                        gameManager.onGameEnd();
+                        break;
                 }
             }
         },

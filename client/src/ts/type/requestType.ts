@@ -46,7 +46,7 @@ export type UserRequest = {
 
 export type ParticipateChatContainerRequest = {
     gameId: number;
-    containerId: number
+    containerId: number;
     containerName: string;
     participant: number;
 };
@@ -71,4 +71,9 @@ export type SkillActivationRequest = {
 
 export type ProcessSkillsRequest = {
     gameId: number;
+};
+
+export type GameEndRequest = {
+    gameId: number;
+    userId: number;
 };

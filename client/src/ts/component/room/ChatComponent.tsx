@@ -9,6 +9,7 @@ import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
 import {
     ID_OF_CHAT_FOR_DEAD,
+    ID_OF_CLEAR_CHAT_CONTAINER,
     ID_OF_PUBLIC_CHAT,
     MESSAGE_SEPEARTION_ID,
     SystemMessengerId,
@@ -20,6 +21,7 @@ import GameManager from "../../game/GameManager";
 
 export type ChatComponentProp = {
     userIds: number[];
+    inited: boolean;
 };
 
 export var chatContainerMap = new Map<number, ChatContainer>();
@@ -32,7 +34,7 @@ var messageSender: {
     sendMessage: (msg: string) => {}
 };
 
-export default function ChatComponent({userIds}: ChatComponentProp) {
+export default function ChatComponent({userIds, inited}: ChatComponentProp) {
     const [currentChatContainer, setCurrentChatContainer] =
         useState<ChatContainer>(iChatStorage);
     const [chatContainerTabs, setChatContainerTabs] = useState<
@@ -68,33 +70,40 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
     };
 
     messageSender.sendMessage = (msg: string) => {
-        if (thisUser.isDead) {
-            if (messageSender.chatContainerId === ID_OF_CHAT_FOR_DEAD) {
-                sendPrivateChat(
-                    msg,
-                    currentRoomInfo,
-                    thisUser,
-                    ID_OF_CHAT_FOR_DEAD
-                );
-            }
-        } else {
-            if (messageSender.chatContainerId === ID_OF_PUBLIC_CHAT) {
-                sendPublicChat(msg, currentRoomInfo, thisUser);
+        if (inited) {
+            if (thisUser.isDead) {
+                if (messageSender.chatContainerId === ID_OF_CHAT_FOR_DEAD) {
+                    sendPrivateChat(
+                        msg,
+                        currentRoomInfo,
+                        thisUser,
+                        ID_OF_CHAT_FOR_DEAD
+                    );
+                }
             } else {
-                sendPrivateChat(
-                    msg,
-                    currentRoomInfo,
-                    thisUser,
-                    messageSender.chatContainerId
-                );
+                if (
+                    messageSender.chatContainerId === ID_OF_PUBLIC_CHAT &&
+                    currentGamePhase !== GamePhase.NIGHT
+                ) {
+                    sendPublicChat(msg, currentRoomInfo, thisUser);
+                } else {
+                    sendPrivateChat(
+                        msg,
+                        currentRoomInfo,
+                        thisUser,
+                        messageSender.chatContainerId
+                    );
+                }
             }
         }
     };
 
     const keyEventListener = (ev: KeyboardEvent) => {
         if (ev.key === "Enter") {
-            messageSender.sendMessage(chatInputRef.current!.value);
-            chatInputRef.current!.value = "";
+            if (chatInputRef.current) {
+                messageSender.sendMessage(chatInputRef.current.value);
+                chatInputRef.current.value = "";
+            }
         }
     };
 
@@ -171,24 +180,40 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
     }, [newChat]);
 
     useEffect(() => {
-        if (newChatContainer.id !== -1) {
-            if (!chatContainerMap.has(newChatContainer.id)) {
-                chatContainerMap.set(newChatContainer.id, {
-                    ...newChatContainer
-                });
-                setChatContainerTabs(extractKeysAndNames(chatContainerMap));
-            } else {
-                const previousChatContainer = chatContainerMap.get(
-                    newChatContainer.id
-                );
-                if (
-                    newChatContainer.participants.length !==
-                    previousChatContainer!.participants.length
-                ) {
-                    chatContainerMap.set(newChatContainer.id, newChatContainer);
-                    if (newChatContainer.id === currentChatContainer.id) {
-                        setCurrentChatContainer(newChatContainer);
-                        messageSender.chatContainerId = newChatContainer.id;
+        if (newChatContainer.id === ID_OF_CLEAR_CHAT_CONTAINER) {
+            const keyIterator = chatContainerMap.keys();
+            while (true) {
+                const keyNext = keyIterator.next();
+                if (keyNext.done) {
+                    break;
+                }
+                const key = keyNext.value;
+                chatContainerMap.delete(key);
+            }
+            setChatContainerTabs(extractKeysAndNames(chatContainerMap));
+        } else {
+            if (newChatContainer.id !== -1) {
+                if (!chatContainerMap.has(newChatContainer.id)) {
+                    chatContainerMap.set(newChatContainer.id, {
+                        ...newChatContainer
+                    });
+                    setChatContainerTabs(extractKeysAndNames(chatContainerMap));
+                } else {
+                    const previousChatContainer = chatContainerMap.get(
+                        newChatContainer.id
+                    );
+                    if (
+                        newChatContainer.participants.length !==
+                        previousChatContainer!.participants.length
+                    ) {
+                        chatContainerMap.set(
+                            newChatContainer.id,
+                            newChatContainer
+                        );
+                        if (newChatContainer.id === currentChatContainer.id) {
+                            setCurrentChatContainer(newChatContainer);
+                            messageSender.chatContainerId = newChatContainer.id;
+                        }
                     }
                 }
             }
@@ -241,8 +266,10 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
                     type="text"
                     ref={chatInputRef}
                     disabled={
-                        thisUser.isDead &&
-                        currentChatContainer.id !== ID_OF_CHAT_FOR_DEAD
+                        (currentChatContainer.id === ID_OF_PUBLIC_CHAT &&
+                            currentGamePhase === GamePhase.NIGHT) ||
+                        (thisUser.isDead &&
+                            currentChatContainer.id !== ID_OF_CHAT_FOR_DEAD)
                     }
                 />
                 <button
@@ -253,8 +280,10 @@ export default function ChatComponent({userIds}: ChatComponentProp) {
                         chatInputRef.current!.value = "";
                     }}
                     disabled={
-                        thisUser.isDead &&
-                        currentChatContainer.id !== ID_OF_CHAT_FOR_DEAD
+                        (currentChatContainer.id === ID_OF_PUBLIC_CHAT &&
+                            currentGamePhase === GamePhase.NIGHT) ||
+                        (thisUser.isDead &&
+                            currentChatContainer.id !== ID_OF_CHAT_FOR_DEAD)
                     }
                 >
                     {strResource.room.send}
@@ -288,7 +317,11 @@ function ChatItem({senderId, message, timestamp, containerId, isMe}: Chat) {
             {senderId === MESSAGE_SEPEARTION_ID ? (
                 <div
                     className={wrapperClassName}
-                    style={{height: "1px", backgroundColor: "#343a40", width: "100%"}}
+                    style={{
+                        height: "1px",
+                        backgroundColor: "#343a40",
+                        width: "100%"
+                    }}
                 />
             ) : (
                 <div className={wrapperClassName}>
