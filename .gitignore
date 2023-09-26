@@ -57,4 +57,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # secret
-/client/src/resource/secret/*
+server-spec.json
