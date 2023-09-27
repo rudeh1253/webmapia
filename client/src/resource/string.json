@@ -55,7 +55,30 @@
         "secretSocietyChat": "비밀결사 채팅",
         "letDiscussion": "늑대가 누구일지 토의하세요",
         "gameStarted": "게임이 시작되었습니다.",
-        "winnerFaction": "팀 승리"
+        "winnerFaction": "팀 승리",
+        "skillDescription": {
+            "wolf": {
+                "kill": "누군가를 죽입니다.",
+                "extermination": "누군가를 죽입니다. 경비병이 방어할 수 없습니다. 게임당 한 번만 사용할 수 있습니다."
+            },
+            "betrayer": {
+                "wolfChat": "늑대를 찾습니다. 늑대를 찾는 데 성공할 경우 늑대 채팅에 합류합니다.",
+                "investigationDead": "죽은 유저의 직업을 조사합니다."
+            },
+            "follower": {
+                "wolfChat": "늑대를 찾습니다. 늑대를 찾는 데 성공할 경우 늑대 채팅에 합류합니다.",
+                "investigationAlive": "살아 있는 사람의 직업을 확인합니다. 게임당 한 번만 사용 가능합니다."
+            },
+            "predictor": {
+                "prediction": "살아 있는 사람의 직업을 조사합니다. 늑대, 경비병, 영매, 쥐인간이 아닐 경우 선량한 시민이라고 나옵니다. 쥐인간을 조사할 경우, 쥐인간은 사망합니다."
+            },
+            "mediumship": {
+                "investigationDead": "죽은 사람의 직업을 확인합니다. 늑대, 예언자, 경비병이 아닐 경우 선량한 시민이라고 나옵니다."
+            },
+            "detective": {
+                "investigationAlive": "배신자 및 추종자 여부를 확인합니다."
+            }
+        }
     },
     "phaseMessage": {
         "nightStarted": "밤이 되었습니다.",
