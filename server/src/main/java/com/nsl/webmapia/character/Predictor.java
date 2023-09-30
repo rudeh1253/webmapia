@@ -5,10 +5,7 @@ import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.skill.domain.SkillEffect;
 import com.nsl.webmapia.skill.domain.ActivatedSkillInfo;
 import com.nsl.webmapia.skill.domain.SkillType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Predictor implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.PREDICTOR;
     private static final Faction FACTION = Faction.HUMAN;

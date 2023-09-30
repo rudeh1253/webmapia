@@ -19,7 +19,7 @@ class MemoryGameRepositoryTest {
 
     @Test
     void findById() {
-        GameManager gameManager = new GameManagerImpl(1L, null, null, null);
+        GameManager gameManager = new GameManagerImpl(1L, null);
         repository.save(gameManager);
 
         repository.findById(1L).ifPresent(e -> assertEquals(1L, e.getGameId()));
@@ -27,7 +27,7 @@ class MemoryGameRepositoryTest {
 
     @Test
     void findById_fail() {
-        GameManager gameManager = new GameManagerImpl(1L, null, null, null);
+        GameManager gameManager = new GameManagerImpl(1L, null);
         repository.save(gameManager);
 
         assertTrue(repository.findById(2L).isEmpty());
@@ -35,10 +35,10 @@ class MemoryGameRepositoryTest {
 
     @Test
     void findAll() {
-        GameManager game1 = new GameManagerImpl(1L, null, null, null);
-        GameManager game2 = new GameManagerImpl(2L, null, null, null);
-        GameManager game3 = new GameManagerImpl(3L, null, null, null);
-        GameManager game4 = new GameManagerImpl(4L, null, null, null);
+        GameManager game1 = new GameManagerImpl(1L, null);
+        GameManager game2 = new GameManagerImpl(2L, null);
+        GameManager game3 = new GameManagerImpl(3L, null);
+        GameManager game4 = new GameManagerImpl(4L, null);
         repository.save(game1);
         repository.save(game2);
         repository.save(game3);
@@ -53,7 +53,7 @@ class MemoryGameRepositoryTest {
 
     @Test
     void containsKey() {
-        GameManager game = new GameManagerImpl(1L, null, null, null);
+        GameManager game = new GameManagerImpl(1L, null);
         repository.save(game);
         assertTrue(repository.containsKey(1L));
         assertFalse(repository.containsKey(2L));
@@ -61,10 +61,10 @@ class MemoryGameRepositoryTest {
 
     @Test
     void countAll() {
-        GameManager game1 = new GameManagerImpl(1L, null, null, null);
-        GameManager game2 = new GameManagerImpl(2L, null, null, null);
-        GameManager game3 = new GameManagerImpl(3L, null, null, null);
-        GameManager game4 = new GameManagerImpl(4L, null, null, null);
+        GameManager game1 = new GameManagerImpl(1L, null);
+        GameManager game2 = new GameManagerImpl(2L, null);
+        GameManager game3 = new GameManagerImpl(3L, null);
+        GameManager game4 = new GameManagerImpl(4L, null);
         repository.save(game1);
         repository.save(game2);
         repository.save(game3);
@@ -75,10 +75,10 @@ class MemoryGameRepositoryTest {
 
     @Test
     void saveDuplicate() {
-        GameManager game1 = new GameManagerImpl(1L, null, null, null);
-        GameManager game2 = new GameManagerImpl(2L, null, null, null);
-        GameManager game3 = new GameManagerImpl(3L, null, null, null);
-        GameManager game4 = new GameManagerImpl(3L, null, null, null);
+        GameManager game1 = new GameManagerImpl(1L, null);
+        GameManager game2 = new GameManagerImpl(2L, null);
+        GameManager game3 = new GameManagerImpl(3L, null);
+        GameManager game4 = new GameManagerImpl(3L, null);
         repository.save(game1);
         repository.save(game2);
         repository.save(game3);
@@ -89,10 +89,10 @@ class MemoryGameRepositoryTest {
 
     @Test
     void deleteGameById() {
-        GameManager game1 = new GameManagerImpl(1L, null, null, null);
-        GameManager game2 = new GameManagerImpl(2L, null, null, null);
-        GameManager game3 = new GameManagerImpl(3L, null, null, null);
-        GameManager game4 = new GameManagerImpl(4L, null, null, null);
+        GameManager game1 = new GameManagerImpl(1L, null);
+        GameManager game2 = new GameManagerImpl(2L, null);
+        GameManager game3 = new GameManagerImpl(3L, null);
+        GameManager game4 = new GameManagerImpl(4L, null);
         repository.save(game1);
         repository.save(game2);
         repository.save(game3);

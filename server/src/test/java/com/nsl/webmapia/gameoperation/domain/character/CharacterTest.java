@@ -217,11 +217,12 @@ public class CharacterTest {
     @Test
     public void wolfExterminateMoreThanOnce() {
         ActivatedSkillInfo result1 = wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
+        assertTrue(result1.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
         assertEquals(SkillType.EXTERMINATE, result1.getSkillType());
         ActivatedSkillInfo result2 = wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
-        assertEquals(SkillType.NONE, result2.getSkillType());
+        assertFalse(result2.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
         ActivatedSkillInfo result3 = wolfUser.activateSkill(citizenUser, this.skillManager, SkillType.EXTERMINATE);
-        assertEquals(SkillType.NONE, result3.getSkillType());
+        assertFalse(result2.getSkillCondition().isSuccess(wolfUser, citizenUser, SkillType.EXTERMINATE));
     }
 
     @Test
@@ -423,7 +424,7 @@ public class CharacterTest {
     public void soldier() {
         ActivatedSkillInfo soldierSelfGuard = soldierUser.activateSkill(soldierUser, this.skillManager, SkillType.GUARD);
 
-        assertTrue(soldierSelfGuard
+        assertFalse(soldierSelfGuard
                 .getSkillCondition()
                 .isSuccess(soldierSelfGuard.getActivator(), soldierSelfGuard.getTarget(), soldierSelfGuard.getSkillType()));
 

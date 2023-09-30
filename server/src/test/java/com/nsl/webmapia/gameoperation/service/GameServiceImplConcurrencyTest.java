@@ -45,10 +45,8 @@ public class GameServiceImplConcurrencyTest {
         Templar templar = new Templar();
         Successor successor = new Successor();
 
-        Characters characters = new Characters(wolf, betrayer, citizen, detective, follower, guard, humanMouse, mediumship,
-                murderer, nobility, predictor, secretSociety, soldier, successor, templar);
         GameRepository repository = new MemoryGameRepository();
-        roomService = new RoomServiceImpl(characters, repository);
+        roomService = new RoomServiceImpl(repository);
         userService = new UserServiceImpl(repository);
         gameService = new GameServiceImpl(repository, null);
     }

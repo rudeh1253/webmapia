@@ -18,18 +18,15 @@ import java.util.Map;
 @Service
 public class RoomServiceImpl implements RoomService{
     private final GameRepository gameRepository;
-    private final Map<CharacterCode, Character> characters;
 
     @Autowired
-    public RoomServiceImpl(Characters characters,
-                           GameRepository gameRepository) {
+    public RoomServiceImpl(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-        this.characters = characters.getCharacters();
     }
 
     @Override
     public Long createNewRoom(String roomName, Long hostId) {
-        GameManager game = GameManager.newInstance(characters, new SkillManager(), new MemoryUserRepository());
+        GameManager game = GameManager.newInstance(new MemoryUserRepository());
         game.setGameName(roomName);
         game.setHost(hostId);
         gameRepository.save(game);
@@ -39,7 +36,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public Long createNewRoom(String roomName, Long hostId, String hostName) {
-        GameManager game = GameManager.newInstance(characters, new SkillManager(), new MemoryUserRepository());
+        GameManager game = GameManager.newInstance(new MemoryUserRepository());
         game.setGameName(roomName);
         game.setHost(hostId);
         gameRepository.save(game);

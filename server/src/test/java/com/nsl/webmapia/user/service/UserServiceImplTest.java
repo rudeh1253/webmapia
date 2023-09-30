@@ -30,25 +30,8 @@ class UserServiceImplTest {
 
     @BeforeEach
     public void initialize() {
-        Wolf wolf = new Wolf();
-        Betrayer betrayer = new Betrayer();
-        Citizen citizen = new Citizen();
-        Detective detective = new Detective();
-        Follower follower = new Follower();
-        Guard guard = new Guard();
-        HumanMouse humanMouse = new HumanMouse();
-        Mediumship mediumship = new Mediumship();
-        Murderer murderer = new Murderer();
-        Nobility nobility = new Nobility();
-        Predictor predictor = new Predictor();
-        SecretSociety secretSociety = new SecretSociety();
-        Soldier soldier = new Soldier();
-        Templar templar = new Templar();
-        Successor successor = new Successor();
-        Characters characters = new Characters(wolf, betrayer, citizen, detective, follower, guard, humanMouse, mediumship,
-                murderer, nobility, predictor, secretSociety, soldier, successor, templar);
         GameRepository gameRepository = new MemoryGameRepository();
-        roomService = new RoomServiceImpl(characters, gameRepository);
+        roomService = new RoomServiceImpl(gameRepository);
         userService = new UserServiceImpl(gameRepository);
     }
 

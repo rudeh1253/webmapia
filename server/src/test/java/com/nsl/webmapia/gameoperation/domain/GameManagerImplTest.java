@@ -22,34 +22,14 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameManagerImplTest {
-    private SkillManager skillManager;
     private GameManager gameManager;
     private UserRepository userRepository;
 
     @BeforeEach
     public void initialize() {
-        this.skillManager = new SkillManager();
         userRepository = new MemoryUserRepository();
-        Map<CharacterCode, Character> characters = Map.ofEntries(
-                Map.entry(CharacterCode.WOLF, new Wolf()),
-                Map.entry(CharacterCode.BETRAYER, new Betrayer()),
-                Map.entry(CharacterCode.DETECTIVE, new Detective()),
-                Map.entry(CharacterCode.FOLLOWER, new Follower()),
-                Map.entry(CharacterCode.CITIZEN, new Citizen()),
-                Map.entry(CharacterCode.GUARD, new Guard()),
-                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse()),
-                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship()),
-                Map.entry(CharacterCode.MURDERER, new Murderer()),
-                Map.entry(CharacterCode.NOBILITY, new Nobility()),
-                Map.entry(CharacterCode.PREDICTOR, new Predictor()),
-                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety()),
-                Map.entry(CharacterCode.SOLDIER, new Soldier()),
-                Map.entry(CharacterCode.SUCCESSOR, new Successor()),
-                Map.entry(CharacterCode.TEMPLAR, new Templar()));
         gameManager = new GameManagerImpl(
                 1L,
-                characters,
-                skillManager,
                 userRepository
         );
     }
@@ -99,22 +79,6 @@ class GameManagerImplTest {
 
     @Test
     public void randomnessOfAllocateCharacterToEachUser() {
-        Map<CharacterCode, Character> characters = Map.ofEntries(
-                Map.entry(CharacterCode.WOLF, new Wolf()),
-                Map.entry(CharacterCode.BETRAYER, new Betrayer()),
-                Map.entry(CharacterCode.DETECTIVE, new Detective()),
-                Map.entry(CharacterCode.FOLLOWER, new Follower()),
-                Map.entry(CharacterCode.CITIZEN, new Citizen()),
-                Map.entry(CharacterCode.GUARD, new Guard()),
-                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse()),
-                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship()),
-                Map.entry(CharacterCode.MURDERER, new Murderer()),
-                Map.entry(CharacterCode.NOBILITY, new Nobility()),
-                Map.entry(CharacterCode.PREDICTOR, new Predictor()),
-                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety()),
-                Map.entry(CharacterCode.SOLDIER, new Soldier()),
-                Map.entry(CharacterCode.SUCCESSOR, new Successor()),
-                Map.entry(CharacterCode.TEMPLAR, new Templar()));
 
         Map<CharacterCode, Integer> characterDistribution = new HashMap<>();
         characterDistribution.put(CharacterCode.WOLF, 1);
@@ -124,8 +88,8 @@ class GameManagerImplTest {
         characterDistribution.put(CharacterCode.HUMAN_MOUSE, 1);
         characterDistribution.put(CharacterCode.CITIZEN, 1);
 
-        GameManager game1 = new GameManagerImpl(1L, characters, null, new MemoryUserRepository());
-        GameManager game2 = new GameManagerImpl(2L, characters, null, new MemoryUserRepository());
+        GameManager game1 = new GameManagerImpl(1L, new MemoryUserRepository());
+        GameManager game2 = new GameManagerImpl(2L, new MemoryUserRepository());
         addUsers(7, game1);
         addUsers(7, game2);
         List<User> privateNotificationBodies1 =
@@ -308,6 +272,7 @@ class GameManagerImplTest {
         characterDistribution.put(CharacterCode.MURDERER, 1);
         characterDistribution.put(CharacterCode.PREDICTOR, 1);
         characterDistribution.put(CharacterCode.DETECTIVE, 1);
+        gameManager.onGameStart();
         gameManager.generateCharacters(characterDistribution);
         List<User> allUsers = userRepository.findAll();
         for (User user : allUsers) {

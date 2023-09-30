@@ -14,16 +14,14 @@ import java.util.*;
 public interface GameManager {
     Set<Long> gameIdSet = Collections.synchronizedSet(new HashSet<>());
 
-    static GameManager newInstance(Map<CharacterCode, Character> characters,
-                                   SkillManager skillManager,
-                                   UserRepository userRepository) {
+    static GameManager newInstance(UserRepository userRepository) {
         Random random = new Random();
         Long gameId = random.nextLong(100000L, 999999L);
         if (gameIdSet.contains(gameId)) {
-            return newInstance(characters, skillManager, userRepository);
+            return newInstance(userRepository);
         } else {
             gameIdSet.add(gameId);
-            return new GameManagerImpl(gameId, characters, skillManager,
+            return new GameManagerImpl(gameId,
                     userRepository);
         }
     }

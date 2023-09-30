@@ -6,18 +6,14 @@ import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.skill.domain.SkillEffect;
 import com.nsl.webmapia.skill.domain.ActivatedSkillInfo;
 import com.nsl.webmapia.skill.domain.SkillType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Wolf implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.WOLF;
     private static final Faction FACTION = Faction.WOLF;
     private int leftExtermination;
 
-    @Autowired
     public Wolf() {
-        leftExtermination = 1;
+        this.leftExtermination = 1;
     }
 
     /**
@@ -32,35 +28,37 @@ public class Wolf implements Character {
     @Override
     public ActivatedSkillInfo activateSkill(SkillManager skillManager, SkillType skillType) {
         ActivatedSkillInfo result = new ActivatedSkillInfo();
-        result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
         switch (skillType) {
             case EXTERMINATE:
-                if (leftExtermination == 1) {
-                    result.setSkillType(SkillType.EXTERMINATE);
-                    result.setOnSkillSucceed((a, t, s) -> {
-                        skillManager.addSkillEffect(SkillEffect.builder()
-                                .receiverUser(null)
-                                .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
-                                .skillTargetUser(t)
-                                .skillActivatorUser(t)
-                                .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
-                                .build());
-                        t.setDead(true);
-                    });
-                    result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
-                            .receiverUser(src)
-                            .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
-                            .skillTargetUser(tar)
-                            .skillActivatorUser(src)
-                            .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_EXTERMINATE)
-                            .build()));
-                    leftExtermination--;
+                result.setSkillType(SkillType.EXTERMINATE);
+                if (leftExtermination > 0) {
+                    result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
                 } else {
-                    result.setSkillType(SkillType.NONE);
+                    result.setSkillCondition((a, t, s) -> false);
                 }
+                result.setOnSkillSucceed((a, t, s) -> {
+                    skillManager.addSkillEffect(SkillEffect.builder()
+                            .receiverUser(null)
+                            .skillTargetCharacterCode(t.getCharacter().getCharacterCode())
+                            .skillTargetUser(t)
+                            .skillActivatorUser(t)
+                            .characterEffectAfterNightType(CharacterEffectAfterNightType.EXTERMINATE)
+                            .build());
+                    t.setDead(true);
+                    leftExtermination--;
+                });
+                result.setOnSkillFail((src, tar, type) -> skillManager.addSkillEffect(SkillEffect.builder()
+                        .receiverUser(src)
+                        .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
+                        .skillTargetUser(tar)
+                        .skillActivatorUser(src)
+                        .characterEffectAfterNightType(CharacterEffectAfterNightType.FAIL_TO_EXTERMINATE)
+                        .build()));
+                leftExtermination--;
                 return result;
             case KILL:
                 result.setSkillType(SkillType.KILL);
+                result.setSkillCondition((a, t, s) -> t.getCharacter().getCharacterCode() != CharacterCode.HUMAN_MOUSE);
                 result.setOnSkillSucceed((a, t, s) -> {
                     skillManager.addSkillEffect(SkillEffect.builder()
                             .receiverUser(null)

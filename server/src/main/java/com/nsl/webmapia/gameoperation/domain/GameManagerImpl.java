@@ -1,13 +1,12 @@
 package com.nsl.webmapia.gameoperation.domain;
 
-import com.nsl.webmapia.skill.domain.SkillManager;
+import com.nsl.webmapia.character.*;
 import com.nsl.webmapia.character.Character;
+import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.skill.domain.ActivatedSkillInfo;
 import com.nsl.webmapia.skill.domain.SkillEffect;
 import com.nsl.webmapia.skill.domain.SkillType;
 import com.nsl.webmapia.user.repository.UserRepository;
-import com.nsl.webmapia.character.CharacterCode;
-import com.nsl.webmapia.character.Faction;
 import com.nsl.webmapia.user.domain.User;
 
 import java.util.*;
@@ -21,8 +20,7 @@ public class GameManagerImpl implements GameManager {
     };
 
     private final Long GAME_ID;
-    private final Map<CharacterCode, Character> characters;
-    private final SkillManager skillManager;
+    private SkillManager skillManager;
     private final UserRepository userRepository;
     private final List<Vote> votes;
     private final List<ActivatedSkillInfo> activatedSkills;
@@ -34,12 +32,8 @@ public class GameManagerImpl implements GameManager {
     private boolean gameStarted;
 
     public GameManagerImpl(Long gameId,
-                           Map<CharacterCode, Character> characters,
-                           SkillManager skillManager,
                            UserRepository userRepository) {
         this.GAME_ID = gameId;
-        this.characters = characters;
-        this.skillManager = skillManager;
         this.userRepository = userRepository;
         this.votes = new ArrayList<>();
         this.activatedSkills = new ArrayList<>();
@@ -50,6 +44,7 @@ public class GameManagerImpl implements GameManager {
     @Override
     public void onGameStart() {
         this.gameStarted = true;
+        this.skillManager = new SkillManager();
     }
 
     @Override
@@ -86,6 +81,7 @@ public class GameManagerImpl implements GameManager {
     public List<User> generateCharacters(Map<CharacterCode, Integer> characterDistribution) {
         List<User> users = userRepository.findAll();
         Collections.shuffle(users);
+        Map<CharacterCode, Character> characters = getCharacters();
         int count = 0;
         Set<CharacterCode> codes = characterDistribution.keySet();
         for (CharacterCode code : codes) {
@@ -98,6 +94,26 @@ public class GameManagerImpl implements GameManager {
             }
         }
         return users;
+    }
+
+    private Map<CharacterCode, Character> getCharacters() {
+        return Map.ofEntries(
+                Map.entry(CharacterCode.WOLF, new Wolf()),
+                Map.entry(CharacterCode.BETRAYER, new Betrayer()),
+                Map.entry(CharacterCode.DETECTIVE, new Detective()),
+                Map.entry(CharacterCode.FOLLOWER, new Follower()),
+                Map.entry(CharacterCode.CITIZEN, new Citizen()),
+                Map.entry(CharacterCode.GUARD, new Guard()),
+                Map.entry(CharacterCode.HUMAN_MOUSE, new HumanMouse()),
+                Map.entry(CharacterCode.MEDIUMSHIP, new Mediumship()),
+                Map.entry(CharacterCode.MURDERER, new Murderer()),
+                Map.entry(CharacterCode.NOBILITY, new Nobility()),
+                Map.entry(CharacterCode.PREDICTOR, new Predictor()),
+                Map.entry(CharacterCode.SECRET_SOCIETY, new SecretSociety()),
+                Map.entry(CharacterCode.SOLDIER, new Soldier()),
+                Map.entry(CharacterCode.SUCCESSOR, new Successor()),
+                Map.entry(CharacterCode.TEMPLAR, new Templar())
+        );
     }
 
     @Override
