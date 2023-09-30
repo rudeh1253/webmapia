@@ -305,6 +305,7 @@ public class GameManagerImpl implements GameManager {
             user.setPhaseEnd(false);
             user.setCharacter(null);
         });
+        this.skillManager = null;
     }
 
     public List<ActivatedSkillInfo> getActivatedSkills() {
