@@ -107,6 +107,7 @@ export default function Room() {
                     });
                     subscriptions = undefined;
                 }
+                sockClient.disconnect();
                 sockClient = undefined;
                 inited = false;
             }

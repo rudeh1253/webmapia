@@ -60,4 +60,12 @@ export default class SocketClient {
     public unsubscribe(subscription: Stomp.Subscription): void {
         subscription.unsubscribe();
     }
+
+    public disconnect(headers?: {}) {
+        this.stompClient?.disconnect(this.onDisconnected, headers);
+    }
+
+    private onDisconnected() {
+        // TODO
+    }
 }
