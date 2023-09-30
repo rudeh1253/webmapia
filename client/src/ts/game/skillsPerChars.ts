@@ -10,12 +10,12 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.kill,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.wolf.kill,
                 skillType: "KILL"
             },
             {
                 skillName: strResource.skill.exterminate,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.wolf.extermination,
                 skillType: "EXTERMINATE"
             }
         ]
@@ -25,12 +25,12 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.investigationDead,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.betrayer.investigationDead,
                 skillType: "INVESTIGATE_DEAD_CHARACTER"
             },
             {
                 skillName: strResource.skill.enterWolfChat,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.betrayer.wolfChat,
                 skillType: "ENTER_WOLF_CHAT"
             }
         ]
@@ -40,12 +40,12 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.insight,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.follower.investigationAlive,
                 skillType: "INVESTIGATE_ALIVE_CHARACTER"
             },
             {
                 skillName: strResource.skill.enterWolfChat,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.follower.wolfChat,
                 skillType: "ENTER_WOLF_CHAT"
             }
         ]
@@ -55,7 +55,7 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.prediction,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.predictor.prediction,
                 skillType: "INVESTIGATE_ALIVE_CHARACTER"
             }
         ]
@@ -65,7 +65,7 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.guard,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.guard.guard,
                 skillType: "GUARD"
             }
         ]
@@ -75,7 +75,7 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.investigationDead,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.mediumship.investigationDead,
                 skillType: "INVESTIGATE_DEAD_CHARACTER"
             }
         ]
@@ -85,7 +85,7 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.investigationAlive,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.detective.investigationAlive,
                 skillType: "INVESTIGATE_ALIVE_CHARACTER"
             }
         ]
@@ -98,7 +98,7 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.selfGuard,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.soldier.guardSelf,
                 skillType: "GUARD"
             }
         ]
@@ -110,7 +110,7 @@ const skillsPerChars = new Map<
         [
             {
                 skillName: strResource.skill.murder,
-                skillDesc: "",
+                skillDesc: strResource.skill.skillDescription.murderer.murder,
                 skillType: "EXTERMINATE"
             }
         ]

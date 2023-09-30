@@ -28,7 +28,7 @@ public class Guard implements Character {
         });
         result.setOnSkillSucceed((src, tar, type) -> {
             skillManager.addSkillEffect(SkillEffect.builder()
-                    .receiverUser(null)
+                    .receiverUser(src)
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.GUARD)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .skillActivatorUser(src)
