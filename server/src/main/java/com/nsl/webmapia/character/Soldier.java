@@ -1,11 +1,7 @@
 package com.nsl.webmapia.character;
 
 import com.nsl.webmapia.common.exception.CharacterNotSupportSkillTypeException;
-import com.nsl.webmapia.skill.domain.CharacterEffectAfterNightType;
-import com.nsl.webmapia.skill.domain.SkillManager;
-import com.nsl.webmapia.skill.domain.SkillEffect;
-import com.nsl.webmapia.skill.domain.ActivatedSkillInfo;
-import com.nsl.webmapia.skill.domain.SkillType;
+import com.nsl.webmapia.skill.domain.*;
 
 public class Soldier implements Character {
     private static final CharacterCode CHARACTER_CODE = CharacterCode.SOLDIER;

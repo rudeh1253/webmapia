@@ -1,19 +1,14 @@
 package com.nsl.webmapia.room.service;
 
-import com.nsl.webmapia.character.Character;
-import com.nsl.webmapia.character.CharacterCode;
-import com.nsl.webmapia.character.Characters;
 import com.nsl.webmapia.gameoperation.domain.GameManager;
 import com.nsl.webmapia.gameoperation.repository.GameRepository;
 import com.nsl.webmapia.room.dto.RoomAvailabilityResponseDTO;
-import com.nsl.webmapia.user.repository.MemoryUserRepository;
 import com.nsl.webmapia.room.dto.RoomInfoResponseDTO;
-import com.nsl.webmapia.skill.domain.SkillManager;
+import com.nsl.webmapia.user.repository.MemoryUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class RoomServiceImpl implements RoomService{

@@ -1,7 +1,7 @@
 package com.nsl.webmapia.character;
 
-import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.skill.domain.ActivatedSkillInfo;
+import com.nsl.webmapia.skill.domain.SkillManager;
 import com.nsl.webmapia.skill.domain.SkillType;
 
 public class Nobility implements Character {
