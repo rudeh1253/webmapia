@@ -30,6 +30,12 @@
     gap: 12px;
 }
 
+.skill-desc {
+    width: 256px;
+    font-size: 15px;
+    word-wrap: break-word;
+}
+
 .target-selection-toggle-btn {
     width: fit-content;
     padding: 8px 12px;
@@ -37,8 +43,8 @@
 }
 
 .target-selection-btn-container {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
 }
 
