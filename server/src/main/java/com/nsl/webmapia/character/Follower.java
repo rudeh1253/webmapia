@@ -41,12 +41,12 @@ public class Follower implements Character {
     }
 
     private void enterChat(SkillManager skillManager, ActivatedSkillInfo result) {
-        result.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.WOLF);
+        result.setSkillCondition((src, tar, type) -> tar.getCharacter().getFaction() == Faction.WOLF);
         result.setOnSkillSucceed((src, tar, type) -> {
             SkillEffect srcBody = SkillEffect.builder()
                     .receiverUser(src)
                     .skillTargetUser(tar)
-                    .skillActivatorUser(tar)
+                    .skillActivatorUser(src)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.ENTER_WOLF_CHAT)
                     .build();
@@ -54,6 +54,7 @@ public class Follower implements Character {
             SkillEffect tarBody = SkillEffect.builder()
                     .receiverUser(tar)
                     .skillTargetUser(tar)
+                    .skillActivatorUser(src)
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .characterEffectAfterNightType(CharacterEffectAfterNightType.NOTIFY)
                     .message("Betrayer entered the wolf chat")
@@ -82,5 +83,4 @@ public class Follower implements Character {
     public Faction getFaction() {
         return FACTION;
     }
-
 }

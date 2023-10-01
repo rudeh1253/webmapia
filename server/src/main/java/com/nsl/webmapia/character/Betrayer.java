@@ -72,7 +72,7 @@ public class Betrayer implements Character {
                     .skillTargetCharacterCode(tar.getCharacter().getCharacterCode())
                     .build());
         });
-        effect.setSkillCondition((src, tar, type) -> tar.getCharacter().getCharacterCode() == CharacterCode.WOLF);
+        effect.setSkillCondition((src, tar, type) -> tar.getCharacter().getFaction() == Faction.WOLF);
         return effect;
     }
 
