@@ -1,10 +1,10 @@
-package nsl.webmapia.chat;
+package nsl.webmapia.game;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ChatServiceApplicationTests {
+class GameServiceApplicationTests {
 
     @Test
     void contextLoads() {

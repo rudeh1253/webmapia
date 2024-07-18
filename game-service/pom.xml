@@ -8,11 +8,11 @@
         <version>3.3.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>nsl.webmapia.chat</groupId>
-    <artifactId>chatservice</artifactId>
+    <groupId>nsl.webmapia.game</groupId>
+    <artifactId>gameservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>chat-service</name>
-    <description>chat-service</description>
+    <description>game-service</description>
     <url/>
     <licenses>
         <license/>

@@ -1,13 +1,13 @@
-package nsl.webmapia.chat;
+package nsl.webmapia.game;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChatServiceApplication {
+public class GameServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ChatServiceApplication.class, args);
+        SpringApplication.run(GameServiceApplication.class, args);
     }
 
 }
