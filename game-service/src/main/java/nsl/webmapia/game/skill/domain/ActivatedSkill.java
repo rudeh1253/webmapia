@@ -15,8 +15,8 @@ public class ActivatedSkill {
     private final Character target;
     private final SkillInfo skillInfo;
 
-    public boolean isSuccess(Set<ActivatedSkill> activatedSkillBucket) {
+    public boolean isSuccess(Set<SkillType> activatedSkillsToTarget) {
         return this.skillInfo.getSkillCondition()
-                .isSuccess(this.activator, this.target, activatedSkillBucket);
+                .isSuccess(this.activator, this.target, activatedSkillsToTarget);
     }
 }

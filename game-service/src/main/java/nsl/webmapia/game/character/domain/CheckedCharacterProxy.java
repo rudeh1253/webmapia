@@ -38,7 +38,7 @@ public class CheckedCharacterProxy extends Character {
     private final Character character;
 
     public CheckedCharacterProxy(Character character) {
-        super(null, false);
+        super(null);
         this.character = character;
     }
 
