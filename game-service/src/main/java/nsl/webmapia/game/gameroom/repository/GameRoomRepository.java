@@ -1,5 +1,7 @@
 package nsl.webmapia.game.gameroom.repository;
 
+import nsl.webmapia.game.common.dto.PageDto;
+import nsl.webmapia.game.common.dto.PageWrapper;
 import nsl.webmapia.game.gameroom.domain.GameRoom;
 
 import java.util.Optional;
@@ -25,6 +27,24 @@ public interface GameRoomRepository {
      * @return an instance of Optional object containing either GameRoom instance or null
      */
     Optional<GameRoom> findById(int roomId);
+
+    /**
+     * Find GameRoom instances without any condition.
+     *
+     * @param pageDto DTO of pagination info
+     * @return GameRoom instances wrapped with PageWrapper
+     */
+    PageWrapper<GameRoom> findAll(PageDto pageDto);
+
+    /**
+     * Find GameRoom instances whose roomName is like '%:roomName%'
+     *
+     * @param roomName query condition
+     * @param pageDto DTO of pagination info
+     * @return GameRoom instances wrapped with PageWrapper. Each roomName of every GameRoom
+     * instances contains substring roomName
+     */
+    PageWrapper<GameRoom> findByRoomName(String roomName, PageDto pageDto);
 
     /**
      * Update GameRoom instance in repository. The information is
