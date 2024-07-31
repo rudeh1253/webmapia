@@ -14,4 +14,9 @@ public class Member {
     private String memberId;
     private String nickname;
     private GameRoom gameParticipation;
+
+    public Member(String memberId, String nickname) {
+        this.memberId = memberId;
+        this.nickname = nickname;
+    }
 }

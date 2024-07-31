@@ -19,4 +19,14 @@ public class GameRoom {
     private Member hostMember;
     private LocalDateTime creationTime;
     private List<Member> participants;
+
+    public GameRoom(String roomName,
+                    Member hostMember,
+                    LocalDateTime creationTime,
+                    List<Member> participants) {
+        this.roomName = roomName;
+        this.hostMember = hostMember;
+        this.creationTime = creationTime;
+        this.participants = participants;
+    }
 }
