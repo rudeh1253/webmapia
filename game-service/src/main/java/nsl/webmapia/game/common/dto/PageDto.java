@@ -16,6 +16,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class PageDto {
-    private final int page;
-    private final int pageSize;
+    private final Integer page;
+    private final Integer pageSize;
 }

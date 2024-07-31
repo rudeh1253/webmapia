@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeanConfig {
 
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(GameRoomRepository.class)
     public GameRoomRepository inMemoryGameRoomRepository() {
         return new InMemoryGameRoomRepository();
     }
