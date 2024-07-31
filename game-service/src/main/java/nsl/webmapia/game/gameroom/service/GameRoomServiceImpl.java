@@ -1,6 +1,7 @@
 package nsl.webmapia.game.gameroom.service;
 
 import lombok.RequiredArgsConstructor;
+import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
 import nsl.webmapia.game.gameroom.domain.GameRoom;
 import nsl.webmapia.game.gameroom.dto.GameRoomDto;
@@ -30,6 +31,7 @@ public class GameRoomServiceImpl implements GameRoomService {
     public GameRoomCreationResponseDto createRoom(String roomName, String creatorId) {
         MemberDto hostDto = this.memberService.findMemberById(creatorId);
         Member host = new Member(hostDto.getMemberId(), hostDto.getNickname());
+
         GameRoom newGameRoom = new GameRoom(roomName, host, LocalDateTime.now(), List.of(host));
         int generatedNumber = this.gameRoomRepository.save(newGameRoom);
         newGameRoom.setRoomId(generatedNumber);
@@ -43,21 +45,30 @@ public class GameRoomServiceImpl implements GameRoomService {
 
     @Override
     public PageWrapper<GameRoomDto> getGameRooms(int page) {
-        return null;
+        return domainToDto(this.gameRoomRepository.findAll(new PageDto(page, null)));
     }
 
     @Override
     public PageWrapper<GameRoomDto> getGameRooms(int page, int pageSize) {
-        return null;
+        return domainToDto(this.gameRoomRepository.findAll(new PageDto(page, pageSize)));
     }
 
     @Override
     public PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page) {
-        return null;
+        return domainToDto(this.gameRoomRepository.findByRoomName(roomName, new PageDto(page, null)));
     }
 
     @Override
     public PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page, int pageSize) {
-        return null;
+        return domainToDto(this.gameRoomRepository.findByRoomName(roomName, new PageDto(page, pageSize)));
+    }
+
+    private PageWrapper<GameRoomDto> domainToDto(PageWrapper<GameRoom> domain) {
+        return new PageWrapper<>(
+                domain.getPage(),
+                domain.getTotalPage(),
+                domain.getTotalElementCount(),
+                domain.getElements().stream().map(GameRoomDto::of).toList()
+        );
     }
 }
