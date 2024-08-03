@@ -1,25 +1,23 @@
 package nsl.webmapia.game.character.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import nsl.webmapia.game.gameoperation.domain.Vote;
-import nsl.webmapia.game.member.domain.Member;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 @Getter
 @ToString
 public abstract class Character {
-    private final Member member;
+    private final String memberId;
 
     protected boolean dead;
 
     private boolean disconnected;
 
-    public Character(Member member) {
+    public Character(String memberId) {
         this.dead = false;
-        this.member = member;
+        this.memberId = memberId;
         this.disconnected = false;
     }
 
@@ -69,7 +67,7 @@ public abstract class Character {
         return true;
     }
 
-    public Vote vote(Member target) {
-        return new Vote(this.member, target, 1);
+    public Vote vote(String targetId) {
+        return new Vote(this.memberId, targetId, 1);
     }
 }

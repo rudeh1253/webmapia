@@ -2,7 +2,6 @@ package nsl.webmapia.game.skill.domain;
 
 import lombok.*;
 import nsl.webmapia.game.character.domain.Character;
-import nsl.webmapia.game.member.domain.Member;
 
 import java.util.Set;
 

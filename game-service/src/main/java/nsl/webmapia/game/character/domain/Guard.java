@@ -1,15 +1,13 @@
 package nsl.webmapia.game.character.domain;
 
-import nsl.webmapia.game.member.domain.Member;
-import nsl.webmapia.game.skill.domain.ActivatedSkill;
 import nsl.webmapia.game.skill.domain.SkillCondition;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 public class Guard extends Character {
 
-    public Guard(Member member) {
-        super(member);
+    public Guard(String memberId) {
+        super(memberId);
     }
 
     @Override

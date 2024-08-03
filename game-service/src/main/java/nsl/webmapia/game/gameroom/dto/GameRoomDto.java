@@ -2,11 +2,9 @@ package nsl.webmapia.game.gameroom.dto;
 
 import lombok.*;
 import nsl.webmapia.game.gameroom.domain.GameRoom;
-import nsl.webmapia.game.member.dto.MemberDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
@@ -17,18 +15,15 @@ public class GameRoomDto {
     private String roomName;
     private String memberId;
     private LocalDateTime creationTime;
-    private List<MemberDto> participants;
+    private List<String> participantIds;
 
     public static GameRoomDto of(GameRoom domain) {
         return GameRoomDto.builder()
                 .roomId(domain.getRoomId())
                 .roomName(domain.getRoomName())
-                .memberId(domain.getHostMember().getMemberId())
+                .memberId(domain.getHostMemberId())
                 .creationTime(domain.getCreationTime())
-                .participants(domain.getParticipants()
-                        .stream()
-                        .map(MemberDto::of)
-                        .collect(Collectors.toList()))
+                .participantIds(domain.getParticipantIds())
                 .build();
     }
 }

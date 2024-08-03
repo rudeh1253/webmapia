@@ -7,7 +7,6 @@ import nsl.webmapia.game.gameroom.domain.GameRoom;
 import nsl.webmapia.game.gameroom.dto.GameRoomDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
-import nsl.webmapia.game.member.domain.Member;
 import nsl.webmapia.game.member.dto.MemberDto;
 import nsl.webmapia.game.member.service.MemberService;
 import org.springframework.stereotype.Service;
@@ -30,9 +29,8 @@ public class GameRoomServiceImpl implements GameRoomService {
     @Override
     public GameRoomCreationResponseDto createRoom(String roomName, String creatorId) {
         MemberDto hostDto = this.memberService.findMemberById(creatorId);
-        Member host = new Member(hostDto.getMemberId(), hostDto.getNickname());
 
-        GameRoom newGameRoom = new GameRoom(roomName, host, LocalDateTime.now(), List.of(host));
+        GameRoom newGameRoom = new GameRoom(roomName, hostDto.getMemberId(), LocalDateTime.now(), List.of(hostDto.getMemberId()));
         int generatedNumber = this.gameRoomRepository.save(newGameRoom);
         newGameRoom.setRoomId(generatedNumber);
         return GameRoomCreationResponseDto.of(newGameRoom);

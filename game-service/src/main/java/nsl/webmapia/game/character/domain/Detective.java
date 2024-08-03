@@ -1,6 +1,5 @@
 package nsl.webmapia.game.character.domain;
 
-import nsl.webmapia.game.member.domain.Member;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
@@ -12,8 +11,8 @@ public class Detective extends Character {
             CharacterCode.FOLLOWER
     );
 
-    public Detective(Member member) {
-        super(member);
+    public Detective(String memberId) {
+        super(memberId);
     }
 
     @Override

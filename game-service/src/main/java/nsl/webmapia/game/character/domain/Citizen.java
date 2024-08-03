@@ -1,13 +1,12 @@
 package nsl.webmapia.game.character.domain;
 
-import nsl.webmapia.game.member.domain.Member;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 public class Citizen extends Character {
 
-    public Citizen(Member member) {
-        super(member);
+    public Citizen(String memberId) {
+        super(memberId);
     }
 
     /**

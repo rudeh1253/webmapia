@@ -1,7 +1,5 @@
 package nsl.webmapia.game.character.domain;
 
-import lombok.RequiredArgsConstructor;
-import nsl.webmapia.game.member.domain.Member;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 import nsl.webmapia.game.skill.exception.UnsupportedSkillTypeException;

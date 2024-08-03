@@ -5,7 +5,6 @@ import nsl.webmapia.game.common.NumberConstants;
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
 import nsl.webmapia.game.gameroom.domain.GameRoom;
-import nsl.webmapia.game.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,7 @@ class TestInMemoryGameRoomRepository {
         List<GameRoom> testCase = new LinkedList<>();
         for (int i = 0; i < SIZE_OF_TESTCASE; i++) {
             testCase.add(new GameRoom(
-                    "sample-room" + i, new Member("sample-" + i, "nick-" + i), LocalDateTime.now(), List.of()
+                    "sample-room" + i, "sample-" + i, LocalDateTime.now(), List.of()
             ));
         }
 
@@ -165,12 +164,11 @@ class TestInMemoryGameRoomRepository {
         List<LocalDateTime> sampleTimes = new ArrayList<>();
         for (int i = 0; i < timePool.size(); i++) {
             LocalDateTime time = timePool.get(i);
-            Member sampleHost = new Member("sample-member-" + i, "sample-nickname-i");
             GameRoom sampleGameRoom = new GameRoom(
                     roomNameGenerator.apply(i),
-                    sampleHost,
+                    "sample-member-" + i,
                     time,
-                    List.of(sampleHost)
+                    List.of("sample-member-" + i)
             );
             this.inMemoryGameRoomRepository.save(sampleGameRoom);
             if (sampleTimesCondition.test(sampleGameRoom.getRoomName())) {
@@ -222,7 +220,7 @@ class TestInMemoryGameRoomRepository {
         List<GameRoom> testCase = new LinkedList<>();
         for (int i = 0; i < 10000; i++) {
             testCase.add(new GameRoom(
-                    "sample-room" + i, new Member("sample-" + i, "nick-" + i), LocalDateTime.now(), List.of()
+                    "sample-room" + i, "sample-" + i, LocalDateTime.now(), List.of()
             ));
         }
 
@@ -265,7 +263,7 @@ class TestInMemoryGameRoomRepository {
         List<GameRoom> testCase = new LinkedList<>();
         for (int i = 0; i < 10000; i++) {
             testCase.add(new GameRoom(
-                    "sample-room" + i, new Member("sample-" + i, "nick-" + i), LocalDateTime.now(), List.of()
+                    "sample-room" + i, "sample-" + i, LocalDateTime.now(), List.of()
             ));
         }
 

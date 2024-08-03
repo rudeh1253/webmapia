@@ -1,11 +1,9 @@
 package nsl.webmapia.game.gameoperation.service;
 
 import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
-import nsl.webmapia.game.gameoperation.domain.Vote;
 import nsl.webmapia.game.gameoperation.dto.VoteDto;
 import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
 import nsl.webmapia.game.gameoperation.dto.response.PhaseResultResponseDto;
-import nsl.webmapia.game.gameoperation.dto.response.VoteResultResponseDto;
 
 import java.util.List;
 

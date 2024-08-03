@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import nsl.webmapia.game.member.domain.Member;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,17 +15,17 @@ import java.util.List;
 public class GameRoom {
     private Integer roomId;
     private String roomName;
-    private Member hostMember;
+    private String hostMemberId;
     private LocalDateTime creationTime;
-    private List<Member> participants;
+    private List<String> participantIds;
 
     public GameRoom(String roomName,
-                    Member hostMember,
+                    String hostMemberId,
                     LocalDateTime creationTime,
-                    List<Member> participants) {
+                    List<String> participantIds) {
         this.roomName = roomName;
-        this.hostMember = hostMember;
+        this.hostMemberId = hostMemberId;
         this.creationTime = creationTime;
-        this.participants = participants;
+        this.participantIds = participantIds;
     }
 }

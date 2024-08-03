@@ -1,13 +1,12 @@
 package nsl.webmapia.game.character.domain;
 
-import nsl.webmapia.game.member.domain.Member;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 public class Betrayer extends Character {
 
-    public Betrayer(Member member) {
-        super(member);
+    public Betrayer(String memberId) {
+        super(memberId);
     }
 
     /**

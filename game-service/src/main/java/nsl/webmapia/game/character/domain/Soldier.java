@@ -1,14 +1,13 @@
 package nsl.webmapia.game.character.domain;
 
-import nsl.webmapia.game.member.domain.Member;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 public class Soldier extends Character {
     private int life = 2;
 
-    public Soldier(Member member) {
-        super(member);
+    public Soldier(String memberId) {
+        super(memberId);
     }
 
     @Override

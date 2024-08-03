@@ -1,14 +1,13 @@
 package nsl.webmapia.game.character.domain;
 
 import nsl.webmapia.game.gameoperation.domain.Vote;
-import nsl.webmapia.game.member.domain.Member;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 public class Nobility extends Character {
 
-    public Nobility(Member member) {
-        super(member);
+    public Nobility(String memberId) {
+        super(memberId);
     }
 
     @Override
@@ -32,7 +31,7 @@ public class Nobility extends Character {
     }
 
     @Override
-    public Vote vote(Member target) {
-        return new Vote(super.getMember(), target, 2);
+    public Vote vote(String targetId) {
+        return new Vote(super.getMemberId(), targetId, 2);
     }
 }
