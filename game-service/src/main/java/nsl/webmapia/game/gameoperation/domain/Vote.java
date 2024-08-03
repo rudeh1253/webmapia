@@ -14,5 +14,5 @@ import nsl.webmapia.game.member.domain.Member;
 public class Vote {
     private Member voter;
     private Member target;
-    int voteCount;
+    private int voteCount;
 }
