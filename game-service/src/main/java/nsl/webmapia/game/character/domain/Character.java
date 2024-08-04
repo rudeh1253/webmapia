@@ -2,6 +2,7 @@ package nsl.webmapia.game.character.domain;
 
 import lombok.Getter;
 import lombok.ToString;
+import nsl.webmapia.game.gameoperation.domain.GameInstance;
 import nsl.webmapia.game.gameoperation.domain.Vote;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
@@ -14,11 +15,20 @@ public abstract class Character {
     protected boolean dead;
 
     private boolean disconnected;
+    private GameInstance gameInstance;
 
+    @Deprecated
     public Character(String memberId) {
         this.dead = false;
         this.memberId = memberId;
         this.disconnected = false;
+    }
+
+    public Character(String memberId, GameInstance gameInstance) {
+        this.dead = false;
+        this.memberId = memberId;
+        this.disconnected = false;
+        this.gameInstance = gameInstance;
     }
 
     /**
@@ -68,6 +78,25 @@ public abstract class Character {
     }
 
     public Vote vote(String targetId) {
-        return new Vote(this.memberId, targetId, 1);
+        return vote(targetId, 1);
+    }
+
+    protected Vote vote(String targetId, int voteCount) {
+        return new Vote(
+                this.gameInstance.getGameRoom().getRoomId(),
+                this.gameInstance.getStartTime(),
+                this.gameInstance.getRound(),
+                this.memberId,
+                targetId,
+                voteCount
+        );
+    }
+
+    public boolean isDisconnected() {
+        return this.disconnected;
+    }
+
+    public void onDisconnected() {
+        this.disconnected = true;
     }
 }

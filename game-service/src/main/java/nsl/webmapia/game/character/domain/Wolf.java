@@ -1,13 +1,19 @@
 package nsl.webmapia.game.character.domain;
 
+import nsl.webmapia.game.gameoperation.domain.GameInstance;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 public class Wolf extends Character {
     private int leftBeheadCount = 1;
 
+    @Deprecated
     public Wolf(String memberId) {
         super(memberId);
+    }
+
+    public Wolf(String memberId, GameInstance gameInstance) {
+        super(memberId, gameInstance);
     }
 
     @Override

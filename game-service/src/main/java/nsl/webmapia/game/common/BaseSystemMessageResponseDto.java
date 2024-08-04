@@ -1,5 +1,9 @@
 package nsl.webmapia.game.common;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.util.List;
 
 /**
@@ -12,6 +16,9 @@ import java.util.List;
  *
  * @param <D> type of data to be sent
  */
+@Builder
+@Getter
+@ToString
 public class BaseSystemMessageResponseDto<D> {
     private List<String> receiverIds;
     private SystemMessageType systemMessageType;
