@@ -22,7 +22,7 @@ public interface GameService {
      * @return BaseSystemMessageResponseDto object containing a system message
      * to notify start of game to participants of the game room
      */
-    BaseSystemMessageResponseDto<Void> startGame(int roomId);
+    BaseSystemMessageResponseDto<Object> startGame(int roomId);
 
     /**
      * Process a vote from a single member. The size of a single vote is determined by the character of

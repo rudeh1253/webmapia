@@ -3,7 +3,6 @@ package nsl.webmapia.game.character.domain;
 import lombok.Getter;
 import lombok.ToString;
 import nsl.webmapia.game.gameoperation.domain.GameInstance;
-import nsl.webmapia.game.gameoperation.domain.Vote;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
@@ -75,21 +74,6 @@ public abstract class Character {
     public boolean onBeheaded() {
         this.dead = true;
         return true;
-    }
-
-    public Vote vote(String targetId) {
-        return vote(targetId, 1);
-    }
-
-    protected Vote vote(String targetId, int voteCount) {
-        return new Vote(
-                this.gameInstance.getGameRoom().getRoomId(),
-                this.gameInstance.getStartTime(),
-                this.gameInstance.getRound(),
-                this.memberId,
-                targetId,
-                voteCount
-        );
     }
 
     public boolean isDisconnected() {

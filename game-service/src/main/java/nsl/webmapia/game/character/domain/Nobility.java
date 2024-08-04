@@ -1,7 +1,6 @@
 package nsl.webmapia.game.character.domain;
 
 import nsl.webmapia.game.gameoperation.domain.GameInstance;
-import nsl.webmapia.game.gameoperation.domain.Vote;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
@@ -34,10 +33,5 @@ public class Nobility extends Character {
     @Override
     public boolean onExecuted() {
         return false;
-    }
-
-    @Override
-    public Vote vote(String targetId) {
-        return super.vote(targetId, 2);
     }
 }

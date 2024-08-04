@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -30,7 +29,6 @@ class TestInMemoryGameInstanceRepository {
         gameRoom.setRoomName("sample-room");
         gameRoom.setHostMemberId("sample-member");
         gameRoom.setCreationTime(LocalDateTime.now());
-        gameRoom.setParticipantIds(List.of("sample-member"));
 
         GameInstance gameInstance = new GameInstance();
         gameInstance.setGameRoom(gameRoom);
@@ -57,7 +55,6 @@ class TestInMemoryGameInstanceRepository {
         gameRoom.setRoomName("sample-room");
         gameRoom.setHostMemberId("sample-member");
         gameRoom.setCreationTime(LocalDateTime.now());
-        gameRoom.setParticipantIds(List.of("sample-member"));
 
         GameInstance gameInstance = new GameInstance();
         gameInstance.setGameRoom(gameRoom);
@@ -75,7 +72,6 @@ class TestInMemoryGameInstanceRepository {
         gameRoom.setRoomName("sample-room");
         gameRoom.setHostMemberId("sample-member");
         gameRoom.setCreationTime(LocalDateTime.now());
-        gameRoom.setParticipantIds(List.of("sample-member"));
 
         GameInstance gameInstance = new GameInstance();
         gameInstance.setGameRoom(gameRoom);

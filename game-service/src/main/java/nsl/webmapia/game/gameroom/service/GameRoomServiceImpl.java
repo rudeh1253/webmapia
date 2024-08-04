@@ -4,15 +4,17 @@ import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
 import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.domain.Participation;
 import nsl.webmapia.game.gameroom.dto.GameRoomDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
+import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
 import nsl.webmapia.game.member.dto.MemberDto;
 import nsl.webmapia.game.member.service.MemberService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -22,16 +24,20 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GameRoomServiceImpl implements GameRoomService {
     private final GameRoomRepository gameRoomRepository;
+    private final ParticipationRepository participationRepository;
     private final MemberService memberService;
 
     @Override
     public GameRoomCreationResponseDto createRoom(String roomName, String creatorId) {
         MemberDto hostDto = this.memberService.findMemberById(creatorId);
 
-        GameRoom newGameRoom = new GameRoom(roomName, hostDto.getMemberId(), LocalDateTime.now(), List.of(hostDto.getMemberId()));
+        GameRoom newGameRoom = new GameRoom(roomName, hostDto.getMemberId(), LocalDateTime.now());
         int generatedNumber = this.gameRoomRepository.save(newGameRoom);
+        this.participationRepository.save(new Participation(hostDto.getMemberId(), newGameRoom));
+
         newGameRoom.setRoomId(generatedNumber);
         return GameRoomCreationResponseDto.of(newGameRoom);
     }

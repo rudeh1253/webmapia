@@ -41,7 +41,7 @@ class TestInMemoryGameRoomRepository {
         List<GameRoom> testCase = new LinkedList<>();
         for (int i = 0; i < SIZE_OF_TESTCASE; i++) {
             testCase.add(new GameRoom(
-                    "sample-room" + i, "sample-" + i, LocalDateTime.now(), List.of()
+                    "sample-room" + i, "sample-" + i, LocalDateTime.now()
             ));
         }
 
@@ -167,8 +167,7 @@ class TestInMemoryGameRoomRepository {
             GameRoom sampleGameRoom = new GameRoom(
                     roomNameGenerator.apply(i),
                     "sample-member-" + i,
-                    time,
-                    List.of("sample-member-" + i)
+                    time
             );
             this.inMemoryGameRoomRepository.save(sampleGameRoom);
             if (sampleTimesCondition.test(sampleGameRoom.getRoomName())) {
@@ -220,7 +219,7 @@ class TestInMemoryGameRoomRepository {
         List<GameRoom> testCase = new LinkedList<>();
         for (int i = 0; i < 10000; i++) {
             testCase.add(new GameRoom(
-                    "sample-room" + i, "sample-" + i, LocalDateTime.now(), List.of()
+                    "sample-room" + i, "sample-" + i, LocalDateTime.now()
             ));
         }
 
@@ -263,7 +262,7 @@ class TestInMemoryGameRoomRepository {
         List<GameRoom> testCase = new LinkedList<>();
         for (int i = 0; i < 10000; i++) {
             testCase.add(new GameRoom(
-                    "sample-room" + i, "sample-" + i, LocalDateTime.now(), List.of()
+                    "sample-room" + i, "sample-" + i, LocalDateTime.now()
             ));
         }
 

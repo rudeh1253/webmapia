@@ -1,5 +1,7 @@
 package nsl.webmapia.game.config;
 
+import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
+import nsl.webmapia.game.gameoperation.repository.InMemoryGameInstanceRepository;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.InMemoryGameRoomRepository;
 import nsl.webmapia.game.member.dto.MemberDto;
@@ -18,6 +20,12 @@ public class BeanConfig {
     @ConditionalOnMissingBean(GameRoomRepository.class)
     public GameRoomRepository inMemoryGameRoomRepository() {
         return new InMemoryGameRoomRepository();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(GameInstanceRepository.class)
+    public InMemoryGameInstanceRepository inMemoryGameInstanceRepository() {
+        return new InMemoryGameInstanceRepository();
     }
 
     @Bean

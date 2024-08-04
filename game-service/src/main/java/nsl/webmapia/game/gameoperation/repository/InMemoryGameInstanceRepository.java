@@ -1,13 +1,11 @@
 package nsl.webmapia.game.gameoperation.repository;
 
 import nsl.webmapia.game.gameoperation.domain.GameInstance;
-import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Repository
 public class InMemoryGameInstanceRepository implements GameInstanceRepository {
     private static final Map<Integer, GameInstance> indexedById = new ConcurrentHashMap<>();
 
