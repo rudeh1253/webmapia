@@ -19,7 +19,7 @@ public class GameRoomCreationResponseDto {
         return GameRoomCreationResponseDto.builder()
                 .roomId(newGameRoom.getRoomId())
                 .roomName(newGameRoom.getRoomName())
-                .hostMemberId(newGameRoom.getHostMember().getMemberId())
+                .hostMemberId(newGameRoom.getHostMemberId())
                 .creationTime(newGameRoom.getCreationTime())
                 .build();
     }

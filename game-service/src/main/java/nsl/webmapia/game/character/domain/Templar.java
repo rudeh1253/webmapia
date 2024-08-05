@@ -1,13 +1,18 @@
 package nsl.webmapia.game.character.domain;
 
-import nsl.webmapia.game.member.domain.Member;
+import nsl.webmapia.game.gameoperation.domain.GameInstance;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 public class Templar extends Character {
 
-    public Templar(Member member) {
-        super(member);
+    @Deprecated
+    public Templar(String memberId) {
+        super(memberId);
+    }
+
+    public Templar(String memberId, GameInstance gameInstance) {
+        super(memberId, gameInstance);
     }
 
     @Override

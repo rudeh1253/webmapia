@@ -1,13 +1,18 @@
 package nsl.webmapia.game.character.domain;
 
-import nsl.webmapia.game.member.domain.Member;
+import nsl.webmapia.game.gameoperation.domain.GameInstance;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 public class SecretSociety extends Character {
 
-    public SecretSociety(Member member) {
-        super(member);
+    @Deprecated
+    public SecretSociety(String memberId) {
+        super(memberId);
+    }
+
+    public SecretSociety(String memberId, GameInstance gameInstance) {
+        super(memberId, gameInstance);
     }
 
     @Override
