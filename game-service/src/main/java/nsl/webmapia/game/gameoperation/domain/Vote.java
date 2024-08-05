@@ -1,9 +1,9 @@
 package nsl.webmapia.game.gameoperation.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+
+import java.io.Serializable;
 
 /**
  * Class representing an instance of vote.
@@ -15,16 +15,8 @@ import lombok.ToString;
 @ToString
 public class Vote {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vote_id")
-    private Integer voteId;
-
-    @Column(name = "round")
-    private int round;
-
-    @Column(name = "voter_id")
-    private String voterId;
+    @EmbeddedId
+    private VoteId voteId;
 
     @Column(name = "target_id")
     private String targetId;
@@ -32,15 +24,36 @@ public class Vote {
     @Column(name = "vote_count")
     private int voteCount;
 
+    @MapsId("gameInstanceId")
     @ManyToOne
     @JoinColumn(name = "game_instance_id")
     private GameInstance gameInstance;
 
-    public Vote(int round, String voterId, String targetId, int voteCount, GameInstance gameInstance) {
-        this.round = round;
-        this.voterId = voterId;
+    public Vote(int round,
+                String voterId,
+                String targetId,
+                int voteCount,
+                GameInstance gameInstance) {
+        this.voteId = new VoteId(round, voterId, gameInstance.getGameInstanceId());
         this.targetId = targetId;
         this.voteCount = voteCount;
         this.gameInstance = gameInstance;
+    }
+
+    @Embeddable
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    @Getter
+    @ToString
+    public static class VoteId implements Serializable {
+
+        @Column(name = "round")
+        private int round;
+
+        @Column(name = "voter_id")
+        private String voterId;
+
+        private int gameInstanceId;
     }
 }

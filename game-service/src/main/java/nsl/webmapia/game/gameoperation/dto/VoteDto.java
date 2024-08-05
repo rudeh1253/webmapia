@@ -14,7 +14,7 @@ public class VoteDto {
 
     public static VoteDto of(Vote vote) {
         return VoteDto.builder()
-                .voterId(vote.getVoterId())
+                .voterId(vote.getVoteId().getVoterId())
                 .targetId(vote.getTargetId())
                 .voteCount(vote.getVoteCount())
                 .build();

@@ -19,6 +19,6 @@ public class SpringDataJpaVoteRepository implements VoteRepository {
 
     @Override
     public Set<Vote> findByGameInstanceAndRound(GameInstance gameInstance, int round) {
-        return null;
+        return this.voteJpaRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), round);
     }
 }

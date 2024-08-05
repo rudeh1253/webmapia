@@ -29,13 +29,12 @@ ALTER TABLE game_instance
 
 CREATE TABLE vote
 (
-    vote_id          INTEGER AUTO_INCREMENT,
     game_instance_id INTEGER      NOT NULL,
     round            INTEGER      NOT NULL,
     voter_id         VARCHAR(255) NOT NULL,
     target_id        VARCHAR(255) NOT NULL,
     vote_count       INTEGER      NOT NULL CHECK (vote_count > 0),
-    PRIMARY KEY (vote_id),
+    PRIMARY KEY (game_instance_id, round, voter_id),
     FOREIGN KEY (game_instance_id) REFERENCES game_instance (game_instance_id)
 );
 
