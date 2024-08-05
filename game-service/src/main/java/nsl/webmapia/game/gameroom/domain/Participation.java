@@ -27,5 +27,6 @@ public class Participation {
     public Participation(String participantId, GameRoom gameRoom) {
         this.participantId = participantId;
         this.gameRoom = gameRoom;
+        this.gameRoom.getParticipationList().add(this);
     }
 }

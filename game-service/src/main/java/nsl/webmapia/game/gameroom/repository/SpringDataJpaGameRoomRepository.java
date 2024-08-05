@@ -1,6 +1,7 @@
 package nsl.webmapia.game.gameroom.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.common.NumberConstants;
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
@@ -15,12 +16,14 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class SpringDataJpaGameRoomRepository implements GameRoomRepository {
     private final GameRoomJpaRepository jpaRepository;
 
     @Override
     public int save(GameRoom gameRoom) {
         GameRoom saved = this.jpaRepository.save(gameRoom);
+        log.debug("saved={}", saved);
         return saved.getRoomId();
     }
 

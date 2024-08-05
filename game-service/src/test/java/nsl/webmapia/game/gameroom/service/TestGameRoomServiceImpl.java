@@ -17,11 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,32 +61,24 @@ class TestGameRoomServiceImpl {
 
     @DisplayName("createRoom() - test concurrently")
     @Test
-    void createRoom() throws InterruptedException {
-        ExecutorService executorService = Executors.newCachedThreadPool();
-
+    void createRoom() {
         for (int i = 0; i < 1000; i++) {
-            int id = i;
-            executorService.submit(() -> {
-                String sampleHostId = "sample-member-" + id;
-                String sampleRoomName = "sample-room-" + id;
-                GameRoomCreationResponseDto dto = this.gameRoomService.createRoom(sampleRoomName, sampleHostId);
+            String sampleHostId = "sample-member-" + i;
+            String sampleRoomName = "sample-room-" + i;
+            GameRoomCreationResponseDto dto = this.gameRoomService.createRoom(sampleRoomName, sampleHostId);
 
-                log.info("result={}", dto);
+            log.info("result={}", dto);
 
-                assertThat(dto.getRoomId()).isNotZero();
-                assertThat(dto.getRoomName()).isEqualTo(sampleRoomName);
-                assertThat(dto.getHostMemberId()).isEqualTo(sampleHostId);
-            });
+            assertThat(dto.getRoomId()).isNotZero();
+            assertThat(dto.getRoomName()).isEqualTo(sampleRoomName);
+            assertThat(dto.getHostMemberId()).isEqualTo(sampleHostId);
         }
-
-        executorService.shutdown();
-        executorService.awaitTermination(5, TimeUnit.MINUTES);
     }
 
     @DisplayName("getGameRoom() - test concurrently")
     @Test
-    void getGameRoom_withConcurrency() throws InterruptedException {
-        Map<Integer, GameRoomCreationResponseDto> indexAndGameRoomCreationResponseDtoMap = new ConcurrentHashMap<>();
+    void getGameRoom_withConcurrency() {
+        Map<Integer, GameRoomCreationResponseDto> indexAndGameRoomCreationResponseDtoMap = new HashMap<>();
         for (int i = 0; i < 1000; i++) {
             String sampleHostId = "sample-member-" + i;
             String sampleRoomName = "sample-room-" + i;
@@ -96,22 +86,16 @@ class TestGameRoomServiceImpl {
             indexAndGameRoomCreationResponseDtoMap.put(i, dto);
         }
 
-        ExecutorService executorService = Executors.newCachedThreadPool();
-
         for (final Integer idx : indexAndGameRoomCreationResponseDtoMap.keySet()) {
-            executorService.submit(() -> {
-                GameRoomCreationResponseDto creationInfo = indexAndGameRoomCreationResponseDtoMap.get(idx);
-                GameRoomDto resultDto = this.gameRoomService.getGameRoom(creationInfo.getRoomId());
+            GameRoomCreationResponseDto creationInfo = indexAndGameRoomCreationResponseDtoMap.get(idx);
+            GameRoomDto resultDto = this.gameRoomService.getGameRoom(creationInfo.getRoomId());
 
-                assertThat(resultDto.getRoomId()).isEqualTo(creationInfo.getRoomId());
-                assertThat(resultDto.getRoomName()).isEqualTo(creationInfo.getRoomName());
-                assertThat(resultDto.getHostMemberId()).isEqualTo(creationInfo.getHostMemberId());
-                assertThat(resultDto.getCreationTime()).isEqualTo(creationInfo.getCreationTime());
-                assertThat(resultDto.getParticipantIds()).hasSize(1);
-                assertThat(resultDto.getParticipantIds().get(0)).isEqualTo("sample-member-" + idx);
-            });
+            assertThat(resultDto.getRoomId()).isEqualTo(creationInfo.getRoomId());
+            assertThat(resultDto.getRoomName()).isEqualTo(creationInfo.getRoomName());
+            assertThat(resultDto.getHostMemberId()).isEqualTo(creationInfo.getHostMemberId());
+            assertThat(resultDto.getCreationTime()).isEqualTo(creationInfo.getCreationTime());
+            assertThat(resultDto.getParticipantIds()).hasSize(1);
+            assertThat(resultDto.getParticipantIds().get(0)).isEqualTo("sample-member-" + idx);
         }
-        executorService.shutdown();
-        executorService.awaitTermination(5, TimeUnit.MINUTES);
     }
 }

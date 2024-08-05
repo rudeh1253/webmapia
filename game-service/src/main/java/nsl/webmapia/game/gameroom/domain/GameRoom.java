@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "participationList")
 public class GameRoom {
 
     @Id
@@ -33,7 +34,7 @@ public class GameRoom {
     private LocalDateTime creationTime;
 
     @OneToMany(mappedBy = "gameRoom")
-    private List<Participation> participationList;
+    private List<Participation> participationList = new ArrayList<>();
 
     public GameRoom(String roomName,
                     String hostMemberId,
