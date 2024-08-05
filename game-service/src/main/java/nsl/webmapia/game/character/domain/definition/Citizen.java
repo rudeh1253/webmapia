@@ -1,19 +1,14 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.domain.definition;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.domain.CharacterDefinition;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
+import org.springframework.stereotype.Component;
 
-public class Citizen extends Character {
-
-    @Deprecated
-    public Citizen(String memberId) {
-        super(memberId);
-    }
-
-    public Citizen(String memberId, GameInstance gameInstance) {
-        super(memberId, gameInstance);
-    }
+@Component
+public class Citizen implements CharacterDefinition {
 
     /**
      * Citizen doesn't have any skill.

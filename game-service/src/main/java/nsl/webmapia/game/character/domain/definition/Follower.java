@@ -1,20 +1,15 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.domain.definition;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.domain.CharacterDefinition;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
+import org.springframework.stereotype.Component;
 
-public class Follower extends Character {
+@Component
+public class Follower implements CharacterDefinition {
     private int skillCountLeft = 1;
-
-    @Deprecated
-    public Follower(String memberId) {
-        super(memberId);
-    }
-
-    public Follower(String memberId, GameInstance gameInstance) {
-        super(memberId, gameInstance);
-    }
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {

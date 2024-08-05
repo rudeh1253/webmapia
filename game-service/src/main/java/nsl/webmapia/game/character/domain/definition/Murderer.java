@@ -1,20 +1,15 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.domain.definition;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.domain.CharacterDefinition;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
+import org.springframework.stereotype.Component;
 
-public class Murderer extends Character {
+@Component
+public class Murderer implements CharacterDefinition {
     private int leftSkillCount = 1;
-
-    @Deprecated
-    public Murderer(String memberId) {
-        super(memberId);
-    }
-
-    public Murderer(String memberId, GameInstance gameInstance) {
-        super(memberId, gameInstance);
-    }
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {
