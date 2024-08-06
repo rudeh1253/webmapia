@@ -1,5 +1,8 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.service;
 
+import nsl.webmapia.game.character.domain.Character;
+import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 import nsl.webmapia.game.skill.exception.UnsupportedSkillTypeException;
@@ -11,12 +14,12 @@ import static nsl.webmapia.game.character.domain.CharacterCode.*;
 import static nsl.webmapia.game.skill.domain.SkillType.*;
 
 /**
- * A proxy object of Character object.
+ * A proxy object for CharacterDefinitionService implementation.
  * It provides additional function to check if the character supports the skill of type
  * given as a parameter of getSkillOfType method.
  * @author PGD
  */
-public class CheckedCharacterProxy extends Character {
+public class CheckedCharacterDefinitionServiceProxy implements CharacterDefinitionService {
     private static final Map<CharacterCode, Set<SkillType>> SKILL_TYPE_SUPPORT_LIST = Map.ofEntries(
             Map.entry(WOLF, Set.of(KILL, BEHEAD)),
             Map.entry(BETRAYER, Set.of(ENTER_WOLF_CHAT, INVESTIGATE_DEAD_CHARACTER)),
@@ -33,11 +36,10 @@ public class CheckedCharacterProxy extends Character {
             Map.entry(HUMAN_MOUSE, Set.of())
     );
 
-    private final Character character;
+    private final CharacterDefinitionService proxyFor;
 
-    public CheckedCharacterProxy(Character character) {
-        super(null);
-        this.character = character;
+    public CheckedCharacterDefinitionServiceProxy(CharacterDefinitionService proxyFor) {
+        this.proxyFor = proxyFor;
     }
 
     @Override
@@ -45,24 +47,24 @@ public class CheckedCharacterProxy extends Character {
         if (isSkillNotSupported(skillType)) {
             throw new UnsupportedSkillTypeException(
                     String.format("%s doesn't support given skill type: %s",
-                            this.character.getCharacterCode(),
+                            this.proxyFor.getCharacterCode(),
                             skillType)
             );
         }
-        return this.character.getSkillOfType(skillType);
+        return this.proxyFor.getSkillOfType(skillType);
     }
 
     private boolean isSkillNotSupported(SkillType skillType) {
-        return !SKILL_TYPE_SUPPORT_LIST.get(this.character.getCharacterCode()).contains(skillType);
+        return !SKILL_TYPE_SUPPORT_LIST.get(this.proxyFor.getCharacterCode()).contains(skillType);
     }
 
     @Override
     public CharacterCode getCharacterCode() {
-        return this.character.getCharacterCode();
+        return this.proxyFor.getCharacterCode();
     }
 
     @Override
     public Faction getFaction() {
-        return this.character.getFaction();
+        return this.proxyFor.getFaction();
     }
 }

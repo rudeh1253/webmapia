@@ -1,8 +1,8 @@
 package nsl.webmapia.game.gameroom.dto;
 
 import lombok.*;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
-import nsl.webmapia.game.gameroom.domain.Participation;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
+import nsl.webmapia.game.gameroom.entity.Participation;
 
 import java.time.LocalDateTime;
 import java.util.List;

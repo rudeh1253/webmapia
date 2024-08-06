@@ -1,6 +1,7 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.service;
 
 import lombok.RequiredArgsConstructor;
+import nsl.webmapia.game.character.domain.CharacterCode;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -11,17 +12,17 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class CharacterDefinitionFactory {
-    private final List<CharacterDefinition> characterDefinitions;
-    private final Map<CharacterCode, CharacterDefinition> characterCodeToCharacterDefinition = new HashMap<>();
+public class CharacterDefinitionFactoryService {
+    private final List<CharacterDefinitionService> characterDefinitionServices;
+    private final Map<CharacterCode, CharacterDefinitionService> characterCodeToCharacterDefinition = new HashMap<>();
 
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
-        characterDefinitions.forEach((cd) ->
-                this.characterCodeToCharacterDefinition.put(cd.getCharacterCode(), cd));
+        characterDefinitionServices.forEach((cd) ->
+                this.characterCodeToCharacterDefinition.put(cd.getCharacterCode(), new CheckedCharacterDefinitionServiceProxy(cd)));
     }
 
-    public CharacterDefinition getCharacterDefinitionOfCharacterCode(CharacterCode characterCode) {
+    public CharacterDefinitionService getCharacterDefinitionOfCharacterCode(CharacterCode characterCode) {
         if (isCharacterCodeNotContained(characterCode)) {
             throw new IllegalArgumentException("No such character code=" + characterCode.name());
         }

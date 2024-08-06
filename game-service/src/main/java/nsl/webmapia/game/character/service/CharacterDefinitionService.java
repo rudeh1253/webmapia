@@ -1,9 +1,11 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.service;
 
+import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
-public interface CharacterDefinition {
+public interface CharacterDefinitionService {
 
     /**
      * Activate skill based on the character.

@@ -1,6 +1,6 @@
 package nsl.webmapia.game.gameoperation.repository;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 
 import java.util.Map;
 import java.util.Optional;

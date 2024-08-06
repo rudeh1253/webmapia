@@ -2,12 +2,13 @@ package nsl.webmapia.game.character.domain;
 
 import lombok.Getter;
 import lombok.ToString;
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 @Getter
 @ToString
+@Deprecated
 public abstract class Character {
     private final String memberId;
 

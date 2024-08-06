@@ -1,7 +1,8 @@
-package nsl.webmapia.game.gameoperation.domain;
+package nsl.webmapia.game.gameoperation.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 
 import java.io.Serializable;
 

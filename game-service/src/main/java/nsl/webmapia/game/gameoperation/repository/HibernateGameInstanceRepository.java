@@ -2,7 +2,7 @@ package nsl.webmapia.game.gameoperation.repository;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

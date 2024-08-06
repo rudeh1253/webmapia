@@ -1,8 +1,8 @@
 package nsl.webmapia.game.gameoperation.repository;
 
 import lombok.RequiredArgsConstructor;
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
-import nsl.webmapia.game.gameoperation.domain.Vote;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
+import nsl.webmapia.game.gameoperation.entity.Vote;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;

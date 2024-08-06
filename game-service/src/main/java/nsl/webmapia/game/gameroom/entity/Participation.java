@@ -1,4 +1,4 @@
-package nsl.webmapia.game.gameroom.domain;
+package nsl.webmapia.game.gameroom.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

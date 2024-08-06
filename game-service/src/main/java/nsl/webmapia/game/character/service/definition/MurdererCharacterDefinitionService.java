@@ -1,30 +1,25 @@
-package nsl.webmapia.game.character.domain.definition;
+package nsl.webmapia.game.character.service.definition;
 
 import nsl.webmapia.game.character.domain.CharacterCode;
-import nsl.webmapia.game.character.domain.CharacterDefinition;
+import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
-
 @Component
-public class Detective implements CharacterDefinition {
-    private static final Set<CharacterCode> SKILL_TARGET_CHARACTERS = Set.of(
-            CharacterCode.BETRAYER,
-            CharacterCode.FOLLOWER
-    );
+public class MurdererCharacterDefinitionService implements CharacterDefinitionService {
+    private int leftSkillCount = 1;
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {
         return new SkillInfo(skillType, (act, tar, activatedSkillsToTarget) ->
-                SKILL_TARGET_CHARACTERS.contains(tar.getCharacterCode()));
+                leftSkillCount-- > 0 && tar.getCharacterCode() != CharacterCode.HUMAN_MOUSE);
     }
 
     @Override
     public CharacterCode getCharacterCode() {
-        return CharacterCode.DETECTIVE;
+        return CharacterCode.MURDERER;
     }
 
     @Override
