@@ -1,19 +1,14 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.service.definition;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.service.CharacterDefinitionService;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
+import org.springframework.stereotype.Component;
 
-public class SecretSociety extends Character {
-
-    @Deprecated
-    public SecretSociety(String memberId) {
-        super(memberId);
-    }
-
-    public SecretSociety(String memberId, GameInstance gameInstance) {
-        super(memberId, gameInstance);
-    }
+@Component
+public class SecretSocietyCharacterDefinitionService implements CharacterDefinitionService {
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {

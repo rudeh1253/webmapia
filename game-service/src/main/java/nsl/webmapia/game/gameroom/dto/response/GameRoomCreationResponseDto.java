@@ -1,7 +1,7 @@
 package nsl.webmapia.game.gameroom.dto.response;
 
 import lombok.*;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 
 import java.time.LocalDateTime;
 

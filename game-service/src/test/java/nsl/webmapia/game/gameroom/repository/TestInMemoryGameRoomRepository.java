@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.common.NumberConstants;
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

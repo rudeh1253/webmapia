@@ -1,16 +1,15 @@
 package nsl.webmapia.game.gameoperation.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
-import nsl.webmapia.game.gameoperation.domain.Vote;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameoperation.entity.Vote;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.repository.SpringDataJpaGameRoomRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;

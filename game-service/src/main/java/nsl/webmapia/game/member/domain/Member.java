@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 
 /**
  * This is a domain class representing a member.

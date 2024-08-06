@@ -1,25 +1,20 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.service.definition;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.service.CharacterDefinitionService;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-public class Detective extends Character {
+@Component
+public class DetectiveCharacterDefinitionService implements CharacterDefinitionService {
     private static final Set<CharacterCode> SKILL_TARGET_CHARACTERS = Set.of(
             CharacterCode.BETRAYER,
             CharacterCode.FOLLOWER
     );
-
-    @Deprecated
-    public Detective(String memberId) {
-        super(memberId);
-    }
-
-    public Detective(String memberId, GameInstance gameInstance) {
-        super(memberId, gameInstance);
-    }
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {

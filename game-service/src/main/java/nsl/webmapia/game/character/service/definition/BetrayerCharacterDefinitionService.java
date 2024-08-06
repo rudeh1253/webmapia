@@ -1,19 +1,14 @@
-package nsl.webmapia.game.character.domain;
+package nsl.webmapia.game.character.service.definition;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.service.CharacterDefinitionService;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
+import org.springframework.stereotype.Component;
 
-public class Betrayer extends Character {
-
-    @Deprecated
-    public Betrayer(String memberId) {
-        super(memberId);
-    }
-
-    public Betrayer(String memberId, GameInstance gameInstance) {
-        super(memberId, gameInstance);
-    }
+@Component
+public class BetrayerCharacterDefinitionService implements CharacterDefinitionService {
 
     /**
      * Activate one of skill of type, either SkillType.ENTER_WOLF_CHAT or SkillType.INVESTIGATE_DEAD_CHARACTER.

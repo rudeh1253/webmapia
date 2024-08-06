@@ -1,6 +1,6 @@
 package nsl.webmapia.game.gameoperation.repository;
 
-import nsl.webmapia.game.gameoperation.domain.Vote;
+import nsl.webmapia.game.gameoperation.entity.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,7 +1,7 @@
 package nsl.webmapia.game.gameoperation.repository;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
-import nsl.webmapia.game.gameoperation.domain.Vote;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
+import nsl.webmapia.game.gameoperation.entity.Vote;
 
 import java.util.Set;
 

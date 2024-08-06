@@ -2,7 +2,7 @@ package nsl.webmapia.game.gameroom.repository;
 
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 
 import java.util.Optional;
 

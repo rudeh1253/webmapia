@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.common.NumberConstants;
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.repository.jparepository.GameRoomJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

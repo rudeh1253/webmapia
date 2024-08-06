@@ -1,8 +1,8 @@
 package nsl.webmapia.game.gameoperation.repository;
 
-import nsl.webmapia.game.gameoperation.domain.GameInstance;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

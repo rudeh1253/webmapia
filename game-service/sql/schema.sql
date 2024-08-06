@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS character_assignment;
 DROP TABLE IF EXISTS participation;
 DROP TABLE IF EXISTS activated_skills;
 DROP TABLE IF EXISTS vote;
@@ -54,6 +55,17 @@ CREATE TABLE participation
     participation_id INTEGER AUTO_INCREMENT,
     participant_id   VARCHAR(255),
     game_room_id     INTEGER NOT NULL,
+    disconnected     BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (participation_id),
     FOREIGN KEY (game_room_id) REFERENCES game_room (room_id)
+);
+
+CREATE TABLE character_assignment
+(
+    assignment_id    INTEGER PRIMARY KEY AUTO_INCREMENT,
+    game_instance_id INTEGER      NOT NULL,
+    member_id        VARCHAR(255) NOT NULL,
+    character_code   ENUM ( 'WOLF', 'BETRAYER', 'FOLLOWER', 'PREDICTOR', 'GUARD', 'MEDIUMSHIP', 'DETECTIVE', 'SECRET_SOCIETY', 'NOBILITY', 'SOLDIER', 'TEMPLAR', 'CITIZEN', 'MURDERER', 'HUMAN_MOUSE' ),
+    life             INTEGER      NOT NULL DEFAULT 1,
+    FOREIGN KEY (game_instance_id) REFERENCES game_instance (game_instance_id)
 );
