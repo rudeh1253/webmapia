@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Deprecated
 public class InMemoryGameInstanceRepository implements GameInstanceRepository {
     private static final Map<Integer, GameInstance> indexedById = new ConcurrentHashMap<>();
 
@@ -20,6 +21,16 @@ public class InMemoryGameInstanceRepository implements GameInstanceRepository {
     @Override
     public Optional<GameInstance> findById(int id) {
         return Optional.ofNullable(indexedById.get(id));
+    }
+
+    @Override
+    public Optional<GameInstance> findAliveGameInstanceByGameRoomId(int gameRoomId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean updateByGameRoomId(GameInstanceUpdateDto dto) {
+        throw new UnsupportedOperationException();
     }
 
     public void clear() {

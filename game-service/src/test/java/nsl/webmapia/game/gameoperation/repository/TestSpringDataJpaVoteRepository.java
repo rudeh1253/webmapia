@@ -1,8 +1,8 @@
 package nsl.webmapia.game.gameoperation.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.entity.Vote;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.repository.SpringDataJpaGameRoomRepository;
@@ -15,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @Slf4j
 @SpringBootTest
@@ -46,7 +47,7 @@ class TestSpringDataJpaVoteRepository {
         assertThatNoException().isThrownBy(() -> this.voteRepository.save(vote));
     }
 
-    @DisplayName("findByGameInstanceAndRound() - find correctly")
+    @DisplayName("findByGameInstanceIdAndRound() - find correctly")
     @Test
     void findByGameInstanceAndRound() {
         GameInstance gameInstance = insertSampleGameRoomAndGameInstance();
@@ -69,7 +70,7 @@ class TestSpringDataJpaVoteRepository {
         );
         this.voteRepository.save(vote2);
 
-        Set<Vote> result = this.voteRepository.findByGameInstanceAndRound(gameInstance, 1);
+        Set<Vote> result = this.voteRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), 1);
 
         result.forEach((v) -> log.info("v={}", v));
 

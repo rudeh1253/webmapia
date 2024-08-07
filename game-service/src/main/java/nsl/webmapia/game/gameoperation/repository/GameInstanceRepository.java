@@ -15,11 +15,29 @@ public interface GameInstanceRepository {
     void save(GameInstance gameInstance);
 
     /**
-     * Find GameInstance instance given the identifier. The identifier
-     * is the same as that of GameRoom associated to the GameInstance.
+     * Find GameInstance instance given the identifier.
      *
      * @param id of GameInstance
      * @return a GameInstance instance whose identifier is the same as id wrapped with java.util.Optional
      */
     Optional<GameInstance> findById(int id);
+
+    /**
+     * Find GameInstance instance given gameRoomId. The GameInstance returned hasn't been
+     * terminated. i.e. endTime hasn't been set (means, null).
+     *
+     * @param gameRoomId of the gameInstance belongs to
+     * @return GameInstance object whose endTime is null
+     * @throws IllegalStateException when there are more than 1 GameInstance instances each of which has null endTime.
+     */
+    Optional<GameInstance> findAliveGameInstanceByGameRoomId(int gameRoomId) throws IllegalStateException;
+
+    /**
+     * Update given gameRoomId.
+     *
+     * @param dto containing data to be. Fields of null are ignored
+     * @return true if GameInstance of gameRoomId exists such that it succeeded to
+     * update GameInstance, otherwise false
+     */
+    boolean updateByGameRoomId(GameInstanceUpdateDto dto);
 }

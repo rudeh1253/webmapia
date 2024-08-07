@@ -1,6 +1,5 @@
 package nsl.webmapia.game.character.service;
 
-import nsl.webmapia.game.character.domain.Character;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
@@ -10,7 +9,6 @@ import nsl.webmapia.game.skill.exception.UnsupportedSkillTypeException;
 import java.util.Map;
 import java.util.Set;
 
-import static nsl.webmapia.game.character.domain.CharacterCode.*;
 import static nsl.webmapia.game.skill.domain.SkillType.*;
 
 /**
@@ -21,19 +19,19 @@ import static nsl.webmapia.game.skill.domain.SkillType.*;
  */
 public class CheckedCharacterDefinitionServiceProxy implements CharacterDefinitionService {
     private static final Map<CharacterCode, Set<SkillType>> SKILL_TYPE_SUPPORT_LIST = Map.ofEntries(
-            Map.entry(WOLF, Set.of(KILL, BEHEAD)),
-            Map.entry(BETRAYER, Set.of(ENTER_WOLF_CHAT, INVESTIGATE_DEAD_CHARACTER)),
-            Map.entry(FOLLOWER, Set.of(ENTER_WOLF_CHAT, INVESTIGATE_ALIVE_CHARACTER)),
-            Map.entry(PREDICTOR, Set.of(INVESTIGATE_ALIVE_CHARACTER)),
-            Map.entry(MEDIUMSHIP, Set.of(INVESTIGATE_DEAD_CHARACTER)),
-            Map.entry(DETECTIVE, Set.of(INVESTIGATE_ALIVE_CHARACTER)),
-            Map.entry(SECRET_SOCIETY, Set.of()),
-            Map.entry(NOBILITY, Set.of()),
-            Map.entry(SOLDIER, Set.of()),
-            Map.entry(TEMPLAR, Set.of()),
-            Map.entry(CITIZEN, Set.of()),
-            Map.entry(MURDERER, Set.of(KILL)),
-            Map.entry(HUMAN_MOUSE, Set.of())
+            Map.entry(CharacterCode.WOLF, Set.of(KILL, BEHEAD)),
+            Map.entry(CharacterCode.BETRAYER, Set.of(ENTER_WOLF_CHAT, INVESTIGATE_DEAD_CHARACTER)),
+            Map.entry(CharacterCode.FOLLOWER, Set.of(ENTER_WOLF_CHAT, INVESTIGATE_ALIVE_CHARACTER)),
+//            Map.entry(CharacterCode.PREDICTOR, Set.of(INVESTIGATE_ALIVE_CHARACTER)),
+//            Map.entry(CharacterCode.MEDIUMSHIP, Set.of(INVESTIGATE_DEAD_CHARACTER)),
+            Map.entry(CharacterCode.DETECTIVE, Set.of(INVESTIGATE_ALIVE_CHARACTER)),
+            Map.entry(CharacterCode.SECRET_SOCIETY, Set.of()),
+            Map.entry(CharacterCode.NOBILITY, Set.of()),
+            Map.entry(CharacterCode.SOLDIER, Set.of()),
+            Map.entry(CharacterCode.TEMPLAR, Set.of()),
+            Map.entry(CharacterCode.CITIZEN, Set.of()),
+            Map.entry(CharacterCode.MURDERER, Set.of(KILL)),
+            Map.entry(CharacterCode.HUMAN_MOUSE, Set.of())
     );
 
     private final CharacterDefinitionService proxyFor;

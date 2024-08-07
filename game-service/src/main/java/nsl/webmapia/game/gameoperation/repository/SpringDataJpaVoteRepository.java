@@ -1,7 +1,6 @@
 package nsl.webmapia.game.gameoperation.repository;
 
 import lombok.RequiredArgsConstructor;
-import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.entity.Vote;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +17,7 @@ public class SpringDataJpaVoteRepository implements VoteRepository {
     }
 
     @Override
-    public Set<Vote> findByGameInstanceAndRound(GameInstance gameInstance, int round) {
-        return this.voteJpaRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), round);
+    public Set<Vote> findByGameInstanceIdAndRound(int gameInstanceId, int round) {
+        return this.voteJpaRepository.findByGameInstanceIdAndRound(gameInstanceId, round);
     }
 }
