@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
 import nsl.webmapia.game.common.SystemMessageType;
-import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.dto.VoteDto;
 import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
 import nsl.webmapia.game.gameoperation.dto.response.PhaseResultResponseDto;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
+import nsl.webmapia.game.gameoperation.repository.VoteRepository;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.service.GameRoomService;
@@ -27,6 +28,7 @@ import java.util.List;
 @Transactional
 public class GameServiceImpl implements GameService {
     private final GameInstanceRepository gameInstanceRepository;
+    private final VoteRepository voteRepository;
     private final GameRoomService gameRoomService;
     private final MessageSource messageSource;
 

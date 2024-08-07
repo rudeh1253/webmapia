@@ -1,6 +1,5 @@
 package nsl.webmapia.game.character.service;
 
-import nsl.webmapia.game.character.domain.Character;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;

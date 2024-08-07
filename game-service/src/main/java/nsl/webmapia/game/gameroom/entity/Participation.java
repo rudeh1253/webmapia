@@ -3,13 +3,11 @@ package nsl.webmapia.game.gameroom.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "participation")
 @NoArgsConstructor
-@Setter
 @Getter
 @ToString
 public class Participation {
@@ -23,7 +21,7 @@ public class Participation {
     private String participantId;
 
     @Column(name = "disconnected")
-    private boolean disconnected;
+    private boolean disconnected = false;
 
     @JoinColumn(name = "game_room_id")
     @ManyToOne
@@ -33,5 +31,9 @@ public class Participation {
         this.participantId = participantId;
         this.gameRoom = gameRoom;
         this.gameRoom.getParticipationList().add(this);
+    }
+
+    public void setDisconnected(boolean disconnected) {
+        this.disconnected = disconnected;
     }
 }

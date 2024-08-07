@@ -17,11 +17,11 @@ CREATE TABLE game_room
 CREATE TABLE game_instance
 (
     game_instance_id INTEGER AUTO_INCREMENT,
-    room_id          INTEGER,
+    room_id          INTEGER  NOT NULL,
     round            INTEGER  NOT NULL CHECK (round > 0),
     start_time       DATETIME NOT NULL,
     end_time         DATETIME,
-    game_phase       ENUM ('START', 'NIGHT', 'DAYTIME', 'DISCUSSION', 'VOTE'),
+    game_phase       ENUM ('START', 'NIGHT', 'DAYTIME', 'DISCUSSION', 'VOTE') NOT NULL,
     PRIMARY KEY (game_instance_id)
 );
 
