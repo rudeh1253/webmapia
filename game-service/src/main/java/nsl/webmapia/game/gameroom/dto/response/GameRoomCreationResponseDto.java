@@ -1,7 +1,7 @@
 package nsl.webmapia.game.gameroom.dto.response;
 
 import lombok.*;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +19,7 @@ public class GameRoomCreationResponseDto {
         return GameRoomCreationResponseDto.builder()
                 .roomId(newGameRoom.getRoomId())
                 .roomName(newGameRoom.getRoomName())
-                .hostMemberId(newGameRoom.getHostMember().getMemberId())
+                .hostMemberId(newGameRoom.getHostMemberId())
                 .creationTime(newGameRoom.getCreationTime())
                 .build();
     }

@@ -1,26 +1,34 @@
 package nsl.webmapia.game.character.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import nsl.webmapia.game.gameoperation.domain.Vote;
-import nsl.webmapia.game.member.domain.Member;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 @Getter
 @ToString
+@Deprecated
 public abstract class Character {
-    private final Member member;
+    private final String memberId;
 
     protected boolean dead;
 
     private boolean disconnected;
+    private GameInstance gameInstance;
 
-    public Character(Member member) {
+    @Deprecated
+    public Character(String memberId) {
         this.dead = false;
-        this.member = member;
+        this.memberId = memberId;
         this.disconnected = false;
+    }
+
+    public Character(String memberId, GameInstance gameInstance) {
+        this.dead = false;
+        this.memberId = memberId;
+        this.disconnected = false;
+        this.gameInstance = gameInstance;
     }
 
     /**
@@ -69,7 +77,11 @@ public abstract class Character {
         return true;
     }
 
-    public Vote vote(Member target) {
-        return new Vote(this.member, target, 1);
+    public boolean isDisconnected() {
+        return this.disconnected;
+    }
+
+    public void onDisconnected() {
+        this.disconnected = true;
     }
 }

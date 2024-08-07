@@ -20,6 +20,6 @@ import java.util.List;
 public class PageWrapper<D> {
     private final int page;
     private final int totalPage;
-    private final int totalElementCount;
+    private final long totalElementCount;
     private final List<D> elements;
 }

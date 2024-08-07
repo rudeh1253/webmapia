@@ -3,7 +3,7 @@ package nsl.webmapia.game.gameroom.repository;
 import nsl.webmapia.game.common.NumberConstants;
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
-import nsl.webmapia.game.gameroom.domain.GameRoom;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * The default repository registered if there doesn't exist any
@@ -106,8 +105,8 @@ public class InMemoryGameRoomRepository implements GameRoomRepository {
         if (dto.getRoomName() != null) {
             fromStore.setRoomName(dto.getRoomName());
         }
-        if (dto.getHostMember() != null) {
-            fromStore.setHostMember(dto.getHostMember());
+        if (dto.getHostMemberId() != null) {
+            fromStore.setHostMemberId(dto.getHostMemberId());
         }
         return true;
     }
