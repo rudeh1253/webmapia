@@ -28,4 +28,8 @@ public interface CharacterDefinitionService {
      * @return Faction code from enum.
      */
     Faction getFaction();
+
+    default int getVoteCount() {
+        return 1;
+    }
 }

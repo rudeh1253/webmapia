@@ -17,9 +17,9 @@ CREATE TABLE game_room
 CREATE TABLE game_instance
 (
     game_instance_id INTEGER AUTO_INCREMENT,
-    room_id          INTEGER  NOT NULL,
-    round            INTEGER  NOT NULL CHECK (round > 0),
-    start_time       DATETIME NOT NULL,
+    room_id          INTEGER                                                  NOT NULL,
+    round            INTEGER                                                  NOT NULL CHECK (round > 0),
+    start_time       DATETIME                                                 NOT NULL,
     end_time         DATETIME,
     game_phase       ENUM ('START', 'NIGHT', 'DAYTIME', 'DISCUSSION', 'VOTE') NOT NULL,
     PRIMARY KEY (game_instance_id)
@@ -65,7 +65,7 @@ CREATE TABLE character_assignment
     assignment_id    INTEGER PRIMARY KEY AUTO_INCREMENT,
     game_instance_id INTEGER      NOT NULL,
     member_id        VARCHAR(255) NOT NULL,
-    character_code   ENUM ( 'WOLF', 'BETRAYER', 'FOLLOWER', 'PREDICTOR', 'GUARD', 'MEDIUMSHIP', 'DETECTIVE', 'SECRET_SOCIETY', 'NOBILITY', 'SOLDIER', 'TEMPLAR', 'CITIZEN', 'MURDERER', 'HUMAN_MOUSE' ),
-    life             INTEGER      NOT NULL DEFAULT 1,
+    character_code   INTEGER      NOT NULL,
+    life             INTEGER      DEFAULT 1,
     FOREIGN KEY (game_instance_id) REFERENCES game_instance (game_instance_id)
 );

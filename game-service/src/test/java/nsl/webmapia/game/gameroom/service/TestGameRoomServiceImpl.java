@@ -35,7 +35,8 @@ class TestGameRoomServiceImpl {
     @Autowired
     ParticipationRepository participationRepository;
 
-    GameRoomService gameRoomService;
+    @Autowired
+    GameRoomServiceImpl gameRoomServiceImpl;
 
     @BeforeAll
     static void globalInit() {
@@ -55,7 +56,7 @@ class TestGameRoomServiceImpl {
         if (this.gameRoomRepository instanceof InMemoryGameRoomRepository inMemoryGameRoomRepository) {
             inMemoryGameRoomRepository.clear();
         }
-        this.gameRoomService = new GameRoomServiceImpl(this.gameRoomRepository, this.participationRepository, this.memberService);
+        this.gameRoomServiceImpl = new GameRoomServiceImpl(this.gameRoomRepository, this.participationRepository, this.memberService);
     }
 
     @DisplayName("createRoom() - test concurrently")
@@ -64,7 +65,7 @@ class TestGameRoomServiceImpl {
         for (int i = 0; i < 1000; i++) {
             String sampleHostId = "sample-member-" + i;
             String sampleRoomName = "sample-room-" + i;
-            GameRoomCreationResponseDto dto = this.gameRoomService.createRoom(sampleRoomName, sampleHostId);
+            GameRoomCreationResponseDto dto = this.gameRoomServiceImpl.createRoom(sampleRoomName, sampleHostId);
 
             log.info("result={}", dto);
 
@@ -81,13 +82,13 @@ class TestGameRoomServiceImpl {
         for (int i = 0; i < 1000; i++) {
             String sampleHostId = "sample-member-" + i;
             String sampleRoomName = "sample-room-" + i;
-            GameRoomCreationResponseDto dto = this.gameRoomService.createRoom(sampleRoomName, sampleHostId);
+            GameRoomCreationResponseDto dto = this.gameRoomServiceImpl.createRoom(sampleRoomName, sampleHostId);
             indexAndGameRoomCreationResponseDtoMap.put(i, dto);
         }
 
         for (final Integer idx : indexAndGameRoomCreationResponseDtoMap.keySet()) {
             GameRoomCreationResponseDto creationInfo = indexAndGameRoomCreationResponseDtoMap.get(idx);
-            GameRoomDto resultDto = this.gameRoomService.getGameRoom(creationInfo.getRoomId());
+            GameRoomDto resultDto = this.gameRoomServiceImpl.getGameRoom(creationInfo.getRoomId());
 
             assertThat(resultDto.getRoomId()).isEqualTo(creationInfo.getRoomId());
             assertThat(resultDto.getRoomName()).isEqualTo(creationInfo.getRoomName());

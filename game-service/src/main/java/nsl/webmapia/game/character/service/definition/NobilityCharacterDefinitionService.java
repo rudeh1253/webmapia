@@ -24,4 +24,9 @@ public class NobilityCharacterDefinitionService implements CharacterDefinitionSe
     public Faction getFaction() {
         return Faction.HUMAN;
     }
+
+    @Override
+    public int getVoteCount() {
+        return 2;
+    }
 }

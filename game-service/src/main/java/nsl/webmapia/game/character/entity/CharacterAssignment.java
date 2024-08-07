@@ -15,14 +15,14 @@ import nsl.webmapia.game.gameoperation.entity.GameInstance;
 public class CharacterAssignment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assignment_id")
     private Integer assignmentId;
 
     @Column(name = "member_id")
     private String memberId;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "character_code")
     private CharacterCode characterCode;
 

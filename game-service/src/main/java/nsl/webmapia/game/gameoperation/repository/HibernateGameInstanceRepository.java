@@ -15,7 +15,6 @@ import java.util.Optional;
 public class HibernateGameInstanceRepository implements GameInstanceRepository {
     private final EntityManager em;
 
-
     @Override
     public void save(GameInstance gameInstance) {
         if (gameInstance.getRound() < 1) {

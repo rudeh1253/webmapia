@@ -47,7 +47,7 @@ class TestSpringDataJpaVoteRepository {
         assertThatNoException().isThrownBy(() -> this.voteRepository.save(vote));
     }
 
-    @DisplayName("findByGameInstanceAndRound() - find correctly")
+    @DisplayName("findByGameInstanceIdAndRound() - find correctly")
     @Test
     void findByGameInstanceAndRound() {
         GameInstance gameInstance = insertSampleGameRoomAndGameInstance();
@@ -70,7 +70,7 @@ class TestSpringDataJpaVoteRepository {
         );
         this.voteRepository.save(vote2);
 
-        Set<Vote> result = this.voteRepository.findByGameInstanceAndRound(gameInstance, 1);
+        Set<Vote> result = this.voteRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), 1);
 
         result.forEach((v) -> log.info("v={}", v));
 
