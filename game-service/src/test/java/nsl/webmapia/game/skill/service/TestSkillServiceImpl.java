@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
+import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
@@ -111,9 +112,13 @@ class TestSkillServiceImpl {
     @DisplayName("getAvailableSkills - wolf - first attemption")
     @Test
     void getAvailableSkills_wolf_noSkillUsed() {
-        List<SkillType> wolfAvailable = this.skillService.getAvailableSkills(gameInstanceId, "host");
+        BaseSystemMessageResponseDto<List<SkillType>> wolfAvailable = this.skillService.getAvailableSkills(gameInstanceId, "host");
 
-        assertThat(wolfAvailable).containsExactlyInAnyOrder(SkillType.BEHEAD, SkillType.KILL);
+        log.info("wolfAvailable.content={}", wolfAvailable.getContent());
+
+        assertThat(wolfAvailable.getContent()).containsExactlyInAnyOrder(SkillType.BEHEAD, SkillType.KILL);
+        assertThat(wolfAvailable.getReceiverIds())
+                .containsExactly("host");
     }
 
     @DisplayName("getAvailableSkills - wolf - after activating BEHEAD")
@@ -129,8 +134,12 @@ class TestSkillServiceImpl {
         behead.setCharacterAssignment(characterAssignment);
         this.activatedSkillRepository.save(behead);
 
-        List<SkillType> expectedNoBeheadHere = this.skillService.getAvailableSkills(this.gameInstanceId, "host");
+        BaseSystemMessageResponseDto<List<SkillType>> expectedNoBeheadHere =
+                this.skillService.getAvailableSkills(this.gameInstanceId, "host");
 
-        assertThat(expectedNoBeheadHere).containsExactly(SkillType.KILL);
+        log.info("expectedNoBeheadHere.content={}", expectedNoBeheadHere.getContent());
+
+        assertThat(expectedNoBeheadHere.getContent()).containsExactly(SkillType.KILL);
+        assertThat(expectedNoBeheadHere.getReceiverIds()).containsExactly("host");
     }
 }

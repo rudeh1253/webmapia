@@ -1,5 +1,6 @@
 package nsl.webmapia.game.skill.service;
 
+import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 import java.util.List;
@@ -11,5 +12,5 @@ import java.util.List;
  */
 public interface SkillService {
 
-    List<SkillType> getAvailableSkills(int gameInstanceId, String memberId);
+    BaseSystemMessageResponseDto<List<SkillType>> getAvailableSkills(int gameRoomId, String memberId);
 }
