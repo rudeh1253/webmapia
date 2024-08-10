@@ -5,6 +5,8 @@ import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
+import java.util.List;
+
 public interface CharacterDefinitionService {
 
     /**
@@ -14,6 +16,10 @@ public interface CharacterDefinitionService {
      * @return information of activated skill.
      */
     SkillInfo getSkillOfType(SkillType skillType);
+
+    default List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
+        return List.of();
+    }
 
     /**
      * Return code of the character.

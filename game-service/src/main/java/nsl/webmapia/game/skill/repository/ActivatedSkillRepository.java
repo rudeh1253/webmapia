@@ -21,4 +21,12 @@ public interface ActivatedSkillRepository extends JpaRepository<ActivatedSkill, 
                 AND a.characterAssignment.assignmentId = :characterAssignmentId
             """)
     List<ActivatedSkill> findByGameInstanceIdAndCharacterAssignmentId(int gameInstanceId, int characterAssignmentId);
+
+    @Query("""
+            SELECT a FROM ActivatedSkill a
+            WHERE a.gameInstance.gameRoom.roomId = :gameRoomId
+                AND a.gameInstance.endTime IS NULL
+                AND a.characterAssignment.memberId = :memberId
+            """)
+    List<ActivatedSkill> findByGameRoomIdAndMemberId(int gameRoomId, String memberId);
 }

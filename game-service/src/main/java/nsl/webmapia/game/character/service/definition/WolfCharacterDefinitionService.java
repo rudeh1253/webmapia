@@ -1,15 +1,23 @@
 package nsl.webmapia.game.character.service.definition;
 
+import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
+import nsl.webmapia.game.skill.entity.ActivatedSkill;
+import nsl.webmapia.game.skill.repository.ActivatedSkillRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
+@RequiredArgsConstructor
 public class WolfCharacterDefinitionService implements CharacterDefinitionService {
     private int leftBeheadCount = 1;
+
+    private final ActivatedSkillRepository activatedSkillRepository;
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {
@@ -25,6 +33,17 @@ public class WolfCharacterDefinitionService implements CharacterDefinitionServic
                             && !activatedSkillsToTarget.contains(SkillType.GUARD));
             default -> new SkillInfo();
         };
+    }
+
+    @Override
+    public List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
+        return this.activatedSkillRepository.findByGameRoomIdAndMemberId(gameRoomId, memberId)
+                .stream()
+                .map(ActivatedSkill::getSkillType)
+                .toList()
+                .contains(SkillType.BEHEAD)
+                ? List.of(SkillType.KILL)
+                : List.of(SkillType.KILL, SkillType.BEHEAD);
     }
 
     @Override

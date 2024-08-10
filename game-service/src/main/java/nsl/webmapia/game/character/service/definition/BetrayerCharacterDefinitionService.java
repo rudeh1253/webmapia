@@ -7,6 +7,8 @@ import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class BetrayerCharacterDefinitionService implements CharacterDefinitionService {
 
@@ -29,6 +31,11 @@ public class BetrayerCharacterDefinitionService implements CharacterDefinitionSe
                     tar.isDead());
             default -> new SkillInfo();
         };
+    }
+
+    @Override
+    public List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
+        return List.of(SkillType.ENTER_WOLF_CHAT, SkillType.INVESTIGATE_DEAD_CHARACTER);
     }
 
     @Override

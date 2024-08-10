@@ -7,6 +7,7 @@ import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -20,6 +21,11 @@ public class DetectiveCharacterDefinitionService implements CharacterDefinitionS
     public SkillInfo getSkillOfType(SkillType skillType) {
         return new SkillInfo(skillType, (act, tar, activatedSkillsToTarget) ->
                 SKILL_TARGET_CHARACTERS.contains(tar.getCharacterCode()));
+    }
+
+    @Override
+    public List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
+        return List.of(SkillType.INVESTIGATE_ALIVE_CHARACTER);
     }
 
     @Override

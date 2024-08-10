@@ -31,7 +31,8 @@ public class CheckedCharacterDefinitionServiceProxy implements CharacterDefiniti
             Map.entry(CharacterCode.TEMPLAR, Set.of()),
             Map.entry(CharacterCode.CITIZEN, Set.of()),
             Map.entry(CharacterCode.MURDERER, Set.of(KILL)),
-            Map.entry(CharacterCode.HUMAN_MOUSE, Set.of())
+            Map.entry(CharacterCode.HUMAN_MOUSE, Set.of()),
+            Map.entry(CharacterCode.GUARD, Set.of(GUARD))
     );
 
     private final CharacterDefinitionService proxyFor;
