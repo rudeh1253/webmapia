@@ -15,7 +15,6 @@ import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
 import nsl.webmapia.game.skill.domain.SkillType;
 import nsl.webmapia.game.skill.entity.ActivatedSkill;
 import nsl.webmapia.game.skill.repository.ActivatedSkillRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,7 @@ import java.util.List;
 
 import static nsl.webmapia.game.character.domain.CharacterCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @Slf4j
 @SpringBootTest
@@ -125,13 +125,13 @@ class TestSkillServiceImpl {
     @Test
     void getAvailableSkills_wolf_afterUseBehead() {
         GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).orElseThrow();
-        CharacterAssignment characterAssignment = this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(this.gameInstanceId, "host").orElseThrow();
 
         ActivatedSkill behead = new ActivatedSkill();
         behead.setSkillType(SkillType.BEHEAD);
-        behead.setGameInstance(gameInstance);
         behead.setRound(gameInstance.getRound());
-        behead.setCharacterAssignment(characterAssignment);
+        behead.setActivatorId("host");
+        behead.setTargetId("member-1");
+        behead.setGameInstance(gameInstance);
         this.activatedSkillRepository.save(behead);
 
         BaseSystemMessageResponseDto<List<SkillType>> expectedNoBeheadHere =
@@ -141,5 +141,29 @@ class TestSkillServiceImpl {
 
         assertThat(expectedNoBeheadHere.getContent()).containsExactly(SkillType.KILL);
         assertThat(expectedNoBeheadHere.getReceiverIds()).containsExactly("host");
+    }
+
+    @DisplayName("activateSkill")
+    @Test
+    void activateSkill() {
+        GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).orElseThrow();
+        gameInstance.setGamePhase(GamePhase.NIGHT);
+        assertThatNoException()
+                .isThrownBy(() -> this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member-1", SkillType.KILL));
+    }
+
+    @DisplayName("After activate BEHEAD and get available skills")
+    @Test
+    void activateSkill_then_getAvailableSkills() {
+        GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).orElseThrow();
+        gameInstance.setGamePhase(GamePhase.NIGHT);
+        BaseSystemMessageResponseDto<List<SkillType>> firstAvailable = this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
+        assertThat(firstAvailable.getContent()).containsExactlyInAnyOrder(SkillType.KILL, SkillType.BEHEAD);
+        this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member-1", SkillType.BEHEAD);
+
+        BaseSystemMessageResponseDto<List<SkillType>> result = this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
+
+        assertThat(result.getContent()).doesNotContain(SkillType.BEHEAD);
+        assertThat(result.getContent()).containsExactly(SkillType.KILL);
     }
 }

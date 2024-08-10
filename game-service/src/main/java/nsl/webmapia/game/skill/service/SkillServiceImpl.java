@@ -9,11 +9,16 @@ import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.character.service.definition.WolfCharacterDefinitionService;
 import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
 import nsl.webmapia.game.common.SystemMessageType;
+import nsl.webmapia.game.gameoperation.domain.GamePhase;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
+import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.skill.domain.SkillType;
+import nsl.webmapia.game.skill.entity.ActivatedSkill;
 import nsl.webmapia.game.skill.repository.ActivatedSkillRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -22,6 +27,7 @@ public class SkillServiceImpl implements SkillService {
     private final ActivatedSkillRepository activatedSkillRepository;
     private final CharacterDefinitionFactoryService characterDefinitionFactory;
     private final CharacterAssignmentRepository characterAssignmentRepository;
+    private final GameInstanceRepository gameInstanceRepository;
 
     @Override
     public BaseSystemMessageResponseDto<List<SkillType>> getAvailableSkills(int gameRoomId, String memberId) {
@@ -41,5 +47,26 @@ public class SkillServiceImpl implements SkillService {
                 .systemMessageType(SystemMessageType.AVAILABLE_SKILLS)
                 .content(result)
                 .build();
+    }
+
+    @Override
+    public void activateSkill(int gameRoomId, String activatorId, String targetId, SkillType skillType)
+            throws IllegalStateException, NoSuchElementException {
+        GameInstance gameInstance = this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(gameRoomId)
+                .orElseThrow(NoSuchElementException::new);
+        if (isGameInstanceNotNight(gameInstance)) {
+            throw new IllegalStateException();
+        }
+        ActivatedSkill activatedSkill = new ActivatedSkill();
+        activatedSkill.setSkillType(skillType);
+        activatedSkill.setRound(gameInstance.getRound());
+        activatedSkill.setActivatorId(activatorId);
+        activatedSkill.setTargetId(targetId);
+        activatedSkill.setGameInstance(gameInstance);
+        this.activatedSkillRepository.save(activatedSkill);
+    }
+
+    private boolean isGameInstanceNotNight(GameInstance gameInstance) {
+        return gameInstance.getGamePhase() != GamePhase.NIGHT;
     }
 }

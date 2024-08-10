@@ -37,7 +37,7 @@ public class WolfCharacterDefinitionService implements CharacterDefinitionServic
 
     @Override
     public List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        return this.activatedSkillRepository.findByGameRoomIdAndMemberId(gameRoomId, memberId)
+        return this.activatedSkillRepository.findByGameRoomIdAndActivatorId(gameRoomId, memberId)
                 .stream()
                 .map(ActivatedSkill::getSkillType)
                 .toList()

@@ -18,15 +18,15 @@ public interface ActivatedSkillRepository extends JpaRepository<ActivatedSkill, 
     @Query("""
             SELECT a FROM ActivatedSkill a
             WHERE a.gameInstance.gameInstanceId = :gameInstanceId
-                AND a.characterAssignment.assignmentId = :characterAssignmentId
+                AND a.activatorId = :activatorId
             """)
-    List<ActivatedSkill> findByGameInstanceIdAndCharacterAssignmentId(int gameInstanceId, int characterAssignmentId);
+    List<ActivatedSkill> findByGameInstanceIdAndActivatorId(int gameInstanceId, int activatorId);
 
     @Query("""
             SELECT a FROM ActivatedSkill a
             WHERE a.gameInstance.gameRoom.roomId = :gameRoomId
                 AND a.gameInstance.endTime IS NULL
-                AND a.characterAssignment.memberId = :memberId
+                AND a.activatorId = :activatorId
             """)
-    List<ActivatedSkill> findByGameRoomIdAndMemberId(int gameRoomId, String memberId);
+    List<ActivatedSkill> findByGameRoomIdAndActivatorId(int gameRoomId, String activatorId);
 }

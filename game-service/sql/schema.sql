@@ -61,12 +61,12 @@ CREATE TABLE character_assignment
 
 CREATE TABLE activated_skill
 (
-    activated_skill_id      INTEGER AUTO_INCREMENT,
-    skill_type              INTEGER,
-    character_assignment_id INTEGER NOT NULL,
-    game_instance_id        INTEGER,
-    round                   INTEGER,
+    activated_skill_id INTEGER AUTO_INCREMENT,
+    skill_type         INTEGER,
+    activator_id       VARCHAR(255) NOT NULL,
+    target_id          VARCHAR(255),
+    game_instance_id   INTEGER      NOT NULL,
+    round              INTEGER,
     PRIMARY KEY (activated_skill_id),
-    FOREIGN KEY (game_instance_id) REFERENCES game_instance (game_instance_id),
-    FOREIGN KEY (character_assignment_id) REFERENCES character_assignment (assignment_id)
+    FOREIGN KEY (game_instance_id) REFERENCES game_instance (game_instance_id)
 );
