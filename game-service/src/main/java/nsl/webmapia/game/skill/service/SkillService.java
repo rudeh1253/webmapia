@@ -29,4 +29,6 @@ public interface SkillService {
      */
     void activateSkill(int gameRoomId, String activatorId, String targetId, SkillType skillType)
             throws IllegalStateException, NoSuchElementException;
+
+
 }

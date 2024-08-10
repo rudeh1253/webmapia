@@ -29,4 +29,12 @@ public interface ActivatedSkillRepository extends JpaRepository<ActivatedSkill, 
                 AND a.activatorId = :activatorId
             """)
     List<ActivatedSkill> findByGameRoomIdAndActivatorId(int gameRoomId, String activatorId);
+
+    @Query("""
+            SELECT a FROM ActivatedSkill a
+            WHERE a.gameInstance.gameRoom.roomId = :gameRoomId
+                AND a.gameInstance.endTime IS NULL
+                AND a.targetId = :targetId
+            """)
+    List<ActivatedSkill> findByGameRoomIdAndTargetId(int gameRoomId, String targetId);
 }

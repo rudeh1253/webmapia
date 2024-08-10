@@ -112,7 +112,9 @@ class TestSkillServiceImpl {
     @DisplayName("getAvailableSkills - wolf - first attemption")
     @Test
     void getAvailableSkills_wolf_noSkillUsed() {
-        BaseSystemMessageResponseDto<List<SkillType>> wolfAvailable = this.skillService.getAvailableSkills(gameInstanceId, "host");
+        GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).get();
+        BaseSystemMessageResponseDto<List<SkillType>> wolfAvailable =
+                this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
 
         log.info("wolfAvailable.content={}", wolfAvailable.getContent());
 
@@ -130,12 +132,12 @@ class TestSkillServiceImpl {
         behead.setSkillType(SkillType.BEHEAD);
         behead.setRound(gameInstance.getRound());
         behead.setActivatorId("host");
-        behead.setTargetId("member-1");
+        behead.setTargetId("member1");
         behead.setGameInstance(gameInstance);
         this.activatedSkillRepository.save(behead);
 
         BaseSystemMessageResponseDto<List<SkillType>> expectedNoBeheadHere =
-                this.skillService.getAvailableSkills(this.gameInstanceId, "host");
+                this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
 
         log.info("expectedNoBeheadHere.content={}", expectedNoBeheadHere.getContent());
 
@@ -159,7 +161,7 @@ class TestSkillServiceImpl {
         gameInstance.setGamePhase(GamePhase.NIGHT);
         BaseSystemMessageResponseDto<List<SkillType>> firstAvailable = this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
         assertThat(firstAvailable.getContent()).containsExactlyInAnyOrder(SkillType.KILL, SkillType.BEHEAD);
-        this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member-1", SkillType.BEHEAD);
+        this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member1", SkillType.BEHEAD);
 
         BaseSystemMessageResponseDto<List<SkillType>> result = this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
 

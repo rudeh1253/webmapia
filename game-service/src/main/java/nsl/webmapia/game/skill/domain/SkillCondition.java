@@ -1,6 +1,6 @@
 package nsl.webmapia.game.skill.domain;
 
-import nsl.webmapia.game.character.domain.Character;
+import nsl.webmapia.game.character.entity.CharacterAssignment;
 
 import java.util.Set;
 
@@ -15,7 +15,7 @@ public interface SkillCondition {
      * @param activatedSkillsToTarget activated to target skills, of that night, of that game
      * @return true if successful, otherwise false.
      */
-    boolean isSuccess(Character activator,
-                      Character target,
+    boolean isSuccess(CharacterAssignment activator,
+                      CharacterAssignment target,
                       Set<SkillType> activatedSkillsToTarget);
 }
