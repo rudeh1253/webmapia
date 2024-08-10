@@ -18,6 +18,7 @@ import nsl.webmapia.game.skill.repository.ActivatedSkillRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class SkillServiceImpl implements SkillService {
     private final GameInstanceRepository gameInstanceRepository;
 
     @Override
-    public BaseSystemMessageResponseDto<List<SkillType>> getAvailableSkills(int gameRoomId, String memberId) {
+    public BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameRoomId, String memberId) {
         // TODO: IllegalStateException is appropriate here?
         CharacterAssignment characterAssignment =
                 this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, memberId)
@@ -41,11 +42,10 @@ public class SkillServiceImpl implements SkillService {
                 this.characterDefinitionFactory.getCharacterDefinitionOfCharacterCode(characterAssignment.getCharacterCode());
         log.debug("characterDefinitionService instanceof WolfCharacterDefinitionService={}",
                 characterDefinitionService instanceof WolfCharacterDefinitionService);
-        List<SkillType> result = characterDefinitionService.getAvailableSkillTypes(gameRoomId, memberId);
-        return BaseSystemMessageResponseDto.<List<SkillType>>builder()
+        return BaseSystemMessageResponseDto.<Map<SkillType, List<String>>>builder()
                 .receiverIds(List.of(memberId))
                 .systemMessageType(SystemMessageType.AVAILABLE_SKILLS)
-                .content(result)
+                .content(characterDefinitionService.getAvailableSkillTypes(gameRoomId, memberId))
                 .build();
     }
 

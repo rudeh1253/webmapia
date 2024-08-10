@@ -3,6 +3,8 @@ package nsl.webmapia.game.character.service.definition;
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
+import nsl.webmapia.game.character.entity.CharacterAssignment;
+import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
@@ -10,17 +12,13 @@ import nsl.webmapia.game.skill.entity.ActivatedSkill;
 import nsl.webmapia.game.skill.repository.ActivatedSkillRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
 public class FollowerCharacterDefinitionService implements CharacterDefinitionService {
-    // TODO: skillCountLeft field should be deleted.
-    // Skill availability will be recognized by ActivatedSkillRepository.
-    private int skillCountLeft = 1;
     private final ActivatedSkillRepository activatedSkillRepository;
+    private final CharacterAssignmentRepository characterAssignmentRepository;
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {
@@ -28,19 +26,40 @@ public class FollowerCharacterDefinitionService implements CharacterDefinitionSe
             case ENTER_WOLF_CHAT -> new SkillInfo(skillType, (act, tar, activatedSkillsToTarget) ->
                     tar.getCharacterCode() == CharacterCode.WOLF);
             case INVESTIGATE_ALIVE_CHARACTER ->
-                    new SkillInfo(skillType, (act, tar, activatedSkillsToTarget) -> this.skillCountLeft-- > 0);
+                    new SkillInfo(skillType, (act, tar, activatedSkillsToTarget) -> !tar.isDead());
             default -> new SkillInfo();
         };
     }
 
     @Override
-    public List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        List<SkillType> availableSkillTypes = new ArrayList<>();
-        availableSkillTypes.add(SkillType.ENTER_WOLF_CHAT);
-        if (isInvestigateAliveCharacterAvailable(gameRoomId, memberId)) {
-            availableSkillTypes.add(SkillType.INVESTIGATE_ALIVE_CHARACTER);
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
+        List<CharacterAssignment> ca = this.characterAssignmentRepository.findByGameRoomId(gameRoomId);
+        Map<SkillType, List<String>> availableSkillTypes = new HashMap<>();
+        availableSkillTypes.put(
+                SkillType.ENTER_WOLF_CHAT,
+                ca.stream().filter((c) -> !c.isDead()).map(CharacterAssignment::getMemberId).toList()
+        );
+        insertIfInvestigateAliveCharacterAvailable(
+                availableSkillTypes,
+                ca,
+                gameRoomId,
+                memberId
+        );
+        return Collections.unmodifiableMap(availableSkillTypes);
+    }
+
+    private void insertIfInvestigateAliveCharacterAvailable(Map<SkillType, List<String>> availableSkillTypes,
+                                                            List<CharacterAssignment> ca,
+                                                            int gameRoomId,
+                                                            String memberId) {
+        List<ActivatedSkill> activated = this.activatedSkillRepository.findByGameRoomIdAndActivatorId(gameRoomId, memberId);
+        if (activated.stream().anyMatch((as) -> as.getSkillType() == SkillType.INVESTIGATE_ALIVE_CHARACTER)) {
+            return;
         }
-        return Collections.unmodifiableList(availableSkillTypes);
+        availableSkillTypes.put(
+                SkillType.INVESTIGATE_ALIVE_CHARACTER,
+                ca.stream().filter((c) -> !c.isDead()).map(CharacterAssignment::getMemberId).toList()
+        );
     }
 
     private boolean isInvestigateAliveCharacterAvailable(int gameRoomId, String memberId) {

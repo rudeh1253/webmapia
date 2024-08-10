@@ -1,16 +1,22 @@
 package nsl.webmapia.game.character.service.definition;
 
+import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
+import nsl.webmapia.game.character.entity.CharacterAssignment;
+import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class BetrayerCharacterDefinitionService implements CharacterDefinitionService {
+    private final CharacterAssignmentRepository characterAssignmentRepository;
 
     /**
      * Activate one of skill of type, either SkillType.ENTER_WOLF_CHAT or SkillType.INVESTIGATE_DEAD_CHARACTER.
@@ -34,8 +40,14 @@ public class BetrayerCharacterDefinitionService implements CharacterDefinitionSe
     }
 
     @Override
-    public List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        return List.of(SkillType.ENTER_WOLF_CHAT, SkillType.INVESTIGATE_DEAD_CHARACTER);
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
+        List<CharacterAssignment> characterAssignments = this.characterAssignmentRepository.findByGameRoomId(gameRoomId);
+        return Map.of(
+                SkillType.ENTER_WOLF_CHAT,
+                characterAssignments.stream().filter((ca) -> !ca.isDead()).map(CharacterAssignment::getMemberId).toList(),
+                SkillType.INVESTIGATE_DEAD_CHARACTER,
+                characterAssignments.stream().filter(CharacterAssignment::isDead).map(CharacterAssignment::getMemberId).toList()
+        );
     }
 
     @Override

@@ -21,6 +21,13 @@ public interface CharacterAssignmentRepository extends JpaRepository<CharacterAs
 
     @Query("""
             SELECT ca FROM CharacterAssignment ca
+            WHERE ca.gameInstance.gameRoom.roomId = :gameRoomId
+                AND ca.gameInstance.endTime IS NULL
+            """)
+    List<CharacterAssignment> findByGameRoomId(int gameRoomId);
+
+    @Query("""
+            SELECT ca FROM CharacterAssignment ca
             WHERE ca.gameInstance.gameInstanceId = :gameInstanceId
                 AND ca.memberId = :memberId
             """)
@@ -31,7 +38,7 @@ public interface CharacterAssignmentRepository extends JpaRepository<CharacterAs
      * alive (i.e. endTime is null).
      *
      * @param gameRoomId of GameInstance
-     * @param memberId of CharacterAssignment
+     * @param memberId   of CharacterAssignment
      * @return CharacterAssignment instance given conditions. Optional instance can be empty.
      */
     @Query("""

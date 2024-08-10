@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static nsl.webmapia.game.character.domain.CharacterCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -113,12 +114,12 @@ class TestSkillServiceImpl {
     @Test
     void getAvailableSkills_wolf_noSkillUsed() {
         GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).get();
-        BaseSystemMessageResponseDto<List<SkillType>> wolfAvailable =
+        BaseSystemMessageResponseDto<Map<SkillType, List<String>>> wolfAvailable =
                 this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
 
         log.info("wolfAvailable.content={}", wolfAvailable.getContent());
 
-        assertThat(wolfAvailable.getContent()).containsExactlyInAnyOrder(SkillType.BEHEAD, SkillType.KILL);
+        assertThat(wolfAvailable.getContent().keySet()).containsExactlyInAnyOrder(SkillType.BEHEAD, SkillType.KILL);
         assertThat(wolfAvailable.getReceiverIds())
                 .containsExactly("host");
     }
@@ -136,12 +137,12 @@ class TestSkillServiceImpl {
         behead.setGameInstance(gameInstance);
         this.activatedSkillRepository.save(behead);
 
-        BaseSystemMessageResponseDto<List<SkillType>> expectedNoBeheadHere =
+        BaseSystemMessageResponseDto<Map<SkillType, List<String>>> expectedNoBeheadHere =
                 this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
 
         log.info("expectedNoBeheadHere.content={}", expectedNoBeheadHere.getContent());
 
-        assertThat(expectedNoBeheadHere.getContent()).containsExactly(SkillType.KILL);
+        assertThat(expectedNoBeheadHere.getContent().keySet()).containsExactly(SkillType.KILL);
         assertThat(expectedNoBeheadHere.getReceiverIds()).containsExactly("host");
     }
 
@@ -159,13 +160,15 @@ class TestSkillServiceImpl {
     void activateSkill_then_getAvailableSkills() {
         GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).orElseThrow();
         gameInstance.setGamePhase(GamePhase.NIGHT);
-        BaseSystemMessageResponseDto<List<SkillType>> firstAvailable = this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
-        assertThat(firstAvailable.getContent()).containsExactlyInAnyOrder(SkillType.KILL, SkillType.BEHEAD);
+        BaseSystemMessageResponseDto<Map<SkillType, List<String>>> firstAvailable =
+                this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
+        assertThat(firstAvailable.getContent().keySet()).containsExactlyInAnyOrder(SkillType.KILL, SkillType.BEHEAD);
         this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member1", SkillType.BEHEAD);
 
-        BaseSystemMessageResponseDto<List<SkillType>> result = this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
+        BaseSystemMessageResponseDto<Map<SkillType, List<String>>> result =
+                this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
 
-        assertThat(result.getContent()).doesNotContain(SkillType.BEHEAD);
-        assertThat(result.getContent()).containsExactly(SkillType.KILL);
+        assertThat(result.getContent().keySet()).doesNotContain(SkillType.BEHEAD);
+        assertThat(result.getContent().keySet()).containsExactly(SkillType.KILL);
     }
 }
