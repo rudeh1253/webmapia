@@ -8,6 +8,8 @@ import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class GuardCharacterDefinitionService implements CharacterDefinitionService {
 
@@ -18,6 +20,11 @@ public class GuardCharacterDefinitionService implements CharacterDefinitionServi
                         && !activatedSkillsToTarget.contains(SkillType.MURDER)
                         && activatedSkillsToTarget.contains(SkillType.KILL);
         return new SkillInfo(skillType, condition);
+    }
+
+    @Override
+    public List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
+        return List.of(SkillType.GUARD);
     }
 
     @Override

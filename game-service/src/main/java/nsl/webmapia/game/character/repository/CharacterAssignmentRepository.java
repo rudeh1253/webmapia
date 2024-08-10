@@ -25,4 +25,20 @@ public interface CharacterAssignmentRepository extends JpaRepository<CharacterAs
                 AND ca.memberId = :memberId
             """)
     Optional<CharacterAssignment> findByGameInstanceIdAndMemberId(int gameInstanceId, String memberId);
+
+    /**
+     * Find CharacterAssignment instance by gameRoomId and memberId from GameInstance of gameRoomId which is
+     * alive (i.e. endTime is null).
+     *
+     * @param gameRoomId of GameInstance
+     * @param memberId of CharacterAssignment
+     * @return CharacterAssignment instance given conditions. Optional instance can be empty.
+     */
+    @Query("""
+            SELECT ca FROM CharacterAssignment ca
+            WHERE ca.gameInstance.gameRoom.roomId = :gameRoomId
+                AND ca.gameInstance.endTime IS NULL
+                AND ca.memberId = :memberId
+            """)
+    Optional<CharacterAssignment> findByGameRoomIdAndMemberId(int gameRoomId, String memberId);
 }
