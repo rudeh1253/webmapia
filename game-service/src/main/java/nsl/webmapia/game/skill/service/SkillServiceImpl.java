@@ -16,6 +16,7 @@ import nsl.webmapia.game.skill.domain.SkillType;
 import nsl.webmapia.game.skill.entity.ActivatedSkill;
 import nsl.webmapia.game.skill.repository.ActivatedSkillRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SkillServiceImpl implements SkillService {
     private final ActivatedSkillRepository activatedSkillRepository;
     private final CharacterDefinitionFactoryService characterDefinitionFactory;
@@ -60,9 +62,10 @@ public class SkillServiceImpl implements SkillService {
         ActivatedSkill activatedSkill = new ActivatedSkill();
         activatedSkill.setSkillType(skillType);
         activatedSkill.setRound(gameInstance.getRound());
-        activatedSkill.setActivatorId(activatorId);
-        activatedSkill.setTargetId(targetId);
-        activatedSkill.setGameInstance(gameInstance);
+        activatedSkill.setActivator(this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, activatorId)
+                .orElseThrow(NoSuchElementException::new));
+        activatedSkill.setTarget(this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, targetId)
+                .orElseThrow(NoSuchElementException::new));
         this.activatedSkillRepository.save(activatedSkill);
     }
 

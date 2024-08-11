@@ -132,9 +132,8 @@ class TestSkillServiceImpl {
         ActivatedSkill behead = new ActivatedSkill();
         behead.setSkillType(SkillType.BEHEAD);
         behead.setRound(gameInstance.getRound());
-        behead.setActivatorId("host");
-        behead.setTargetId("member1");
-        behead.setGameInstance(gameInstance);
+        behead.setActivator(this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, "host").get());
+        behead.setTarget(this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, "member1").get());
         this.activatedSkillRepository.save(behead);
 
         BaseSystemMessageResponseDto<Map<SkillType, List<String>>> expectedNoBeheadHere =
@@ -152,7 +151,7 @@ class TestSkillServiceImpl {
         GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).orElseThrow();
         gameInstance.setGamePhase(GamePhase.NIGHT);
         assertThatNoException()
-                .isThrownBy(() -> this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member-1", SkillType.KILL));
+                .isThrownBy(() -> this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member1", SkillType.KILL));
     }
 
     @DisplayName("After activate BEHEAD and get available skills")
