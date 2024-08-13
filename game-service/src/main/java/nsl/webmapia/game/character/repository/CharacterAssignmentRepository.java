@@ -48,4 +48,11 @@ public interface CharacterAssignmentRepository extends JpaRepository<CharacterAs
                 AND ca.memberId = :memberId
             """)
     Optional<CharacterAssignment> findByGameRoomIdAndMemberId(int gameRoomId, String memberId);
+
+    @Query("""
+            UPDATE CharacterAssignment ca
+            SET ca.life = :life
+            WHERE ca.memberId = :memberId
+            """)
+    void updateLifeByMemberId(String memberId, int life);
 }

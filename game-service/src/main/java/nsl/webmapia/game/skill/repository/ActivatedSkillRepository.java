@@ -28,7 +28,7 @@ public interface ActivatedSkillRepository extends JpaRepository<ActivatedSkill, 
             WHERE a.activator.gameInstance.gameInstanceId = :gameInstanceId
                 AND a.activator.memberId = :activatorId
             """)
-    List<ActivatedSkill> findByGameInstanceIdAndActivatorId(int gameInstanceId, int activatorId);
+    List<ActivatedSkill> findByGameInstanceIdAndActivatorId(int gameInstanceId, String activatorId);
 
     @Query("""
             SELECT a FROM ActivatedSkill a

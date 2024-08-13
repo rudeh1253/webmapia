@@ -6,9 +6,7 @@ import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
-import nsl.webmapia.game.skill.domain.SkillCondition;
-import nsl.webmapia.game.skill.domain.SkillInfo;
-import nsl.webmapia.game.skill.domain.SkillType;
+import nsl.webmapia.game.skill.domain.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,15 +15,35 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class GuardCharacterDefinitionService implements CharacterDefinitionService {
+    private final SkillUnitProcessor skillProcessor = (act, tar, activatedSkillsToTarget) -> {
+        if (!activatedSkillsToTarget.contains(SkillType.BEHEAD)
+                && !activatedSkillsToTarget.contains(SkillType.MURDER)
+                && activatedSkillsToTarget.contains(SkillType.KILL)) {
+            return new SkillEffect(
+                    SkillEffectType.GUARD_SUCCESS,
+                    act.getMemberId(),
+                    tar.getMemberId(),
+                    List.of(act.getMemberId()),
+                    // TODO: Replace hard code with MessageSource
+                    String.format("%s를 살리는 데 성공했습니다.", tar.getMemberId())
+            );
+        } else {
+            return new SkillEffect(
+                    SkillEffectType.GUARD_FAIL,
+                    act.getMemberId(),
+                    tar.getMemberId(),
+                    List.of(act.getMemberId()),
+                    // TODO: Replace hard code with MessageSource
+                    "실패했습니다."
+            );
+        }
+    };
+
     private final CharacterAssignmentRepository characterAssignmentRepository;
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {
-        SkillCondition condition = (act, tar, activatedSkillsToTarget) ->
-                !activatedSkillsToTarget.contains(SkillType.BEHEAD)
-                        && !activatedSkillsToTarget.contains(SkillType.MURDER)
-                        && activatedSkillsToTarget.contains(SkillType.KILL);
-        return new SkillInfo(skillType, condition);
+        return new SkillInfo(skillType, this.skillProcessor);
     }
 
     @Override

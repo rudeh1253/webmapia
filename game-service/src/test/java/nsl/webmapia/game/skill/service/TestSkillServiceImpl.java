@@ -154,7 +154,7 @@ class TestSkillServiceImpl {
                 .isThrownBy(() -> this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member1", SkillType.KILL));
     }
 
-    @DisplayName("After activate BEHEAD and get available skills")
+    @DisplayName("After activate BEHEAD and getTitle available skills")
     @Test
     void activateSkill_then_getAvailableSkills() {
         GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).orElseThrow();

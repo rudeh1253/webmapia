@@ -7,14 +7,14 @@ import lombok.ToString;
 @ToString
 public class SkillInfo {
     private final SkillType skillType;
-    private final SkillCondition skillCondition;
+    private final SkillUnitProcessor skillUnitProcessor;
 
     public SkillInfo() {
-        this(SkillType.NONE, (act, tar, activatedSkillsToType) -> false);
+        this(SkillType.NONE, (act, tar, activatedSkillsToType) -> new SkillEffect());
     }
 
-    public SkillInfo(SkillType skillType, SkillCondition skillCondition) {
+    public SkillInfo(SkillType skillType, SkillUnitProcessor skillUnitProcessor) {
         this.skillType = skillType;
-        this.skillCondition = skillCondition;
+        this.skillUnitProcessor = skillUnitProcessor;
     }
 }

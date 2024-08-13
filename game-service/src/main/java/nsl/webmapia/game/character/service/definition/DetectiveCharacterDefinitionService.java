@@ -6,8 +6,7 @@ import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
-import nsl.webmapia.game.skill.domain.SkillInfo;
-import nsl.webmapia.game.skill.domain.SkillType;
+import nsl.webmapia.game.skill.domain.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,12 +21,23 @@ public class DetectiveCharacterDefinitionService implements CharacterDefinitionS
             CharacterCode.FOLLOWER
     );
 
+    private final SkillUnitProcessor skillProcessor = (act, tar, activatedSkillsToTarget) -> {
+        boolean success = SKILL_TARGET_CHARACTERS.contains(tar.getCharacterCode());
+        return new SkillEffect(
+                success ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
+                act.getMemberId(),
+                tar.getMemberId(),
+                List.of(act.getMemberId()),
+                // TODO: Replace hard code with MessageSource
+                success ? String.format("%s는 %s입니다.", tar.getMemberId(), tar.getCharacterCode().getTitle())
+                        : "실패"
+        );
+    };
     private final CharacterAssignmentRepository characterAssignmentRepository;
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {
-        return new SkillInfo(skillType, (act, tar, activatedSkillsToTarget) ->
-                SKILL_TARGET_CHARACTERS.contains(tar.getCharacterCode()));
+        return new SkillInfo(skillType, this.skillProcessor);
     }
 
     @Override
