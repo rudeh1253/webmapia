@@ -1,6 +1,7 @@
 package nsl.webmapia.game.skill.service;
 
 import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
+import nsl.webmapia.game.skill.domain.SkillEffect;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 import java.util.List;
@@ -31,5 +32,5 @@ public interface SkillService {
     void activateSkill(int gameRoomId, String activatorId, String targetId, SkillType skillType)
             throws IllegalStateException, NoSuchElementException;
 
-
+    List<SkillEffect> processSkills(int gameRoomId);
 }

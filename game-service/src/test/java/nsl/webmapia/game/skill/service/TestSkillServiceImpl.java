@@ -170,4 +170,10 @@ class TestSkillServiceImpl {
         assertThat(result.getContent().keySet()).doesNotContain(SkillType.BEHEAD);
         assertThat(result.getContent().keySet()).containsExactly(SkillType.KILL);
     }
+
+    @DisplayName("processSkills")
+    @Test
+    void processSkills() {
+        
+    }
 }
