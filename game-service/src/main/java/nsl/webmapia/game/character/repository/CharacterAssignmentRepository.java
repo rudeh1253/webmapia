@@ -21,6 +21,8 @@ public interface CharacterAssignmentRepository {
 
     List<CharacterAssignment> findDeadCharacterAssignmentsByGameRoomId(int gameRoomId);
 
+    List<CharacterAssignment> findAliveCharacterAssignmentsByGameRoomId(int gameRoomId);
+
     Optional<CharacterAssignment> findByGameInstanceIdAndMemberId(int gameInstanceId, String memberId);
 
     /**
