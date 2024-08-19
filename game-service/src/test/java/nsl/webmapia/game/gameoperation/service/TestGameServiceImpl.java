@@ -55,11 +55,12 @@ class TestGameServiceImpl {
     void startGame() {
         int generatedGameRoomId = insertSampleGameRoom();
 
-        BaseSystemMessageResponseDto<Object> responseDto = this.gameService.startGame(generatedGameRoomId);
+        BaseSystemMessageResponseDto<Integer> responseDto = this.gameService.startGame(generatedGameRoomId);
         log.info("responseDto={}", responseDto);
 
         assertThat(responseDto.getReceiverIds()).contains("sample-host");
-        assertThat(responseDto.getContent()).isNull();
+        assertThat(responseDto.getContent()).isNotNull();
+        assertThat(responseDto.getContent()).isGreaterThan(0);
         assertThat(responseDto.getSystemMessageType()).isEqualTo(SystemMessageType.GAME_STARTED);
     }
 
@@ -154,7 +155,7 @@ class TestGameServiceImpl {
                 sampleParticipants[0],
                 sampleParticipants[1],
                 voteDtoAccumulator,
-                gameInstance.getGameRoom().getRoomId(),
+                gameInstance.getGameInstanceId(),
                 sampleParticipants
         );
 
@@ -164,7 +165,7 @@ class TestGameServiceImpl {
                 sampleParticipants[1],
                 sampleParticipants[2],
                 voteDtoAccumulator,
-                gameInstance.getGameRoom().getRoomId(),
+                gameInstance.getGameInstanceId(),
                 sampleParticipants
         );
 
@@ -174,14 +175,14 @@ class TestGameServiceImpl {
                 sampleParticipants[5],
                 sampleParticipants[4],
                 voteDtoAccumulator,
-                gameInstance.getGameRoom().getRoomId(),
+                gameInstance.getGameInstanceId(),
                 sampleParticipants
         );
     }
 
-    private VoteRequestDto generateVoteRequestDto(int gameRoomId, String voterId, String targetId) {
+    private VoteRequestDto generateVoteRequestDto(int gameInstanceId, String voterId, String targetId) {
         VoteRequestDto voteRequestDto = new VoteRequestDto();
-        voteRequestDto.setGameRoomId(gameRoomId);
+        voteRequestDto.setGameInstanceId(gameInstanceId);
         voteRequestDto.setVoterId(voterId);
         voteRequestDto.setTargetId(targetId);
         return voteRequestDto;
@@ -199,10 +200,10 @@ class TestGameServiceImpl {
     private void checkVote(String voterId,
                            String targetId,
                            List<VoteDto> expected,
-                           int gameRoomId,
+                           int gameInstanceId,
                            String[] sampleParticipants) {
         BaseSystemMessageResponseDto<List<VoteDto>> vote =
-                this.gameService.vote(generateVoteRequestDto(gameRoomId, voterId, targetId));
+                this.gameService.vote(generateVoteRequestDto(gameInstanceId, voterId, targetId));
         assertThat(vote.getSystemMessageType()).isEqualTo(SystemMessageType.VOTE_RESPONSE);
         assertThat(vote.getReceiverIds()).contains(sampleParticipants);
         assertThat(vote.getContent().size()).isEqualTo(expected.size());

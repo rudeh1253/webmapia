@@ -15,22 +15,22 @@ import java.util.NoSuchElementException;
  */
 public interface SkillService {
 
-    BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameRoomId, String memberId);
+    BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameInstanceId, String memberId);
 
     /**
      * Activate skill of given round.
      *
-     * @param gameRoomId of GameInstance on running currently
+     * @param gameInstanceId of GameInstance on running currently
      * @param activatorId who activated the skill
      * @param targetId which is the target of the skill
      * @param skillType which the member activated
      *
      * TODO: another exception is needed here.
      * @throws IllegalStateException when the gamePhase of GameInstance is not NIGHT.
-     * @throws NoSuchElementException when for given gameRoomId the GameInstance doesn't exist.
+     * @throws NoSuchElementException when for given gameInstanceId the GameInstance doesn't exist.
      */
-    void activateSkill(int gameRoomId, String activatorId, String targetId, SkillType skillType)
+    void activateSkill(int gameInstanceId, String activatorId, String targetId, SkillType skillType)
             throws IllegalStateException, NoSuchElementException;
 
-    List<SkillEffect> processSkills(int gameRoomId);
+    List<SkillEffect> processSkills(int gameInstanceId);
 }

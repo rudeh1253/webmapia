@@ -1,8 +1,6 @@
 package nsl.webmapia.game.character.repository;
 
 import nsl.webmapia.game.character.entity.CharacterAssignment;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,23 +15,20 @@ public interface CharacterAssignmentRepository {
 
     List<CharacterAssignment> findByGameInstanceId(int gameInstanceId);
 
-    List<CharacterAssignment> findByGameRoomId(int gameRoomId);
+    List<CharacterAssignment> findDeadCharacterAssignmentsByGameInstanceId(int gameInstanceId);
 
-    List<CharacterAssignment> findDeadCharacterAssignmentsByGameRoomId(int gameRoomId);
-
-    List<CharacterAssignment> findAliveCharacterAssignmentsByGameRoomId(int gameRoomId);
-
-    Optional<CharacterAssignment> findByGameInstanceIdAndMemberId(int gameInstanceId, String memberId);
+    List<CharacterAssignment> findAliveCharacterAssignmentsByGameInstanceId(int gameInstanceId);
 
     /**
-     * Find CharacterAssignment instance by gameRoomId and memberId from GameInstance of gameRoomId which is
+     * Find CharacterAssignment instance by gameRoomId and memberId from GameInstance of gameInstanceId which is
      * alive (i.e. endTime is null).
      *
-     * @param gameRoomId of GameInstance
+     * @param gameInstanceId of GameInstance
      * @param memberId   of CharacterAssignment
      * @return CharacterAssignment instance given conditions. Optional instance can be empty.
      */
-    Optional<CharacterAssignment> findByGameRoomIdAndMemberId(int gameRoomId, String memberId);
 
-    void updateLifeByGameRoomIdAndMemberId(int gameRoomId, String memberId, int life);
+    Optional<CharacterAssignment> findByGameInstanceIdAndMemberId(int gameInstanceId, String memberId);
+
+    void updateLifeByGameInstanceIdAndMemberId(int gameRoomId, String memberId, int life);
 }

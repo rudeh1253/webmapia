@@ -20,9 +20,9 @@ public interface GameService {
      *
      * @param roomId to start game
      * @return BaseSystemMessageResponseDto object containing a system message
-     * to notify start of game to participants of the game room
+     * to notify start of game to participants of the game room and contains gameInstanceId generated
      */
-    BaseSystemMessageResponseDto<Object> startGame(int roomId);
+    BaseSystemMessageResponseDto<Integer> startGame(int roomId);
 
     /**
      * Process a vote from a single member. The size of a single vote is determined by the character of
@@ -36,9 +36,9 @@ public interface GameService {
     /**
      * Request to end the phase. When all members request to end the phase, the phase ends.
      *
-     * @param roomId of GameRoom the GameInstance belongs to
+     * @param gameInstanceId of the GameInstance
      * @param requesterId of Member who requested to end the phase
      * @return PhaseResultResponseDto that contains information of the result of the phase
      */
-    BaseSystemMessageResponseDto<PhaseResultResponseDto> endPhase(int roomId, String requesterId);
+    BaseSystemMessageResponseDto<PhaseResultResponseDto> endPhase(int gameInstanceId, String requesterId);
 }

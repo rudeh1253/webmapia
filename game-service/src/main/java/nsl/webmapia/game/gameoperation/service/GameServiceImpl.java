@@ -40,7 +40,7 @@ public class GameServiceImpl implements GameService {
     private final MessageSource messageSource;
 
     @Override
-    public BaseSystemMessageResponseDto<Object> startGame(int roomId) {
+    public BaseSystemMessageResponseDto<Integer> startGame(int roomId) {
         // TODO: NoSuchElementException should notify that GameRoom instance of roomId is absent.
         // Or replace with another exception.
         GameRoom gameRoom = this.gameRoomRepository.findById(roomId)
@@ -52,16 +52,17 @@ public class GameServiceImpl implements GameService {
         gameInstance.setStartTime(LocalDateTime.now());
         gameInstance.setGamePhase(GamePhase.START);
         this.gameInstanceRepository.save(gameInstance);
-        return BaseSystemMessageResponseDto.builder()
+        return BaseSystemMessageResponseDto.<Integer>builder()
                 .receiverIds(gameRoom.getParticipationList().stream().map(Participation::getParticipantId).toList())
                 .systemMessageType(SystemMessageType.GAME_STARTED)
                 .message(this.messageSource.getMessage("system.alert.game-started", null, null))
+                .content(gameInstance.getGameInstanceId())
                 .build();
     }
 
     @Override
     public BaseSystemMessageResponseDto<List<VoteDto>> vote(VoteRequestDto requestDto) {
-        GameInstance gameInstance = this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(requestDto.getGameRoomId())
+        GameInstance gameInstance = this.gameInstanceRepository.findById(requestDto.getGameInstanceId())
                 .orElseThrow(NoSuchElementException::new);
         // TODO: instead of IllegalArgumentException, more specific exception is needed.
         // The exception thrown here should be one that states no such Member of voterId isn't present.
@@ -93,7 +94,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public BaseSystemMessageResponseDto<PhaseResultResponseDto> endPhase(int roomId, String requesterId) {
+    public BaseSystemMessageResponseDto<PhaseResultResponseDto> endPhase(int gameInstanceId, String requesterId) {
         return null;
     }
 }

@@ -25,11 +25,11 @@ public class MurdererCharacterDefinitionService implements CharacterDefinitionSe
     @PostConstruct
     public void init() {
         this.skillProcessor = (act, tar, activatedSkillToTarget) -> {
-            boolean success = isMurderAvailable(act.getGameInstance().getGameRoom().getRoomId(), tar.getMemberId())
+            boolean success = isMurderAvailable(act.getGameInstance().getGameInstanceId(), tar.getMemberId())
                     && !tar.isDead()
                     && tar.getCharacterCode() != CharacterCode.HUMAN_MOUSE;
             if (success) {
-                this.characterAssignmentRepository.updateLifeByGameRoomIdAndMemberId(act.getGameInstance().getGameRoom().getRoomId(), tar.getMemberId(), tar.getLife() - 1);
+                this.characterAssignmentRepository.updateLifeByGameInstanceIdAndMemberId(act.getGameInstance().getGameInstanceId(), tar.getMemberId(), tar.getLife() - 1);
             }
             return new SkillEffect(
                     success ? SkillEffectType.MURDER_SUCCESS : SkillEffectType.MURDER_FAIL,
@@ -54,9 +54,9 @@ public class MurdererCharacterDefinitionService implements CharacterDefinitionSe
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        if (isMurderAvailable(gameRoomId, memberId)) {
-            List<String> targets = this.characterAssignmentRepository.findByGameRoomId(gameRoomId)
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+        if (isMurderAvailable(gameInstanceId, memberId)) {
+            List<String> targets = this.characterAssignmentRepository.findByGameInstanceId(gameInstanceId)
                     .stream()
                     .filter((ca) -> !ca.isDead())
                     .map(CharacterAssignment::getMemberId)
@@ -67,8 +67,8 @@ public class MurdererCharacterDefinitionService implements CharacterDefinitionSe
         }
     }
 
-    private boolean isMurderAvailable(int gameRoomId, String memberId) {
-        return this.activatedSkillRepository.findByGameRoomIdAndActivatorId(gameRoomId, memberId)
+    private boolean isMurderAvailable(int gameInstanceId, String memberId) {
+        return this.activatedSkillRepository.findByGameInstanceIdAndActivatorId(gameInstanceId, memberId)
                 .stream()
                 .noneMatch((as) -> as.getSkillType() == SkillType.MURDER);
     }

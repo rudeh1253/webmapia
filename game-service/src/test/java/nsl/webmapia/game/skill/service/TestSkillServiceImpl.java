@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static nsl.webmapia.game.character.domain.CharacterCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -116,9 +115,8 @@ class TestSkillServiceImpl {
     @DisplayName("getAvailableSkills - wolf - first attemption")
     @Test
     void getAvailableSkills_wolf_noSkillUsed() {
-        GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).get();
         BaseSystemMessageResponseDto<Map<SkillType, List<String>>> wolfAvailable =
-                this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
+                this.skillService.getAvailableSkills(this.gameInstanceId, "host");
 
         log.info("wolfAvailable.content={}", wolfAvailable.getContent());
 
@@ -140,7 +138,7 @@ class TestSkillServiceImpl {
         this.activatedSkillRepository.save(behead);
 
         BaseSystemMessageResponseDto<Map<SkillType, List<String>>> expectedNoBeheadHere =
-                this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
+                this.skillService.getAvailableSkills(this.gameInstanceId, "host");
 
         log.info("expectedNoBeheadHere.content={}", expectedNoBeheadHere.getContent());
 
@@ -151,24 +149,20 @@ class TestSkillServiceImpl {
     @DisplayName("activateSkill")
     @Test
     void activateSkill() {
-        GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).orElseThrow();
-        gameInstance.setGamePhase(GamePhase.NIGHT);
         assertThatNoException()
-                .isThrownBy(() -> this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member1", SkillType.KILL));
+                .isThrownBy(() -> this.skillService.activateSkill(this.gameInstanceId, "host", "member1", SkillType.KILL));
     }
 
     @DisplayName("After activate BEHEAD and getTitle available skills")
     @Test
     void activateSkill_then_getAvailableSkills() {
-        GameInstance gameInstance = this.gameInstanceRepository.findById(this.gameInstanceId).orElseThrow();
-        gameInstance.setGamePhase(GamePhase.NIGHT);
         BaseSystemMessageResponseDto<Map<SkillType, List<String>>> firstAvailable =
-                this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
+                this.skillService.getAvailableSkills(this.gameInstanceId, "host");
         assertThat(firstAvailable.getContent().keySet()).containsExactlyInAnyOrder(SkillType.KILL, SkillType.BEHEAD);
-        this.skillService.activateSkill(gameInstance.getGameRoom().getRoomId(), "host", "member1", SkillType.BEHEAD);
+        this.skillService.activateSkill(this.gameInstanceId, "host", "member1", SkillType.BEHEAD);
 
         BaseSystemMessageResponseDto<Map<SkillType, List<String>>> result =
-                this.skillService.getAvailableSkills(gameInstance.getGameRoom().getRoomId(), "host");
+                this.skillService.getAvailableSkills(this.gameInstanceId, "host");
 
         assertThat(result.getContent().keySet()).doesNotContain(SkillType.BEHEAD);
         assertThat(result.getContent().keySet()).containsExactly(SkillType.KILL);
@@ -181,10 +175,9 @@ class TestSkillServiceImpl {
         log.info("member5.isDead()={}", member5.isDead());
         assertThat(member5.isDead()).isFalse();
 
-        Integer roomId = this.gameInstanceRepository.findById(this.gameInstanceId).get().getGameRoom().getRoomId();
-        this.skillService.activateSkill(roomId, "host", "member5", SkillType.KILL);
+        this.skillService.activateSkill(this.gameInstanceId, "host", "member5", SkillType.KILL);
 
-        List<SkillEffect> skillEffects = this.skillService.processSkills(roomId);
+        List<SkillEffect> skillEffects = this.skillService.processSkills(this.gameInstanceId);
         log.info("skillEffects={}", skillEffects);
 
         assertThat(skillEffects.size()).isEqualTo(1);
@@ -207,11 +200,10 @@ class TestSkillServiceImpl {
         log.info("member5.isDead()={}", member5.isDead());
         assertThat(member5.isDead()).isFalse();
 
-        Integer roomId = this.gameInstanceRepository.findById(this.gameInstanceId).get().getGameRoom().getRoomId();
-        this.skillService.activateSkill(roomId, "host", "member5", SkillType.KILL);
-        this.skillService.activateSkill(roomId, "member3", "member5", SkillType.GUARD);
+        this.skillService.activateSkill(this.gameInstanceId, "host", "member5", SkillType.KILL);
+        this.skillService.activateSkill(this.gameInstanceId, "member3", "member5", SkillType.GUARD);
 
-        List<SkillEffect> skillEffects = this.skillService.processSkills(roomId);
+        List<SkillEffect> skillEffects = this.skillService.processSkills(this.gameInstanceId);
         log.info("skillEffects={}", skillEffects);
 
         assertThat(skillEffects.size()).isEqualTo(2);

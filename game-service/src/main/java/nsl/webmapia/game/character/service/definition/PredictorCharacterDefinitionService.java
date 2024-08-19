@@ -34,14 +34,14 @@ public class PredictorCharacterDefinitionService implements CharacterDefinitionS
     public void init() {
         this.skillProcessor = (act, tar, activatedSkillsToTarget) -> {
             CharacterCode targetCharacter = tar.getCharacterCode();
-            Integer roomId = act.getGameInstance().getGameRoom().getRoomId();
+            Integer gameInstanceId = act.getGameInstance().getGameInstanceId();
             if (AVAILABLE_KILL.contains(targetCharacter)) {
-                this.characterAssignmentRepository.updateLifeByGameRoomIdAndMemberId(roomId, tar.getMemberId(), 0);
+                this.characterAssignmentRepository.updateLifeByGameInstanceIdAndMemberId(gameInstanceId, tar.getMemberId(), 0);
                 return new SkillEffect(
                         SkillEffectType.KILL_SUCCESS,
                         act.getMemberId(),
                         tar.getMemberId(),
-                        this.characterAssignmentRepository.findByGameRoomId(roomId)
+                        this.characterAssignmentRepository.findByGameInstanceId(gameInstanceId)
                                 .stream()
                                 .map(CharacterAssignment::getMemberId)
                                 .toList(),
@@ -68,10 +68,10 @@ public class PredictorCharacterDefinitionService implements CharacterDefinitionS
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
         return Map.of(
                 SkillType.INVESTIGATE_ALIVE_CHARACTER,
-                this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameRoomId(gameRoomId)
+                this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId)
                         .stream()
                         .map(CharacterAssignment::getMemberId)
                         .toList()
@@ -80,11 +80,11 @@ public class PredictorCharacterDefinitionService implements CharacterDefinitionS
 
     @Override
     public CharacterCode getCharacterCode() {
-        return null;
+        return CharacterCode.PREDICTOR;
     }
 
     @Override
     public Faction getFaction() {
-        return null;
+        return Faction.HUMAN;
     }
 }

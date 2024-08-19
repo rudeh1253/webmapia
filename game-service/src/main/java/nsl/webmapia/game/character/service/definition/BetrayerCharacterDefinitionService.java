@@ -62,11 +62,12 @@ public class BetrayerCharacterDefinitionService implements CharacterDefinitionSe
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        List<CharacterAssignment> characterAssignments = this.characterAssignmentRepository.findByGameRoomId(gameRoomId);
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+        List<CharacterAssignment> characterAssignments =
+                this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
         return Map.of(
                 SkillType.ENTER_WOLF_CHAT,
-                characterAssignments.stream().filter((ca) -> !ca.isDead()).map(CharacterAssignment::getMemberId).toList(),
+                characterAssignments.stream().map(CharacterAssignment::getMemberId).toList(),
                 SkillType.INVESTIGATE_DEAD_CHARACTER,
                 characterAssignments.stream().filter(CharacterAssignment::isDead).map(CharacterAssignment::getMemberId).toList()
         );

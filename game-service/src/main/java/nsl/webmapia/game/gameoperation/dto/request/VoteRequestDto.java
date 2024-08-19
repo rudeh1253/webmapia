@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class VoteRequestDto {
-    private int gameRoomId;
+    private int gameInstanceId;
     private String voterId;
     private String targetId;
 }
