@@ -12,17 +12,21 @@ import nsl.webmapia.game.common.SystemMessageType;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
+import nsl.webmapia.game.skill.domain.SkillEffect;
+import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 import nsl.webmapia.game.skill.entity.ActivatedSkill;
 import nsl.webmapia.game.skill.repository.ActivatedSkillRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SkillServiceImpl implements SkillService {
     private final ActivatedSkillRepository activatedSkillRepository;
     private final CharacterDefinitionFactoryService characterDefinitionFactory;
@@ -30,7 +34,7 @@ public class SkillServiceImpl implements SkillService {
     private final GameInstanceRepository gameInstanceRepository;
 
     @Override
-    public BaseSystemMessageResponseDto<List<SkillType>> getAvailableSkills(int gameRoomId, String memberId) {
+    public BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameRoomId, String memberId) {
         // TODO: IllegalStateException is appropriate here?
         CharacterAssignment characterAssignment =
                 this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, memberId)
@@ -41,11 +45,10 @@ public class SkillServiceImpl implements SkillService {
                 this.characterDefinitionFactory.getCharacterDefinitionOfCharacterCode(characterAssignment.getCharacterCode());
         log.debug("characterDefinitionService instanceof WolfCharacterDefinitionService={}",
                 characterDefinitionService instanceof WolfCharacterDefinitionService);
-        List<SkillType> result = characterDefinitionService.getAvailableSkillTypes(gameRoomId, memberId);
-        return BaseSystemMessageResponseDto.<List<SkillType>>builder()
+        return BaseSystemMessageResponseDto.<Map<SkillType, List<String>>>builder()
                 .receiverIds(List.of(memberId))
                 .systemMessageType(SystemMessageType.AVAILABLE_SKILLS)
-                .content(result)
+                .content(characterDefinitionService.getAvailableSkillTypes(gameRoomId, memberId))
                 .build();
     }
 
@@ -60,13 +63,55 @@ public class SkillServiceImpl implements SkillService {
         ActivatedSkill activatedSkill = new ActivatedSkill();
         activatedSkill.setSkillType(skillType);
         activatedSkill.setRound(gameInstance.getRound());
-        activatedSkill.setActivatorId(activatorId);
-        activatedSkill.setTargetId(targetId);
-        activatedSkill.setGameInstance(gameInstance);
+        activatedSkill.setActivator(this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, activatorId)
+                .orElseThrow(NoSuchElementException::new));
+        activatedSkill.setTarget(this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, targetId)
+                .orElseThrow(NoSuchElementException::new));
         this.activatedSkillRepository.save(activatedSkill);
     }
 
     private boolean isGameInstanceNotNight(GameInstance gameInstance) {
         return gameInstance.getGamePhase() != GamePhase.NIGHT;
+    }
+
+    @Override
+    public List<SkillEffect> processSkills(int gameRoomId) {
+        GameInstance gameInstance = this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(gameRoomId)
+                .orElseThrow(NoSuchElementException::new);
+        List<ActivatedSkill> activatedSkillsOnRound =
+                this.activatedSkillRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), gameInstance.getRound());
+
+        List<SkillEffect> skillEffects = new ArrayList<>();
+        Map<String, Set<ActivatedSkill>> targetMap = wrapBasedOnTarget(activatedSkillsOnRound);
+        for (String targetId : targetMap.keySet()) {
+            Set<ActivatedSkill> activatedSkillsToTarget = targetMap.get(targetId);
+            for (ActivatedSkill activatedSkillOnTarget : activatedSkillsToTarget) {
+                CharacterDefinitionService characterDefinitionService =
+                        this.characterDefinitionFactory.getCharacterDefinitionOfCharacterCode(activatedSkillOnTarget.getActivator().getCharacterCode());
+                SkillInfo skillInfo = characterDefinitionService.getSkillOfType(activatedSkillOnTarget.getSkillType());
+                SkillEffect skillEffect = skillInfo.getSkillUnitProcessor()
+                        .process(
+                                activatedSkillOnTarget.getActivator(),
+                                activatedSkillOnTarget.getTarget(),
+                                activatedSkillsToTarget.stream().map(ActivatedSkill::getSkillType).collect(Collectors.toSet())
+                        );
+                skillEffects.add(skillEffect);
+            }
+        }
+        return skillEffects;
+    }
+
+    private Map<String, Set<ActivatedSkill>> wrapBasedOnTarget(List<ActivatedSkill> activatedSkills) {
+        Map<String, Set<ActivatedSkill>> activatedSkillMapToTarget = new HashMap<>();
+        for (ActivatedSkill as : activatedSkills) {
+            if (!activatedSkillMapToTarget.containsKey(as.getTarget().getMemberId())) {
+                Set<ActivatedSkill> asSet = new HashSet<>();
+                asSet.add(as);
+                activatedSkillMapToTarget.put(as.getTarget().getMemberId(), asSet);
+            } else {
+                activatedSkillMapToTarget.get(as.getTarget().getMemberId()).add(as);
+            }
+        }
+        return activatedSkillMapToTarget;
     }
 }

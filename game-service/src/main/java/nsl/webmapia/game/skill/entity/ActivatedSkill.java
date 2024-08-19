@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import nsl.webmapia.game.gameoperation.entity.GameInstance;
+import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 @Entity
@@ -13,7 +13,7 @@ import nsl.webmapia.game.skill.domain.SkillType;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"characterAssignment"})
+@ToString
 public class ActivatedSkill {
 
     @Id
@@ -25,16 +25,14 @@ public class ActivatedSkill {
     @Column(name = "skill_type")
     private SkillType skillType;
 
-    @ManyToOne
-    @JoinColumn(name = "game_instance_id")
-    private GameInstance gameInstance;
-
     @Column(name = "round")
     private int round;
 
-    @Column(name = "activator_id")
-    private String activatorId;
+    @ManyToOne
+    @JoinColumn(name = "activator_id")
+    private CharacterAssignment activator;
 
-    @Column(name = "target_id")
-    private String targetId;
+    @ManyToOne
+    @JoinColumn(name = "target_id")
+    private CharacterAssignment target;
 }

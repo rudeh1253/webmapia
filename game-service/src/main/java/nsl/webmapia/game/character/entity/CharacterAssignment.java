@@ -34,6 +34,6 @@ public class CharacterAssignment {
     private GameInstance gameInstance;
 
     public boolean isDead() {
-        return this.life == 0;
+        return this.life < 1;
     }
 }

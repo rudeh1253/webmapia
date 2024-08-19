@@ -6,6 +6,7 @@ import nsl.webmapia.game.skill.domain.SkillInfo;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CharacterDefinitionService {
 
@@ -17,8 +18,15 @@ public interface CharacterDefinitionService {
      */
     SkillInfo getSkillOfType(SkillType skillType);
 
-    default List<SkillType> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        return List.of();
+    /**
+     * Return available skill types and for each skill type, available target ids.
+     *
+     * @param gameRoomId the GameInstance belongs to
+     * @param memberId of available skill types
+     * @return a map which keys are available skill types and values are ids of available targets for each skill type
+     */
+    default Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
+        return Map.of();
     }
 
     /**

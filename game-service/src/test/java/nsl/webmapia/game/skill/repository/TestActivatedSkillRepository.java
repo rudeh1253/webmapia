@@ -107,10 +107,9 @@ class TestActivatedSkillRepository {
         ActivatedSkill activatedSkill = new ActivatedSkill();
         activatedSkill.setSkillType(SkillType.KILL);
         activatedSkill.setRound(1);
-        activatedSkill.setActivatorId(
-                this.characterAssignmentRepository.findByGameInstanceId(gameInstance.getGameInstanceId()).get(0).getMemberId()
+        activatedSkill.setActivator(
+                this.characterAssignmentRepository.findByGameInstanceId(gameInstance.getGameInstanceId()).get(0)
         );
-        activatedSkill.setGameInstance(gameInstance);
 
         this.activatedSkillRepository.save(activatedSkill);
 

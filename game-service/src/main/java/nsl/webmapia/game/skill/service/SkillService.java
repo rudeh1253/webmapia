@@ -1,9 +1,11 @@
 package nsl.webmapia.game.skill.service;
 
 import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
+import nsl.webmapia.game.skill.domain.SkillEffect;
 import nsl.webmapia.game.skill.domain.SkillType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -13,7 +15,7 @@ import java.util.NoSuchElementException;
  */
 public interface SkillService {
 
-    BaseSystemMessageResponseDto<List<SkillType>> getAvailableSkills(int gameRoomId, String memberId);
+    BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameRoomId, String memberId);
 
     /**
      * Activate skill of given round.
@@ -29,4 +31,6 @@ public interface SkillService {
      */
     void activateSkill(int gameRoomId, String activatorId, String targetId, SkillType skillType)
             throws IllegalStateException, NoSuchElementException;
+
+    List<SkillEffect> processSkills(int gameRoomId);
 }
