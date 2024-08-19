@@ -4,9 +4,9 @@ public enum CharacterCode {
     WOLF("늑대"),
     BETRAYER("배신자"),
     FOLLOWER("추종자"),
-//    PREDICTOR,
+    PREDICTOR("예언자"),
     GUARD("경비병"),
-//    MEDIUMSHIP,
+    MEDIUMSHIP("영매"),
     DETECTIVE("탐정"),
     SECRET_SOCIETY("비밀결사"),
     NOBILITY("귀족"),
@@ -14,7 +14,9 @@ public enum CharacterCode {
     TEMPLAR("템플러"),
     CITIZEN("시민"),
     MURDERER("살인자"),
-    HUMAN_MOUSE("쥐인간");
+    HUMAN_MOUSE("쥐인간"),
+
+    GOOD_PERSON("선량한 시민");
 
     private final String title;
 
