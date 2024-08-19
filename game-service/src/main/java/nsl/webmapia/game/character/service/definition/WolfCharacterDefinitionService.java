@@ -1,5 +1,6 @@
 package nsl.webmapia.game.character.service.definition;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
@@ -22,47 +23,55 @@ import java.util.stream.Collectors;
 public class WolfCharacterDefinitionService implements CharacterDefinitionService {
     private final ActivatedSkillRepository activatedSkillRepository;
     private final CharacterAssignmentRepository characterAssignmentRepository;
-    private final SkillUnitProcessor skillProcessorForBehead = (act, tar, activatedSkillsToTarget) -> {
-        boolean success = isBeheadAvailable(act.getGameInstance().getGameRoom().getRoomId(), act.getMemberId())
-                && !tar.isDead()
-                && tar.getCharacterCode() != CharacterCode.HUMAN_MOUSE;
-        if (success) {
-            this.characterAssignmentRepository.updateLifeByMemberId(tar.getMemberId(), tar.getLife() - 1);
-        }
-        return new SkillEffect(
-                success ? SkillEffectType.BEHEAD_SUCCESS : SkillEffectType.BEHEAD_FAIL,
-                act.getMemberId(),
-                tar.getMemberId(),
-                success ? this.characterAssignmentRepository.findByGameInstanceId(act.getGameInstance().getGameInstanceId())
-                        .stream()
-                        .map(CharacterAssignment::getMemberId)
-                        .toList()
-                        : List.of(act.getMemberId()),
-                // TODO: Replace hard code with MessageSource
-                success ? String.format("%s가 늑대에 의해 참살당했습니다.", tar.getMemberId())
-                        : String.format("%s를 참살하는 데 실패했습니다.", tar.getMemberId())
-        );
-    };
-    private final SkillUnitProcessor skillProcessorForKill = (act, tar, activatedSkillsToTarget) -> {
-        boolean success = !tar.isDead()
-                && !activatedSkillsToTarget.contains(SkillType.GUARD)
-                && tar.getCharacterCode() != CharacterCode.HUMAN_MOUSE;
-        if (success) {
-            this.characterAssignmentRepository.updateLifeByMemberId(tar.getMemberId(), tar.getLife() - 1);
-        }
-        return new SkillEffect(
-                success ? SkillEffectType.KILL_SUCCESS : SkillEffectType.KILL_FAIL,
-                act.getMemberId(),
-                tar.getMemberId(),
-                success ? this.characterAssignmentRepository.findByGameInstanceId(act.getGameInstance().getGameInstanceId())
-                        .stream()
-                        .map(CharacterAssignment::getMemberId)
-                        .toList()
-                        : List.of(act.getMemberId()),
-                success ? String.format("%s가 늑대에 의해 죽었습니다.", tar.getMemberId())
-                        : String.format("%s를 죽이는 데 실패했습니다.", tar.getMemberId())
-        );
-    };
+
+    private SkillUnitProcessor skillProcessorForBehead;
+    private SkillUnitProcessor skillProcessorForKill;
+
+    @PostConstruct
+    public void init() {
+        this.skillProcessorForBehead = (act, tar, activatedSkillsToTarget) -> {
+            boolean success = isBeheadAvailable(act.getGameInstance().getGameRoom().getRoomId(), act.getMemberId())
+                    && !tar.isDead()
+                    && tar.getCharacterCode() != CharacterCode.HUMAN_MOUSE;
+            if (success) {
+                this.characterAssignmentRepository.updateLifeByGameRoomIdAndMemberId(act.getGameInstance().getGameRoom().getRoomId(), tar.getMemberId(), tar.getLife() - 1);
+            }
+            return new SkillEffect(
+                    success ? SkillEffectType.BEHEAD_SUCCESS : SkillEffectType.BEHEAD_FAIL,
+                    act.getMemberId(),
+                    tar.getMemberId(),
+                    success ? this.characterAssignmentRepository.findByGameInstanceId(act.getGameInstance().getGameInstanceId())
+                            .stream()
+                            .map(CharacterAssignment::getMemberId)
+                            .toList()
+                            : List.of(act.getMemberId()),
+                    // TODO: Replace hard code with MessageSource
+                    success ? String.format("%s가 늑대에 의해 참살당했습니다.", tar.getMemberId())
+                            : String.format("%s를 참살하는 데 실패했습니다.", tar.getMemberId())
+            );
+        };
+
+        this.skillProcessorForKill = (act, tar, activatedSkillsToTarget) -> {
+            boolean success = !tar.isDead()
+                    && !activatedSkillsToTarget.contains(SkillType.GUARD)
+                    && tar.getCharacterCode() != CharacterCode.HUMAN_MOUSE;
+            if (success) {
+                this.characterAssignmentRepository.updateLifeByGameRoomIdAndMemberId(act.getGameInstance().getGameRoom().getRoomId(), tar.getMemberId(), tar.getLife() - 1);
+            }
+            return new SkillEffect(
+                    success ? SkillEffectType.KILL_SUCCESS : SkillEffectType.KILL_FAIL,
+                    act.getMemberId(),
+                    tar.getMemberId(),
+                    success ? this.characterAssignmentRepository.findByGameInstanceId(act.getGameInstance().getGameInstanceId())
+                            .stream()
+                            .map(CharacterAssignment::getMemberId)
+                            .toList()
+                            : List.of(act.getMemberId()),
+                    success ? String.format("%s가 늑대에 의해 죽었습니다.", tar.getMemberId())
+                            : String.format("%s를 죽이는 데 실패했습니다.", tar.getMemberId())
+            );
+        };
+    }
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {

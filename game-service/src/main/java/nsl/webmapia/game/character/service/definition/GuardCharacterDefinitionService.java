@@ -1,5 +1,6 @@
 package nsl.webmapia.game.character.service.definition;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
@@ -15,29 +16,34 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class GuardCharacterDefinitionService implements CharacterDefinitionService {
-    private final SkillUnitProcessor skillProcessor = (act, tar, activatedSkillsToTarget) -> {
-        if (!activatedSkillsToTarget.contains(SkillType.BEHEAD)
-                && !activatedSkillsToTarget.contains(SkillType.MURDER)
-                && activatedSkillsToTarget.contains(SkillType.KILL)) {
-            return new SkillEffect(
-                    SkillEffectType.GUARD_SUCCESS,
-                    act.getMemberId(),
-                    tar.getMemberId(),
-                    List.of(act.getMemberId()),
-                    // TODO: Replace hard code with MessageSource
-                    String.format("%s를 살리는 데 성공했습니다.", tar.getMemberId())
-            );
-        } else {
-            return new SkillEffect(
-                    SkillEffectType.GUARD_FAIL,
-                    act.getMemberId(),
-                    tar.getMemberId(),
-                    List.of(act.getMemberId()),
-                    // TODO: Replace hard code with MessageSource
-                    "실패했습니다."
-            );
-        }
-    };
+    private SkillUnitProcessor skillProcessor;
+
+    @PostConstruct
+    public void init() {
+        this.skillProcessor = (act, tar, activatedSkillsToTarget) -> {
+            if (!activatedSkillsToTarget.contains(SkillType.BEHEAD)
+                    && !activatedSkillsToTarget.contains(SkillType.MURDER)
+                    && activatedSkillsToTarget.contains(SkillType.KILL)) {
+                return new SkillEffect(
+                        SkillEffectType.GUARD_SUCCESS,
+                        act.getMemberId(),
+                        tar.getMemberId(),
+                        List.of(act.getMemberId()),
+                        // TODO: Replace hard code with MessageSource
+                        String.format("%s를 살리는 데 성공했습니다.", tar.getMemberId())
+                );
+            } else {
+                return new SkillEffect(
+                        SkillEffectType.GUARD_FAIL,
+                        act.getMemberId(),
+                        tar.getMemberId(),
+                        List.of(act.getMemberId()),
+                        // TODO: Replace hard code with MessageSource
+                        "실패했습니다."
+                );
+            }
+        };
+    }
 
     private final CharacterAssignmentRepository characterAssignmentRepository;
 

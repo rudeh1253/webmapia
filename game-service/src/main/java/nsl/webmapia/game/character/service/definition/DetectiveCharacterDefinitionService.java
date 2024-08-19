@@ -1,5 +1,6 @@
 package nsl.webmapia.game.character.service.definition;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
@@ -21,19 +22,26 @@ public class DetectiveCharacterDefinitionService implements CharacterDefinitionS
             CharacterCode.FOLLOWER
     );
 
-    private final SkillUnitProcessor skillProcessor = (act, tar, activatedSkillsToTarget) -> {
-        boolean success = SKILL_TARGET_CHARACTERS.contains(tar.getCharacterCode());
-        return new SkillEffect(
-                success ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
-                act.getMemberId(),
-                tar.getMemberId(),
-                List.of(act.getMemberId()),
-                // TODO: Replace hard code with MessageSource
-                success ? String.format("%s는 %s입니다.", tar.getMemberId(), tar.getCharacterCode().getTitle())
-                        : "실패"
-        );
-    };
     private final CharacterAssignmentRepository characterAssignmentRepository;
+
+
+    private SkillUnitProcessor skillProcessor;
+
+    @PostConstruct
+    public void init() {
+        this.skillProcessor = (act, tar, activatedSkillsToTarget) -> {
+            boolean success = SKILL_TARGET_CHARACTERS.contains(tar.getCharacterCode());
+            return new SkillEffect(
+                    success ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
+                    act.getMemberId(),
+                    tar.getMemberId(),
+                    List.of(act.getMemberId()),
+                    // TODO: Replace hard code with MessageSource
+                    success ? String.format("%s는 %s입니다.", tar.getMemberId(), tar.getCharacterCode().getTitle())
+                            : "실패"
+            );
+        };
+    }
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {

@@ -1,5 +1,6 @@
 package nsl.webmapia.game.character.service.definition;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
@@ -16,22 +17,29 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BetrayerCharacterDefinitionService implements CharacterDefinitionService {
     private final CharacterAssignmentRepository characterAssignmentRepository;
-    private final SkillUnitProcessor skillProcessorForEnterWolfChat = (act, tar, activatedSkillsToTarget) -> new SkillEffect(
-            tar.getCharacterCode() == CharacterCode.WOLF ? SkillEffectType.ENTER_WOLF_CHAT_SUCCESS : SkillEffectType.ENTER_WOLF_CHAT_FAIL,
-            act.getMemberId(),
-            tar.getMemberId(),
-            List.of(act.getMemberId()),
-            // TODO: Replace hard code with MessageSource
-            String.format("%s는 늑대입니다.", tar.getMemberId())
-    );
-    private final SkillUnitProcessor skillProcessorForInvestigateDeadCharacter = (act, tar, activatedSkillsToTarget) -> new SkillEffect(
-            tar.isDead() ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
-            act.getMemberId(),
-            tar.getMemberId(),
-            List.of(act.getMemberId()),
-            // TODO: Replace hard code with MessageSource
-            String.format("%s는 %s입니다.", tar.getMemberId(), tar.getCharacterCode().getTitle())
-    );
+    private SkillUnitProcessor skillProcessorForEnterWolfChat;
+    private SkillUnitProcessor skillProcessorForInvestigateDeadCharacter;
+
+    @PostConstruct
+    public void init() {
+        this.skillProcessorForEnterWolfChat = (act, tar, activatedSkillsToTarget) -> new SkillEffect(
+                tar.getCharacterCode() == CharacterCode.WOLF ? SkillEffectType.ENTER_WOLF_CHAT_SUCCESS : SkillEffectType.ENTER_WOLF_CHAT_FAIL,
+                act.getMemberId(),
+                tar.getMemberId(),
+                List.of(act.getMemberId()),
+                // TODO: Replace hard code with MessageSource
+                String.format("%s는 늑대입니다.", tar.getMemberId())
+        );
+
+        this.skillProcessorForInvestigateDeadCharacter = (act, tar, activatedSkillsToTarget) -> new SkillEffect(
+                tar.isDead() ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
+                act.getMemberId(),
+                tar.getMemberId(),
+                List.of(act.getMemberId()),
+                // TODO: Replace hard code with MessageSource
+                String.format("%s는 %s입니다.", tar.getMemberId(), tar.getCharacterCode().getTitle())
+        );
+    }
 
     /**
      * Activate one of skill of type, either SkillType.ENTER_WOLF_CHAT or SkillType.INVESTIGATE_DEAD_CHARACTER.
