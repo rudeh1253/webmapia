@@ -19,7 +19,8 @@ import java.util.Set;
 public class MediumshipCharacterDefinitionService implements CharacterDefinitionService {
     private final Set<CharacterCode> AVAILABLE_CHARACTER_CODES = Set.of(
             CharacterCode.WOLF,
-            CharacterCode.GUARD
+            CharacterCode.GUARD,
+            CharacterCode.PREDICTOR
     );
 
     private final CharacterAssignmentRepository characterAssignmentRepository;
