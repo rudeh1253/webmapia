@@ -17,11 +17,11 @@ public class HumanMouseCharacterDefinitionService implements CharacterDefinition
 
     @Override
     public CharacterCode getCharacterCode() {
-        return null;
+        return CharacterCode.HUMAN_MOUSE;
     }
 
     @Override
     public Faction getFaction() {
-        return null;
+        return Faction.HUMAN_MOUSE;
     }
 }

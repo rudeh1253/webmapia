@@ -51,7 +51,7 @@ public abstract class Character {
     public abstract Faction getFaction();
 
     /**
-     * Called when this character get killed.
+     * Called when this character getTitle killed.
      * @return true if this character is supposed to be killed, otherwise false
      */
     public boolean onKilled() {
@@ -60,7 +60,7 @@ public abstract class Character {
     }
 
     /**
-     * Called when this character get executed by the result of the vote.
+     * Called when this character getTitle executed by the result of the vote.
      * @return true if this character is supposed to be killed, otherwise false
      */
     public boolean onExecuted() {
@@ -69,7 +69,7 @@ public abstract class Character {
     }
 
     /**
-     * Called when this character get beheaded.
+     * Called when this character getTitle beheaded.
      * @return true if this character is supposed to be killed, otherwise false
      */
     public boolean onBeheaded() {

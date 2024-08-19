@@ -7,18 +7,26 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Repository that stores for a GameInstance, what character a member has been
- * assigned.
- */
-public interface CharacterAssignmentRepository {
+public interface CharacterAssignmentJpaRepository extends JpaRepository<CharacterAssignment, Integer> {
 
-    void save(CharacterAssignment characterAssignment);
-
+    @Query("""
+            SELECT ca FROM CharacterAssignment ca
+            WHERE ca.gameInstance.gameInstanceId = :gameInstanceId
+            """)
     List<CharacterAssignment> findByGameInstanceId(int gameInstanceId);
 
+    @Query("""
+            SELECT ca FROM CharacterAssignment ca
+            WHERE ca.gameInstance.gameRoom.roomId = :gameRoomId
+                AND ca.gameInstance.endTime IS NULL
+            """)
     List<CharacterAssignment> findByGameRoomId(int gameRoomId);
 
+    @Query("""
+            SELECT ca FROM CharacterAssignment ca
+            WHERE ca.gameInstance.gameInstanceId = :gameInstanceId
+                AND ca.memberId = :memberId
+            """)
     Optional<CharacterAssignment> findByGameInstanceIdAndMemberId(int gameInstanceId, String memberId);
 
     /**
@@ -29,7 +37,11 @@ public interface CharacterAssignmentRepository {
      * @param memberId   of CharacterAssignment
      * @return CharacterAssignment instance given conditions. Optional instance can be empty.
      */
+    @Query("""
+            SELECT ca FROM CharacterAssignment ca
+            WHERE ca.gameInstance.gameRoom.roomId = :gameRoomId
+                AND ca.gameInstance.endTime IS NULL
+                AND ca.memberId = :memberId
+            """)
     Optional<CharacterAssignment> findByGameRoomIdAndMemberId(int gameRoomId, String memberId);
-
-    void updateLifeByGameRoomIdAndMemberId(int gameRoomId, String memberId, int life);
 }

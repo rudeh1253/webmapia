@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SoldierCharacterDefinitionService implements CharacterDefinitionService {
-    private int life = 2;
 
     @Override
     public SkillInfo getSkillOfType(SkillType skillType) {

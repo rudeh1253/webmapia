@@ -19,7 +19,7 @@ public class CharacterDefinitionFactoryService {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
         characterDefinitionServices.forEach((cd) ->
-                this.characterCodeToCharacterDefinition.put(cd.getCharacterCode(), new CheckedCharacterDefinitionServiceProxy(cd)));
+                this.characterCodeToCharacterDefinition.put(cd.getCharacterCode(), cd));
     }
 
     public CharacterDefinitionService getCharacterDefinitionOfCharacterCode(CharacterCode characterCode) {
