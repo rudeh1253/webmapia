@@ -15,13 +15,14 @@ public interface CharacterAssignmentJpaRepository extends JpaRepository<Characte
             """)
     List<CharacterAssignment> findByGameInstanceId(int gameInstanceId);
 
-    @Query("""
-            SELECT ca FROM CharacterAssignment ca
-            WHERE ca.gameInstance.gameRoom.roomId = :gameRoomId
-                AND ca.gameInstance.endTime IS NULL
-            """)
-    List<CharacterAssignment> findByGameRoomId(int gameRoomId);
-
+    /**
+     * Find CharacterAssignment instance by gameRoomId and memberId from GameInstance of gameRoomId which is
+     * alive (i.e. endTime is null).
+     *
+     * @param gameInstanceId of GameInstance
+     * @param memberId   of CharacterAssignment
+     * @return CharacterAssignment instance given conditions. Optional instance can be empty.
+     */
     @Query("""
             SELECT ca FROM CharacterAssignment ca
             WHERE ca.gameInstance.gameInstanceId = :gameInstanceId
@@ -31,31 +32,15 @@ public interface CharacterAssignmentJpaRepository extends JpaRepository<Characte
 
     @Query("""
             SELECT ca FROM CharacterAssignment ca
-            WHERE ca.gameInstance.gameRoom.roomId = :gameRoomId
+            WHERE ca.gameInstance.gameInstanceId = :gameInstanceId
                 AND ca.life = 0
             """)
-    List<CharacterAssignment> findDeadCharacterAssignmentsByGameRoomId(int gameRoomId);
+    List<CharacterAssignment> findDeadCharacterAssignmentsByGameInstanceId(int gameInstanceId);
 
     @Query("""
             SELECT ca FROM CharacterAssignment ca
-            WHERE ca.gameInstance.gameRoom.roomId = :gameRoomId
+            WHERE ca.gameInstance.gameInstanceId = :gameInstanceId
                 AND ca.life != 0
             """)
-    List<CharacterAssignment> findAliveCharacterAssignmentsByGameRoomId(int gameRoomId);
-
-    /**
-     * Find CharacterAssignment instance by gameRoomId and memberId from GameInstance of gameRoomId which is
-     * alive (i.e. endTime is null).
-     *
-     * @param gameRoomId of GameInstance
-     * @param memberId   of CharacterAssignment
-     * @return CharacterAssignment instance given conditions. Optional instance can be empty.
-     */
-    @Query("""
-            SELECT ca FROM CharacterAssignment ca
-            WHERE ca.gameInstance.gameRoom.roomId = :gameRoomId
-                AND ca.gameInstance.endTime IS NULL
-                AND ca.memberId = :memberId
-            """)
-    Optional<CharacterAssignment> findByGameRoomIdAndMemberId(int gameRoomId, String memberId);
+    List<CharacterAssignment> findAliveCharacterAssignmentsByGameInstanceId(int gameInstanceId);
 }

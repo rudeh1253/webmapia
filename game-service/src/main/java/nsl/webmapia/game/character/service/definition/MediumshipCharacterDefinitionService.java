@@ -54,9 +54,9 @@ public class MediumshipCharacterDefinitionService implements CharacterDefinition
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
         List<CharacterAssignment> deadCharacters =
-                this.characterAssignmentRepository.findDeadCharacterAssignmentsByGameRoomId(gameRoomId);
+                this.characterAssignmentRepository.findDeadCharacterAssignmentsByGameInstanceId(gameInstanceId);
         return Map.of(
                 SkillType.INVESTIGATE_DEAD_CHARACTER,
                 deadCharacters.stream().map(CharacterAssignment::getMemberId).toList()

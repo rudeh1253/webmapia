@@ -34,10 +34,10 @@ public class SkillServiceImpl implements SkillService {
     private final GameInstanceRepository gameInstanceRepository;
 
     @Override
-    public BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameRoomId, String memberId) {
+    public BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameInstanceId, String memberId) {
         // TODO: IllegalStateException is appropriate here?
         CharacterAssignment characterAssignment =
-                this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, memberId)
+                this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, memberId)
                         .orElseThrow(IllegalStateException::new);
         log.debug("characterAssignment.memberId={}", characterAssignment.getMemberId());
         log.debug("characterAssignment.characterCode={}", characterAssignment.getCharacterCode());
@@ -48,14 +48,14 @@ public class SkillServiceImpl implements SkillService {
         return BaseSystemMessageResponseDto.<Map<SkillType, List<String>>>builder()
                 .receiverIds(List.of(memberId))
                 .systemMessageType(SystemMessageType.AVAILABLE_SKILLS)
-                .content(characterDefinitionService.getAvailableSkillTypes(gameRoomId, memberId))
+                .content(characterDefinitionService.getAvailableSkillTypes(gameInstanceId, memberId))
                 .build();
     }
 
     @Override
-    public void activateSkill(int gameRoomId, String activatorId, String targetId, SkillType skillType)
+    public void activateSkill(int gameInstanceId, String activatorId, String targetId, SkillType skillType)
             throws IllegalStateException, NoSuchElementException {
-        GameInstance gameInstance = this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(gameRoomId)
+        GameInstance gameInstance = this.gameInstanceRepository.findById(gameInstanceId)
                 .orElseThrow(NoSuchElementException::new);
         if (isGameInstanceNotNight(gameInstance)) {
             throw new IllegalStateException();
@@ -63,9 +63,9 @@ public class SkillServiceImpl implements SkillService {
         ActivatedSkill activatedSkill = new ActivatedSkill();
         activatedSkill.setSkillType(skillType);
         activatedSkill.setRound(gameInstance.getRound());
-        activatedSkill.setActivator(this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, activatorId)
+        activatedSkill.setActivator(this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, activatorId)
                 .orElseThrow(NoSuchElementException::new));
-        activatedSkill.setTarget(this.characterAssignmentRepository.findByGameRoomIdAndMemberId(gameRoomId, targetId)
+        activatedSkill.setTarget(this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, targetId)
                 .orElseThrow(NoSuchElementException::new));
         this.activatedSkillRepository.save(activatedSkill);
     }
@@ -75,8 +75,8 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
-    public List<SkillEffect> processSkills(int gameRoomId) {
-        GameInstance gameInstance = this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(gameRoomId)
+    public List<SkillEffect> processSkills(int gameInstanceId) {
+        GameInstance gameInstance = this.gameInstanceRepository.findById(gameInstanceId)
                 .orElseThrow(NoSuchElementException::new);
         List<ActivatedSkill> activatedSkillsOnRound =
                 this.activatedSkillRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), gameInstance.getRound());

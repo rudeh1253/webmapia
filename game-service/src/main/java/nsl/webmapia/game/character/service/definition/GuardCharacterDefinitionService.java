@@ -53,8 +53,9 @@ public class GuardCharacterDefinitionService implements CharacterDefinitionServi
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        List<CharacterAssignment> ca = this.characterAssignmentRepository.findByGameRoomId(gameRoomId);
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+        List<CharacterAssignment> ca =
+                this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
         return Map.of(
                 SkillType.GUARD,
                 ca.stream().filter((c) -> !c.isDead()).map(CharacterAssignment::getMemberId).toList()

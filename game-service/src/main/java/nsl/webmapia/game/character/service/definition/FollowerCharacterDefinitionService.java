@@ -12,7 +12,10 @@ import nsl.webmapia.game.skill.entity.ActivatedSkill;
 import nsl.webmapia.game.skill.repository.ActivatedSkillRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -58,17 +61,17 @@ public class FollowerCharacterDefinitionService implements CharacterDefinitionSe
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        List<CharacterAssignment> ca = this.characterAssignmentRepository.findByGameRoomId(gameRoomId);
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+        List<CharacterAssignment> ca = this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
         Map<SkillType, List<String>> availableSkillTypes = new HashMap<>();
         availableSkillTypes.put(
                 SkillType.ENTER_WOLF_CHAT,
-                ca.stream().filter((c) -> !c.isDead()).map(CharacterAssignment::getMemberId).toList()
+                ca.stream().map(CharacterAssignment::getMemberId).toList()
         );
         insertIfInvestigateAliveCharacterAvailable(
                 availableSkillTypes,
                 ca,
-                gameRoomId,
+                gameInstanceId,
                 memberId
         );
         return Collections.unmodifiableMap(availableSkillTypes);
@@ -76,24 +79,16 @@ public class FollowerCharacterDefinitionService implements CharacterDefinitionSe
 
     private void insertIfInvestigateAliveCharacterAvailable(Map<SkillType, List<String>> availableSkillTypes,
                                                             List<CharacterAssignment> ca,
-                                                            int gameRoomId,
+                                                            int gameInstanceId,
                                                             String memberId) {
-        List<ActivatedSkill> activated = this.activatedSkillRepository.findByGameRoomIdAndActivatorId(gameRoomId, memberId);
+        List<ActivatedSkill> activated = this.activatedSkillRepository.findByGameInstanceIdAndActivatorId(gameInstanceId, memberId);
         if (activated.stream().anyMatch((as) -> as.getSkillType() == SkillType.INVESTIGATE_ALIVE_CHARACTER)) {
             return;
         }
         availableSkillTypes.put(
                 SkillType.INVESTIGATE_ALIVE_CHARACTER,
-                ca.stream().filter((c) -> !c.isDead()).map(CharacterAssignment::getMemberId).toList()
+                ca.stream().map(CharacterAssignment::getMemberId).toList()
         );
-    }
-
-    private boolean isInvestigateAliveCharacterAvailable(int gameRoomId, String memberId) {
-        return !this.activatedSkillRepository.findByGameRoomIdAndActivatorId(gameRoomId, memberId)
-                .stream()
-                .map(ActivatedSkill::getSkillType)
-                .toList()
-                .contains(SkillType.INVESTIGATE_ALIVE_CHARACTER);
     }
 
     @Override

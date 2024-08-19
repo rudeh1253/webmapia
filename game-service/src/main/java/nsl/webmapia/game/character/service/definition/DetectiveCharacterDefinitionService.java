@@ -49,8 +49,9 @@ public class DetectiveCharacterDefinitionService implements CharacterDefinitionS
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameRoomId, String memberId) {
-        List<CharacterAssignment> characterAssignments = this.characterAssignmentRepository.findByGameRoomId(gameRoomId);
+    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+        List<CharacterAssignment> characterAssignments =
+                this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
         return Map.of(
                 SkillType.INVESTIGATE_ALIVE_CHARACTER,
                 characterAssignments.stream().filter((ca) -> !ca.isDead()).map(CharacterAssignment::getMemberId).toList()

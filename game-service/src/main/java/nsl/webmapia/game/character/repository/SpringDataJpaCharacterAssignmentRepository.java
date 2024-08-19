@@ -24,18 +24,13 @@ public class SpringDataJpaCharacterAssignmentRepository implements CharacterAssi
     }
 
     @Override
-    public List<CharacterAssignment> findByGameRoomId(int gameRoomId) {
-        return this.characterAssignmentJpaRepository.findByGameRoomId(gameRoomId);
+    public List<CharacterAssignment> findDeadCharacterAssignmentsByGameInstanceId(int gameInstanceId) {
+        return this.characterAssignmentJpaRepository.findDeadCharacterAssignmentsByGameInstanceId(gameInstanceId);
     }
 
     @Override
-    public List<CharacterAssignment> findDeadCharacterAssignmentsByGameRoomId(int gameRoomId) {
-        return this.characterAssignmentJpaRepository.findDeadCharacterAssignmentsByGameRoomId(gameRoomId);
-    }
-
-    @Override
-    public List<CharacterAssignment> findAliveCharacterAssignmentsByGameRoomId(int gameRoomId) {
-        return this.characterAssignmentJpaRepository.findAliveCharacterAssignmentsByGameRoomId(gameRoomId);
+    public List<CharacterAssignment> findAliveCharacterAssignmentsByGameInstanceId(int gameInstanceId) {
+        return this.characterAssignmentJpaRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
     }
 
     @Override
@@ -44,13 +39,8 @@ public class SpringDataJpaCharacterAssignmentRepository implements CharacterAssi
     }
 
     @Override
-    public Optional<CharacterAssignment> findByGameRoomIdAndMemberId(int gameRoomId, String memberId) {
-        return this.characterAssignmentJpaRepository.findByGameRoomIdAndMemberId(gameRoomId, memberId);
-    }
-
-    @Override
-    public void updateLifeByGameRoomIdAndMemberId(int gameRoomId, String memberId, int life) {
-        CharacterAssignment characterAssignment = this.characterAssignmentJpaRepository.findByGameRoomIdAndMemberId(gameRoomId, memberId)
+    public void updateLifeByGameInstanceIdAndMemberId(int gameInstanceId, String memberId, int life) {
+        CharacterAssignment characterAssignment = this.characterAssignmentJpaRepository.findByGameInstanceIdAndMemberId(gameInstanceId, memberId)
                 .orElseThrow(NoSuchElementException::new);
         characterAssignment.setLife(life);
     }
