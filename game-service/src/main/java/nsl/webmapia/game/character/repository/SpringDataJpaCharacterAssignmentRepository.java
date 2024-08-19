@@ -29,6 +29,16 @@ public class SpringDataJpaCharacterAssignmentRepository implements CharacterAssi
     }
 
     @Override
+    public List<CharacterAssignment> findDeadCharacterAssignmentsByGameRoomId(int gameRoomId) {
+        return this.characterAssignmentJpaRepository.findDeadCharacterAssignmentsByGameRoomId(gameRoomId);
+    }
+
+    @Override
+    public List<CharacterAssignment> findAliveCharacterAssignmentsByGameRoomId(int gameRoomId) {
+        return this.characterAssignmentJpaRepository.findAliveCharacterAssignmentsByGameRoomId(gameRoomId);
+    }
+
+    @Override
     public Optional<CharacterAssignment> findByGameInstanceIdAndMemberId(int gameInstanceId, String memberId) {
         return this.characterAssignmentJpaRepository.findByGameInstanceIdAndMemberId(gameInstanceId, memberId);
     }
