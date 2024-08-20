@@ -14,4 +14,12 @@ public interface ParticipationRepository extends JpaRepository<Participation, In
                 AND p.disconnected = FALSE
             """)
     List<Participation> findNotDisconnectedByGameRoomId(int gameRoomId);
+
+    @Query("""
+            SELECT p
+            FROM Participation p
+            INNER JOIN GameInstance g ON p.gameRoom.roomId =  g.gameRoom.roomId
+            WHERE g.gameInstanceId = :gameInstanceId
+            """)
+    List<Participation> findNotDisconnectedByGameInstanceId(int gameInstanceId);
 }

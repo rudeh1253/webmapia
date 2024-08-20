@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 
@@ -12,6 +13,7 @@ import nsl.webmapia.game.gameoperation.entity.GameInstance;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class CharacterAssignment {
 
     @Id
@@ -27,7 +29,7 @@ public class CharacterAssignment {
     private CharacterCode characterCode;
 
     @Column(name = "life")
-    private int life;
+    private int life = 1;
 
     @ManyToOne
     @JoinColumn(name = "game_instance_id")
