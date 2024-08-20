@@ -37,12 +37,8 @@ public class SkillServiceImpl implements SkillService {
         CharacterAssignment characterAssignment =
                 this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, memberId)
                         .orElseThrow(IllegalStateException::new);
-        log.debug("characterAssignment.memberId={}", characterAssignment.getMemberId());
-        log.debug("characterAssignment.characterCode={}", characterAssignment.getCharacterCode());
         CharacterDefinitionService characterDefinitionService =
                 this.characterDefinitionFactory.getCharacterDefinitionOfCharacterCode(characterAssignment.getCharacterCode());
-        log.debug("characterDefinitionService instanceof WolfCharacterDefinitionService={}",
-                characterDefinitionService instanceof WolfCharacterDefinitionService);
         return characterDefinitionService.getAvailableSkillTypes(gameInstanceId, memberId);
     }
 
