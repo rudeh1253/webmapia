@@ -6,8 +6,6 @@ import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
-import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
-import nsl.webmapia.game.common.SystemMessageType;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.dto.VoteDto;
 import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
@@ -17,7 +15,6 @@ import nsl.webmapia.game.gameoperation.entity.Vote;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.gameoperation.repository.VoteRepository;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
-import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -40,7 +37,7 @@ public class GameServiceImpl implements GameService {
     private final MessageSource messageSource;
 
     @Override
-    public BaseSystemMessageResponseDto<Integer> startGame(int roomId) {
+    public Integer startGame(int roomId) {
         // TODO: NoSuchElementException should notify that GameRoom instance of roomId is absent.
         // Or replace with another exception.
         GameRoom gameRoom = this.gameRoomRepository.findById(roomId)
@@ -52,16 +49,11 @@ public class GameServiceImpl implements GameService {
         gameInstance.setStartTime(LocalDateTime.now());
         gameInstance.setGamePhase(GamePhase.START);
         this.gameInstanceRepository.save(gameInstance);
-        return BaseSystemMessageResponseDto.<Integer>builder()
-                .receiverIds(gameRoom.getParticipationList().stream().map(Participation::getParticipantId).toList())
-                .systemMessageType(SystemMessageType.GAME_STARTED)
-                .message(this.messageSource.getMessage("system.alert.game-started", null, null))
-                .content(gameInstance.getGameInstanceId())
-                .build();
+        return gameInstance.getGameInstanceId();
     }
 
     @Override
-    public BaseSystemMessageResponseDto<List<VoteDto>> vote(VoteRequestDto requestDto) {
+    public List<VoteDto> vote(VoteRequestDto requestDto) {
         GameInstance gameInstance = this.gameInstanceRepository.findById(requestDto.getGameInstanceId())
                 .orElseThrow(NoSuchElementException::new);
         // TODO: instead of IllegalArgumentException, more specific exception is needed.
@@ -82,19 +74,14 @@ public class GameServiceImpl implements GameService {
                 gameInstance
         ));
 
-        return BaseSystemMessageResponseDto.<List<VoteDto>>builder()
-                .receiverIds(characterAssignments.stream().map(CharacterAssignment::getMemberId).toList())
-                .systemMessageType(SystemMessageType.VOTE_RESPONSE)
-                .message(this.messageSource.getMessage("system.process.vote-response", null, null))
-                .content(this.voteRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), gameInstance.getRound())
-                        .stream()
-                        .map(VoteDto::of)
-                        .toList())
-                .build();
+        return this.voteRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), gameInstance.getRound())
+                .stream()
+                .map(VoteDto::of)
+                .toList();
     }
 
     @Override
-    public BaseSystemMessageResponseDto<PhaseResultResponseDto> endPhase(int gameInstanceId, String requesterId) {
+    public PhaseResultResponseDto endPhase(int gameInstanceId, String requesterId) {
         return null;
     }
 }
