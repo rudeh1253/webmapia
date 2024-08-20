@@ -1,9 +1,41 @@
-DROP TABLE IF EXISTS activated_skill;
-DROP TABLE IF EXISTS character_assignment;
-DROP TABLE IF EXISTS participation;
-DROP TABLE IF EXISTS vote;
-DROP TABLE IF EXISTS game_instance;
-DROP TABLE IF EXISTS game_room;
+DROP PROCEDURE IF EXISTS drop_all_tables;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DELIMITER
+$$
+CREATE PROCEDURE drop_all_tables()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE tname VARCHAR(64);
+
+    DECLARE table_cur CURSOR FOR SELECT table_name
+                                 FROM information_schema.tables
+                                 WHERE table_schema = 'webmapia';
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    OPEN table_cur;
+
+    table_loop
+    :
+    LOOP
+        FETCH table_cur INTO tname;
+        IF done THEN LEAVE table_loop; END IF;
+        SET @tname_schema = CONCAT('webmapia.', tname);
+        SET @drop_table_sql = CONCAT('DROP TABLE IF EXISTS ', @tname_schema);
+        PREPARE stmt FROM @drop_table_sql;
+        EXECUTE stmt;
+    END LOOP;
+
+    CLOSE table_cur;
+END;
+$$
+
+DELIMITER ;
+
+CALL drop_all_tables();
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE game_room
 (
@@ -18,7 +50,7 @@ CREATE TABLE game_instance
 (
     game_instance_id INTEGER AUTO_INCREMENT,
     room_id          INTEGER                                                  NOT NULL,
-    round            INTEGER                                                  NOT NULL CHECK (round > 0),
+    round            INTEGER                                                  NOT NULL CHECK (round >= 0),
     start_time       DATETIME                                                 NOT NULL,
     end_time         DATETIME,
     game_phase       ENUM ('START', 'NIGHT', 'DAYTIME', 'DISCUSSION', 'VOTE') NOT NULL,
