@@ -7,8 +7,6 @@ import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.character.service.definition.WolfCharacterDefinitionService;
-import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
-import nsl.webmapia.game.common.SystemMessageType;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
@@ -34,7 +32,7 @@ public class SkillServiceImpl implements SkillService {
     private final GameInstanceRepository gameInstanceRepository;
 
     @Override
-    public BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameInstanceId, String memberId) {
+    public Map<SkillType, List<String>> getAvailableSkills(int gameInstanceId, String memberId) {
         // TODO: IllegalStateException is appropriate here?
         CharacterAssignment characterAssignment =
                 this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, memberId)
@@ -45,11 +43,7 @@ public class SkillServiceImpl implements SkillService {
                 this.characterDefinitionFactory.getCharacterDefinitionOfCharacterCode(characterAssignment.getCharacterCode());
         log.debug("characterDefinitionService instanceof WolfCharacterDefinitionService={}",
                 characterDefinitionService instanceof WolfCharacterDefinitionService);
-        return BaseSystemMessageResponseDto.<Map<SkillType, List<String>>>builder()
-                .receiverIds(List.of(memberId))
-                .systemMessageType(SystemMessageType.AVAILABLE_SKILLS)
-                .content(characterDefinitionService.getAvailableSkillTypes(gameInstanceId, memberId))
-                .build();
+        return characterDefinitionService.getAvailableSkillTypes(gameInstanceId, memberId);
     }
 
     @Override

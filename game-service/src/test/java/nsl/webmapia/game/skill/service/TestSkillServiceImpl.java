@@ -115,14 +115,12 @@ class TestSkillServiceImpl {
     @DisplayName("getAvailableSkills - wolf - first attemption")
     @Test
     void getAvailableSkills_wolf_noSkillUsed() {
-        BaseSystemMessageResponseDto<Map<SkillType, List<String>>> wolfAvailable =
+        Map<SkillType, List<String>> wolfAvailable =
                 this.skillService.getAvailableSkills(this.gameInstanceId, "host");
 
-        log.info("wolfAvailable.content={}", wolfAvailable.getContent());
+        log.info("wolfAvailable.content={}", wolfAvailable);
 
-        assertThat(wolfAvailable.getContent().keySet()).containsExactlyInAnyOrder(SkillType.BEHEAD, SkillType.KILL);
-        assertThat(wolfAvailable.getReceiverIds())
-                .containsExactly("host");
+        assertThat(wolfAvailable.keySet()).containsExactlyInAnyOrder(SkillType.BEHEAD, SkillType.KILL);
     }
 
     @DisplayName("getAvailableSkills - wolf - after activating BEHEAD")
@@ -137,13 +135,12 @@ class TestSkillServiceImpl {
         behead.setTarget(this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, "member1").get());
         this.activatedSkillRepository.save(behead);
 
-        BaseSystemMessageResponseDto<Map<SkillType, List<String>>> expectedNoBeheadHere =
+        Map<SkillType, List<String>> expectedNoBeheadHere =
                 this.skillService.getAvailableSkills(this.gameInstanceId, "host");
 
-        log.info("expectedNoBeheadHere.content={}", expectedNoBeheadHere.getContent());
+        log.info("expectedNoBeheadHere.content={}", expectedNoBeheadHere);
 
-        assertThat(expectedNoBeheadHere.getContent().keySet()).containsExactly(SkillType.KILL);
-        assertThat(expectedNoBeheadHere.getReceiverIds()).containsExactly("host");
+        assertThat(expectedNoBeheadHere.keySet()).containsExactly(SkillType.KILL);
     }
 
     @DisplayName("activateSkill")
@@ -156,16 +153,16 @@ class TestSkillServiceImpl {
     @DisplayName("After activate BEHEAD and getTitle available skills")
     @Test
     void activateSkill_then_getAvailableSkills() {
-        BaseSystemMessageResponseDto<Map<SkillType, List<String>>> firstAvailable =
+        Map<SkillType, List<String>> firstAvailable =
                 this.skillService.getAvailableSkills(this.gameInstanceId, "host");
-        assertThat(firstAvailable.getContent().keySet()).containsExactlyInAnyOrder(SkillType.KILL, SkillType.BEHEAD);
+        assertThat(firstAvailable.keySet()).containsExactlyInAnyOrder(SkillType.KILL, SkillType.BEHEAD);
         this.skillService.activateSkill(this.gameInstanceId, "host", "member1", SkillType.BEHEAD);
 
-        BaseSystemMessageResponseDto<Map<SkillType, List<String>>> result =
+        Map<SkillType, List<String>> result =
                 this.skillService.getAvailableSkills(this.gameInstanceId, "host");
 
-        assertThat(result.getContent().keySet()).doesNotContain(SkillType.BEHEAD);
-        assertThat(result.getContent().keySet()).containsExactly(SkillType.KILL);
+        assertThat(result.keySet()).doesNotContain(SkillType.BEHEAD);
+        assertThat(result.keySet()).containsExactly(SkillType.KILL);
     }
 
     @DisplayName("processSkills - wolf kills CITIZEN")

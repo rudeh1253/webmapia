@@ -1,6 +1,5 @@
 package nsl.webmapia.game.skill.service;
 
-import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
 import nsl.webmapia.game.skill.domain.SkillEffect;
 import nsl.webmapia.game.skill.domain.SkillType;
 
@@ -15,7 +14,7 @@ import java.util.NoSuchElementException;
  */
 public interface SkillService {
 
-    BaseSystemMessageResponseDto<Map<SkillType, List<String>>> getAvailableSkills(int gameInstanceId, String memberId);
+    Map<SkillType, List<String>> getAvailableSkills(int gameInstanceId, String memberId);
 
     /**
      * Activate skill of given round.
