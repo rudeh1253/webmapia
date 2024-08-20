@@ -6,7 +6,6 @@ import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
-import nsl.webmapia.game.character.service.definition.WolfCharacterDefinitionService;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;

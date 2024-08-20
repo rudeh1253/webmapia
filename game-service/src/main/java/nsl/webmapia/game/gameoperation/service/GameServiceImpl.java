@@ -2,27 +2,32 @@ package nsl.webmapia.game.gameoperation.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.dto.VoteDto;
+import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
 import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
+import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
 import nsl.webmapia.game.gameoperation.dto.response.PhaseResultResponseDto;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.entity.Vote;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.gameoperation.repository.VoteRepository;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
+import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
+import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -33,6 +38,7 @@ public class GameServiceImpl implements GameService {
     private final VoteRepository voteRepository;
     private final GameRoomRepository gameRoomRepository;
     private final CharacterAssignmentRepository characterAssignmentRepository;
+    private final ParticipationRepository participationRepository;
     private final CharacterDefinitionFactoryService characterDefinitionFactoryService;
     private final MessageSource messageSource;
 
@@ -50,6 +56,60 @@ public class GameServiceImpl implements GameService {
         gameInstance.setGamePhase(GamePhase.START);
         this.gameInstanceRepository.save(gameInstance);
         return gameInstance.getGameInstanceId();
+    }
+
+    @Override
+    public CharacterDistributionResponseDto distributeCharacters(CharacterDistributionRequestDto dto)
+            throws IllegalArgumentException {
+        CharacterCode[] characterDist = numByCharactersToArray(dto.getNumByCharacters());
+        List<Participation> participations =
+                this.participationRepository.findNotDisconnectedByGameInstanceId(dto.getGameInstanceId());
+        validateParameterOfDistributeCharacters(
+                characterDist.length,
+                participations.size()
+        );
+
+        List<String> participants = new ArrayList<>(participations.stream()
+                .map(Participation::getParticipantId)
+                .toList());
+        Collections.shuffle(participants); // Randomness
+
+        Map<String, CharacterCode> charactersAssigned = new HashMap<>();
+        int characterDistLen = characterDist.length;
+        for (int i = 0; i < participants.size(); i++) {
+            String participant = participants.get(i);
+            charactersAssigned.put(
+                    participant,
+                    characterDistLen > i ? characterDist[i] : CharacterCode.CITIZEN
+            );
+        }
+        return CharacterDistributionResponseDto.builder()
+                .gameInstanceId(dto.getGameInstanceId())
+                .characterCodesByMemberIds(charactersAssigned)
+                .build();
+    }
+
+    private CharacterCode[] numByCharactersToArray(Map<CharacterCode, Integer> numByCharacters) {
+        return numByCharacters.keySet()
+                .stream()
+                .flatMap((c) -> {
+                    CharacterCode[] subArr = new CharacterCode[numByCharacters.get(c)];
+                    Arrays.fill(subArr, c);
+                    return Stream.of(subArr);
+                })
+                .toArray(CharacterCode[]::new);
+    }
+
+    private void validateParameterOfDistributeCharacters(
+            int totalCharacterDistributionCount,
+            int participationSize
+    ) throws IllegalArgumentException {
+        if (participationSize < totalCharacterDistributionCount) {
+            throw new IllegalArgumentException(
+                    "Total character distribution size exceeds participation size: "
+                            + totalCharacterDistributionCount + " > " + participationSize
+            );
+        }
     }
 
     @Override
