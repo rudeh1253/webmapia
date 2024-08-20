@@ -7,6 +7,7 @@ import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.gameoperation.dto.VoteDto;
 import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
 import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
+import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.entity.Vote;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
@@ -15,9 +16,11 @@ import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -181,7 +184,7 @@ class TestGameServiceImpl {
         GameRoom gameRoom = this.gameRoomRepository.findById(gameRoomId).get();
 
         given.forEach((p) -> this.participationRepository.save(new Participation(p, gameRoom)));
-        Integer gameInstanceId = this.gameService.startGame(gameRoomId);
+        final Integer gameInstanceId = this.gameService.startGame(gameRoomId);
 
         CharacterDistributionRequestDto requestDto = new CharacterDistributionRequestDto();
         requestDto.setGameInstanceId(gameInstanceId);
@@ -207,6 +210,15 @@ class TestGameServiceImpl {
 
         assertThat(counter.keySet()).containsExactlyInAnyOrder(expected.keySet().toArray(new CharacterCode[0]));
         counter.forEach((k, v) -> assertThat(v).isEqualTo(expected.get(k)));
+
+        result.forEach((k, v) -> {
+            CharacterAssignment fromRepo =
+                    this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, k).get();
+            assertThat(fromRepo).isNotNull();
+            assertThat(k).isEqualTo(fromRepo.getMemberId());
+            assertThat(v).isEqualTo(fromRepo.getCharacterCode());
+            assertThat(fromRepo.getLife()).isEqualTo(fromRepo.getCharacterCode() == SOLDIER ? 2 : 1);
+        });
     }
 
     @DisplayName("distributeCharacter - IllegalArgumentException - character distribution request exceeds allowed")

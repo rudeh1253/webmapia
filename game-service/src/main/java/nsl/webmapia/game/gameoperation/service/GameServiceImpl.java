@@ -76,12 +76,21 @@ public class GameServiceImpl implements GameService {
 
         Map<String, CharacterCode> charactersAssigned = new HashMap<>();
         int characterDistLen = characterDist.length;
+        GameInstance gameInstance = this.gameInstanceRepository.findById(dto.getGameInstanceId())
+                .orElseThrow(IllegalArgumentException::new);
         for (int i = 0; i < participants.size(); i++) {
             String participant = participants.get(i);
+            CharacterCode assignedCharacter = characterDistLen > i ? characterDist[i] : CharacterCode.CITIZEN;
             charactersAssigned.put(
                     participant,
-                    characterDistLen > i ? characterDist[i] : CharacterCode.CITIZEN
+                    assignedCharacter
             );
+            CharacterAssignment ca = new CharacterAssignment();
+            ca.setMemberId(participant);
+            ca.setCharacterCode(assignedCharacter);
+            ca.setLife(assignedCharacter == CharacterCode.SOLDIER ? 2 : 1);
+            ca.setGameInstance(gameInstance);
+            this.characterAssignmentRepository.save(ca);
         }
         return CharacterDistributionResponseDto.builder()
                 .gameInstanceId(dto.getGameInstanceId())
