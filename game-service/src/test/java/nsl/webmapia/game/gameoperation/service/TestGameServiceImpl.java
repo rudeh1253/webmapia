@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
-import nsl.webmapia.game.common.BaseSystemMessageResponseDto;
-import nsl.webmapia.game.common.SystemMessageType;
 import nsl.webmapia.game.gameoperation.dto.VoteDto;
 import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
@@ -27,8 +25,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static nsl.webmapia.game.character.domain.CharacterCode.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -55,13 +52,10 @@ class TestGameServiceImpl {
     void startGame() {
         int generatedGameRoomId = insertSampleGameRoom();
 
-        BaseSystemMessageResponseDto<Integer> responseDto = this.gameService.startGame(generatedGameRoomId);
-        log.info("responseDto={}", responseDto);
-
-        assertThat(responseDto.getReceiverIds()).contains("sample-host");
-        assertThat(responseDto.getContent()).isNotNull();
-        assertThat(responseDto.getContent()).isGreaterThan(0);
-        assertThat(responseDto.getSystemMessageType()).isEqualTo(SystemMessageType.GAME_STARTED);
+        assertThatNoException().isThrownBy(() -> {
+            Integer generatedGameInstanceId = this.gameService.startGame(generatedGameRoomId);
+            log.info("generatedGameInstanceId={}", generatedGameInstanceId);
+        });
     }
 
     @DisplayName("startGame() - Attempt to start game of game room that doesn't exist")
@@ -202,14 +196,12 @@ class TestGameServiceImpl {
                            List<VoteDto> expected,
                            int gameInstanceId,
                            String[] sampleParticipants) {
-        BaseSystemMessageResponseDto<List<VoteDto>> vote =
+        List<VoteDto> votes =
                 this.gameService.vote(generateVoteRequestDto(gameInstanceId, voterId, targetId));
-        assertThat(vote.getSystemMessageType()).isEqualTo(SystemMessageType.VOTE_RESPONSE);
-        assertThat(vote.getReceiverIds()).contains(sampleParticipants);
-        assertThat(vote.getContent().size()).isEqualTo(expected.size());
-        assertThat(vote.getContent().stream().map(VoteDto::getVoterId).toArray(String[]::new))
+        assertThat(votes.size()).isEqualTo(expected.size());
+        assertThat(votes.stream().map(VoteDto::getVoterId).toArray(String[]::new))
                 .containsExactlyInAnyOrder(expected.stream().map(VoteDto::getVoterId).toArray(String[]::new));
-        assertThat(vote.getContent().stream().map(VoteDto::getTargetId).toArray(String[]::new))
+        assertThat(votes.stream().map(VoteDto::getTargetId).toArray(String[]::new))
                 .containsExactlyInAnyOrder(expected.stream().map(VoteDto::getTargetId).toArray(String[]::new));
     }
 
