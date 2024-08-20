@@ -17,7 +17,7 @@ public class HibernateGameInstanceRepository implements GameInstanceRepository {
 
     @Override
     public void save(GameInstance gameInstance) {
-        if (gameInstance.getRound() < 1) {
+        if (gameInstance.getRound() < 0) {
             throw new DataIntegrityViolationException("gameInstance.round should be over 0, but " + gameInstance.getRound());
         }
         this.em.persist(gameInstance);

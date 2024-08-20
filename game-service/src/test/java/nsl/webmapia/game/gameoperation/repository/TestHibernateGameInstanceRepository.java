@@ -91,8 +91,7 @@ class TestHibernateGameInstanceRepository {
         GameRoom gameRoom = this.gameRoomRepository.findById(gameRoomId).orElseThrow();
 
         GameInstance gameInstance = new GameInstance();
-        // gameInstance.round is going to be set by 0
-        // gameInstance.setRound(1);
+        gameInstance.setRound(-1);
         gameInstance.setStartTime(LocalDateTime.now());
         gameInstance.setGamePhase(GamePhase.START);
         gameInstance.setGameRoom(gameRoom);
@@ -200,7 +199,7 @@ class TestHibernateGameInstanceRepository {
                 .round(2)
                 .startTime(offset.minusDays(1))
                 .endTime(offset.plusHours(2))
-                .gamePhase(GamePhase.DAYTIME)
+                .gamePhase(GamePhase.DISCUSSION)
                 .build();
         boolean result = this.gameInstanceRepository.updateByGameRoomId(dto);
         assertThat(result).isTrue();
@@ -210,7 +209,7 @@ class TestHibernateGameInstanceRepository {
         assertThat(updated.getRound()).isEqualTo(2);
         assertThat(updated.getStartTime()).isEqualTo(offset.minusDays(1));
         assertThat(updated.getEndTime()).isEqualTo(offset.plusHours(2));
-        assertThat(updated.getGamePhase()).isEqualTo(GamePhase.DAYTIME);
+        assertThat(updated.getGamePhase()).isEqualTo(GamePhase.DISCUSSION);
     }
 
     @DisplayName("updateByGameRoomId() - failed because gameInstance of gameRoomId isn't found")
@@ -225,7 +224,7 @@ class TestHibernateGameInstanceRepository {
                 .round(2)
                 .startTime(offset.minusDays(1))
                 .endTime(offset.plusHours(2))
-                .gamePhase(GamePhase.DAYTIME)
+                .gamePhase(GamePhase.DISCUSSION)
                 .build();
         boolean result = this.gameInstanceRepository.updateByGameRoomId(dto);
         assertThat(result).isFalse();
