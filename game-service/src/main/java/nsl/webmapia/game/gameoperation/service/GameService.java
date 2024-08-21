@@ -4,6 +4,7 @@ import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.dto.GameInstanceDto;
 import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
 import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
+import nsl.webmapia.game.gameoperation.dto.response.GameResultResponseDto;
 
 /**
  * Object of service layer of game operation.
@@ -37,4 +38,6 @@ public interface GameService {
     GameInstanceDto getGameInstance(int gameInstanceId);
 
     GamePhase proceedPhase(int gameInstanceId);
+
+    GameResultResponseDto processGameResult(int gameInstanceId);
 }

@@ -3,6 +3,7 @@ package nsl.webmapia.game.gameoperation.service;
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.dto.GameInstanceDto;
+import nsl.webmapia.game.gameoperation.dto.response.GameResultResponseDto;
 import nsl.webmapia.game.gameoperation.dto.response.PhaseResultResponseDto;
 import nsl.webmapia.game.gameoperation.repository.PhaseEndRequestRepository;
 import nsl.webmapia.game.gameroom.entity.Participation;
@@ -65,10 +66,15 @@ public class PhaseResultService {
     }
 
     private Object processPhaseResult(int gameInstanceId, GamePhase gamePhase) {
+        GameResultResponseDto gameResultResponseDto = this.gameService.processGameResult(gameInstanceId);
+        if (gameResultResponseDto.isGameEnded()) {
+            gamePhase = GamePhase.END;
+        }
         return switch (gamePhase) {
             case START, DISCUSSION -> "";
             case NIGHT -> this.skillService.processSkills(gameInstanceId);
             case VOTE -> this.voteService.processVote(gameInstanceId);
+            case END -> gameResultResponseDto;
         };
     }
 }

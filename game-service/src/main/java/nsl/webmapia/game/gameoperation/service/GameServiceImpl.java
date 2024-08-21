@@ -3,12 +3,16 @@ package nsl.webmapia.game.gameoperation.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.character.domain.Faction;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
+import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
+import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.dto.GameInstanceDto;
 import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
 import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
+import nsl.webmapia.game.gameoperation.dto.response.GameResultResponseDto;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceUpdateDto;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -33,6 +38,7 @@ public class GameServiceImpl implements GameService {
     private final GameRoomRepository gameRoomRepository;
     private final CharacterAssignmentRepository characterAssignmentRepository;
     private final ParticipationRepository participationRepository;
+    private final CharacterDefinitionFactoryService characterDefinitionFactoryService;
     private final MessageSource messageSource;
 
     @Override
@@ -141,5 +147,66 @@ public class GameServiceImpl implements GameService {
             case NIGHT -> GamePhase.DISCUSSION;
             case END -> GamePhase.END;
         };
+    }
+
+    @Override
+    public GameResultResponseDto processGameResult(int gameInstanceId) {
+        // TODO: Test code should be added later
+        List<CharacterAssignment> characters = characterAssignmentRepository.findByGameInstanceId(gameInstanceId);
+        List<CharacterAssignment> aliveCharacters = characters.stream()
+                .filter((c) -> !c.isDead())
+                .toList();
+        Faction winnerFaction = computeWinner(
+                getAliveCharactersOfFaction(aliveCharacters, Faction.WOLF),
+                getAliveCharactersOfFaction(aliveCharacters, Faction.HUMAN),
+                getAliveCharactersOfFaction(aliveCharacters, Faction.HUMAN_MOUSE)
+        );
+        if (winnerFaction == null) {
+            return GameResultResponseDto.builder()
+                    .gameEnded(false)
+                    .build();
+        }
+        return GameResultResponseDto.builder()
+                .gameEnded(true)
+                .charactersByMember(
+                        characters.stream()
+                                .collect(Collectors.toMap(CharacterAssignment::getMemberId, CharacterAssignment::getCharacterCode, (c1, c2) -> c1))
+                )
+                .winFaction(winnerFaction)
+                .wolves(characters.stream().filter((c) -> belongsTo(c, Faction.WOLF)).map(CharacterAssignment::getMemberId).toList())
+                .human(characters.stream().filter((c) -> belongsTo(c, Faction.HUMAN)).map(CharacterAssignment::getMemberId).toList())
+                .humanMouse(characters.stream().filter((c) -> belongsTo(c, Faction.HUMAN_MOUSE)).map(CharacterAssignment::getMemberId).toList())
+                .build();
+    }
+
+    private Set<CharacterCode> getAliveCharactersOfFaction(List<CharacterAssignment> aliveCharacters, Faction faction) {
+        return aliveCharacters.stream()
+                .filter((a) -> belongsTo(a, faction))
+                .map(CharacterAssignment::getCharacterCode)
+                .collect(Collectors.toSet());
+    }
+
+    private boolean belongsTo(CharacterAssignment character, Faction faction) {
+        CharacterDefinitionService characterDefinitionService =
+                this.characterDefinitionFactoryService.getCharacterDefinitionOfCharacterCode(character.getCharacterCode());
+        return characterDefinitionService.getFaction() == faction;
+    }
+
+    private Faction computeWinner(
+            Set<CharacterCode> aliveWolves,
+            Set<CharacterCode> aliveHumans,
+            Set<CharacterCode> aliveHumanMouse
+    ) {
+        Faction winnerFaction = null;
+        if (aliveWolves.size() >= aliveHumans.size()) {
+            winnerFaction = Faction.WOLF;
+            if (aliveWolves.size() == 1 && aliveHumans.size() == 1 && aliveHumans.contains(CharacterCode.TEMPLAR)) {
+                winnerFaction = Faction.HUMAN;
+            }
+            if (!aliveHumanMouse.isEmpty()) {
+                winnerFaction = Faction.HUMAN_MOUSE;
+            }
+        }
+        return winnerFaction;
     }
 }
