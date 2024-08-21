@@ -2,10 +2,12 @@ package nsl.webmapia.game.gameoperation.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "game_instance")
@@ -37,6 +39,9 @@ public class GameInstance {
     @JoinColumn(name = "room_id")
     @OneToOne
     private GameRoom gameRoom;
+
+    @OneToMany(mappedBy = "gameInstance")
+    private List<CharacterAssignment> characterAssignments;
 
     @Builder(access = AccessLevel.PUBLIC)
     private GameInstance(int round,

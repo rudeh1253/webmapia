@@ -6,16 +6,13 @@ import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
-import nsl.webmapia.game.character.service.CharacterDefinitionService;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
-import nsl.webmapia.game.gameoperation.dto.VoteDto;
+import nsl.webmapia.game.gameoperation.dto.GameInstanceDto;
 import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
-import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
 import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
-import nsl.webmapia.game.gameoperation.dto.response.PhaseResultResponseDto;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
-import nsl.webmapia.game.gameoperation.entity.Vote;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
+import nsl.webmapia.game.gameoperation.repository.GameInstanceUpdateDto;
 import nsl.webmapia.game.gameoperation.repository.VoteRepository;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
@@ -51,7 +48,7 @@ public class GameServiceImpl implements GameService {
 
         GameInstance gameInstance = new GameInstance();
         gameInstance.setGameRoom(gameRoom);
-        gameInstance.setRound(1);
+        gameInstance.setRound(0);
         gameInstance.setStartTime(LocalDateTime.now());
         gameInstance.setGamePhase(GamePhase.START);
         this.gameInstanceRepository.save(gameInstance);
@@ -122,35 +119,30 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<VoteDto> vote(VoteRequestDto requestDto) {
-        GameInstance gameInstance = this.gameInstanceRepository.findById(requestDto.getGameInstanceId())
+    public GameInstanceDto getGameInstance(int gameInstanceId) {
+        GameInstance gameInstance = this.gameInstanceRepository.findById(gameInstanceId)
                 .orElseThrow(NoSuchElementException::new);
-        // TODO: instead of IllegalArgumentException, more specific exception is needed.
-        // The exception thrown here should be one that states no such Member of voterId isn't present.
-        List<CharacterAssignment> characterAssignments = this.characterAssignmentRepository.findByGameInstanceId(gameInstance.getGameInstanceId());
-        CharacterAssignment voterCharacterAssignment = characterAssignments.stream()
-                .filter((ca) -> ca.getMemberId().equals(requestDto.getVoterId()))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
-        CharacterDefinitionService characterDefinitionService =
-                this.characterDefinitionFactoryService.getCharacterDefinitionOfCharacterCode(voterCharacterAssignment.getCharacterCode());
-        int voteCount = characterDefinitionService.getVoteCount();
-        this.voteRepository.save(new Vote(
-                gameInstance.getRound(),
-                requestDto.getVoterId(),
-                requestDto.getTargetId(),
-                voteCount,
-                gameInstance
-        ));
-
-        return this.voteRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), gameInstance.getRound())
-                .stream()
-                .map(VoteDto::of)
-                .toList();
+        return GameInstanceDto.of(gameInstance);
     }
 
     @Override
-    public PhaseResultResponseDto endPhase(int gameInstanceId, String requesterId) {
-        return null;
+    public GamePhase proceedPhase(int gameInstanceId) {
+        GameInstance gameInstance = this.gameInstanceRepository.findById(gameInstanceId)
+                .orElseThrow(NoSuchElementException::new);
+        GamePhase nextPhase = getNextPhase(gameInstance.getGamePhase());
+        GameInstanceUpdateDto updateDto = GameInstanceUpdateDto.builder()
+                .gameInstanceId(gameInstanceId)
+                .gamePhase(nextPhase)
+                .build();
+        this.gameInstanceRepository.updateByGameRoomId(updateDto);
+        return nextPhase;
+    }
+
+    private GamePhase getNextPhase(GamePhase currentPhase) {
+        return switch (currentPhase) {
+            case START, VOTE -> GamePhase.NIGHT;
+            case DISCUSSION -> GamePhase.VOTE;
+            case NIGHT -> GamePhase.DISCUSSION;
+        };
     }
 }

@@ -4,23 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
-import nsl.webmapia.game.gameoperation.dto.VoteDto;
 import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
-import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
-import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
-import nsl.webmapia.game.gameoperation.entity.GameInstance;
-import nsl.webmapia.game.gameoperation.entity.Vote;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -257,129 +250,5 @@ class TestGameServiceImpl {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> this.gameService.distributeCharacters(requestDto));
-    }
-
-    @DisplayName("vote()")
-    @Test
-    void vote() {
-        String sampleHost = "sample-host";
-        String[] sampleParticipants = {
-                "sample-member01",
-                "sample-member02",
-                "sample-member03",
-                "sample-member04",
-                "sample-member05",
-                "sample-member06",
-                "sample-member07",
-                "sample-member08",
-                "sample-member09",
-                "sample-member10",
-                "sample-member11",
-                "sample-member12",
-                "sample-member13",
-                "sample-member14"
-        };
-
-        CharacterCode[] characterAssignments = {
-                WOLF,
-                BETRAYER,
-                FOLLOWER,
-//                PREDICTOR,
-                GUARD,
-//                MEDIUMSHIP,
-                DETECTIVE,
-                SECRET_SOCIETY,
-                NOBILITY,
-                SOLDIER,
-                TEMPLAR,
-                CITIZEN,
-                MURDERER,
-                HUMAN_MOUSE,
-                CITIZEN,
-                CITIZEN
-        };
-
-        GameRoom sampleGameRoom = getSampleGameRoom();
-        this.gameRoomRepository.save(sampleGameRoom);
-
-        for (String sampleParticipant : sampleParticipants) {
-            this.participationRepository.save(new Participation(sampleParticipant, sampleGameRoom));
-        }
-
-        this.gameService.startGame(sampleGameRoom.getRoomId());
-        GameInstance gameInstance = this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(sampleGameRoom.getRoomId()).get();
-
-        this.characterAssignmentRepository.save(generateCharacterAssignment("sample-host", CITIZEN, gameInstance));
-        for (int i = 0; i < sampleParticipants.length; i++) {
-            this.characterAssignmentRepository.save(generateCharacterAssignment(
-                    sampleParticipants[i], characterAssignments[i], gameInstance
-            ));
-        }
-
-        List<VoteDto> voteDtoAccumulator = new ArrayList<>();
-        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(sampleParticipants[0], sampleParticipants[1], gameInstance)));
-
-        checkVote(
-                sampleParticipants[0],
-                sampleParticipants[1],
-                voteDtoAccumulator,
-                gameInstance.getGameInstanceId(),
-                sampleParticipants
-        );
-
-        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(sampleParticipants[1], sampleParticipants[2], gameInstance)));
-
-        checkVote(
-                sampleParticipants[1],
-                sampleParticipants[2],
-                voteDtoAccumulator,
-                gameInstance.getGameInstanceId(),
-                sampleParticipants
-        );
-
-        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(sampleParticipants[5], sampleParticipants[4], gameInstance)));
-
-        checkVote(
-                sampleParticipants[5],
-                sampleParticipants[4],
-                voteDtoAccumulator,
-                gameInstance.getGameInstanceId(),
-                sampleParticipants
-        );
-    }
-
-    private VoteRequestDto generateVoteRequestDto(int gameInstanceId, String voterId, String targetId) {
-        VoteRequestDto voteRequestDto = new VoteRequestDto();
-        voteRequestDto.setGameInstanceId(gameInstanceId);
-        voteRequestDto.setVoterId(voterId);
-        voteRequestDto.setTargetId(targetId);
-        return voteRequestDto;
-    }
-
-    private CharacterAssignment generateCharacterAssignment(String memberId, CharacterCode characterCode, GameInstance gameInstance) {
-        CharacterAssignment characterAssignment = new CharacterAssignment();
-        characterAssignment.setMemberId(memberId);
-        characterAssignment.setCharacterCode(characterCode);
-        characterAssignment.setLife(characterCode == SOLDIER ? 2 : 1);
-        characterAssignment.setGameInstance(gameInstance);
-        return characterAssignment;
-    }
-
-    private void checkVote(String voterId,
-                           String targetId,
-                           List<VoteDto> expected,
-                           int gameInstanceId,
-                           String[] sampleParticipants) {
-        List<VoteDto> votes =
-                this.gameService.vote(generateVoteRequestDto(gameInstanceId, voterId, targetId));
-        assertThat(votes.size()).isEqualTo(expected.size());
-        assertThat(votes.stream().map(VoteDto::getVoterId).toArray(String[]::new))
-                .containsExactlyInAnyOrder(expected.stream().map(VoteDto::getVoterId).toArray(String[]::new));
-        assertThat(votes.stream().map(VoteDto::getTargetId).toArray(String[]::new))
-                .containsExactlyInAnyOrder(expected.stream().map(VoteDto::getTargetId).toArray(String[]::new));
-    }
-
-    private Vote getVoteForGeneratingDto(String voterId, String targetId, GameInstance gameInstance) {
-        return new Vote(0, voterId, targetId, 0, gameInstance);
     }
 }
