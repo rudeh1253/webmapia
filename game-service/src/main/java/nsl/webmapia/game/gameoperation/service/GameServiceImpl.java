@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
-import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
 import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.dto.GameInstanceDto;
 import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
@@ -13,7 +12,6 @@ import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionRespons
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceUpdateDto;
-import nsl.webmapia.game.gameoperation.repository.VoteRepository;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
@@ -32,11 +30,9 @@ import java.util.stream.Stream;
 @Transactional
 public class GameServiceImpl implements GameService {
     private final GameInstanceRepository gameInstanceRepository;
-    private final VoteRepository voteRepository;
     private final GameRoomRepository gameRoomRepository;
     private final CharacterAssignmentRepository characterAssignmentRepository;
     private final ParticipationRepository participationRepository;
-    private final CharacterDefinitionFactoryService characterDefinitionFactoryService;
     private final MessageSource messageSource;
 
     @Override
@@ -143,6 +139,7 @@ public class GameServiceImpl implements GameService {
             case START, VOTE -> GamePhase.NIGHT;
             case DISCUSSION -> GamePhase.VOTE;
             case NIGHT -> GamePhase.DISCUSSION;
+            case END -> GamePhase.END;
         };
     }
 }

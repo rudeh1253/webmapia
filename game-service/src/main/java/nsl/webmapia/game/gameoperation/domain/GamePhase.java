@@ -4,5 +4,6 @@ public enum GamePhase {
     START,
     NIGHT,
     DISCUSSION,
-    VOTE
+    VOTE,
+    END
 }
