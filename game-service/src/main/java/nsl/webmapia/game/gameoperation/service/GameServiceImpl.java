@@ -51,7 +51,7 @@ public class GameServiceImpl implements GameService {
 
         GameInstance gameInstance = new GameInstance();
         gameInstance.setGameRoom(gameRoom);
-        gameInstance.setRound(1);
+        gameInstance.setRound(0);
         gameInstance.setStartTime(LocalDateTime.now());
         gameInstance.setGamePhase(GamePhase.START);
         this.gameInstanceRepository.save(gameInstance);
@@ -151,6 +151,17 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public PhaseResultResponseDto endPhase(int gameInstanceId, String requesterId) {
+        GameInstance gameInstance = this.gameInstanceRepository.findById(gameInstanceId)
+                .orElseThrow(IllegalArgumentException::new);
+
         return null;
+    }
+
+    private GamePhase getNextPhase(GamePhase currentPhase) {
+        return switch (currentPhase) {
+            case START, VOTE -> GamePhase.NIGHT;
+            case DISCUSSION -> GamePhase.VOTE;
+            case NIGHT -> GamePhase.DISCUSSION;
+        };
     }
 }
