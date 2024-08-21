@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class GameInstanceUpdateDto {
-    private final int gameRoomId;
+    private final int gameInstanceId;
     private final Integer round;
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;

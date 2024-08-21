@@ -195,7 +195,7 @@ class TestHibernateGameInstanceRepository {
         LocalDateTime offset = LocalDateTime.now();
 
         GameInstanceUpdateDto dto = GameInstanceUpdateDto.builder()
-                .gameRoomId(gameRoomId)
+                .gameInstanceId(generatedId)
                 .round(2)
                 .startTime(offset.minusDays(1))
                 .endTime(offset.plusHours(2))
@@ -220,7 +220,7 @@ class TestHibernateGameInstanceRepository {
         LocalDateTime offset = LocalDateTime.now();
 
         GameInstanceUpdateDto dto = GameInstanceUpdateDto.builder()
-                .gameRoomId(0)
+                .gameInstanceId(0)
                 .round(2)
                 .startTime(offset.minusDays(1))
                 .endTime(offset.plusHours(2))

@@ -1,12 +1,9 @@
 package nsl.webmapia.game.gameoperation.service;
 
-import nsl.webmapia.game.gameoperation.dto.VoteDto;
+import nsl.webmapia.game.gameoperation.domain.GamePhase;
+import nsl.webmapia.game.gameoperation.dto.GameInstanceDto;
 import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
-import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
 import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
-import nsl.webmapia.game.gameoperation.dto.response.PhaseResultResponseDto;
-
-import java.util.List;
 
 /**
  * Object of service layer of game operation.
@@ -37,21 +34,7 @@ public interface GameService {
     CharacterDistributionResponseDto distributeCharacters(CharacterDistributionRequestDto dto)
             throws IllegalArgumentException;
 
-    /**
-     * Process a vote from a single member. The size of a single vote is determined by the character of
-     * the member owns.
-     *
-     * @param voteRequestDto DTO contains data of voter id and target id
-     * @return a list of vote executed in the current instance
-     */
-    List<VoteDto> vote(VoteRequestDto voteRequestDto);
+    GameInstanceDto getGameInstance(int gameInstanceId);
 
-    /**
-     * Request to end the phase. When all members request to end the phase, the phase ends.
-     *
-     * @param gameInstanceId of the GameInstance
-     * @param requesterId    of Member who requested to end the phase
-     * @return PhaseResultResponseDto that contains information of the result of the phase
-     */
-    PhaseResultResponseDto endPhase(int gameInstanceId, String requesterId);
+    GamePhase proceedPhase(int gameInstanceId);
 }

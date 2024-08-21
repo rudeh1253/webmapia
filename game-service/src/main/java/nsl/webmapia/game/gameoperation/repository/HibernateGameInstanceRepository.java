@@ -52,7 +52,7 @@ public class HibernateGameInstanceRepository implements GameInstanceRepository {
 
     @Override
     public boolean updateByGameRoomId(GameInstanceUpdateDto dto) {
-        Optional<GameInstance> gameInstanceOp = findAliveGameInstanceByGameRoomId(dto.getGameRoomId());
+        Optional<GameInstance> gameInstanceOp = findById(dto.getGameInstanceId());
         if (gameInstanceOp.isEmpty()) {
             return false;
         }
