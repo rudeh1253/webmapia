@@ -33,7 +33,7 @@ public class GameRoom {
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
 
-    @OneToMany(mappedBy = "gameRoom")
+    @OneToMany(mappedBy = "gameRoom", fetch = FetchType.LAZY)
     private List<Participation> participationList = new ArrayList<>();
 
     public GameRoom(String roomName,

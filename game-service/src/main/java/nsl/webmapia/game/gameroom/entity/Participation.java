@@ -23,8 +23,8 @@ public class Participation {
     @Column(name = "disconnected")
     private boolean disconnected = false;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_room_id")
-    @ManyToOne
     private GameRoom gameRoom;
 
     public Participation(String participantId, GameRoom gameRoom) {

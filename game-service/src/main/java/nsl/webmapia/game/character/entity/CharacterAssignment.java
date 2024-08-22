@@ -31,7 +31,7 @@ public class CharacterAssignment {
     @Column(name = "life")
     private int life = 1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_instance_id")
     private GameInstance gameInstance;
 

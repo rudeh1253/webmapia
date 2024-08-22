@@ -36,11 +36,11 @@ public class GameInstance {
     @Column(name = "game_phase")
     private GamePhase gamePhase;
 
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
-    @OneToOne
     private GameRoom gameRoom;
 
-    @OneToMany(mappedBy = "gameInstance")
+    @OneToMany(mappedBy = "gameInstance", fetch = FetchType.LAZY)
     private List<CharacterAssignment> characterAssignments;
 
     @Builder(access = AccessLevel.PUBLIC)
