@@ -25,7 +25,7 @@ public class Vote {
     private int voteCount;
 
     @MapsId("gameInstanceId")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_instance_id")
     private GameInstance gameInstance;
 
