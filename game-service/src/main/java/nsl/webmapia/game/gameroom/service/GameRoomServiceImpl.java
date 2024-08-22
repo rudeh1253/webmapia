@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
 import nsl.webmapia.game.gameroom.dto.GameRoomDto;
+import nsl.webmapia.game.gameroom.dto.request.GameRoomRequestDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
@@ -55,13 +56,30 @@ public class GameRoomServiceImpl implements GameRoomService {
     }
 
     @Override
-    public PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page) {
+    public PageWrapper<GameRoomDto> getGameRooms(String roomName, int page) {
         return domainToDto(this.gameRoomRepository.findByRoomName(roomName, new PageDto(page, null)));
     }
 
     @Override
-    public PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page, int pageSize) {
+    public PageWrapper<GameRoomDto> getGameRooms(String roomName, int page, int pageSize) {
         return domainToDto(this.gameRoomRepository.findByRoomName(roomName, new PageDto(page, pageSize)));
+    }
+
+    @Override
+    public PageWrapper<GameRoomDto> getGameRooms(GameRoomRequestDto dto) {
+        Integer page = dto.getPage();
+        Integer pageSize = dto.getPageSize();
+        String roomName = dto.getRoomName();
+
+        if (pageSize == null && roomName == null) {
+            return getGameRooms(page);
+        } else if (pageSize == null) {
+            return getGameRooms(roomName, page);
+        } else if (roomName == null) {
+            return getGameRooms(page, pageSize);
+        } else {
+            return getGameRooms(roomName, page, pageSize);
+        }
     }
 
     private PageWrapper<GameRoomDto> domainToDto(PageWrapper<GameRoom> domain) {

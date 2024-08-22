@@ -2,6 +2,7 @@ package nsl.webmapia.game.gameroom.service;
 
 import nsl.webmapia.game.common.dto.PageWrapper;
 import nsl.webmapia.game.gameroom.dto.GameRoomDto;
+import nsl.webmapia.game.gameroom.dto.request.GameRoomRequestDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
 
 import java.util.NoSuchElementException;
@@ -32,6 +33,7 @@ public interface GameRoomService {
      */
     GameRoomDto getGameRoom(int roomId) throws NoSuchElementException;
 
+    @Deprecated
     /**
      * <p>Find GameRoom instances given page. Information of GameRoom is wrapped in GameRoomDto
      * object. This method queries GameRoom without any condition, so it will find GameRoom instances
@@ -45,6 +47,7 @@ public interface GameRoomService {
      */
     PageWrapper<GameRoomDto> getGameRooms(int page);
 
+    @Deprecated
     /**
      * <p>Find GameRoom instances given page. Information of GameRoom is wrapped in GameRoomDto
      * object. This method queries GameRoom without any condition, so it will find GameRoom instances
@@ -57,6 +60,7 @@ public interface GameRoomService {
      */
     PageWrapper<GameRoomDto> getGameRooms(int page, int pageSize);
 
+    @Deprecated
     /**
      * <p>Find GameRoom instances given roomName and page. The result of query includes
      * GameRoom instances of roomName containing roomName string.
@@ -68,8 +72,9 @@ public interface GameRoomService {
      * @return GameRoomDto instances of roomName containing query keyword (roomName), wrapped with
      * {@link PageWrapper} object
      */
-    PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page);
+    PageWrapper<GameRoomDto> getGameRooms(String roomName, int page);
 
+    @Deprecated
     /**
      * <p>Find GameRoom instances given roomName and page. The result of query includes
      * GameRoom instances of roomName containing roomName string.
@@ -80,5 +85,15 @@ public interface GameRoomService {
      * @return GameRoomDto instances of roomName containing query keyword (roomName), wrapped with
      * {@link PageWrapper} object
      */
-    PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page, int pageSize);
+    PageWrapper<GameRoomDto> getGameRooms(String roomName, int page, int pageSize);
+
+    /**
+     * <p>Find GameRoom instances given search DTO. The result of query includes
+     * GameRoom instances of roomName containing roomName string.
+     *
+     * @param dto specifying search condition
+     * @return GameRoomDto instances of roomName containing query keyword (roomName), wrapped with
+     * {@link PageWrapper} object
+     */
+    PageWrapper<GameRoomDto> getGameRooms(GameRoomRequestDto dto);
 }
