@@ -72,7 +72,7 @@ public interface GameRoomService {
      * @return GameRoomDto instances of roomName containing query keyword (roomName), wrapped with
      * {@link PageWrapper} object
      */
-    PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page);
+    PageWrapper<GameRoomDto> getGameRooms(String roomName, int page);
 
     @Deprecated
     /**
@@ -85,7 +85,7 @@ public interface GameRoomService {
      * @return GameRoomDto instances of roomName containing query keyword (roomName), wrapped with
      * {@link PageWrapper} object
      */
-    PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page, int pageSize);
+    PageWrapper<GameRoomDto> getGameRooms(String roomName, int page, int pageSize);
 
     /**
      * <p>Find GameRoom instances given search DTO. The result of query includes
@@ -95,5 +95,5 @@ public interface GameRoomService {
      * @return GameRoomDto instances of roomName containing query keyword (roomName), wrapped with
      * {@link PageWrapper} object
      */
-    PageWrapper<GameRoomDto> getGameRoomsByRoomName(GameRoomRequestDto dto);
+    PageWrapper<GameRoomDto> getGameRooms(GameRoomRequestDto dto);
 }

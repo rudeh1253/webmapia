@@ -56,17 +56,17 @@ public class GameRoomServiceImpl implements GameRoomService {
     }
 
     @Override
-    public PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page) {
+    public PageWrapper<GameRoomDto> getGameRooms(String roomName, int page) {
         return domainToDto(this.gameRoomRepository.findByRoomName(roomName, new PageDto(page, null)));
     }
 
     @Override
-    public PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page, int pageSize) {
+    public PageWrapper<GameRoomDto> getGameRooms(String roomName, int page, int pageSize) {
         return domainToDto(this.gameRoomRepository.findByRoomName(roomName, new PageDto(page, pageSize)));
     }
 
     @Override
-    public PageWrapper<GameRoomDto> getGameRoomsByRoomName(GameRoomRequestDto dto) {
+    public PageWrapper<GameRoomDto> getGameRooms(GameRoomRequestDto dto) {
         Integer page = dto.getPage();
         Integer pageSize = dto.getPageSize();
         String roomName = dto.getRoomName();
@@ -74,11 +74,11 @@ public class GameRoomServiceImpl implements GameRoomService {
         if (pageSize == null && roomName == null) {
             return getGameRooms(page);
         } else if (pageSize == null) {
-            return getGameRoomsByRoomName(roomName, page);
+            return getGameRooms(roomName, page);
         } else if (roomName == null) {
             return getGameRooms(page, pageSize);
         } else {
-            return getGameRoomsByRoomName(roomName, page, pageSize);
+            return getGameRooms(roomName, page, pageSize);
         }
     }
 
