@@ -33,6 +33,7 @@ public interface GameRoomService {
      */
     GameRoomDto getGameRoom(int roomId) throws NoSuchElementException;
 
+    @Deprecated
     /**
      * <p>Find GameRoom instances given page. Information of GameRoom is wrapped in GameRoomDto
      * object. This method queries GameRoom without any condition, so it will find GameRoom instances
@@ -46,6 +47,7 @@ public interface GameRoomService {
      */
     PageWrapper<GameRoomDto> getGameRooms(int page);
 
+    @Deprecated
     /**
      * <p>Find GameRoom instances given page. Information of GameRoom is wrapped in GameRoomDto
      * object. This method queries GameRoom without any condition, so it will find GameRoom instances
@@ -58,6 +60,7 @@ public interface GameRoomService {
      */
     PageWrapper<GameRoomDto> getGameRooms(int page, int pageSize);
 
+    @Deprecated
     /**
      * <p>Find GameRoom instances given roomName and page. The result of query includes
      * GameRoom instances of roomName containing roomName string.
@@ -71,6 +74,7 @@ public interface GameRoomService {
      */
     PageWrapper<GameRoomDto> getGameRoomsByRoomName(String roomName, int page);
 
+    @Deprecated
     /**
      * <p>Find GameRoom instances given roomName and page. The result of query includes
      * GameRoom instances of roomName containing roomName string.
