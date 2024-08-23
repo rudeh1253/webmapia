@@ -70,6 +70,9 @@ public class HibernateGameInstanceRepository implements GameInstanceRepository {
         if (dto.getGamePhase() != null) {
             gameInstance.setGamePhase(dto.getGamePhase());
         }
+        if (dto.getPhaseEndTime() != null) {
+            gameInstance.setPhaseEndTime(dto.getPhaseEndTime());
+        }
         return true;
     }
 }

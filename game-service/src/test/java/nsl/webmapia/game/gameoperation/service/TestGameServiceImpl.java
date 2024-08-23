@@ -4,8 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
+import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
+import nsl.webmapia.game.gameoperation.entity.GameInstance;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
+import nsl.webmapia.game.gameoperation.repository.GameInstanceUpdateDto;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
@@ -14,8 +17,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -250,5 +255,54 @@ class TestGameServiceImpl {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> this.gameService.distributeCharacters(requestDto));
+    }
+
+    @Value("${game.default.phase-period-in-second.discussion}") int discussionPeriod;
+    @Value("${game.default.phase-period-in-second.night}") int nightPeriod;
+    @Value("${game.default.phase-period-in-second.vote}") int votePeriod;
+
+    @DisplayName("proceedPhase")
+    @CsvSource(value = {
+            "START:NIGHT",
+            "NIGHT:DISCUSSION",
+            "DISCUSSION:VOTE",
+            "VOTE:NIGHT"
+    }, delimiter = ':')
+    @ParameterizedTest
+    void proceedPhase(String currentPhaseName, String expectedNextPhaseName) {
+        int generatedGameRoomId = insertSampleGameRoom();
+        int generatedGameInstanceId = this.gameService.startGame(generatedGameRoomId);
+
+        GamePhase currentPhase = GamePhase.valueOf(currentPhaseName);
+        GamePhase expectedNextPhase = GamePhase.valueOf(expectedNextPhaseName);
+
+        this.gameInstanceRepository.updateByGameRoomId(
+                GameInstanceUpdateDto.builder()
+                        .gameInstanceId(generatedGameInstanceId)
+                        .gamePhase(currentPhase)
+                        .build()
+        );
+
+        LocalDateTime now = LocalDateTime.now();
+        GamePhase gamePhase = this.gameService.proceedPhase(generatedGameInstanceId);
+        assertThat(gamePhase).isEqualTo(expectedNextPhase);
+
+        GameInstance gameInstance = this.gameInstanceRepository.findById(generatedGameInstanceId).get();
+        log.info("gameInstance={}", gameInstance);
+        LocalDateTime expectedPhaseEndTime = now.plusSeconds(getPeriodPerGamePhase(gamePhase));
+        log.info("gameInstance.phaseEndTime={}", gameInstance.getPhaseEndTime());
+        log.info("expectedPhaseEndTime={}", expectedPhaseEndTime);
+        assertThat(gameInstance.getGamePhase()).isEqualTo(expectedNextPhase);
+        assertThat(gameInstance.getPhaseEndTime()).isAfterOrEqualTo(expectedPhaseEndTime);
+        assertThat(gameInstance.getPhaseEndTime()).isAfterOrEqualTo(expectedPhaseEndTime);
+    }
+
+    int getPeriodPerGamePhase(GamePhase gamePhase) {
+        return switch (gamePhase) {
+            case VOTE -> this.votePeriod;
+            case DISCUSSION ->  this.discussionPeriod;
+            case NIGHT -> this.nightPeriod;
+            default -> 0;
+        };
     }
 }
