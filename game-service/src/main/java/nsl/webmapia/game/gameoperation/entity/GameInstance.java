@@ -32,6 +32,9 @@ public class GameInstance {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
+    @Column(name = "phase_end_time")
+    private LocalDateTime phaseEndTime;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "game_phase")
     private GamePhase gamePhase;
