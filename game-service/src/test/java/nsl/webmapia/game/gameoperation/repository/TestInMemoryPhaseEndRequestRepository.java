@@ -9,7 +9,6 @@ import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
 import nsl.webmapia.game.gameroom.repository.SpringDataJpaGameRoomRepository;
 import nsl.webmapia.game.gameroom.service.GameRoomService;
 import nsl.webmapia.game.gameroom.service.GameRoomServiceImpl;
-import nsl.webmapia.game.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,9 +57,6 @@ class TestInMemoryPhaseEndRequestRepository {
     ParticipationRepository participationRepository;
 
     @Autowired
-    MemberService memberService;
-
-    @Autowired
     GameService gameService;
 
     Integer gameInstanceId;
@@ -77,8 +73,7 @@ class TestInMemoryPhaseEndRequestRepository {
     int initGameRoom() {
         this.gameRoomService = new GameRoomServiceImpl(
                 this.gameRoomRepository,
-                this.participationRepository,
-                this.memberService
+                this.participationRepository
         );
         GameRoomCreationResponseDto dto = this.gameRoomService.createRoom("sample-room", "member1");
         return dto.getRoomId();
