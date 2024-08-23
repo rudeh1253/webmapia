@@ -10,7 +10,6 @@ import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
-import nsl.webmapia.game.member.service.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,6 @@ import java.util.NoSuchElementException;
 public class GameRoomServiceImpl implements GameRoomService {
     private final GameRoomRepository gameRoomRepository;
     private final ParticipationRepository participationRepository;
-    private final MemberService memberService;
 
     @Override
     public GameRoomCreationResponseDto createRoom(String roomName, String creatorId) {

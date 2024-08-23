@@ -16,4 +16,5 @@ public class GameInstanceUpdateDto {
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
     private final GamePhase gamePhase;
+    private final LocalDateTime phaseEndTime;
 }

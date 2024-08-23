@@ -9,9 +9,7 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE tname VARCHAR(64);
 
-    DECLARE table_cur CURSOR FOR SELECT table_name
-                                 FROM information_schema.tables
-                                 WHERE table_schema = 'webmapia';
+    DECLARE table_cur CURSOR FOR SELECT table_name FROM information_schema.tables WHERE table_schema = 'webmapia';
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
     OPEN table_cur;
@@ -59,6 +57,9 @@ CREATE TABLE game_instance
 
 ALTER TABLE game_instance
     ADD CONSTRAINT fk_game_instance_room_id FOREIGN KEY (room_id) REFERENCES game_room (room_id);
+
+ALTER TABLE game_instance
+    ADD COLUMN phase_end_time DATETIME;
 
 CREATE TABLE vote
 (

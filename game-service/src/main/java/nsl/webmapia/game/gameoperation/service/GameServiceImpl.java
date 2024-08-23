@@ -1,6 +1,5 @@
 package nsl.webmapia.game.gameoperation.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
@@ -20,6 +19,7 @@ import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,6 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class GameServiceImpl implements GameService {
     private final GameInstanceRepository gameInstanceRepository;
@@ -40,6 +39,29 @@ public class GameServiceImpl implements GameService {
     private final ParticipationRepository participationRepository;
     private final CharacterDefinitionFactoryService characterDefinitionFactoryService;
     private final MessageSource messageSource;
+    private final Map<GamePhase, Integer> periodsByGamePhase;
+
+    public GameServiceImpl(GameInstanceRepository gameInstanceRepository,
+                           GameRoomRepository gameRoomRepository,
+                           CharacterAssignmentRepository characterAssignmentRepository,
+                           ParticipationRepository participationRepository,
+                           CharacterDefinitionFactoryService characterDefinitionFactoryService,
+                           MessageSource messageSource,
+                           @Value("${game.default.phase-period-in-second.discussion}") int discussionPeriod,
+                           @Value("${game.default.phase-period-in-second.night}") int nightPeriod,
+                           @Value("${game.default.phase-period-in-second.vote}") int votePeriod) {
+        this.gameInstanceRepository = gameInstanceRepository;
+        this.gameRoomRepository = gameRoomRepository;
+        this.characterAssignmentRepository = characterAssignmentRepository;
+        this.participationRepository = participationRepository;
+        this.characterDefinitionFactoryService = characterDefinitionFactoryService;
+        this.messageSource = messageSource;
+        this.periodsByGamePhase = Map.of(
+                GamePhase.DISCUSSION, discussionPeriod,
+                GamePhase.NIGHT, nightPeriod,
+                GamePhase.VOTE, votePeriod
+        );
+    }
 
     @Override
     public Integer startGame(int roomId) {
@@ -135,6 +157,7 @@ public class GameServiceImpl implements GameService {
         GameInstanceUpdateDto updateDto = GameInstanceUpdateDto.builder()
                 .gameInstanceId(gameInstanceId)
                 .gamePhase(nextPhase)
+                .phaseEndTime(getNextPhaseEndTime(nextPhase))
                 .build();
         this.gameInstanceRepository.updateByGameRoomId(updateDto);
         return nextPhase;
@@ -147,6 +170,13 @@ public class GameServiceImpl implements GameService {
             case NIGHT -> GamePhase.DISCUSSION;
             case END -> GamePhase.END;
         };
+    }
+
+    private LocalDateTime getNextPhaseEndTime(GamePhase nextPhase) {
+        if (!this.periodsByGamePhase.containsKey(nextPhase)) {
+            return null;
+        }
+        return LocalDateTime.now().plusSeconds(this.periodsByGamePhase.get(nextPhase));
     }
 
     @Override
