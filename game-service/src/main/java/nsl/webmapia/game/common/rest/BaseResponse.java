@@ -3,114 +3,115 @@ package nsl.webmapia.game.common.rest;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
-public class BaseResponse<T> {
-    private final Integer statusCode;
-    private final Integer statusCodeSeries;
-    private final String message;
-    private final Object content;
+public class BaseResponse<C> {
+    private Integer statusCode;
+    private Integer statusCodeSeries;
+    private String message;
+    private C content;
 
-    public static <T> BaseResponse<T> ok() {
+    public static <C> BaseResponse<C> ok() {
         return BaseResponse.ok("", null);
     }
 
-    public static <T> BaseResponse<T> ok(String message) {
+    public static <C> BaseResponse<C> ok(String message) {
         return BaseResponse.ok(message, null);
     }
 
-    public static <T> BaseResponse<T> ok(T content) {
+    public static <C> BaseResponse<C> ok(C content) {
         return BaseResponse.ok("", content);
     }
 
-    public static <T> BaseResponse<T> ok(String message, T content) {
+    public static <C> BaseResponse<C> ok(String message, C content) {
         return build(HttpStatus.OK, message, content);
     }
 
-    public static <T> BaseResponse<T> created() {
+    public static <C> BaseResponse<C> created() {
         return BaseResponse.created("", null);
     }
 
-    public static <T> BaseResponse<T> created(String message) {
+    public static <C> BaseResponse<C> created(String message) {
         return BaseResponse.created(message, null);
     }
 
-    public static <T> BaseResponse<T> created(T content) {
+    public static <C> BaseResponse<C> created(C content) {
         return BaseResponse.created("", content);
     }
 
-    public static <T> BaseResponse<T> created(String message, T content) {
+    public static <C> BaseResponse<C> created(String message, C content) {
         return build(HttpStatus.CREATED, message, content);
     }
 
-    public static <T> BaseResponse<T> found() {
+    public static <C> BaseResponse<C> found() {
         return found("", null);
     }
 
-    public static <T> BaseResponse<T> found(String message) {
+    public static <C> BaseResponse<C> found(String message) {
         return found(message, null);
     }
 
-    public static <T> BaseResponse<T> found(T content) {
+    public static <C> BaseResponse<C> found(C content) {
         return found("", content);
     }
 
-    public static <T> BaseResponse<T> found(String message, T content) {
+    public static <C> BaseResponse<C> found(String message, C content) {
         return build(HttpStatus.FOUND, message, content);
     }
 
-    public static <T> BaseResponse<T> badRequest() {
+    public static <C> BaseResponse <C> badRequest() {
         return badRequest("", null);
     }
 
-    public static <T> BaseResponse<T> badRequest(String message) {
+    public static <C> BaseResponse<C> badRequest(String message) {
         return badRequest(message, null);
     }
 
-    public static <T> BaseResponse<T> badRequest(T content) {
+    public static <C> BaseResponse<C> badRequest(C content) {
         return badRequest("", content);
     }
 
-    public static <T> BaseResponse<T> badRequest(String message, T content) {
+    public static <C> BaseResponse<C> badRequest(String message, C content) {
         return build(HttpStatus.BAD_REQUEST, message, content);
     }
 
-    public static <T> BaseResponse<T> notFound() {
+    public static <C> BaseResponse<C> notFound() {
         return notFound("", null);
     }
 
-    public static <T> BaseResponse<T> notFound(String message) {
+    public static <C> BaseResponse<C> notFound(String message) {
         return notFound(message, null);
     }
 
-    public static <T> BaseResponse<T> notFound(T content) {
+    public static <C> BaseResponse<C> notFound(C content) {
         return notFound("", content);
     }
 
-    public static <T> BaseResponse<T> notFound(String message, T content) {
+    public static <C> BaseResponse<C> notFound(String message, C content) {
         return build(HttpStatus.NOT_FOUND, message, content);
     }
 
-    public static <T> BaseResponse<T> internalServerError() {
+    public static <C> BaseResponse<C> internalServerError() {
         return internalServerError("", null);
     }
 
-    public static <T> BaseResponse<T> internalServerError(String message) {
+    public static <C> BaseResponse<C> internalServerError(String message) {
         return internalServerError(message, null);
     }
 
-    public static <T> BaseResponse<T> internalServerError(T content) {
+    public static <C> BaseResponse<C> internalServerError(C content) {
         return internalServerError("", content);
     }
 
-    public static <T> BaseResponse<T> internalServerError(String message, T content) {
+    public static <C> BaseResponse<C> internalServerError(String message, C content) {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, message, content);
     }
 
-    private static <T> BaseResponse<T> build(HttpStatus httpStatus, String message, T content) {
-        return BaseResponse.<T>builder()
+    private static <C> BaseResponse<C> build(HttpStatus httpStatus, String message, C content) {
+        return BaseResponse.<C>builder()
                 .statusCode(httpStatus.value())
                 .statusCodeSeries(httpStatus.series().value())
                 .message(message)

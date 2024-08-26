@@ -1,5 +1,8 @@
 package nsl.webmapia.game.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.gameoperation.repository.InMemoryGameInstanceRepository;
 import nsl.webmapia.game.gameoperation.repository.InMemoryPhaseEndRequestRepository;
@@ -32,5 +35,13 @@ public class BeanConfig {
     @ConditionalOnMissingBean(PhaseEndRequestRepository.class)
     public InMemoryPhaseEndRequestRepository inMemoryPhaseEndRequestRepository() {
         return new InMemoryPhaseEndRequestRepository();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return objectMapper;
     }
 }
