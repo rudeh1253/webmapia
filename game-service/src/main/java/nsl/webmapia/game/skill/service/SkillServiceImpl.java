@@ -31,7 +31,7 @@ public class SkillServiceImpl implements SkillService {
     private final GameInstanceRepository gameInstanceRepository;
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkills(int gameInstanceId, String memberId) {
+    public Map<SkillType, List<String>> getAvailableSkills(int gameInstanceId, String memberId) throws IllegalStateException {
         // TODO: IllegalStateException is appropriate here?
         CharacterAssignment characterAssignment =
                 this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, memberId)

@@ -14,7 +14,8 @@ import java.util.NoSuchElementException;
  */
 public interface SkillService {
 
-    Map<SkillType, List<String>> getAvailableSkills(int gameInstanceId, String memberId);
+    Map<SkillType, List<String>> getAvailableSkills(int gameInstanceId, String memberId)
+            throws IllegalStateException;
 
     /**
      * Activate skill of given round.

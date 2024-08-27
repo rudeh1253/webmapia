@@ -7,6 +7,7 @@ import nsl.webmapia.game.gameroom.entity.Participation;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
