@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -56,7 +57,7 @@ class TestGameRoomRestController {
             assertThat(HttpStatus.valueOf(content.getStatusCode()).is2xxSuccessful()).isTrue();
             assertThat(content.getContent().getRoomName()).isEqualTo("sample-room");
             assertThat(content.getContent().getHostMemberId()).isEqualTo("sample-host");
-        }).andExpect(status().isCreated());
+        }).andExpect(status().isCreated()).andExpect(header().exists("Location"));
     }
 
     @Test
