@@ -1,9 +1,9 @@
-package nsl.webmapia.game.gameoperation.dto.response;
+package nsl.webmapia.game.vote.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import nsl.webmapia.game.gameoperation.dto.VoteDto;
+import nsl.webmapia.game.vote.dto.VoteDto;
 
 import java.util.List;
 

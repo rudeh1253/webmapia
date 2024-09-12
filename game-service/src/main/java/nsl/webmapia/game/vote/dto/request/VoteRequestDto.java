@@ -1,4 +1,4 @@
-package nsl.webmapia.game.gameoperation.dto.request;
+package nsl.webmapia.game.vote.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
