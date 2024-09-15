@@ -33,6 +33,15 @@ public interface GameInstanceRepository {
     Optional<GameInstance> findAliveGameInstanceByGameRoomId(int gameRoomId) throws IllegalStateException;
 
     /**
+     * Check if there is an alive game instance bound to the GameRoom.
+     *
+     * @param gameRoomId of GameInstance to check if exists
+     * @return true if there is an alive GameInstance, otherwise false
+     * @throws IllegalStateException when there are more than 1 GameInstance instances each of which has null endTime.
+     */
+    boolean existsAliveGameInstanceByGameRoomId(int gameRoomId) throws IllegalStateException;
+
+    /**
      * Update given gameRoomId.
      *
      * @param dto containing data to be. Fields of null are ignored

@@ -3,6 +3,7 @@ package nsl.webmapia.game.gameroom.service;
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.common.dto.PageDto;
 import nsl.webmapia.game.common.dto.PageWrapper;
+import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.gameroom.dto.GameRoomDto;
 import nsl.webmapia.game.gameroom.dto.request.GameRoomRequestDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
@@ -25,6 +26,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Transactional
 public class GameRoomServiceImpl implements GameRoomService {
+    private final GameInstanceRepository gameInstanceRepository;
     private final GameRoomRepository gameRoomRepository;
     private final ParticipationRepository participationRepository;
 
@@ -87,5 +89,11 @@ public class GameRoomServiceImpl implements GameRoomService {
                 domain.getTotalElementCount(),
                 domain.getElements().stream().map(GameRoomDto::of).toList()
         );
+    }
+
+    @Override
+    public GameRoomDto participate(int gameRoomId) {
+        this.gameInstanceRepository.existsAliveGameInstanceByGameRoomId(gameRoomId);
+        return null;
     }
 }

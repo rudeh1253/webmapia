@@ -96,4 +96,12 @@ public interface GameRoomService {
      * {@link PageWrapper} object
      */
     PageWrapper<GameRoomDto> getGameRooms(GameRoomRequestDto dto);
+
+    /**
+     * <p>Participate in a GameRoom.
+     *
+     * @param gameRoomId to participate in
+     * @return a DTO of the GameRoom you participated in
+     */
+    GameRoomDto participate(int gameRoomId);
 }

@@ -184,6 +184,28 @@ class TestHibernateGameInstanceRepository {
                                 .orElseThrow(NoSuchElementException::new));
     }
 
+    @DisplayName("existsAliveGameInstanceByGameRoomId - true")
+    @Test
+    void existsAliveGameInstanceByGameRoomId_expectTrue() {
+        int generatedId = insertSample();
+
+        Integer roomId = this.gameInstanceRepository.findById(generatedId)
+                .orElseThrow()
+                .getGameRoom()
+                .getRoomId();
+
+        boolean exists = this.gameInstanceRepository.existsAliveGameInstanceByGameRoomId(roomId);
+        assertThat(exists).isTrue();
+    }
+
+    @DisplayName("existsAliveGameInstanceByGameRoomId - false")
+    @Test
+    void existsAliveGameInstanceByGameRoomId_expectFalse() {
+        int roomId = prepareSampleGameRoomAndParticipation();
+        boolean exists = this.gameInstanceRepository.existsAliveGameInstanceByGameRoomId(roomId);
+        assertThat(exists).isFalse();
+    }
+
     @DisplayName("updateByGameRoomId()")
     @Test
     void updateByGameRoomId() {
