@@ -90,10 +90,4 @@ public class GameRoomServiceImpl implements GameRoomService {
                 domain.getElements().stream().map(GameRoomDto::of).toList()
         );
     }
-
-    @Override
-    public GameRoomDto participate(int gameRoomId) {
-        this.gameInstanceRepository.existsAliveGameInstanceByGameRoomId(gameRoomId);
-        return null;
-    }
 }

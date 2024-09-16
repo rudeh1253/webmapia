@@ -40,6 +40,13 @@ public interface GameService {
     GameInstanceDto getGameInstance(int gameInstanceId);
 
     /**
+     * Check if the GameRoom started an instance of game.
+     * @param gameRoomId to check
+     * @return true if it started a game (i.e. there is an alive GameInstance related to the GameRoom), otherwise false
+     */
+    boolean hasGameStarted(int gameRoomId);
+
+    /**
      * Among game instances bound to a specific game room,
      * find a game instance which is being operated.
      * i.e., for the given gameRoomId, find a GameInstance whose
