@@ -18,7 +18,7 @@ public class StandardWebSocketMessageBrokerConfig implements WebSocketMessageBro
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/game-service").setAllowedOrigins(this.clientOrigin).withSockJS();
+        registry.addEndpoint("/game-service").setAllowedOrigins("*");
     }
 
     @Override

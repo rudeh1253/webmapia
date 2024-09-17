@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -48,8 +49,13 @@ class TestGameRoomRestController {
     void createRoom() throws Exception {
         this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/rooms")
-                        .queryParam("roomName", "sample-room")
-                        .queryParam("creatorId", "sample-host")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "roomName": "sample-room",
+                                    "creatorId": "sample-host"
+                                }
+                                """)
         ).andDo(log()).andDo((result) -> {
             BaseResponse<GameRoomCreationResponseDto> content = this.om.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
             });
@@ -64,10 +70,16 @@ class TestGameRoomRestController {
     void getGameRoom_success() throws Exception {
         String contentAsString = this.mockMvc.perform(
                 MockMvcRequestBuilders.post("/rooms")
-                        .queryParam("roomName", "sample-room")
-                        .queryParam("creatorId", "sample-host")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "roomName": "sample-room",
+                                    "creatorId": "sample-host"
+                                }
+                                """)
         ).andReturn().getResponse().getContentAsString();
-        BaseResponse<GameRoomCreationResponseDto> creationDto = this.om.readValue(contentAsString, new TypeReference<>(){});
+        BaseResponse<GameRoomCreationResponseDto> creationDto = this.om.readValue(contentAsString, new TypeReference<>() {
+        });
         int roomId = creationDto.getContent().getRoomId();
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/rooms/{roomId}", roomId))

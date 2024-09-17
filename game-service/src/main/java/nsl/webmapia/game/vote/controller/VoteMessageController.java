@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/vote")
+@RequestMapping("/game/vote")
 public class VoteMessageController {
     private final VoteService voteService;
     private final SimpMessagingTemplate messagingTemplate;

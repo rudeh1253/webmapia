@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/game")
 public class SkillRestController {
     private final SkillService skillService;
 

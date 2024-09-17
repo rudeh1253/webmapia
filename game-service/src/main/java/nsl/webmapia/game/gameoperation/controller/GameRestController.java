@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/game-instance")
+@RequestMapping("/game/game-instance")
 public class GameRestController {
     private final GameService gameService;
 

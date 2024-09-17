@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import nsl.webmapia.game.common.dto.PageWrapper;
 import nsl.webmapia.game.common.rest.BaseResponse;
 import nsl.webmapia.game.gameroom.dto.GameRoomDto;
+import nsl.webmapia.game.gameroom.dto.request.GameRoomCreationRequestDto;
 import nsl.webmapia.game.gameroom.dto.request.GameRoomRequestDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
 import nsl.webmapia.game.gameroom.service.GameRoomService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @RestController
-@RequestMapping("/rooms")
+@RequestMapping("/game/rooms")
 public class GameRoomRestController {
     private final GameRoomService gameRoomService;
     private final String baseUrl;
@@ -28,7 +30,7 @@ public class GameRoomRestController {
         this.baseUrl = baseUrl;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "Room creation",
             description = "API for creating a game room"
@@ -40,9 +42,9 @@ public class GameRoomRestController {
                     headers = @Header(name = "Location", description = "It contains the url of the room")
             )
     })
-    public ResponseEntity<BaseResponse<GameRoomCreationResponseDto>> createRoom(@RequestParam("roomName") String roomName,
-                                                                                @RequestParam("creatorId") String creatorId) throws URISyntaxException {
-        GameRoomCreationResponseDto result = this.gameRoomService.createRoom(roomName, creatorId);
+    public ResponseEntity<BaseResponse<GameRoomCreationResponseDto>> createRoom(@RequestBody GameRoomCreationRequestDto dto)
+            throws URISyntaxException {
+        GameRoomCreationResponseDto result = this.gameRoomService.createRoom(dto.getRoomName(), dto.getCreatorId());
         return ResponseEntity.created(new URI(this.baseUrl + "/room/" + result.getRoomId()))
                 .body(BaseResponse.created("New room created", result));
     }
