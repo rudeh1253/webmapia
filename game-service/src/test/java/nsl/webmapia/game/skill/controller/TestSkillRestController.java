@@ -53,16 +53,16 @@ class TestSkillRestController {
                 """;
 
         this.mockMvc.perform(
-                        get("/game-instances/{gameInstanceId}/available-skills/{memberId}",
+                        get("/game/game-instances/{gameInstanceId}/available-skills/{memberId}",
                                 10000, "sample-member"))
                 .andExpect(content().json(expectedResponseBody));
     }
 
-    @DisplayName("URL: /game-instance/{gameInstanceId}/skills/activate - without problem")
+    @DisplayName("URL: /game/game-instance/{gameInstanceId}/skills/activate - without problem")
     @Test
     void activatedSkill_success() throws Exception {
         this.mockMvc.perform(
-                        post("/game-instance/{gameInstanceId}/skills/activate", 10000)
+                        post("/game/game-instance/{gameInstanceId}/skills/activate", 10000)
                                 .header("Content-Type", "application/json;charset=utf-8")
                                 .content("""
                                         {

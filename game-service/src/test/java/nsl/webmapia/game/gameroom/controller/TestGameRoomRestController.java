@@ -48,7 +48,7 @@ class TestGameRoomRestController {
     @Test
     void createRoom() throws Exception {
         this.mockMvc.perform(
-                MockMvcRequestBuilders.post("/rooms")
+                MockMvcRequestBuilders.post("/game/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -69,7 +69,7 @@ class TestGameRoomRestController {
     @Test
     void getGameRoom_success() throws Exception {
         String contentAsString = this.mockMvc.perform(
-                MockMvcRequestBuilders.post("/rooms")
+                MockMvcRequestBuilders.post("/game/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -82,7 +82,7 @@ class TestGameRoomRestController {
         });
         int roomId = creationDto.getContent().getRoomId();
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/rooms/{roomId}", roomId))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/game/rooms/{roomId}", roomId))
                 .andDo(log()).andDo((result) -> {
                     GameRoomDto content = this.om.readValue(result.getResponse().getContentAsString(), new TypeReference<BaseResponse<GameRoomDto>>() {
                     }).getContent();

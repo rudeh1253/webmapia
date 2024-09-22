@@ -6,32 +6,27 @@ import nsl.webmapia.game.common.rest.BaseResponse;
 import nsl.webmapia.game.vote.dto.VoteDto;
 import nsl.webmapia.game.vote.dto.request.VoteRequestDto;
 import nsl.webmapia.game.vote.service.VoteService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
-@RequestMapping("/game/vote")
 public class VoteMessageController {
     private final VoteService voteService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @PostMapping
-    public ResponseEntity<BaseResponse<Void>> vote(@RequestBody VoteRequestDto dto) {
+    @MessageMapping("/vote/do")
+    public void vote(@Payload VoteRequestDto dto) {
+        log.info("dto={}", dto);
         List<VoteDto> result = this.voteService.vote(dto);
         this.messagingTemplate.convertAndSend(
                 "/topic/game-service/" + dto.getGameInstanceId() + "/vote",
-                result
-        );
-        return ResponseEntity.ok(
-                BaseResponse.ok("Successfully voted")
+                BaseResponse.ok("Successfully voted", result)
         );
     }
 }

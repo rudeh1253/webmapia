@@ -9,7 +9,6 @@ import nsl.webmapia.game.gameroom.dto.ParticipationDto;
 import nsl.webmapia.game.gameroom.dto.request.GameRoomCreationRequestDto;
 import nsl.webmapia.game.gameroom.dto.request.ParticipationRequestDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +19,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -106,7 +104,7 @@ class TestParticipationRestController {
                 log.info("Host Session - handleFrame");
                 log.info("headers={}", headers);
                 log.info("Host Session - Payload = {}", payload);
-                ParticipationDto response = (ParticipationDto)payload;
+                ParticipationDto response = (ParticipationDto) payload;
                 assertThat(response.getNewParticipant()).isEqualTo("sample-participant");
                 assertThat(response.getParticipants()).containsExactlyInAnyOrder("sample-participant", SAMPLE_HOST_NAME);
             }
@@ -119,12 +117,17 @@ class TestParticipationRestController {
         PreparedStatement clearParticipationStatement = connection.prepareStatement("""
                 DELETE FROM participation
                 """);
+        PreparedStatement clearGameInstanceStatement = connection.prepareStatement("""
+                DELETE FROM game_instance
+                """);
         PreparedStatement clearGameRoomStatement = connection.prepareStatement("""
                 DELETE FROM game_room
                 """);
         clearParticipationStatement.executeUpdate();
+        clearGameInstanceStatement.executeUpdate();
         clearGameRoomStatement.executeUpdate();
         clearParticipationStatement.close();
+        clearGameInstanceStatement.close();
         clearGameRoomStatement.close();
         connection.close();
     }

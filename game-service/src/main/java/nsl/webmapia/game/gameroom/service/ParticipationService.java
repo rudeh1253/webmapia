@@ -3,7 +3,6 @@ package nsl.webmapia.game.gameroom.service;
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.common.ErrorCode;
 import nsl.webmapia.game.gameoperation.service.GameService;
-import nsl.webmapia.game.gameroom.dto.GameRoomDto;
 import nsl.webmapia.game.gameroom.dto.ParticipationDto;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
