@@ -6,6 +6,8 @@ import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestD
 import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
 import nsl.webmapia.game.gameoperation.dto.response.GameResultResponseDto;
 
+import java.util.NoSuchElementException;
+
 /**
  * Object of service layer of game operation.
  * This object manages operation of instances of games.
@@ -36,6 +38,25 @@ public interface GameService {
             throws IllegalArgumentException;
 
     GameInstanceDto getGameInstance(int gameInstanceId);
+
+    /**
+     * Check if the GameRoom started an instance of game.
+     * @param gameRoomId to check
+     * @return true if it started a game (i.e. there is an alive GameInstance related to the GameRoom), otherwise false
+     */
+    boolean hasGameStarted(int gameRoomId);
+
+    /**
+     * Among game instances bound to a specific game room,
+     * find a game instance which is being operated.
+     * i.e., for the given gameRoomId, find a GameInstance whose
+     * endTime haven't set.
+     *
+     * @param gameRoomId of GameInstance to find
+     * @return a DTO contains information of the GameInstance
+     * @throws NoSuchElementException if there is no alive GameInstance of given gameRoomId
+     */
+    GameInstanceDto getAliveGameInstanceByRoomId(int gameRoomId) throws NoSuchElementException;
 
     GamePhase proceedPhase(int gameInstanceId);
 

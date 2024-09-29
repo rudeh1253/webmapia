@@ -33,6 +33,11 @@ public class InMemoryGameInstanceRepository implements GameInstanceRepository {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean existsAliveGameInstanceByGameRoomId(int gameRoomId) throws IllegalStateException {
+        throw new UnsupportedOperationException();
+    }
+
     public void clear() {
         indexedById.clear();
     }

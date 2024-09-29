@@ -59,6 +59,9 @@ class TestInMemoryPhaseEndRequestRepository {
     @Autowired
     GameService gameService;
 
+    @Autowired
+    GameInstanceRepository gameInstanceRepository;
+
     Integer gameInstanceId;
 
     @BeforeEach
@@ -72,6 +75,7 @@ class TestInMemoryPhaseEndRequestRepository {
 
     int initGameRoom() {
         this.gameRoomService = new GameRoomServiceImpl(
+                this.gameInstanceRepository,
                 this.gameRoomRepository,
                 this.participationRepository
         );

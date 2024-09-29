@@ -150,6 +150,17 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public boolean hasGameStarted(int gameRoomId) {
+        return this.gameInstanceRepository.existsAliveGameInstanceByGameRoomId(gameRoomId);
+    }
+
+    @Override
+    public GameInstanceDto getAliveGameInstanceByRoomId(int gameRoomId) throws NoSuchElementException {
+        return GameInstanceDto.of(this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(gameRoomId)
+                .orElseThrow(NoSuchElementException::new));
+    }
+
+    @Override
     public GamePhase proceedPhase(int gameInstanceId) {
         GameInstance gameInstance = this.gameInstanceRepository.findById(gameInstanceId)
                 .orElseThrow(NoSuchElementException::new);

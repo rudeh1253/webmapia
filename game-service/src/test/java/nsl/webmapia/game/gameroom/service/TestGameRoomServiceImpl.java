@@ -1,6 +1,7 @@
 package nsl.webmapia.game.gameroom.service;
 
 import lombok.extern.slf4j.Slf4j;
+import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
 import nsl.webmapia.game.gameroom.dto.GameRoomDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
@@ -32,12 +33,16 @@ class TestGameRoomServiceImpl {
     @Autowired
     GameRoomServiceImpl gameRoomServiceImpl;
 
+    @Autowired
+    GameInstanceRepository gameInstanceRepository;
+
     @BeforeEach
     void init() {
         if (this.gameRoomRepository instanceof InMemoryGameRoomRepository inMemoryGameRoomRepository) {
             inMemoryGameRoomRepository.clear();
         }
-        this.gameRoomServiceImpl = new GameRoomServiceImpl(this.gameRoomRepository, this.participationRepository);
+        this.gameRoomServiceImpl = new GameRoomServiceImpl(this.gameInstanceRepository,
+                this.gameRoomRepository, this.participationRepository);
     }
 
     @DisplayName("createRoom() - test concurrently")

@@ -1,7 +1,7 @@
-package nsl.webmapia.game.gameoperation.dto;
+package nsl.webmapia.game.vote.dto;
 
 import lombok.*;
-import nsl.webmapia.game.gameoperation.entity.Vote;
+import nsl.webmapia.game.vote.entity.Vote;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder

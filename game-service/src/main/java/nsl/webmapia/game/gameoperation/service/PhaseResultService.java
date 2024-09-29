@@ -9,6 +9,7 @@ import nsl.webmapia.game.gameoperation.repository.PhaseEndRequestRepository;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
 import nsl.webmapia.game.skill.service.SkillService;
+import nsl.webmapia.game.vote.service.VoteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

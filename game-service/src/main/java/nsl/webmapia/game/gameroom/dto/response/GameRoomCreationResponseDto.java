@@ -5,6 +5,7 @@ import nsl.webmapia.game.gameroom.entity.GameRoom;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter

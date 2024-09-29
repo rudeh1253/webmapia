@@ -1,17 +1,17 @@
-package nsl.webmapia.game.gameoperation.service;
+package nsl.webmapia.game.vote.service;
 
 import lombok.RequiredArgsConstructor;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
 import nsl.webmapia.game.character.service.CharacterDefinitionService;
-import nsl.webmapia.game.gameoperation.dto.VoteDto;
-import nsl.webmapia.game.gameoperation.dto.request.VoteRequestDto;
-import nsl.webmapia.game.gameoperation.dto.response.VoteResultResponseDto;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
-import nsl.webmapia.game.gameoperation.entity.Vote;
 import nsl.webmapia.game.gameoperation.repository.GameInstanceRepository;
-import nsl.webmapia.game.gameoperation.repository.VoteRepository;
+import nsl.webmapia.game.vote.dto.VoteDto;
+import nsl.webmapia.game.vote.dto.request.VoteRequestDto;
+import nsl.webmapia.game.vote.dto.response.VoteResultResponseDto;
+import nsl.webmapia.game.vote.entity.Vote;
+import nsl.webmapia.game.vote.repository.VoteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +34,7 @@ public class VoteService {
      * @param voteRequestDto DTO contains data of voter id and target id
      * @return a list of vote executed in the current instance
      */
-    List<VoteDto> vote(VoteRequestDto voteRequestDto) {
+    public List<VoteDto> vote(VoteRequestDto voteRequestDto) {
         GameInstance gameInstance = this.gameInstanceRepository.findById(voteRequestDto.getGameInstanceId())
                 .orElseThrow(NoSuchElementException::new);
         // TODO: instead of IllegalArgumentException, more specific exception is needed.

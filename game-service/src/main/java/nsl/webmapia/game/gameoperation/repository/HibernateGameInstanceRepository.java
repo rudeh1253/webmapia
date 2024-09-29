@@ -33,10 +33,10 @@ public class HibernateGameInstanceRepository implements GameInstanceRepository {
     public Optional<GameInstance> findAliveGameInstanceByGameRoomId(int gameRoomId) throws IllegalStateException {
         try {
             GameInstance gameInstance = this.em.createQuery("""
-                        SELECT gi FROM GameInstance gi
-                        WHERE gi.gameRoom.roomId = :gameRoomId
-                            AND gi.endTime IS NULL
-                        """, GameInstance.class)
+                            SELECT gi FROM GameInstance gi
+                            WHERE gi.gameRoom.roomId = :gameRoomId
+                                AND gi.endTime IS NULL
+                            """, GameInstance.class)
                     .setParameter("gameRoomId", gameRoomId)
                     .getSingleResult();
             return Optional.ofNullable(gameInstance);
@@ -48,6 +48,22 @@ public class HibernateGameInstanceRepository implements GameInstanceRepository {
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public boolean existsAliveGameInstanceByGameRoomId(int gameRoomId) throws IllegalStateException {
+        Long count = this.em.createQuery("""
+                        SELECT COUNT(gi.gameInstanceId)
+                        FROM GameInstance gi
+                        INNER JOIN gi.gameRoom gr
+                        WHERE gr.roomId = :gameRoomId
+                        """, Long.class)
+                .setParameter("gameRoomId", gameRoomId)
+                .getSingleResult();
+        if (count > 1) {
+            throw new IllegalStateException();
+        }
+        return count == 1;
     }
 
     @Override
