@@ -1,22 +1,22 @@
-import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
-import {setNewChatContainer} from "../redux/slice/newChatContainerSlice";
+import {CurrentRoomInfoInitialState} from "../../redux/slice/currentRoomInfoSlice";
+import {setNewChatContainer} from "../../redux/slice/newChatContainerSlice";
 import SocketClient from "./SocketClient";
 import {
     ChatContainer,
     PrivateChatMessage,
     PublicChatMessage,
     UserInfo
-} from "../type/gameDomainType";
+} from "../../type/gameDomainType";
 import {
     ParticipateChatContainerRequest,
     RemoveChatContainerRequest
-} from "../type/requestType";
+} from "../../type/requestType";
 import {
     ParticipateChatContainerResponse,
     NewParticipantResponse,
     CommonResponse,
     UserResponse
-} from "../type/responseType";
+} from "../../type/responseType";
 import {
     REST_GAME_USER,
     SOCKET_SEND_CHAT_PRIVATE,
@@ -24,8 +24,8 @@ import {
     SOCKET_SEND_PARTICIPATE_CHAT_CONTAINER,
     SOCKET_SEND_REMOVE_CHAT_CONTAINER,
     SystemMessengerId
-} from "../util/const";
-import {chatContainerMap} from "../component/room/ChatComponent";
+} from "../../util/const";
+import {chatContainerMap} from "../../component/room/ChatComponent";
 import axios from "axios";
 
 var sockClient: SocketClient;
