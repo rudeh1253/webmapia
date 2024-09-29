@@ -2,7 +2,11 @@ package nsl.webmapia.game.gameoperation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nsl.webmapia.game.gameoperation.dto.request.CharacterDistributionRequestDto;
+import nsl.webmapia.game.gameoperation.dto.request.GameStartRequestDto;
 import nsl.webmapia.game.gameoperation.dto.request.PhaseEndRequestDto;
+import nsl.webmapia.game.gameoperation.dto.response.CharacterDistributionResponseDto;
+import nsl.webmapia.game.gameoperation.dto.response.GameStartResponseDto;
 import nsl.webmapia.game.gameoperation.dto.response.PhaseResultResponseDto;
 import nsl.webmapia.game.gameoperation.service.GameService;
 import nsl.webmapia.game.gameoperation.service.PhaseResultService;
@@ -29,5 +33,23 @@ public class GameMessageController {
                     phaseResultResponseDto
             );
         }
+    }
+
+    @MessageMapping("/game/start")
+    public void startGame(@Payload GameStartRequestDto dto) {
+        Integer gameInstanceId = this.gameService.startGame(dto.getGameRoomId());
+        this.messagingTemplate.convertAndSend(
+                "/topic/game-service/" + dto.getGameRoomId() + "/game-start",
+                new GameStartResponseDto(gameInstanceId)
+        );
+    }
+
+    @MessageMapping("/game/characters/distribute")
+    public void distributeCharacters(@Payload CharacterDistributionRequestDto dto) {
+        CharacterDistributionResponseDto result = this.gameService.distributeCharacters(dto);
+        this.messagingTemplate.convertAndSend(
+                "/topic/game-service/" + result.getGameInstanceId() + "/character-distribution",
+                result
+        );
     }
 }
