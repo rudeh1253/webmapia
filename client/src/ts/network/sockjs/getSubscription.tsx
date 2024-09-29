@@ -4,15 +4,15 @@ import {
     PrivateChatMessage,
     PublicChatMessage,
     UserInfo
-} from "../type/gameDomainType";
+} from "../../type/gameDomainType";
 import {
     CharacterGenerationResponse,
     CommonResponse,
     GameStartNotificationResponse,
     PhaseResultResponse,
     UserResponse
-} from "../type/responseType";
-import {CurrentRoomInfoInitialState} from "../redux/slice/currentRoomInfoSlice";
+} from "../../type/responseType";
+import {CurrentRoomInfoInitialState} from "../../redux/slice/currentRoomInfoSlice";
 import {
     ID_OF_PUBLIC_CHAT,
     ID_OF_SECRET_SOCIETY_CHAT,
@@ -22,16 +22,16 @@ import {
     SOCKET_SUBSCRIBE_CHATROOM_PUBLIC,
     SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE,
     SOCKET_SUBSCRIBE_NOTIFICATION_PUBLIC
-} from "../util/const";
-import {UserState} from "../component/room/Room";
-import {setThisUserInfo} from "../redux/slice/thisUserInfo";
-import GameManager from "../game/GameManager";
+} from "../../util/const";
+import {UserState} from "../../component/room/Room";
+import {setThisUserInfo} from "../../redux/slice/thisUserInfo";
+import GameManager from "../../game/GameManager";
 import SocketClient from "./SocketClient";
-import {PhaseEndRequest} from "../type/requestType";
-import {NotificationType} from "../type/notificationType";
-import NullPointerError from "../error/NullPointerError";
-import {ErrorCode} from "../error/ErrorCode";
-import {setNewChat} from "../redux/slice/newChatSlice";
+import {PhaseEndRequest} from "../../type/requestType";
+import {NotificationType} from "../../type/notificationType";
+import NullPointerError from "../../error/NullPointerError";
+import {ErrorCode} from "../../error/ErrorCode";
+import {setNewChat} from "../../redux/slice/newChatSlice";
 import {
     onEnterChatContainer,
     onNewParticipantEntered,
