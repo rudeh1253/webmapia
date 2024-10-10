@@ -16,7 +16,7 @@ import {
     systemMessageTypeMap
 } from "../../util/const";
 import {iChatStorage} from "../../util/initialState";
-import {sendPrivateChat, sendPublicChat} from "../../sockjs/chat";
+import {sendPrivateChat, sendPublicChat} from "../../network/sockjs/chat";
 import GameManager from "../../game/GameManager";
 
 export type ChatComponentProp = {

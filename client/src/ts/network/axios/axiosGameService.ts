@@ -7,3 +7,5 @@ const axiosGameService = axios.create({
     },
     withCredentials: true
 });
+
+export default axiosGameService;

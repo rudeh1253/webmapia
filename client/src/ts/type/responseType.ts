@@ -8,10 +8,10 @@ import {
 import {NotificationType} from "./notificationType";
 
 export interface CommonResponse<D> {
-    status: number;
+    statusCode: number;
+    statusCodeSeries: number;
     message: string;
-    dateTime: string;
-    data: D;
+    content: D
 }
 
 export type CharacterGenerationResponse = {
@@ -49,13 +49,25 @@ export type VoteResultResponse = {
     idOfUserToBeExecuted: number;
 };
 
-export type RoomInfoResponse = {
-    notificationType: NotificationType;
-    roomId: number;
-    hostId: number;
-    roomName: string;
-    users: UserResponse[];
+export type RoomListResponse = {
+    page: number;
+    totalPage: number;
+    totalElementCount: number;
+    elements: {
+        roomId: number;
+        roomName: string;
+        hostMemberId: string;
+        creationTime: Date;
+        participantsIds: string[];
+    }[]
 };
+
+export type RoomCreationResponse = {
+    roomId: number;
+    roomName: string;
+    hostMemberId: string;
+    creationTime: Date;
+}
 
 export type UserResponse = {
     notificationType: NotificationType;

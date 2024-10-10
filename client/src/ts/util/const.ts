@@ -37,7 +37,7 @@ export const SOCKET_SUBSCRIBE_NOTIFICATION_PRIVATE = (
     userId: number
 ) => `/notification/private/${roomId}/${userId}`;
 
-export const REST_GAME_ROOM = `${REST_API_URL}/game/room`;
+export const REST_GAME_ROOM = "/game/rooms";
 export const REST_USER_ID = `${REST_API_URL}/user/id`;
 export const REST_GAME_USER = (roomId: number) =>
     `${REST_API_URL}/game/${roomId}/user`;

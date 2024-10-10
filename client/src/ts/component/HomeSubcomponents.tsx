@@ -6,13 +6,12 @@ import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import {RoomCreationRequest} from "../type/requestType";
 import {
     CommonResponse,
-    RoomAvailabilityResponse,
-    RoomInfoResponse
+    RoomAvailabilityResponse, RoomCreationResponse,
+    RoomListResponse
 } from "../type/responseType";
 import {
     REST_GAME_AVAILABILITY,
-    REST_GAME_ROOM,
-    REST_USER_ID
+    REST_GAME_ROOM
 } from "../util/const";
 import {setCurrentRoomInfo} from "../redux/slice/currentRoomInfoSlice";
 import axios from "axios";
@@ -66,14 +65,14 @@ export function RoomCreationModal({setModalState}: ModalProps) {
                             hostName: thisUserInfo.username
                         };
                         const roomInfo = await axios.post<
-                            CommonResponse<RoomInfoResponse>
+                            CommonResponse<RoomCreationResponse>
                         >(REST_GAME_ROOM, roomCreationRequestBody);
                         dispatch(
                             setCurrentRoomInfo({
-                                roomId: roomInfo.data.data.roomId,
-                                roomName: roomInfo.data.data.roomName,
-                                hostId: roomInfo.data.data.hostId,
-                                numOfUsers: roomInfo.data.data.users.length
+                                roomId: roomInfo.data.content.roomId,
+                                roomName: roomInfo.data.content.roomName,
+                                hostMemberId: roomInfo.data.content.hostMemberId,
+                                numOfUsers: 1
                             })
                         );
                         navigate("/room");
@@ -86,13 +85,7 @@ export function RoomCreationModal({setModalState}: ModalProps) {
     );
 }
 
-async function generateId(): Promise<number> {
-    const response = await axios.post<CommonResponse<number>>(REST_USER_ID);
-    const generatedId = response.data.data;
-    return generatedId;
-}
-
-export function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
+export function RoomItem({roomId, roomName, hostMemberId, numOfUsers}: RoomInfo) {
     const thisUserInfo = useAppSelector((state) => state.thisUserInfo);
 
     const dispatch = useAppDispatch();
@@ -103,7 +96,7 @@ export function RoomItem({roomId, roomName, hostId, numOfUsers}: RoomInfo) {
             CommonResponse<RoomAvailabilityResponse>
         >(REST_GAME_AVAILABILITY(roomId));
         console.log(availabilityRes.data);
-        const available = availabilityRes.data.data.available;
+        const available = availabilityRes.data.content.available;
         console.log(available);
         if (available) {
             dispatch(

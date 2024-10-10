@@ -1,7 +1,7 @@
 import strResource from "../../../../resource/string.json";
 import skillsPerChars from "../../../game/skillsPerChars";
 import {useAppSelector} from "../../../redux/hook";
-import SocketClient from "../../../sockjs/SocketClient";
+import SocketClient from "../../../network/sockjs/SocketClient";
 import {SkillType, UserInfo} from "../../../type/gameDomainType";
 import {useState, useEffect} from "react";
 import {SOCKET_SEND_ACTIVATE_SKILL} from "../../../util/const";

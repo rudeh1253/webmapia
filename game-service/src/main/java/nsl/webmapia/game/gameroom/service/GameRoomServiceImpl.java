@@ -67,10 +67,11 @@ public class GameRoomServiceImpl implements GameRoomService {
 
     @Override
     public PageWrapper<GameRoomDto> getGameRooms(GameRoomRequestDto dto) {
-        Integer page = dto.getPage();
+        int page = dto.getPage() == null ? 1 : dto.getPage();
         Integer pageSize = dto.getPageSize();
         String roomName = dto.getRoomName();
 
+        // TODO: This code should be placed in Repository, as a dynamic query
         if (pageSize == null && roomName == null) {
             return getGameRooms(page);
         } else if (pageSize == null) {
