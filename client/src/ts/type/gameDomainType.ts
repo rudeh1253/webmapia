@@ -1,6 +1,6 @@
 export type RoomInfo = {
     roomId: number;
-    hostId: number;
+    hostMemberId: string;
     roomName: string;
     numOfUsers: number;
 };

@@ -2,7 +2,7 @@ import {useState, useEffect} from "react";
 import strResource from "../../../../resource/string.json";
 import {useAppSelector} from "../../../redux/hook";
 import {UserInfo} from "../../../type/gameDomainType";
-import SocketClient from "../../../sockjs/SocketClient";
+import SocketClient from "../../../network/sockjs/SocketClient";
 import {SOCKET_SEND_VOTE} from "../../../util/const";
 import {VoteRequest} from "../../../type/requestType";
 import GameManager from "../../../game/GameManager";

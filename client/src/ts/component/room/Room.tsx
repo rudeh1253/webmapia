@@ -2,7 +2,7 @@ import {useState, useEffect} from "react";
 import {GamePhase, UserInfo} from "../../type/gameDomainType";
 import strResource from "../../../resource/string.json";
 import {useAppDispatch, useAppSelector} from "../../redux/hook";
-import SocketClient from "../../sockjs/SocketClient";
+import SocketClient from "../../network/sockjs/SocketClient";
 import {CurrentRoomInfoInitialState} from "../../redux/slice/currentRoomInfoSlice";
 import {GameConfigurationModal, UserItem} from "./RoomSubcomponent";
 import {setGameConfigurationModal} from "../../redux/slice/gameConfigurationModal";
@@ -20,13 +20,13 @@ import {
 } from "../../util/const";
 import {fetchUsers} from "../../util/fetchUsers";
 import GameComponent from "./GameComponent";
-import {getSubscription} from "../../sockjs/getSubscription";
+import {getSubscription} from "../../network/sockjs/getSubscription";
 import {iDelayStateForNewUser, iNewUserState} from "../../util/initialState";
 import ChatComponent from "./ChatComponent";
 import {setCurrentGamePhase} from "../../redux/slice/currentGamePhaseSlice";
 import GameManager from "../../game/GameManager";
 import {sumCharacterDistribution} from "../../util/utilFunction";
-import {sendSystemMessage} from "../../sockjs/chat";
+import {sendSystemMessage} from "../../network/sockjs/chat";
 import "../../../css/Room.css";
 import {setUserIdsInRoom} from "../../redux/slice/userIdsInRoomSlice";
 
