@@ -5,7 +5,7 @@ import {setGameSwitch} from "../redux/slice/GameSwitchSlice";
 import {setCurrentGamePhase} from "../redux/slice/currentGamePhaseSlice";
 import {setGameConfiguration} from "../redux/slice/gameConfiguration";
 import {setTimeCount} from "../redux/slice/timeCountSlice";
-import SocketClient from "../sockjs/SocketClient";
+import SocketClient from "../network/sockjs/SocketClient";
 import {
     CharacterCode,
     Chat,
@@ -39,7 +39,7 @@ import {setThisUserInfo} from "../redux/slice/thisUserInfo";
 import {setNewChat} from "../redux/slice/newChatSlice";
 import axios from "axios";
 import {characterNameMap} from "./characterNameMap";
-import {participateChatContainer} from "../sockjs/chat";
+import {participateChatContainer} from "../network/sockjs/chat";
 import {setUserIdsInRoom} from "../redux/slice/userIdsInRoomSlice";
 import {setPhaseResultInfo} from "../redux/slice/phaseResultInfoSlice";
 import {setNewChatContainer} from "../redux/slice/newChatContainerSlice";

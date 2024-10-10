@@ -1,20 +1,16 @@
 import {useEffect, useRef, useState} from "react";
 import strResource from "../../resource/string.json";
-import {RoomInfo} from "../type/gameDomainType";
 import {useAppDispatch, useAppSelector} from "../redux/hook";
-import axios from "axios";
-import {CommonResponse, RoomInfoResponse} from "../type/responseType";
+import {CommonResponse, RoomListResponse} from "../type/responseType";
 import {setThisUserInfo} from "../redux/slice/thisUserInfo";
-import SocketClient from "../sockjs/SocketClient";
 import {REST_GAME_ROOM} from "../util/const";
 import {RoomCreationModal, RoomItem} from "./HomeSubcomponents";
 import "../../css/Home.css";
-
-var sockClient: SocketClient;
+import axiosGameService from "../network/axios/axiosGameService";
 
 export default function Home() {
     const [roomCreationModal, setRoomCreationModal] = useState<boolean>(false);
-    const [roomList, setRoomList] = useState<Array<RoomInfo>>([]);
+    const [roomList, setRoomList] = useState<RoomListResponse>();
 
     const searchKeywordInput = useRef<HTMLInputElement>(null);
 
@@ -22,36 +18,26 @@ export default function Home() {
 
     const dispatch = useAppDispatch();
 
-    const init = async () => {
-        await getRoomList();
-        if (!sockClient) {
-            sockClient = await SocketClient.getInstance();
-        }
-    };
-
-    const getRoomList = async (keyword?: string) => {
-        if (keyword) {
-            // If keyword exists
-        } else {
-            const roomInfoResponses = await axios.get<
-                CommonResponse<RoomInfoResponse[]>
-            >(REST_GAME_ROOM);
-            const roomInfo: RoomInfo[] = [];
-            roomInfoResponses.data.data.forEach((v) =>
-                roomInfo.push({
-                    roomId: v.roomId,
-                    roomName: v.roomName,
-                    hostId: v.hostId,
-                    numOfUsers: 0
-                })
-            );
-            setRoomList(roomInfo);
-        }
-    };
-
     useEffect(() => {
         init();
     }, []);
+
+    const init = async () => {
+        await getRoomList();
+    };
+
+    const getRoomList = async (roomName?: string) => {
+        if (roomName) {
+            // If keyword exists
+        } else {
+            const roomInfoResponses = await axiosGameService.get<
+                CommonResponse<RoomListResponse>
+            >(REST_GAME_ROOM);
+            console.log(roomInfoResponses);
+
+            setRoomList(roomInfoResponses.data.content);
+        }
+    };
 
     return (
         <div className="home-container">
@@ -126,15 +112,7 @@ export default function Home() {
                     </button>
                 </div>
                 <div className="room-item-container">
-                    {roomList.map((item) => (
-                        <RoomItem
-                            key={item.roomId}
-                            roomId={item.roomId}
-                            roomName={item.roomName}
-                            hostId={item.hostId}
-                            numOfUsers={item.numOfUsers}
-                        />
-                    ))}
+
                 </div>
             </div>
         </div>

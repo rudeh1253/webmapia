@@ -9,7 +9,7 @@ const currentRoomInfoInitialState: CurrentRoomInfoInitialState = {
     roomInfo: {
         roomId: -1,
         roomName: "",
-        hostId: -1,
+        hostMemberId: "",
         numOfUsers: -1
     }
 };
