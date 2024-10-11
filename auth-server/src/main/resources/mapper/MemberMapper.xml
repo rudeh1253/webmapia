@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nsl.webmapia.authserver.domain.member.repository.mybatis.MybatisMemberMapper">
+
+    <insert id="save" keyProperty="memberId">
+        INSERT INTO members (member_id, password, role, nickname, creation_time)
+        VALUES (#{memberId},
+                #{password},
+                #{role},
+                #{nickname},
+                #{creationTime})
+    </insert>
+
+    <select id="findById" resultType="Member">
+        SELECT
+            member_id,
+            password,
+            role,
+            nickname,
+            creation_time
+        FROM members
+        WHERE member_id = #{memberId}
+    </select>
+
+    <update id="updateById">
+        UPDATE members
+        <set>
+            <if test="updateDto.nickname != null">
+                nickname = #{updateDto.nickname},
+            </if>
+        </set>
+        WHERE member_id = #{memberId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM members
+        WHERE member_id = #{memberId}
+    </delete>
+
+    <delete id="clear">
+        DELETE FROM members;
+    </delete>
+</mapper>

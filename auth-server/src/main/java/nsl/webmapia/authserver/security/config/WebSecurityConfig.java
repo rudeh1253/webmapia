@@ -1,4 +1,4 @@
-package nsl.webmapia.authserver.global.config;
+package nsl.webmapia.authserver.security.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +24,7 @@ public class WebSecurityConfig {
     @Value("${client.origin}")
     private String clientOrigin;
 
-    @Profile("no-auth")
+    @Profile("no-sec")
     @Bean
     public SecurityFilterChain noAuth(HttpSecurity http) throws Exception {
         return http
