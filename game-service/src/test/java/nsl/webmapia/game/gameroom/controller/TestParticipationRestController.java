@@ -5,10 +5,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.common.rest.BaseResponse;
-import nsl.webmapia.game.gameroom.dto.ParticipationDto;
 import nsl.webmapia.game.gameroom.dto.request.GameRoomCreationRequestDto;
 import nsl.webmapia.game.gameroom.dto.request.ParticipationRequestDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
+import nsl.webmapia.game.gameroom.dto.response.ParticipationResponseDto;
+import nsl.webmapia.game.gameroom.entity.GameRoom;
+import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
+import nsl.webmapia.game.member.dto.MemberDto;
+import nsl.webmapia.game.member.entity.Member;
+import nsl.webmapia.game.member.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +38,7 @@ import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -57,11 +63,18 @@ class TestParticipationRestController {
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    GameRoomRepository gameRoomRepository;
+
     static final String SAMPLE_ROOM_NAME = "sample-room";
     static final String SAMPLE_HOST_NAME = "sample-host";
 
     @BeforeEach
     void beforeEach() throws ExecutionException, InterruptedException, JsonProcessingException {
+        this.memberRepository.save(new Member(SAMPLE_HOST_NAME, "samplehost"));
         RequestEntity<GameRoomCreationRequestDto> requestEntity = RequestEntity.post(UriComponentsBuilder.fromHttpUrl("http://localhost:" + this.serverPort)
                         .path("/game/rooms")
                         .toUriString())
@@ -96,7 +109,7 @@ class TestParticipationRestController {
             public Type getPayloadType(StompHeaders headers) {
                 log.info("Host Session - getPayloadType");
                 log.info("headers={}", headers);
-                return ParticipationDto.class;
+                return ParticipationResponseDto.class;
             }
 
             @Override
@@ -104,9 +117,10 @@ class TestParticipationRestController {
                 log.info("Host Session - handleFrame");
                 log.info("headers={}", headers);
                 log.info("Host Session - Payload = {}", payload);
-                ParticipationDto response = (ParticipationDto) payload;
+                ParticipationResponseDto response = (ParticipationResponseDto) payload;
                 assertThat(response.getNewParticipant()).isEqualTo("sample-participant");
-                assertThat(response.getParticipants()).containsExactlyInAnyOrder("sample-participant", SAMPLE_HOST_NAME);
+                assertThat(response.getParticipants().stream().map(MemberDto::getMemberId))
+                        .containsExactlyInAnyOrder("sample-participant", SAMPLE_HOST_NAME);
             }
         });
     }
@@ -123,18 +137,25 @@ class TestParticipationRestController {
         PreparedStatement clearGameRoomStatement = connection.prepareStatement("""
                 DELETE FROM game_room
                 """);
+        PreparedStatement clearMemberStatement = connection.prepareStatement("""
+                DELETE FROM members
+                """);
         clearParticipationStatement.executeUpdate();
         clearGameInstanceStatement.executeUpdate();
         clearGameRoomStatement.executeUpdate();
+        clearMemberStatement.executeUpdate();
         clearParticipationStatement.close();
         clearGameInstanceStatement.close();
         clearGameRoomStatement.close();
+        clearMemberStatement.close();
         connection.close();
     }
 
     @DisplayName("POST /game/rooms/{roomId}/participate - success")
     @Test
     void participate() throws JsonProcessingException {
+        this.memberRepository.save(new Member("sample-participant", "nick"));
+        this.gameRoomRepository.save(new GameRoom("sample-room", LocalDateTime.now()));
         RequestEntity<ParticipationRequestDto> requestEntity = RequestEntity.post(UriComponentsBuilder.fromHttpUrl("http://localhost:" + this.serverPort)
                         .path("/game/rooms/{roomId}/participate")
                         .buildAndExpand(Map.of("roomId", this.gameRoomCreationResponseDto.getRoomId()))

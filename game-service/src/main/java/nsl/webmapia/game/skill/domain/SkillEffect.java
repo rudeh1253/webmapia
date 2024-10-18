@@ -11,9 +11,9 @@ import java.util.List;
 @ToString
 public class SkillEffect {
     private final SkillEffectType type;
-    private final String activatorId;
-    private final String targetId;
-    private final List<String> receiverIds;
+    private final Integer activatorCharacterAssignmentId;
+    private final Integer targetCharacterAssignmentId;
+    private final List<Integer> receiverCharacterAssignmentIds;
     private final String message;
 
     public SkillEffect() {

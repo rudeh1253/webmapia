@@ -4,16 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
+import nsl.webmapia.game.member.entity.Member;
 
 @Entity
 @Table(name = "character_assignment")
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 public class CharacterAssignment {
 
     @Id
@@ -21,8 +20,9 @@ public class CharacterAssignment {
     @Column(name = "assignment_id")
     private Integer assignmentId;
 
-    @Column(name = "member_id")
-    private String memberId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "character_code")
@@ -34,6 +34,17 @@ public class CharacterAssignment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_instance_id")
     private GameInstance gameInstance;
+
+    public CharacterAssignment(Integer assignmentId) {
+        this.assignmentId = assignmentId;
+    }
+
+    public CharacterAssignment(Member member, CharacterCode characterCode, GameInstance gameInstance) {
+        this.member = member;
+        this.characterCode = characterCode;
+        this.gameInstance = gameInstance;
+        gameInstance.getCharacterAssignments().add(this);
+    }
 
     public boolean isDead() {
         return this.life < 1;

@@ -33,11 +33,11 @@ public class DetectiveCharacterDefinitionService implements CharacterDefinitionS
             boolean success = SKILL_TARGET_CHARACTERS.contains(tar.getCharacterCode());
             return new SkillEffect(
                     success ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
-                    act.getMemberId(),
-                    tar.getMemberId(),
-                    List.of(act.getMemberId()),
+                    act.getAssignmentId(),
+                    tar.getAssignmentId(),
+                    List.of(act.getAssignmentId()),
                     // TODO: Replace hard code with MessageSource
-                    success ? String.format("%s는 %s입니다.", tar.getMemberId(), tar.getCharacterCode().getTitle())
+                    success ? String.format("%s는 %s입니다.", tar.getAssignmentId(), tar.getCharacterCode().getTitle())
                             : "실패"
             );
         };
@@ -49,12 +49,12 @@ public class DetectiveCharacterDefinitionService implements CharacterDefinitionS
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+    public Map<SkillType, List<Integer>> getAvailableSkillTypes(int gameInstanceId, Integer characterAssignmentId) {
         List<CharacterAssignment> characterAssignments =
                 this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
         return Map.of(
                 SkillType.INVESTIGATE_ALIVE_CHARACTER,
-                characterAssignments.stream().filter((ca) -> !ca.isDead()).map(CharacterAssignment::getMemberId).toList()
+                characterAssignments.stream().filter((ca) -> !ca.isDead()).map(CharacterAssignment::getAssignmentId).toList()
         );
     }
 

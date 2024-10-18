@@ -13,6 +13,8 @@ public interface CharacterAssignmentRepository {
 
     void save(CharacterAssignment characterAssignment);
 
+    Optional<CharacterAssignment> findById(Integer id);
+
     List<CharacterAssignment> findByGameInstanceId(int gameInstanceId);
 
     List<CharacterAssignment> findDeadCharacterAssignmentsByGameInstanceId(int gameInstanceId);
@@ -24,11 +26,11 @@ public interface CharacterAssignmentRepository {
      * alive (i.e. endTime is null).
      *
      * @param gameInstanceId of GameInstance
-     * @param memberId   of CharacterAssignment
+     * @param memberId       of CharacterAssignment
      * @return CharacterAssignment instance given conditions. Optional instance can be empty.
      */
 
     Optional<CharacterAssignment> findByGameInstanceIdAndMemberId(int gameInstanceId, String memberId);
 
-    void updateLifeByGameInstanceIdAndMemberId(int gameRoomId, String memberId, int life);
+    void updateLifeById(Integer characterAssignmentId, int life);
 }

@@ -26,7 +26,7 @@ public interface CharacterAssignmentJpaRepository extends JpaRepository<Characte
     @Query("""
             SELECT ca FROM CharacterAssignment ca
             WHERE ca.gameInstance.gameInstanceId = :gameInstanceId
-                AND ca.memberId = :memberId
+                AND ca.member.memberId = :memberId
             """)
     Optional<CharacterAssignment> findByGameInstanceIdAndMemberId(int gameInstanceId, String memberId);
 

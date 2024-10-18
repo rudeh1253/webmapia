@@ -26,18 +26,18 @@ public class GuardCharacterDefinitionService implements CharacterDefinitionServi
                     && activatedSkillsToTarget.contains(SkillType.KILL)) {
                 return new SkillEffect(
                         SkillEffectType.GUARD_SUCCESS,
-                        act.getMemberId(),
-                        tar.getMemberId(),
-                        List.of(act.getMemberId()),
+                        act.getAssignmentId(),
+                        tar.getAssignmentId(),
+                        List.of(act.getAssignmentId()),
                         // TODO: Replace hard code with MessageSource
-                        String.format("%s를 살리는 데 성공했습니다.", tar.getMemberId())
+                        String.format("%s를 살리는 데 성공했습니다.", tar.getMember().getNickname())
                 );
             } else {
                 return new SkillEffect(
                         SkillEffectType.GUARD_FAIL,
-                        act.getMemberId(),
-                        tar.getMemberId(),
-                        List.of(act.getMemberId()),
+                        act.getAssignmentId(),
+                        tar.getAssignmentId(),
+                        List.of(act.getAssignmentId()),
                         // TODO: Replace hard code with MessageSource
                         "실패했습니다."
                 );
@@ -53,12 +53,12 @@ public class GuardCharacterDefinitionService implements CharacterDefinitionServi
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+    public Map<SkillType, List<Integer>> getAvailableSkillTypes(int gameInstanceId, Integer characterAssignmentId) {
         List<CharacterAssignment> ca =
                 this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
         return Map.of(
                 SkillType.GUARD,
-                ca.stream().filter((c) -> !c.isDead()).map(CharacterAssignment::getMemberId).toList()
+                ca.stream().filter((c) -> !c.isDead()).map(CharacterAssignment::getAssignmentId).toList()
         );
     }
 

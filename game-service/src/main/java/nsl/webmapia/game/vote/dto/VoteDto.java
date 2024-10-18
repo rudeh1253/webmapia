@@ -8,14 +8,14 @@ import nsl.webmapia.game.vote.entity.Vote;
 @Getter
 @ToString
 public class VoteDto {
-    private String voterId;
-    private String targetId;
+    private Integer voterId;
+    private Integer targetId;
     private int voteCount;
 
     public static VoteDto of(Vote vote) {
         return VoteDto.builder()
-                .voterId(vote.getVoteId().getVoterId())
-                .targetId(vote.getTargetId())
+                .voterId(vote.getVoteId().getVoter().getAssignmentId())
+                .targetId(vote.getTarget().getAssignmentId())
                 .voteCount(vote.getVoteCount())
                 .build();
     }

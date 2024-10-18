@@ -7,6 +7,8 @@ import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
+import nsl.webmapia.game.member.entity.Member;
+import nsl.webmapia.game.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ class TestHibernateGameInstanceRepository {
 
     @Autowired
     HibernateGameInstanceRepository gameInstanceRepository;
+
+    @Autowired
+    MemberRepository memberRepository;
 
     @DisplayName("save() - entity is saved correctly")
     @Test
@@ -67,15 +72,17 @@ class TestHibernateGameInstanceRepository {
     }
 
     private int prepareSampleGameRoomAndParticipation() {
+        Member member = new Member("sample-host", "1q2w3e4r", "nick");
+        this.memberRepository.save(member);
+
         GameRoom sampleGameRoom = new GameRoom();
         sampleGameRoom.setRoomName("sample-room");
-        sampleGameRoom.setHostMemberId("sample-host");
         sampleGameRoom.setCreationTime(LocalDateTime.now());
 
         this.gameRoomRepository.save(sampleGameRoom);
 
         Participation sampleParticipation = new Participation(
-                "sample-host",
+                new Member("sample-host"),
                 sampleGameRoom
         );
         this.participationRepository.save(sampleParticipation);

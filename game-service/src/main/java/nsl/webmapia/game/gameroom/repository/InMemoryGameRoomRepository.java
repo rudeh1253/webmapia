@@ -105,9 +105,6 @@ public class InMemoryGameRoomRepository implements GameRoomRepository {
         if (dto.getRoomName() != null) {
             fromStore.setRoomName(dto.getRoomName());
         }
-        if (dto.getHostMemberId() != null) {
-            fromStore.setHostMemberId(dto.getHostMemberId());
-        }
         return true;
     }
 

@@ -1,15 +1,17 @@
 package nsl.webmapia.game.gameroom.dto;
 
 import lombok.*;
-
-import java.util.List;
+import nsl.webmapia.game.member.dto.MemberDto;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 @Getter
 @ToString
 public class ParticipationDto {
-    private int gameRoomId;
-    private String newParticipant;
-    private List<String> participants;
+    private Integer participationId;
+    private MemberDto participant;
+    private boolean host;
+    private boolean disconnected;
+    private Integer gameRoomId;
 }

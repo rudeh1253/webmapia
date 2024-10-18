@@ -30,22 +30,22 @@ public class FollowerCharacterDefinitionService implements CharacterDefinitionSe
     public void init() {
         this.skillProcessorForEnterWolfChat = (act, tar, activatedSkillsToTarget) -> new SkillEffect(
                 tar.getCharacterCode() == CharacterCode.WOLF ? SkillEffectType.ENTER_WOLF_CHAT_SUCCESS : SkillEffectType.ENTER_WOLF_CHAT_FAIL,
-                act.getMemberId(),
-                tar.getMemberId(),
-                List.of(act.getMemberId()),
+                act.getAssignmentId(),
+                tar.getAssignmentId(),
+                List.of(act.getAssignmentId()),
                 // TODO: Replace hard code with MessageSource
-                String.format("%s는 늑대입니다.", tar.getMemberId())
+                String.format("%s는 늑대입니다.", tar.getMember().getNickname())
         );
 
         this.skillProcessorForInvestigation = (act, tar, activatedSkillsToTarget) -> {
             boolean success = tar.isDead()
-                    && this.activatedSkillRepository.findByGameInstanceIdAndActivatorId(act.getGameInstance().getGameInstanceId(), act.getMemberId()).stream().noneMatch((as) -> as.getSkillType() == SkillType.INVESTIGATE_ALIVE_CHARACTER);
+                    && this.activatedSkillRepository.findByGameInstanceIdAndActivatorId(act.getGameInstance().getGameInstanceId(), act.getAssignmentId()).stream().noneMatch((as) -> as.getSkillType() == SkillType.INVESTIGATE_ALIVE_CHARACTER);
             return new SkillEffect(
                     success ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
-                    act.getMemberId(),
-                    tar.getMemberId(),
-                    List.of(act.getMemberId()),
-                    success ? String.format("%s는 %s입니다.", tar.getMemberId(), tar.getCharacterCode().getTitle())
+                    act.getAssignmentId(),
+                    tar.getAssignmentId(),
+                    List.of(act.getAssignmentId()),
+                    success ? String.format("%s는 %s입니다.", tar.getMember().getNickname(), tar.getCharacterCode().getTitle())
                             : "실패"
             );
         };
@@ -61,33 +61,33 @@ public class FollowerCharacterDefinitionService implements CharacterDefinitionSe
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+    public Map<SkillType, List<Integer>> getAvailableSkillTypes(int gameInstanceId, Integer characterAssignmentId) {
         List<CharacterAssignment> ca = this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
-        Map<SkillType, List<String>> availableSkillTypes = new HashMap<>();
+        Map<SkillType, List<Integer>> availableSkillTypes = new HashMap<>();
         availableSkillTypes.put(
                 SkillType.ENTER_WOLF_CHAT,
-                ca.stream().map(CharacterAssignment::getMemberId).toList()
+                ca.stream().map(CharacterAssignment::getAssignmentId).toList()
         );
         insertIfInvestigateAliveCharacterAvailable(
                 availableSkillTypes,
                 ca,
                 gameInstanceId,
-                memberId
+                characterAssignmentId
         );
         return Collections.unmodifiableMap(availableSkillTypes);
     }
 
-    private void insertIfInvestigateAliveCharacterAvailable(Map<SkillType, List<String>> availableSkillTypes,
+    private void insertIfInvestigateAliveCharacterAvailable(Map<SkillType, List<Integer>> availableSkillTypes,
                                                             List<CharacterAssignment> ca,
                                                             int gameInstanceId,
-                                                            String memberId) {
-        List<ActivatedSkill> activated = this.activatedSkillRepository.findByGameInstanceIdAndActivatorId(gameInstanceId, memberId);
+                                                            Integer characterAssignmentId) {
+        List<ActivatedSkill> activated = this.activatedSkillRepository.findByGameInstanceIdAndActivatorId(gameInstanceId, characterAssignmentId);
         if (activated.stream().anyMatch((as) -> as.getSkillType() == SkillType.INVESTIGATE_ALIVE_CHARACTER)) {
             return;
         }
         availableSkillTypes.put(
                 SkillType.INVESTIGATE_ALIVE_CHARACTER,
-                ca.stream().map(CharacterAssignment::getMemberId).toList()
+                ca.stream().map(CharacterAssignment::getAssignmentId).toList()
         );
     }
 

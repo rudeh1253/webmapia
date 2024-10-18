@@ -36,25 +36,25 @@ public class PredictorCharacterDefinitionService implements CharacterDefinitionS
             CharacterCode targetCharacter = tar.getCharacterCode();
             Integer gameInstanceId = act.getGameInstance().getGameInstanceId();
             if (AVAILABLE_KILL.contains(targetCharacter)) {
-                this.characterAssignmentRepository.updateLifeByGameInstanceIdAndMemberId(gameInstanceId, tar.getMemberId(), 0);
+                this.characterAssignmentRepository.updateLifeById(tar.getAssignmentId(), 0);
                 return new SkillEffect(
                         SkillEffectType.KILL_SUCCESS,
-                        act.getMemberId(),
-                        tar.getMemberId(),
+                        act.getAssignmentId(),
+                        tar.getAssignmentId(),
                         this.characterAssignmentRepository.findByGameInstanceId(gameInstanceId)
                                 .stream()
-                                .map(CharacterAssignment::getMemberId)
+                                .map(CharacterAssignment::getAssignmentId)
                                 .toList(),
-                        String.format("%s가 예언자에 의해 사망했습니다.", tar.getMemberId())
+                        String.format("%s가 예언자에 의해 사망했습니다.", tar.getMember().getNickname())
                 );
             }
             return new SkillEffect(
                     SkillEffectType.INVESTIGATION_SUCCESS,
-                    act.getMemberId(),
-                    tar.getMemberId(),
-                    List.of(act.getMemberId()),
+                    act.getAssignmentId(),
+                    tar.getAssignmentId(),
+                    List.of(act.getAssignmentId()),
                     String.format("%s는 %s입니다.",
-                            tar.getMemberId(),
+                            tar.getAssignmentId(),
                             AVAILABLE_INVESTIGATION.contains(tar.getCharacterCode())
                                     ? tar.getCharacterCode().getTitle()
                                     : CharacterCode.GOOD_PERSON.getTitle())
@@ -68,12 +68,12 @@ public class PredictorCharacterDefinitionService implements CharacterDefinitionS
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+    public Map<SkillType, List<Integer>> getAvailableSkillTypes(int gameInstanceId, Integer characterAssignmentId) {
         return Map.of(
                 SkillType.INVESTIGATE_ALIVE_CHARACTER,
                 this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId)
                         .stream()
-                        .map(CharacterAssignment::getMemberId)
+                        .map(CharacterAssignment::getAssignmentId)
                         .toList()
         );
     }

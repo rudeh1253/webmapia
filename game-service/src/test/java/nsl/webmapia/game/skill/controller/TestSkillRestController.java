@@ -32,11 +32,11 @@ class TestSkillRestController {
 
     @Test
     void getAvailableSkillsOfMember() throws Exception {
-        when(this.skillService.getAvailableSkills(10000, "sample-member"))
+        when(this.skillService.getAvailableSkills(10000, 1000))
                 .thenReturn(
                         Map.of(
-                                SkillType.KILL, List.of("member-1", "member-2"),
-                                SkillType.BEHEAD, List.of("member-1", "member-2")
+                                SkillType.KILL, List.of(1001, 1002),
+                                SkillType.BEHEAD, List.of(1001, 1002)
                         )
                 );
 
@@ -46,15 +46,15 @@ class TestSkillRestController {
                     "statusCodeSeries": 2,
                     "message": "",
                     "content": {
-                        "KILL": ["member-1", "member-2"],
-                        "BEHEAD": ["member-1", "member-2"]
+                        "KILL": [1001, 1002],
+                        "BEHEAD": [1001, 1002]
                     }
                 }
                 """;
 
         this.mockMvc.perform(
                         get("/game/game-instances/{gameInstanceId}/available-skills/{memberId}",
-                                10000, "sample-member"))
+                                10000, 1000))
                 .andExpect(content().json(expectedResponseBody));
     }
 
@@ -66,8 +66,8 @@ class TestSkillRestController {
                                 .header("Content-Type", "application/json;charset=utf-8")
                                 .content("""
                                         {
-                                            "activatorId": "sample-activator",
-                                            "targetId": "sample-target",
+                                            "activatorCharacterAssignmentId": 1000,
+                                            "targetCharacterAssignmentId": 1001,
                                             "skillType": "KILL"
                                         }
                                         """))

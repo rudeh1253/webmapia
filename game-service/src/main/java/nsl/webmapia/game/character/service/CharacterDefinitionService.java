@@ -21,11 +21,12 @@ public interface CharacterDefinitionService {
     /**
      * Return available skill types and for each skill type, available target ids.
      *
-     * @param gameInstanceId the GameInstance belongs to
-     * @param memberId of available skill types
-     * @return a map which keys are available skill types and values are ids of available targets for each skill type
+     * @param gameInstanceId        the GameInstance belongs to
+     * @param characterAssignmentId of available skill types
+     * @return a map which keys are available skill types and values are character assignment ids
+     * of available targets for each skill type
      */
-    default Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+    default Map<SkillType, List<Integer>> getAvailableSkillTypes(int gameInstanceId, Integer characterAssignmentId) {
         return Map.of();
     }
 

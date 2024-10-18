@@ -39,18 +39,17 @@ public class VoteService {
                 .orElseThrow(NoSuchElementException::new);
         // TODO: instead of IllegalArgumentException, more specific exception is needed.
         // The exception thrown here should be one that states no such Member of voterId isn't present.
-        List<CharacterAssignment> characterAssignments = this.characterAssignmentRepository.findByGameInstanceId(gameInstance.getGameInstanceId());
-        CharacterAssignment voterCharacterAssignment = characterAssignments.stream()
-                .filter((ca) -> ca.getMemberId().equals(voteRequestDto.getVoterId()))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+        CharacterAssignment voterCharacterAssignment = this.characterAssignmentRepository.findById(voteRequestDto.getVoterId())
+                .orElseThrow(NoSuchElementException::new);
+        CharacterAssignment targetCharacterAssignment = this.characterAssignmentRepository.findById(voteRequestDto.getTargetId())
+                .orElseThrow(NoSuchElementException::new);
         CharacterDefinitionService characterDefinitionService =
                 this.characterDefinitionFactoryService.getCharacterDefinitionOfCharacterCode(voterCharacterAssignment.getCharacterCode());
         int voteCount = characterDefinitionService.getVoteCount();
         this.voteRepository.save(new Vote(
                 gameInstance.getRound(),
-                voteRequestDto.getVoterId(),
-                voteRequestDto.getTargetId(),
+                voterCharacterAssignment,
+                targetCharacterAssignment,
                 voteCount,
                 gameInstance
         ));
@@ -67,25 +66,25 @@ public class VoteService {
         Set<Vote> votesInRound =
                 this.voteRepository.findByGameInstanceIdAndRound(gameInstanceId, gameInstance.getRound());
 
-        Map<String, Integer> sum = new HashMap<>();
+        Map<Integer, Integer> sum = new HashMap<>();
         for (Vote vote : votesInRound) {
-            String targetId = vote.getTargetId();
+            Integer targetId = vote.getTarget().getAssignmentId();
             if (!sum.containsKey(targetId)) {
                 sum.put(targetId, 0);
             }
             sum.put(targetId, sum.get(targetId) + vote.getVoteCount());
         }
 
-        String maxMember = null;
+        Integer maxCharacterAssignment = null;
         Integer max = 0;
-        for (String memberId : sum.keySet()) {
-            if (max < sum.get(memberId)) {
-                maxMember = memberId;
-                max = sum.get(memberId);
+        for (Integer characterAssignmentId : sum.keySet()) {
+            if (max < sum.get(characterAssignmentId)) {
+                maxCharacterAssignment = characterAssignmentId;
+                max = sum.get(characterAssignmentId);
             }
         }
         return new VoteResultResponseDto(
-                maxMember,
+                maxCharacterAssignment,
                 votesInRound.stream().map(VoteDto::of).collect(Collectors.toList())
         );
     }

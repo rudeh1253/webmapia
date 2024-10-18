@@ -31,18 +31,19 @@ public class SkillServiceImpl implements SkillService {
     private final GameInstanceRepository gameInstanceRepository;
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkills(int gameInstanceId, String memberId) throws IllegalStateException {
+    public Map<SkillType, List<Integer>> getAvailableSkills(int gameInstanceId, Integer characterAssignmentId)
+            throws IllegalStateException {
         // TODO: IllegalStateException is appropriate here?
         CharacterAssignment characterAssignment =
-                this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, memberId)
-                        .orElseThrow(IllegalStateException::new);
+                this.characterAssignmentRepository.findById(characterAssignmentId)
+                        .orElseThrow(NoSuchElementException::new);
         CharacterDefinitionService characterDefinitionService =
                 this.characterDefinitionFactory.getCharacterDefinitionOfCharacterCode(characterAssignment.getCharacterCode());
-        return characterDefinitionService.getAvailableSkillTypes(gameInstanceId, memberId);
+        return characterDefinitionService.getAvailableSkillTypes(gameInstanceId, characterAssignmentId);
     }
 
     @Override
-    public void activateSkill(int gameInstanceId, String activatorId, String targetId, SkillType skillType)
+    public void activateSkill(int gameInstanceId, Integer activatorCharacterAssignmentId, Integer targetCharacterAssignmentId, SkillType skillType)
             throws IllegalStateException, NoSuchElementException {
         GameInstance gameInstance = this.gameInstanceRepository.findById(gameInstanceId)
                 .orElseThrow(NoSuchElementException::new);
@@ -52,9 +53,9 @@ public class SkillServiceImpl implements SkillService {
         ActivatedSkill activatedSkill = new ActivatedSkill();
         activatedSkill.setSkillType(skillType);
         activatedSkill.setRound(gameInstance.getRound());
-        activatedSkill.setActivator(this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, activatorId)
+        activatedSkill.setActivator(this.characterAssignmentRepository.findById(activatorCharacterAssignmentId)
                 .orElseThrow(NoSuchElementException::new));
-        activatedSkill.setTarget(this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, targetId)
+        activatedSkill.setTarget(this.characterAssignmentRepository.findById(targetCharacterAssignmentId)
                 .orElseThrow(NoSuchElementException::new));
         this.activatedSkillRepository.save(activatedSkill);
     }
@@ -71,8 +72,8 @@ public class SkillServiceImpl implements SkillService {
                 this.activatedSkillRepository.findByGameInstanceIdAndRound(gameInstance.getGameInstanceId(), gameInstance.getRound());
 
         List<SkillEffect> skillEffects = new ArrayList<>();
-        Map<String, Set<ActivatedSkill>> targetMap = wrapBasedOnTarget(activatedSkillsOnRound);
-        for (String targetId : targetMap.keySet()) {
+        Map<Integer, Set<ActivatedSkill>> targetMap = wrapBasedOnTarget(activatedSkillsOnRound);
+        for (Integer targetId : targetMap.keySet()) {
             Set<ActivatedSkill> activatedSkillsToTarget = targetMap.get(targetId);
             for (ActivatedSkill activatedSkillOnTarget : activatedSkillsToTarget) {
                 CharacterDefinitionService characterDefinitionService =
@@ -90,15 +91,15 @@ public class SkillServiceImpl implements SkillService {
         return skillEffects;
     }
 
-    private Map<String, Set<ActivatedSkill>> wrapBasedOnTarget(List<ActivatedSkill> activatedSkills) {
-        Map<String, Set<ActivatedSkill>> activatedSkillMapToTarget = new HashMap<>();
+    private Map<Integer, Set<ActivatedSkill>> wrapBasedOnTarget(List<ActivatedSkill> activatedSkills) {
+        Map<Integer, Set<ActivatedSkill>> activatedSkillMapToTarget = new HashMap<>();
         for (ActivatedSkill as : activatedSkills) {
-            if (!activatedSkillMapToTarget.containsKey(as.getTarget().getMemberId())) {
+            if (!activatedSkillMapToTarget.containsKey(as.getTarget().getAssignmentId())) {
                 Set<ActivatedSkill> asSet = new HashSet<>();
                 asSet.add(as);
-                activatedSkillMapToTarget.put(as.getTarget().getMemberId(), asSet);
+                activatedSkillMapToTarget.put(as.getTarget().getAssignmentId(), asSet);
             } else {
-                activatedSkillMapToTarget.get(as.getTarget().getMemberId()).add(as);
+                activatedSkillMapToTarget.get(as.getTarget().getAssignmentId()).add(as);
             }
         }
         return activatedSkillMapToTarget;

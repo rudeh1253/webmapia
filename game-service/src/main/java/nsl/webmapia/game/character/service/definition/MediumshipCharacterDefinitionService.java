@@ -33,13 +33,13 @@ public class MediumshipCharacterDefinitionService implements CharacterDefinition
             boolean success = tar.isDead();
             return new SkillEffect(
                     success ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
-                    act.getMemberId(),
-                    tar.getMemberId(),
-                    List.of(act.getMemberId()),
+                    act.getAssignmentId(),
+                    tar.getAssignmentId(),
+                    List.of(act.getAssignmentId()),
 
                     // TODO: Replace hard code with MessageSource
                     success ? String.format("%s는 %s입니다.",
-                            tar.getMemberId(),
+                            tar.getAssignmentId(),
                             AVAILABLE_CHARACTER_CODES.contains(tar.getCharacterCode())
                                     ? tar.getCharacterCode().getTitle()
                                     : CharacterCode.GOOD_PERSON.getTitle())
@@ -54,12 +54,12 @@ public class MediumshipCharacterDefinitionService implements CharacterDefinition
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+    public Map<SkillType, List<Integer>> getAvailableSkillTypes(int gameInstanceId, Integer characterAssignmentId) {
         List<CharacterAssignment> deadCharacters =
                 this.characterAssignmentRepository.findDeadCharacterAssignmentsByGameInstanceId(gameInstanceId);
         return Map.of(
                 SkillType.INVESTIGATE_DEAD_CHARACTER,
-                deadCharacters.stream().map(CharacterAssignment::getMemberId).toList()
+                deadCharacters.stream().map(CharacterAssignment::getAssignmentId).toList()
         );
     }
 

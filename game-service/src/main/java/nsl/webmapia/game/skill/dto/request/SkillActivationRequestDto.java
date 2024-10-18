@@ -9,7 +9,7 @@ import nsl.webmapia.game.skill.domain.SkillType;
 @Getter
 @ToString
 public class SkillActivationRequestDto {
-    private String activatorId;
-    private String targetId;
+    private Integer activatorCharacterAssignmentId;
+    private Integer targetCharacterAssignmentId;
     private SkillType skillType;
 }
