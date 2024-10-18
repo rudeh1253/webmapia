@@ -28,28 +28,27 @@ public class WolfCharacterDefinitionService implements CharacterDefinitionServic
     @PostConstruct
     public void init() {
         this.skillProcessorForBehead = (act, tar, activatedSkillsToTarget) -> {
-            boolean success = isBeheadAvailable(act.getGameInstance().getGameInstanceId(), act.getMemberId())
+            boolean success = isBeheadAvailable(act.getGameInstance().getGameInstanceId(), act.getAssignmentId())
                     && !tar.isDead()
                     && tar.getCharacterCode() != CharacterCode.HUMAN_MOUSE;
             if (success) {
-                this.characterAssignmentRepository.updateLifeByGameInstanceIdAndMemberId(
-                        act.getGameInstance().getGameInstanceId(),
-                        tar.getMemberId(),
+                this.characterAssignmentRepository.updateLifeById(
+                        tar.getAssignmentId(),
                         tar.getLife() - 1
                 );
             }
             return new SkillEffect(
                     success ? SkillEffectType.BEHEAD_SUCCESS : SkillEffectType.BEHEAD_FAIL,
-                    act.getMemberId(),
-                    tar.getMemberId(),
+                    act.getAssignmentId(),
+                    tar.getAssignmentId(),
                     success ? this.characterAssignmentRepository.findByGameInstanceId(act.getGameInstance().getGameInstanceId())
                             .stream()
-                            .map(CharacterAssignment::getMemberId)
+                            .map(CharacterAssignment::getAssignmentId)
                             .toList()
-                            : List.of(act.getMemberId()),
+                            : List.of(act.getAssignmentId()),
                     // TODO: Replace hard code with MessageSource
-                    success ? String.format("%s가 늑대에 의해 참살당했습니다.", tar.getMemberId())
-                            : String.format("%s를 참살하는 데 실패했습니다.", tar.getMemberId())
+                    success ? String.format("%s가 늑대에 의해 참살당했습니다.", tar.getMember().getNickname())
+                            : String.format("%s를 참살하는 데 실패했습니다.", tar.getMember().getNickname())
             );
         };
 
@@ -58,23 +57,22 @@ public class WolfCharacterDefinitionService implements CharacterDefinitionServic
                     && !activatedSkillsToTarget.contains(SkillType.GUARD)
                     && tar.getCharacterCode() != CharacterCode.HUMAN_MOUSE;
             if (success) {
-                this.characterAssignmentRepository.updateLifeByGameInstanceIdAndMemberId(
-                        act.getGameInstance().getGameInstanceId(),
-                        tar.getMemberId(),
+                this.characterAssignmentRepository.updateLifeById(
+                        tar.getAssignmentId(),
                         tar.getLife() - 1
                 );
             }
             return new SkillEffect(
                     success ? SkillEffectType.KILL_SUCCESS : SkillEffectType.KILL_FAIL,
-                    act.getMemberId(),
-                    tar.getMemberId(),
+                    act.getAssignmentId(),
+                    tar.getAssignmentId(),
                     success ? this.characterAssignmentRepository.findByGameInstanceId(act.getGameInstance().getGameInstanceId())
                             .stream()
-                            .map(CharacterAssignment::getMemberId)
+                            .map(CharacterAssignment::getAssignmentId)
                             .toList()
-                            : List.of(act.getMemberId()),
-                    success ? String.format("%s가 늑대에 의해 죽었습니다.", tar.getMemberId())
-                            : String.format("%s를 죽이는 데 실패했습니다.", tar.getMemberId())
+                            : List.of(act.getAssignmentId()),
+                    success ? String.format("%s가 늑대에 의해 죽었습니다.", tar.getMember().getNickname())
+                            : String.format("%s를 죽이는 데 실패했습니다.", tar.getMember().getNickname())
             );
         };
     }
@@ -89,20 +87,21 @@ public class WolfCharacterDefinitionService implements CharacterDefinitionServic
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
-        List<String> aliveMemberIds = this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId)
-                .stream()
-                .map(CharacterAssignment::getMemberId)
-                .toList();
-        Map<SkillType, List<String>> result = new HashMap<>();
-        result.put(SkillType.KILL, aliveMemberIds);
-        if (isBeheadAvailable(gameInstanceId, memberId)) {
-            result.put(SkillType.BEHEAD, aliveMemberIds);
+    public Map<SkillType, List<Integer>> getAvailableSkillTypes(int gameInstanceId, Integer characterAssignmentId) {
+        List<Integer> aliveCharacterAssignmentIds =
+                this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId)
+                        .stream()
+                        .map(CharacterAssignment::getAssignmentId)
+                        .toList();
+        Map<SkillType, List<Integer>> result = new HashMap<>();
+        result.put(SkillType.KILL, aliveCharacterAssignmentIds);
+        if (isBeheadAvailable(gameInstanceId, characterAssignmentId)) {
+            result.put(SkillType.BEHEAD, aliveCharacterAssignmentIds);
         }
         return Collections.unmodifiableMap(result);
     }
 
-    private boolean isBeheadAvailable(int gameInstanceId, String memberId) {
+    private boolean isBeheadAvailable(int gameInstanceId, Integer memberId) {
         return this.activatedSkillRepository.findByGameInstanceIdAndActivatorId(gameInstanceId, memberId)
                 .stream()
                 .noneMatch((as) -> as.getSkillType() == SkillType.BEHEAD);

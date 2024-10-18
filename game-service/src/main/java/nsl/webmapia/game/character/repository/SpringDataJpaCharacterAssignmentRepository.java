@@ -19,6 +19,11 @@ public class SpringDataJpaCharacterAssignmentRepository implements CharacterAssi
     }
 
     @Override
+    public Optional<CharacterAssignment> findById(Integer id) {
+        return this.characterAssignmentJpaRepository.findById(id);
+    }
+
+    @Override
     public List<CharacterAssignment> findByGameInstanceId(int gameInstanceId) {
         return this.characterAssignmentJpaRepository.findByGameInstanceId(gameInstanceId);
     }
@@ -39,8 +44,8 @@ public class SpringDataJpaCharacterAssignmentRepository implements CharacterAssi
     }
 
     @Override
-    public void updateLifeByGameInstanceIdAndMemberId(int gameInstanceId, String memberId, int life) {
-        CharacterAssignment characterAssignment = this.characterAssignmentJpaRepository.findByGameInstanceIdAndMemberId(gameInstanceId, memberId)
+    public void updateLifeById(Integer characterAssignmentId, int life) {
+        CharacterAssignment characterAssignment = this.characterAssignmentJpaRepository.findById(characterAssignmentId)
                 .orElseThrow(NoSuchElementException::new);
         characterAssignment.setLife(life);
     }

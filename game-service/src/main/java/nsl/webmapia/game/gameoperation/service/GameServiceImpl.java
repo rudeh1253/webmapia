@@ -3,6 +3,7 @@ package nsl.webmapia.game.gameoperation.service;
 import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.character.domain.CharacterCode;
 import nsl.webmapia.game.character.domain.Faction;
+import nsl.webmapia.game.character.dto.CharacterAssignmentResultDto;
 import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.character.repository.CharacterAssignmentRepository;
 import nsl.webmapia.game.character.service.CharacterDefinitionFactoryService;
@@ -19,6 +20,8 @@ import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
+import nsl.webmapia.game.member.dto.MemberDto;
+import nsl.webmapia.game.member.entity.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -90,24 +93,24 @@ public class GameServiceImpl implements GameService {
                 participations.size()
         );
 
-        List<String> participants = new ArrayList<>(participations.stream()
-                .map(Participation::getParticipantId)
+        List<Member> participants = new ArrayList<>(participations.stream()
+                    .map(Participation::getParticipant)
                 .toList());
         Collections.shuffle(participants); // Randomness
 
-        Map<String, CharacterCode> charactersAssigned = new HashMap<>();
+        Map<MemberDto, CharacterCode> charactersAssigned = new HashMap<>();
         int characterDistLen = characterDist.length;
         GameInstance gameInstance = this.gameInstanceRepository.findById(dto.getGameInstanceId())
                 .orElseThrow(IllegalArgumentException::new);
         for (int i = 0; i < participants.size(); i++) {
-            String participant = participants.get(i);
+            Member participant = participants.get(i);
             CharacterCode assignedCharacter = characterDistLen > i ? characterDist[i] : CharacterCode.CITIZEN;
             charactersAssigned.put(
-                    participant,
+                    MemberDto.of(participant),
                     assignedCharacter
             );
             CharacterAssignment ca = new CharacterAssignment();
-            ca.setMemberId(participant);
+            ca.setMember(participant);
             ca.setCharacterCode(assignedCharacter);
             ca.setLife(assignedCharacter == CharacterCode.SOLDIER ? 2 : 1);
             ca.setGameInstance(gameInstance);
@@ -209,14 +212,15 @@ public class GameServiceImpl implements GameService {
         }
         return GameResultResponseDto.builder()
                 .gameEnded(true)
-                .charactersByMember(
+                .characterAssignments(
                         characters.stream()
-                                .collect(Collectors.toMap(CharacterAssignment::getMemberId, CharacterAssignment::getCharacterCode, (c1, c2) -> c1))
+                                .map(CharacterAssignmentResultDto::of)
+                                .toList()
                 )
                 .winFaction(winnerFaction)
-                .wolves(characters.stream().filter((c) -> belongsTo(c, Faction.WOLF)).map(CharacterAssignment::getMemberId).toList())
-                .human(characters.stream().filter((c) -> belongsTo(c, Faction.HUMAN)).map(CharacterAssignment::getMemberId).toList())
-                .humanMouse(characters.stream().filter((c) -> belongsTo(c, Faction.HUMAN_MOUSE)).map(CharacterAssignment::getMemberId).toList())
+                .wolves(characters.stream().filter((c) -> belongsTo(c, Faction.WOLF)).map((c) -> MemberDto.of(c.getMember())).toList())
+                .human(characters.stream().filter((c) -> belongsTo(c, Faction.HUMAN)).map((c) -> MemberDto.of(c.getMember())).toList())
+                .humanMouse(characters.stream().filter((c) -> belongsTo(c, Faction.HUMAN_MOUSE)).map((c) -> MemberDto.of(c.getMember())).toList())
                 .build();
     }
 

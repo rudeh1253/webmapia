@@ -13,6 +13,9 @@ import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
+import nsl.webmapia.game.member.dto.MemberDto;
+import nsl.webmapia.game.member.entity.Member;
+import nsl.webmapia.game.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,6 +54,11 @@ class TestGameServiceImpl {
     @Autowired
     GameInstanceRepository gameInstanceRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    Member host;
+
     @DisplayName("startGame()")
     @Test
     void startGame() {
@@ -72,9 +80,12 @@ class TestGameServiceImpl {
     }
 
     private int insertSampleGameRoom() {
+        this.host = new Member("host", "host");
+        this.memberRepository.save(this.host);
         int generatedId = this.gameRoomRepository.save(getSampleGameRoom());
         Participation participation = new Participation(
-                "sample-host",
+                this.host,
+                true,
                 this.gameRoomRepository.findById(generatedId).get()
         );
         this.participationRepository.save(participation);
@@ -84,7 +95,6 @@ class TestGameServiceImpl {
     private GameRoom getSampleGameRoom() {
         GameRoom sampleGameRoom = new GameRoom();
         sampleGameRoom.setRoomName("sample-room");
-        sampleGameRoom.setHostMemberId("sample-host");
         sampleGameRoom.setCreationTime(LocalDateTime.now());
         return sampleGameRoom;
     }
@@ -181,21 +191,23 @@ class TestGameServiceImpl {
         final int gameRoomId = insertSampleGameRoom();
         GameRoom gameRoom = this.gameRoomRepository.findById(gameRoomId).get();
 
-        given.forEach((p) -> this.participationRepository.save(new Participation(p, gameRoom)));
+        List<Member> members = given.stream().map((s) -> new Member(s, s + "nick")).map(this.memberRepository::save).toList();
+        members.forEach((m) -> this.participationRepository.save(new Participation(m, gameRoom)));
         final Integer gameInstanceId = this.gameService.startGame(gameRoomId);
 
         CharacterDistributionRequestDto requestDto = new CharacterDistributionRequestDto();
         requestDto.setGameInstanceId(gameInstanceId);
         requestDto.setNumByCharacters(testcase);
 
-        Map<String, CharacterCode> result =
+        Map<MemberDto, CharacterCode> result =
                 this.gameService.distributeCharacters(requestDto).getCharacterCodesByMemberIds();
         result.forEach((k, v) -> log.info("{}={}", k, v));
 
-        final String hostId = "sample-host";
+        final String hostId = "host";
         List<String> newIdList = new ArrayList<>(given);
         newIdList.add(hostId);
-        assertThat(result.keySet()).containsExactlyInAnyOrder(newIdList.toArray(String[]::new));
+        assertThat(result.keySet().stream().map(MemberDto::getMemberId).toList())
+                .containsExactlyInAnyOrder(newIdList.toArray(String[]::new));
 
         Map<CharacterCode, Integer> counter = new HashMap<>();
         result.forEach((k, v) -> {
@@ -211,9 +223,9 @@ class TestGameServiceImpl {
 
         result.forEach((k, v) -> {
             CharacterAssignment fromRepo =
-                    this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, k).get();
+                    this.characterAssignmentRepository.findByGameInstanceIdAndMemberId(gameInstanceId, k.getMemberId()).get();
             assertThat(fromRepo).isNotNull();
-            assertThat(k).isEqualTo(fromRepo.getMemberId());
+            assertThat(k.getMemberId()).isEqualTo(fromRepo.getMember().getMemberId());
             assertThat(v).isEqualTo(fromRepo.getCharacterCode());
             assertThat(fromRepo.getLife()).isEqualTo(fromRepo.getCharacterCode() == SOLDIER ? 2 : 1);
         });
@@ -237,7 +249,8 @@ class TestGameServiceImpl {
         final int gameRoomId = insertSampleGameRoom();
         GameRoom gameRoom = this.gameRoomRepository.findById(gameRoomId).get();
 
-        given.forEach((p) -> this.participationRepository.save(new Participation(p, gameRoom)));
+        List<Member> members = given.stream().map((s) -> new Member(s, s + "nick")).map(this.memberRepository::save).toList();
+        members.forEach((p) -> this.participationRepository.save(new Participation(p, gameRoom)));
         Integer gameInstanceId = this.gameService.startGame(gameRoomId);
 
         CharacterDistributionRequestDto requestDto = new CharacterDistributionRequestDto();

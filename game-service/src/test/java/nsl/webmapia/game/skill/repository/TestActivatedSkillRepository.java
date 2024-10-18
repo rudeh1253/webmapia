@@ -11,6 +11,8 @@ import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
+import nsl.webmapia.game.member.entity.Member;
+import nsl.webmapia.game.member.repository.MemberRepository;
 import nsl.webmapia.game.skill.domain.SkillType;
 import nsl.webmapia.game.skill.entity.ActivatedSkill;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static nsl.webmapia.game.character.domain.CharacterCode.*;
@@ -48,10 +51,13 @@ class TestActivatedSkillRepository {
     @Autowired
     GameInstanceRepository gameInstanceRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
     @DisplayName("findByGameInstanceIdAndRound()")
     @Test
     void findByGameInstanceIdAndRound() {
-        String[] sampleParticipants = {
+        String[] sampleParticipantIds = {
                 "sample-member01",
                 "sample-member02",
                 "sample-member03",
@@ -90,17 +96,21 @@ class TestActivatedSkillRepository {
         GameRoom sampleGameRoom = getSampleGameRoom();
         this.gameRoomRepository.save(sampleGameRoom);
 
-        for (String sampleParticipant : sampleParticipants) {
+        List<Member> sampleParticipants = Arrays.stream(sampleParticipantIds)
+                .map((s) -> new Member(s, s + "nick"))
+                .map(this.memberRepository::save)
+                .toList();
+
+        for (Member sampleParticipant : sampleParticipants) {
             this.participationRepository.save(new Participation(sampleParticipant, sampleGameRoom));
         }
 
         this.gameService.startGame(sampleGameRoom.getRoomId());
         GameInstance gameInstance = this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(sampleGameRoom.getRoomId()).get();
 
-        this.characterAssignmentRepository.save(generateCharacterAssignment("sample-host", CITIZEN, gameInstance));
-        for (int i = 0; i < sampleParticipants.length; i++) {
+        for (int i = 0; i < sampleParticipants.size(); i++) {
             this.characterAssignmentRepository.save(generateCharacterAssignment(
-                    sampleParticipants[i], characterAssignments[i], gameInstance
+                    sampleParticipants.get(i), characterAssignments[i], gameInstance
             ));
         }
 
@@ -126,14 +136,13 @@ class TestActivatedSkillRepository {
     private GameRoom getSampleGameRoom() {
         GameRoom sampleGameRoom = new GameRoom();
         sampleGameRoom.setRoomName("sample-room");
-        sampleGameRoom.setHostMemberId("sample-host");
         sampleGameRoom.setCreationTime(LocalDateTime.now());
         return sampleGameRoom;
     }
 
-    private CharacterAssignment generateCharacterAssignment(String memberId, CharacterCode characterCode, GameInstance gameInstance) {
+    private CharacterAssignment generateCharacterAssignment(Member member, CharacterCode characterCode, GameInstance gameInstance) {
         CharacterAssignment characterAssignment = new CharacterAssignment();
-        characterAssignment.setMemberId(memberId);
+        characterAssignment.setMember(member);
         characterAssignment.setCharacterCode(characterCode);
         characterAssignment.setLife(characterCode == SOLDIER ? 2 : 1);
         characterAssignment.setGameInstance(gameInstance);

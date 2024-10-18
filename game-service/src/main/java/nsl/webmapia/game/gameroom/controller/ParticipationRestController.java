@@ -3,8 +3,8 @@ package nsl.webmapia.game.gameroom.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nsl.webmapia.game.common.rest.BaseResponse;
-import nsl.webmapia.game.gameroom.dto.ParticipationDto;
 import nsl.webmapia.game.gameroom.dto.request.ParticipationRequestDto;
+import nsl.webmapia.game.gameroom.dto.response.ParticipationResponseDto;
 import nsl.webmapia.game.gameroom.service.ParticipationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,9 @@ public class ParticipationRestController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/game/rooms/{roomId}/participate")
-    public ResponseEntity<BaseResponse<ParticipationDto>> participate(@PathVariable("roomId") int roomId,
-                                                                      @RequestBody ParticipationRequestDto dto) {
-        ParticipationDto result = this.participationService.participate(roomId, dto.getNewParticipantId());
+    public ResponseEntity<BaseResponse<ParticipationResponseDto>> participate(@PathVariable("roomId") int roomId,
+                                                                              @RequestBody ParticipationRequestDto dto) {
+        ParticipationResponseDto result = this.participationService.participate(roomId, dto.getNewParticipantId());
         this.messagingTemplate.convertAndSend("/topic/game-service/rooms/" + roomId, result);
         log.info("roomId={}", roomId);
         return new ResponseEntity<>(

@@ -29,10 +29,10 @@ public class ActivatedSkill {
     private int round;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "activator_id")
+    @JoinColumn(name = "activator_character_assignment_id")
     private CharacterAssignment activator;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "target_id")
+    @JoinColumn(name = "target_character_assignment_id")
     private CharacterAssignment target;
 }

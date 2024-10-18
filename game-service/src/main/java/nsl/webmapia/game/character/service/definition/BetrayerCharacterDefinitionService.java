@@ -24,20 +24,20 @@ public class BetrayerCharacterDefinitionService implements CharacterDefinitionSe
     public void init() {
         this.skillProcessorForEnterWolfChat = (act, tar, activatedSkillsToTarget) -> new SkillEffect(
                 tar.getCharacterCode() == CharacterCode.WOLF ? SkillEffectType.ENTER_WOLF_CHAT_SUCCESS : SkillEffectType.ENTER_WOLF_CHAT_FAIL,
-                act.getMemberId(),
-                tar.getMemberId(),
-                List.of(act.getMemberId()),
+                act.getAssignmentId(),
+                tar.getAssignmentId(),
+                List.of(act.getAssignmentId()),
                 // TODO: Replace hard code with MessageSource
-                String.format("%s는 늑대입니다.", tar.getMemberId())
+                String.format("%s는 늑대입니다.", tar.getMember().getNickname())
         );
 
         this.skillProcessorForInvestigateDeadCharacter = (act, tar, activatedSkillsToTarget) -> new SkillEffect(
                 tar.isDead() ? SkillEffectType.INVESTIGATION_SUCCESS : SkillEffectType.INVESTIGATION_FAIL,
-                act.getMemberId(),
-                tar.getMemberId(),
-                List.of(act.getMemberId()),
+                act.getAssignmentId(),
+                tar.getAssignmentId(),
+                List.of(act.getAssignmentId()),
                 // TODO: Replace hard code with MessageSource
-                String.format("%s는 %s입니다.", tar.getMemberId(), tar.getCharacterCode().getTitle())
+                String.format("%s는 %s입니다.", tar.getMember().getNickname(), tar.getCharacterCode().getTitle())
         );
     }
 
@@ -62,14 +62,14 @@ public class BetrayerCharacterDefinitionService implements CharacterDefinitionSe
     }
 
     @Override
-    public Map<SkillType, List<String>> getAvailableSkillTypes(int gameInstanceId, String memberId) {
+    public Map<SkillType, List<Integer>> getAvailableSkillTypes(int gameInstanceId, Integer characterAssignmentId) {
         List<CharacterAssignment> characterAssignments =
                 this.characterAssignmentRepository.findAliveCharacterAssignmentsByGameInstanceId(gameInstanceId);
         return Map.of(
                 SkillType.ENTER_WOLF_CHAT,
-                characterAssignments.stream().map(CharacterAssignment::getMemberId).toList(),
+                characterAssignments.stream().map(CharacterAssignment::getAssignmentId).toList(),
                 SkillType.INVESTIGATE_DEAD_CHARACTER,
-                characterAssignments.stream().filter(CharacterAssignment::isDead).map(CharacterAssignment::getMemberId).toList()
+                characterAssignments.stream().filter(CharacterAssignment::isDead).map(CharacterAssignment::getAssignmentId).toList()
         );
     }
 

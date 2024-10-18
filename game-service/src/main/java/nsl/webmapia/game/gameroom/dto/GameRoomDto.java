@@ -2,7 +2,7 @@ package nsl.webmapia.game.gameroom.dto;
 
 import lombok.*;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
-import nsl.webmapia.game.gameroom.entity.Participation;
+import nsl.webmapia.game.member.dto.MemberDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,17 +15,26 @@ import java.util.List;
 public class GameRoomDto {
     private Integer roomId;
     private String roomName;
-    private String hostMemberId;
     private LocalDateTime creationTime;
-    private List<String> participantIds;
+    private List<ParticipationDto> participants;
 
     public static GameRoomDto of(GameRoom domain) {
         return GameRoomDto.builder()
                 .roomId(domain.getRoomId())
                 .roomName(domain.getRoomName())
-                .hostMemberId(domain.getHostMemberId())
                 .creationTime(domain.getCreationTime())
-                .participantIds(domain.getParticipationList().stream().map(Participation::getParticipantId).toList())
+                .participants(domain.getParticipationList().stream().map((p) ->
+                    ParticipationDto.builder()
+                            .participationId(p.getParticipationId())
+                            .participant(MemberDto.builder()
+                                    .memberId(p.getParticipant().getMemberId())
+                                    .nickname(p.getParticipant().getNickname())
+                                    .creationTime(p.getParticipant().getCreationTime())
+                                    .build())
+                            .host(p.isHost())
+                            .disconnected(p.isDisconnected())
+                            .gameRoomId(p.getGameRoom().getRoomId())
+                            .build()).toList())
                 .build();
     }
 }

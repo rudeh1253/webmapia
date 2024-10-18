@@ -2,6 +2,7 @@ package nsl.webmapia.game.gameroom.dto.response;
 
 import lombok.*;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
+import nsl.webmapia.game.gameroom.entity.Participation;
 
 import java.time.LocalDateTime;
 
@@ -20,8 +21,8 @@ public class GameRoomCreationResponseDto {
         return GameRoomCreationResponseDto.builder()
                 .roomId(newGameRoom.getRoomId())
                 .roomName(newGameRoom.getRoomName())
-                .hostMemberId(newGameRoom.getHostMemberId())
                 .creationTime(newGameRoom.getCreationTime())
+                .hostMemberId(newGameRoom.getParticipationList().stream().filter(Participation::isHost).findAny().orElseThrow().getParticipant().getMemberId()) // TODO
                 .build();
     }
 }

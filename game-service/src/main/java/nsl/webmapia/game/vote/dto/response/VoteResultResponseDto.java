@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 @ToString
 public class VoteResultResponseDto {
-    private String memberIdToBeExecuted;
+    private Integer characterAssignmentToBeExecuted;
     private List<VoteDto> votes;
 }

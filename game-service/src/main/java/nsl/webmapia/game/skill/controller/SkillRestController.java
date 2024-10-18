@@ -27,16 +27,16 @@ public class SkillRestController {
         binder.registerCustomEditor(SkillType.class, SkillTypeEditor.getInstance());
     }
 
-    @GetMapping("/game-instances/{gameInstanceId}/available-skills/{memberId}")
+    @GetMapping("/game-instances/{gameInstanceId}/available-skills/{characterAssignmentId}")
     @Operation(summary = "Get available skill types", description = "Get skills a member available")
     @ApiResponses({
             @ApiResponse(description = "Success", responseCode = "200")
     })
-    public ResponseEntity<BaseResponse<Map<SkillType, List<String>>>> getAvailableSkillsOfMember(
+    public ResponseEntity<BaseResponse<Map<SkillType, List<Integer>>>> getAvailableSkillsOfMember(
             @PathVariable int gameInstanceId,
-            @PathVariable String memberId
+            @PathVariable Integer characterAssignmentId
     ) {
-        return ResponseEntity.ok(BaseResponse.ok(this.skillService.getAvailableSkills(gameInstanceId, memberId)));
+        return ResponseEntity.ok(BaseResponse.ok(this.skillService.getAvailableSkills(gameInstanceId, characterAssignmentId)));
     }
 
     @PostMapping("/game-instance/{gameInstanceId}/skills/activate")
@@ -48,8 +48,8 @@ public class SkillRestController {
     public ResponseEntity<BaseResponse<Void>> activateSkill(@PathVariable int gameInstanceId,
                                                             @RequestBody SkillActivationRequestDto requestDto) {
         this.skillService.activateSkill(gameInstanceId,
-                requestDto.getActivatorId(),
-                requestDto.getTargetId(),
+                requestDto.getActivatorCharacterAssignmentId(),
+                requestDto.getTargetCharacterAssignmentId(),
                 requestDto.getSkillType());
         return ResponseEntity.ok(BaseResponse.ok("Skill activation succeeded"));
     }

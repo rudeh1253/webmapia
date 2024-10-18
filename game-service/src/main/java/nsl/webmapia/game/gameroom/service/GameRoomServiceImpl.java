@@ -8,9 +8,7 @@ import nsl.webmapia.game.gameroom.dto.GameRoomDto;
 import nsl.webmapia.game.gameroom.dto.request.GameRoomRequestDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
-import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
-import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +26,13 @@ import java.util.NoSuchElementException;
 public class GameRoomServiceImpl implements GameRoomService {
     private final GameInstanceRepository gameInstanceRepository;
     private final GameRoomRepository gameRoomRepository;
-    private final ParticipationRepository participationRepository;
+    private final ParticipationService participationService;
 
     @Override
     public GameRoomCreationResponseDto createRoom(String roomName, String creatorId) {
-        GameRoom newGameRoom = new GameRoom(roomName, creatorId, LocalDateTime.now());
+        GameRoom newGameRoom = new GameRoom(roomName, LocalDateTime.now());
         int generatedNumber = this.gameRoomRepository.save(newGameRoom);
-        this.participationRepository.save(new Participation(creatorId, newGameRoom));
+        this.participationService.participate(generatedNumber, creatorId, true);
 
         newGameRoom.setRoomId(generatedNumber);
         return GameRoomCreationResponseDto.of(newGameRoom);

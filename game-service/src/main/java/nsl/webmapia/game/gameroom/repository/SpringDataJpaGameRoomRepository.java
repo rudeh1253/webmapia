@@ -71,9 +71,6 @@ public class SpringDataJpaGameRoomRepository implements GameRoomRepository {
             return false;
         }
         GameRoom findGameRoom = findGameRoomOp.get();
-        if (dto.getHostMemberId() != null) {
-            findGameRoom.setHostMemberId(dto.getHostMemberId());
-        }
         if (dto.getRoomName() != null) {
             findGameRoom.setRoomName(dto.getRoomName());
         }

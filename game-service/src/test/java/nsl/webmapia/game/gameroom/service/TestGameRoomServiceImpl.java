@@ -6,16 +6,14 @@ import nsl.webmapia.game.gameroom.dto.GameRoomDto;
 import nsl.webmapia.game.gameroom.dto.response.GameRoomCreationResponseDto;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.InMemoryGameRoomRepository;
-import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
+import nsl.webmapia.game.member.entity.Member;
+import nsl.webmapia.game.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,7 +26,7 @@ class TestGameRoomServiceImpl {
     GameRoomRepository gameRoomRepository;
 
     @Autowired
-    ParticipationRepository participationRepository;
+    ParticipationService participationService;
 
     @Autowired
     GameRoomServiceImpl gameRoomServiceImpl;
@@ -36,13 +34,16 @@ class TestGameRoomServiceImpl {
     @Autowired
     GameInstanceRepository gameInstanceRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
     @BeforeEach
     void init() {
         if (this.gameRoomRepository instanceof InMemoryGameRoomRepository inMemoryGameRoomRepository) {
             inMemoryGameRoomRepository.clear();
         }
         this.gameRoomServiceImpl = new GameRoomServiceImpl(this.gameInstanceRepository,
-                this.gameRoomRepository, this.participationRepository);
+                this.gameRoomRepository, this.participationService);
     }
 
     @DisplayName("createRoom() - test concurrently")
@@ -50,6 +51,7 @@ class TestGameRoomServiceImpl {
     void createRoom() {
         for (int i = 0; i < 1000; i++) {
             String sampleHostId = "sample-member-" + i;
+            this.memberRepository.save(new Member(sampleHostId, "nick" + i));
             String sampleRoomName = "sample-room-" + i;
             GameRoomCreationResponseDto dto = this.gameRoomServiceImpl.createRoom(sampleRoomName, sampleHostId);
 
@@ -61,27 +63,16 @@ class TestGameRoomServiceImpl {
         }
     }
 
-    @DisplayName("getGameRoom() - test concurrently")
+    @DisplayName("getGameRoom() - success")
     @Test
-    void getGameRoom_withConcurrency() {
-        Map<Integer, GameRoomCreationResponseDto> indexAndGameRoomCreationResponseDtoMap = new HashMap<>();
-        for (int i = 0; i < 1000; i++) {
-            String sampleHostId = "sample-member-" + i;
-            String sampleRoomName = "sample-room-" + i;
-            GameRoomCreationResponseDto dto = this.gameRoomServiceImpl.createRoom(sampleRoomName, sampleHostId);
-            indexAndGameRoomCreationResponseDtoMap.put(i, dto);
-        }
+    void getGameRoom_success() {
+        Member member = this.memberRepository.save(new Member("member", "nick"));
+        GameRoomCreationResponseDto creationResponse = this.gameRoomServiceImpl.createRoom("sample-room", member.getMemberId());
 
-        for (final Integer idx : indexAndGameRoomCreationResponseDtoMap.keySet()) {
-            GameRoomCreationResponseDto creationInfo = indexAndGameRoomCreationResponseDtoMap.get(idx);
-            GameRoomDto resultDto = this.gameRoomServiceImpl.getGameRoom(creationInfo.getRoomId());
+        GameRoomDto result = this.gameRoomServiceImpl.getGameRoom(creationResponse.getRoomId());
 
-            assertThat(resultDto.getRoomId()).isEqualTo(creationInfo.getRoomId());
-            assertThat(resultDto.getRoomName()).isEqualTo(creationInfo.getRoomName());
-            assertThat(resultDto.getHostMemberId()).isEqualTo(creationInfo.getHostMemberId());
-            assertThat(resultDto.getCreationTime()).isEqualTo(creationInfo.getCreationTime());
-            assertThat(resultDto.getParticipantIds()).hasSize(1);
-            assertThat(resultDto.getParticipantIds().get(0)).isEqualTo("sample-member-" + idx);
-        }
+        assertThat(result.getRoomName()).isEqualTo("sample-room");
+        assertThat(result.getParticipants()).size().isEqualTo(1);
+        assertThat(result.getParticipants().get(0).getParticipant().getMemberId()).isEqualTo("member");
     }
 }

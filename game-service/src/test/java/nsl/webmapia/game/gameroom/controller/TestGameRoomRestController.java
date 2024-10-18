@@ -84,6 +84,7 @@ class TestGameRoomRestController {
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/game/rooms/{roomId}", roomId))
                 .andDo(log()).andDo((result) -> {
+                    log.info("result:\n{}", result.getResponse().getContentAsString());
                     GameRoomDto content = this.om.readValue(result.getResponse().getContentAsString(), new TypeReference<BaseResponse<GameRoomDto>>() {
                     }).getContent();
                     GameRoomCreationResponseDto creationContent = creationDto.getContent();
@@ -91,8 +92,7 @@ class TestGameRoomRestController {
                     assertThat(content.getRoomId()).isEqualTo(creationContent.getRoomId());
                     assertThat(content.getRoomName()).isEqualTo(creationContent.getRoomName());
                     assertThat(content.getCreationTime()).isEqualTo(creationContent.getCreationTime());
-                    assertThat(content.getHostMemberId()).isEqualTo(creationContent.getHostMemberId());
-                    assertThat(content.getParticipantIds()).containsExactly(creationContent.getHostMemberId());
+                    assertThat(content.getParticipants().get(0).getParticipant().getMemberId()).isEqualTo(creationContent.getHostMemberId());
                 });
     }
 

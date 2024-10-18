@@ -26,9 +26,6 @@ public class GameRoom {
     @Column(name = "room_name")
     private String roomName;
 
-    @Column(name = "host_member_id")
-    private String hostMemberId;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
@@ -37,10 +34,8 @@ public class GameRoom {
     private List<Participation> participationList = new ArrayList<>();
 
     public GameRoom(String roomName,
-                    String hostMemberId,
                     LocalDateTime creationTime) {
         this.roomName = roomName;
-        this.hostMemberId = hostMemberId;
         this.creationTime = creationTime;
     }
 }

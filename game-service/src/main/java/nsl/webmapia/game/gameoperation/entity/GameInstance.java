@@ -7,6 +7,7 @@ import nsl.webmapia.game.gameoperation.domain.GamePhase;
 import nsl.webmapia.game.gameroom.entity.GameRoom;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 public class GameInstance {
 
     @Id
@@ -44,7 +44,7 @@ public class GameInstance {
     private GameRoom gameRoom;
 
     @OneToMany(mappedBy = "gameInstance", fetch = FetchType.LAZY)
-    private List<CharacterAssignment> characterAssignments;
+    private List<CharacterAssignment> characterAssignments = new ArrayList<>();
 
     @Builder(access = AccessLevel.PUBLIC)
     private GameInstance(int round,

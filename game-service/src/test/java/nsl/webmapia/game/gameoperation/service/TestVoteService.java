@@ -9,6 +9,8 @@ import nsl.webmapia.game.gameroom.entity.GameRoom;
 import nsl.webmapia.game.gameroom.entity.Participation;
 import nsl.webmapia.game.gameroom.repository.GameRoomRepository;
 import nsl.webmapia.game.gameroom.repository.ParticipationRepository;
+import nsl.webmapia.game.member.entity.Member;
+import nsl.webmapia.game.member.repository.MemberRepository;
 import nsl.webmapia.game.vote.dto.VoteDto;
 import nsl.webmapia.game.vote.dto.request.VoteRequestDto;
 import nsl.webmapia.game.vote.entity.Vote;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static nsl.webmapia.game.character.domain.CharacterCode.*;
@@ -47,11 +50,13 @@ class TestVoteService {
     @Autowired
     GameInstanceRepository gameInstanceRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
     @DisplayName("vote()")
     @Test
     void vote() {
-        String sampleHost = "sample-host";
-        String[] sampleParticipants = {
+        String[] sampleParticipantIds = {
                 "sample-member01",
                 "sample-member02",
                 "sample-member03",
@@ -68,7 +73,7 @@ class TestVoteService {
                 "sample-member14"
         };
 
-        CharacterCode[] characterAssignments = {
+        CharacterCode[] characterAssignmentsArr = {
                 WOLF,
                 BETRAYER,
                 FOLLOWER,
@@ -90,92 +95,97 @@ class TestVoteService {
         GameRoom sampleGameRoom = getSampleGameRoom();
         this.gameRoomRepository.save(sampleGameRoom);
 
-        for (String sampleParticipant : sampleParticipants) {
+        List<Member> participants = Arrays.stream(sampleParticipantIds).map((s) -> new Member(s, s + "nick"))
+                .map(this.memberRepository::save)
+                .toList();
+
+        for (Member sampleParticipant : participants) {
             this.participationRepository.save(new Participation(sampleParticipant, sampleGameRoom));
         }
 
         this.gameService.startGame(sampleGameRoom.getRoomId());
         GameInstance gameInstance = this.gameInstanceRepository.findAliveGameInstanceByGameRoomId(sampleGameRoom.getRoomId()).get();
 
-        this.characterAssignmentRepository.save(generateCharacterAssignment("sample-host", CITIZEN, gameInstance));
-        for (int i = 0; i < sampleParticipants.length; i++) {
-            this.characterAssignmentRepository.save(generateCharacterAssignment(
-                    sampleParticipants[i], characterAssignments[i], gameInstance
-            ));
+        List<CharacterAssignment> characterAssignments = new ArrayList<>(characterAssignmentsArr.length);
+        for (int i = 0; i < participants.size(); i++) {
+            CharacterAssignment characterAssignment = generateCharacterAssignment(
+                    participants.get(i), characterAssignmentsArr[i], gameInstance
+            );
+            this.characterAssignmentRepository.save(characterAssignment);
+            characterAssignments.add(characterAssignment);
         }
 
         List<VoteDto> voteDtoAccumulator = new ArrayList<>();
-        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(sampleParticipants[0], sampleParticipants[1], gameInstance)));
+        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(characterAssignments.get(0), characterAssignments.get(1), gameInstance)));
 
         checkVote(
-                sampleParticipants[0],
-                sampleParticipants[1],
+                characterAssignments.get(0).getAssignmentId(),
+                characterAssignments.get(1).getAssignmentId(),
                 voteDtoAccumulator,
                 gameInstance.getGameInstanceId(),
-                sampleParticipants
+                sampleParticipantIds
         );
 
-        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(sampleParticipants[1], sampleParticipants[2], gameInstance)));
+        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(characterAssignments.get(1), characterAssignments.get(2), gameInstance)));
 
         checkVote(
-                sampleParticipants[1],
-                sampleParticipants[2],
+                characterAssignments.get(1).getAssignmentId(),
+                characterAssignments.get(2).getAssignmentId(),
                 voteDtoAccumulator,
                 gameInstance.getGameInstanceId(),
-                sampleParticipants
+                sampleParticipantIds
         );
 
-        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(sampleParticipants[5], sampleParticipants[4], gameInstance)));
+        voteDtoAccumulator.add(VoteDto.of(getVoteForGeneratingDto(characterAssignments.get(5), characterAssignments.get(4), gameInstance)));
 
         checkVote(
-                sampleParticipants[5],
-                sampleParticipants[4],
+                characterAssignments.get(5).getAssignmentId(),
+                characterAssignments.get(4).getAssignmentId(),
                 voteDtoAccumulator,
                 gameInstance.getGameInstanceId(),
-                sampleParticipants
+                sampleParticipantIds
         );
     }
 
     private GameRoom getSampleGameRoom() {
         GameRoom sampleGameRoom = new GameRoom();
         sampleGameRoom.setRoomName("sample-room");
-        sampleGameRoom.setHostMemberId("sample-host");
         sampleGameRoom.setCreationTime(LocalDateTime.now());
         return sampleGameRoom;
     }
 
-    private VoteRequestDto generateVoteRequestDto(int gameInstanceId, String voterId, String targetId) {
+    private VoteRequestDto generateVoteRequestDto(int gameInstanceId, Integer voterCharacterAssignmentId, Integer targetCharacterAssignmentId) {
         VoteRequestDto voteRequestDto = new VoteRequestDto();
         voteRequestDto.setGameInstanceId(gameInstanceId);
-        voteRequestDto.setVoterId(voterId);
-        voteRequestDto.setTargetId(targetId);
+        voteRequestDto.setVoterId(voterCharacterAssignmentId);
+        voteRequestDto.setTargetId(targetCharacterAssignmentId);
         return voteRequestDto;
     }
 
-    private CharacterAssignment generateCharacterAssignment(String memberId, CharacterCode characterCode, GameInstance gameInstance) {
+    private CharacterAssignment generateCharacterAssignment(Member member, CharacterCode characterCode, GameInstance gameInstance) {
         CharacterAssignment characterAssignment = new CharacterAssignment();
-        characterAssignment.setMemberId(memberId);
+        characterAssignment.setMember(member);
         characterAssignment.setCharacterCode(characterCode);
         characterAssignment.setLife(characterCode == SOLDIER ? 2 : 1);
         characterAssignment.setGameInstance(gameInstance);
         return characterAssignment;
     }
 
-    private void checkVote(String voterId,
-                           String targetId,
+    private void checkVote(Integer voterCharacterAssignmentId,
+                           Integer targetCharacterAssignmentId,
                            List<VoteDto> expected,
                            int gameInstanceId,
                            String[] sampleParticipants) {
         List<VoteDto> votes =
-                this.voteService.vote(generateVoteRequestDto(gameInstanceId, voterId, targetId));
+                this.voteService.vote(generateVoteRequestDto(gameInstanceId, voterCharacterAssignmentId, targetCharacterAssignmentId));
         assertThat(votes.size()).isEqualTo(expected.size());
-        assertThat(votes.stream().map(VoteDto::getVoterId).toArray(String[]::new))
-                .containsExactlyInAnyOrder(expected.stream().map(VoteDto::getVoterId).toArray(String[]::new));
-        assertThat(votes.stream().map(VoteDto::getTargetId).toArray(String[]::new))
-                .containsExactlyInAnyOrder(expected.stream().map(VoteDto::getTargetId).toArray(String[]::new));
+        assertThat(votes.stream().map(VoteDto::getVoterId).toArray(Integer[]::new))
+                .containsExactlyInAnyOrder(expected.stream().map(VoteDto::getVoterId).toArray(Integer[]::new));
+        assertThat(votes.stream().map(VoteDto::getTargetId).toArray(Integer[]::new))
+                .containsExactlyInAnyOrder(expected.stream().map(VoteDto::getTargetId).toArray(Integer[]::new));
     }
 
-    private Vote getVoteForGeneratingDto(String voterId, String targetId, GameInstance gameInstance) {
-        return new Vote(0, voterId, targetId, 0, gameInstance);
+    private Vote getVoteForGeneratingDto(CharacterAssignment voter, CharacterAssignment target, GameInstance gameInstance) {
+        return new Vote(0, voter, target, 0, gameInstance);
     }
 }

@@ -2,6 +2,7 @@ package nsl.webmapia.game.gameoperation.dto.response;
 
 import lombok.*;
 import nsl.webmapia.game.character.domain.CharacterCode;
+import nsl.webmapia.game.member.dto.MemberDto;
 
 import java.util.Map;
 
@@ -11,5 +12,5 @@ import java.util.Map;
 @ToString
 public class CharacterDistributionResponseDto {
     private final Integer gameInstanceId;
-    private final Map<String, CharacterCode> characterCodesByMemberIds;
+    private final Map<MemberDto, CharacterCode> characterCodesByMemberIds;
 }

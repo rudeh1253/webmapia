@@ -11,6 +11,6 @@ import lombok.ToString;
 @ToString
 public class VoteRequestDto {
     private int gameInstanceId;
-    private String voterId;
-    private String targetId;
+    private Integer voterId;
+    private Integer targetId;
 }

@@ -1,10 +1,15 @@
 package nsl.webmapia.game.vote.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import nsl.webmapia.game.character.entity.CharacterAssignment;
 import nsl.webmapia.game.gameoperation.entity.GameInstance;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Class representing an instance of vote.
@@ -19,8 +24,9 @@ public class Vote {
     @EmbeddedId
     private VoteId voteId;
 
-    @Column(name = "target_id")
-    private String targetId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_character_assignment_id")
+    private CharacterAssignment target;
 
     @Column(name = "vote_count")
     private int voteCount;
@@ -31,12 +37,12 @@ public class Vote {
     private GameInstance gameInstance;
 
     public Vote(int round,
-                String voterId,
-                String targetId,
+                CharacterAssignment voter,
+                CharacterAssignment target,
                 int voteCount,
                 GameInstance gameInstance) {
-        this.voteId = new VoteId(round, voterId, gameInstance.getGameInstanceId());
-        this.targetId = targetId;
+        this.voteId = new VoteId(round, voter, gameInstance.getGameInstanceId());
+        this.target = target;
         this.voteCount = voteCount;
         this.gameInstance = gameInstance;
     }
@@ -44,7 +50,6 @@ public class Vote {
     @Embeddable
     @NoArgsConstructor
     @AllArgsConstructor
-    @EqualsAndHashCode
     @Getter
     @ToString
     public static class VoteId implements Serializable {
@@ -52,9 +57,28 @@ public class Vote {
         @Column(name = "round")
         private int round;
 
-        @Column(name = "voter_id")
-        private String voterId;
+        @ManyToOne
+        @JoinColumn(name = "voter_character_assignment_id")
+        private CharacterAssignment voter;
 
         private int gameInstanceId;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj instanceof Vote target) {
+                return this.round == target.voteId.round
+                        && this.voter.getAssignmentId().equals(target.voteId.voter.getAssignmentId())
+                        && this.gameInstanceId == target.voteId.gameInstanceId;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.round, this.voter.getAssignmentId(), this.gameInstanceId);
+        }
     }
 }
