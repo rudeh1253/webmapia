@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static nsl.webmapia.game.domain.character.domain.CharacterCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j

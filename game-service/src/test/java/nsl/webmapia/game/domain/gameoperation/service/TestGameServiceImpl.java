@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static nsl.webmapia.game.domain.character.domain.CharacterCode.*;
 import static org.assertj.core.api.Assertions.*;
 
 @Slf4j

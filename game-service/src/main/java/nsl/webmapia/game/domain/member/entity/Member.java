@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import nsl.webmapia.game.domain.member.constant.Role;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "members")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public class Member {
 
     @Id
@@ -37,5 +39,10 @@ public class Member {
     public Member(String memberId, String password, String nickname) {
         this(memberId, nickname);
         this.password = password;
+    }
+
+    public Member(String memberId, Role role) {
+        this(memberId);
+        this.role = role;
     }
 }
